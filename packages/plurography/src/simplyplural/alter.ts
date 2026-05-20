@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { SimplyPluralGroup } from "./group";
 
 export const SimplyPluralMember = z.object({
     exists: z.boolean(),

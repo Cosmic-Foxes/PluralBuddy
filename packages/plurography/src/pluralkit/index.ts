@@ -4,6 +4,7 @@
  */
 
 import z from "zod";
+import { allShortenedTimezones } from "./timezones";
 import { PluralKitMember } from "./member";
 import { PluralKitGroup } from "./group";
 import { PrivacyLevel } from "./privacy";

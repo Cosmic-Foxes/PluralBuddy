@@ -1,7 +1,9 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import z from "zod";
-import { PAutoProxyObj } from "./auto-proxy";
+import { PAutoProxyObj, type PAutoProxy } from "./auto-proxy";
+
+type Protected = { protected: true };
 
 const publicDescription = `This is a bitwise operation-based number which determines the protection flags that are public. By default, everything on PluralBuddy is private.
 

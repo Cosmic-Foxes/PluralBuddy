@@ -1,7 +1,7 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import z from "zod";
-import { PSystemObject } from "./system";
+import { PSystemObject, type PSystem } from "./system";
 import { PAlterObject } from "./alter";
 
 export function operationStringGeneration(len: number) {
