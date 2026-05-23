@@ -10,13 +10,13 @@ Zusätzlich können Sie auch Daten von einem anderen Bot wie PluralKit importier
   PAGINATION_NEXT_PAGE: "Nächste Seite",
   PAGINATION_FINISH: "Ende",
   NO_SERVER_DELETION: "PluralBuddy Express Änderungen müssen tatsächlich auf einen Server eingeladen werden, damit Nachrichten aufgrund von Discord-Einschränkungen gelöscht werden können. Du solltest jedoch in der Lage sein ihn mit der rechten Maustaste zu löschen!",
-  BLOCKED: "Du wurdest von {{ guild }} in die blocks gesetzt. Die Nutzung von PluralBuddy ist in dieser Gilde nun nicht mehr möglich.",
+  BLOCKED: "Du wurdest von {{ guild }} gesperrt. Die Nutzung von PluralBuddy ist in dieser Gilde nicht mehr möglich.",
   // Does not need to be translated
-  BLOCK_PC: `You have been blocked from **Pridecord**. You cannot use PluralBuddy in this guild.
+  BLOCK_PC: `Du wurdest von **Pridecord** gesperrt. Die Nutzung von PluralBuddy ist in dieser Gilde nicht möglich.
 
-> **Reason:** {{ libbyReasoning }}
-> **Expires:** {{ libbyExpirationDate }}
-> -# {{ reply }} Please view the DM from <@1455014942888693792> regarding case \`{{ libbyCaseId }}\`.`,
+> **Grund:** {{ libbyReasoning }}
+> **Ablaufdatum:** {{ libbyExpirationDate }}
+> -# {{ reply }} Bitte beachte die Direktnachricht von <@1455014942888693792> bezüglich des Falls \`{{ libbyCaseId }} \`.`,
   PAGINATION_PREVIOUS_PAGE: "Vorherige Seite",
   CREATING_NEW_SYSTEM_HEADER: "## Ein neues System schaffen",
   ERROR_DISABLED_SYSTEM: "2f – Ihr System ist deaktiviert. Sie können keinen Proxy verwenden.",
@@ -47,11 +47,11 @@ Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer wel
   SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN: "System & Setup erneut entfernen",
   ERROR_PAGINATION_TOO_OLD: "2g – Die Alter Paginierungs Komponente ist veraltet. Sie können nicht fortfahren. Klicken Sie bitte oben in der Meldung auf den Tab \"Alter\", um die Seiteneinstellungen zurückzusetzen.",
   ERROR_TAG_PAGINATION_TOO_OLD: "2h – Diese Tag Pagination Komponente ist zu alt, Sie können nicht fortfahren. Bitte klicken Sie auf die Registerkarte \"Tags\" oben in der Nachricht, um die Pagination zurückzusetzen.",
-  ERROR_ASSIGN_PAGINATION_TOO_OLD: "2i – That pagination component is too old, you cannot proceed. Please go back and hit the Assign button again to make the pagination component work again.",
-  ERROR_NO_ALTERS: "2w – You have no alters! Create one below!",
-  ERROR_NO_TAGS: "2x – You have no tags! Create one below!",
-  PK_IMPORT_START: "## PluralKit Importing",
-  SP_IMPORT_START: "## Simply Plural Importing",
+  ERROR_ASSIGN_PAGINATION_TOO_OLD: "2i – Diese Paginations komponente ist zu alt, Sie können nicht fortfahren. Bitte gehen Sie zurück und klicken Sie erneut auf den Knopf Zuordnen, damit die Paginations komponente wieder funktioniert.",
+  ERROR_NO_ALTERS: "2w – Sie haben keine Änderungen! Erstellen Sie unten eine!",
+  ERROR_NO_TAGS: "2w – Sie haben keine Änderungen! Erstellen Sie unten eine!",
+  PK_IMPORT_START: "## PluralKit importieren",
+  SP_IMPORT_START: "## Einfach Plural importieren",
   PAGE_NEW_SYS_TEXT: "-# Page 3/3 · Some fields haven't been filled out. · * Required",
   PAGE_NEW_SYS_TEXT_FILLED: "-# Page 3/3 · * Required",
   IMPORT_PLURALKIT_DESCRIPTION: "Import from PluralKit",
