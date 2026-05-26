@@ -3,12 +3,6 @@
   "module": "src/index.ts",
   "version": "0.2.3",
   "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    }
-  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "packages": {
