@@ -18,6 +18,7 @@ import { MessageFlags } from "seyfert/lib/types";
 import type { StatisticResource } from "./cache/statistics";
 import { createSystemOperation } from "./lib/system-operation";
 import { getLanguageByUserId } from "./lib/lang";
+import { ImportStagingValidation } from "./api-types";
 
 const SystemEditInput = PSystemObject.omit({
 	alterIds: true,
@@ -70,7 +71,17 @@ export const clientRoutes = app
 					{ status: 400 },
 				);
 
-				const translations = await getLanguageByUserId(importStage.originatingSystemId)
+			const input = ImportStagingValidation(importStage.response.dataType).safeParse(importStage.response.data);
+
+			if (input.error) {
+				return Response.json({ errors: input.error }, { status: 400 });
+			}
+
+			const translations = await getLanguageByUserId(
+				importStage.originatingSystemId,
+			);
+
+
 
 			client.interactions
 				.editOriginal(importStage.webhook.token, {
@@ -137,7 +148,9 @@ export const clientRoutes = app
 		),
 		async ({ req, json }) => {
 			const { method, changedOperation, oldSystem } = req.valid("json");
-			const translations = await getLanguageByUserId(oldSystem.associatedUserId)
+			const translations = await getLanguageByUserId(
+				oldSystem.associatedUserId,
+			);
 
 			createSystemOperation(
 				oldSystem,
