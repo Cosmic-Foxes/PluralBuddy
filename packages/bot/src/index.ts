@@ -115,10 +115,6 @@ export const client = new Client({
 });
 
 if (logger)
-	// @ts-ignore
-	client.logger = {...logger, fatal: (text: any) => logger.error(text), info: (message: string, ...meta: any[]) => logger.info(message, ...meta), debug: (message: string, ...meta: any[]) => logger.debug(message, ...meta)};
-
-if (logger)
 logger.info(
 	"The loaded branch is {branch}; loading PluralBuddy with default prefix(es) {prefix}",
 	{
@@ -161,8 +157,14 @@ client.cache.similarWebhookResource = new SimilarWebhookResource(
 );
 client.cache.i18n = new Pi18nCache(client.cache, client);
 
-await client.start();
-await client.uploadCommands({ cachePath: "./commands.json" });
+if (logger)
+  logger.info("Created cache")
+
+setTimeout(() => {
+	console.log(client.gateway)
+}, 3000);
+
+await client.start({ token: process.env.BOT_TOKEN });
 
 client.gateway.setPresence({
 	activities: [

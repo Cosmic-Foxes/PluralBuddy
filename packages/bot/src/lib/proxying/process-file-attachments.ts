@@ -38,7 +38,8 @@ export async function processFileAttachments(
 					});
 				}),
 		]) {
-			if (!attachment.url.startsWith("https://media.tenor.com")) {
+			console.log(attachment)
+			if (attachment.url.startsWith("https://cdn.discordapp.com")) {
 				const arrBuff = await (await fetch(attachment.url)).arrayBuffer();
 				fileAttachments.push({
 					buff: Buffer.from(arrBuff),

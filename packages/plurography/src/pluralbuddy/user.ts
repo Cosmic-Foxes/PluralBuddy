@@ -1,7 +1,7 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import z from "zod";
-import { PSystemObject, type PSystem } from "./system";
+import { PSystemObject } from "./system";
 import { assetStringGeneration } from "./operation";
 
 export const PUserObject = z.object({
