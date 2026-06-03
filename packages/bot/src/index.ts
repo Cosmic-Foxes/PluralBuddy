@@ -199,7 +199,6 @@ setInterval(async () => {
 
 startIndexingCleanupTimer();
 startEmojiCleanupTimer();
-startStatisticalTimer();
 
 // API
 export type { ClientType } from "./api-types";
