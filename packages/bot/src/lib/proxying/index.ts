@@ -120,7 +120,7 @@ export async function proxy(
 
 	if (await message.fetch().catch(() => null)) {
 		// Send the message with file attachments included
-		
+
 		try {
 			webhook.messages
 				.write({
@@ -208,7 +208,7 @@ export async function proxy(
 									)
 								).arrayBuffer();
 
-								color = (await getColor(image))?.hex() ?? "Green"
+								color = (await getColor(image))?.hex() ?? "Green";
 							} catch (_) {}
 
 							await client.messages
@@ -229,7 +229,10 @@ export async function proxy(
 													)
 													.setAccessory(
 														new Thumbnail().setMedia(
-															(alter?.avatarUrlMap ?? {})[sentMessage?.guildId ?? ""] ?? alter?.avatarUrl ??
+															(alter?.avatarUrlMap ?? {})[
+																sentMessage?.guildId ?? ""
+															] ??
+																alter?.avatarUrl ??
 																"https://cdn.discordapp.com/embed/avatars/0.png",
 														),
 													),
@@ -244,6 +247,15 @@ export async function proxy(
 												}
 -# Proxied message as: \`${message.id}\` → \`${sentMessage?.id ?? "Unknown"}\`
 -# Sent at: <t:${Math.floor(Date.now() / 1000)}:f>`),
+												...(message.referencedMessage
+													? [
+															new Separator(),
+															new TextDisplay().setContent(`**Referenced Message**
+> **Message author:** <@${message.referencedMessage.author.id}>
+> **Message ID:** ${message.referencedMessage.id}
+> **Message contents:** ${message.referencedMessage.content}`),
+														]
+													: []),
 											)
 											.setColor(color as `#${string}` | "Green"),
 									],
