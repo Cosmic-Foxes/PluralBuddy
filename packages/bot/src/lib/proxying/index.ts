@@ -250,10 +250,10 @@ export async function proxy(
 												...(message.referencedMessage
 													? [
 															new Separator(),
-															new TextDisplay().setContent(`**Referenced Message**
-> **Message author:** <@${message.referencedMessage.author.id}>
-> **Message ID:** ${message.referencedMessage.id}
-> **Message contents:** ${message.referencedMessage.content}`),
+															new TextDisplay().setContent("-# **REFERENCED MESSAGE**"),
+															new TextDisplay().setContent(`-# Message author: <@${message.referencedMessage.author.id}>
+-# Message ID: ${message.referencedMessage.id} [Link](https://discord.com/channels/${message.guildId ?? "@me"}/${message.channelId}/${message.referencedMessage.id})
+-# Message contents: ${message.referencedMessage.content.slice(0, 1000)}`),
 														]
 													: []),
 											)
