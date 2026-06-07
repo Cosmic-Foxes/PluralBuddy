@@ -38,7 +38,7 @@ export async function performAlterAutoProxy(
 		const channel = await message.channel();
 
 		if (channel.isTextable() && !guild.getFeatures().disabledProxyTyping) {
-			channel.typing();
+			channel.typing().catch(() => null);
 		}
 	})();
 	alterCollection.updateOne(
