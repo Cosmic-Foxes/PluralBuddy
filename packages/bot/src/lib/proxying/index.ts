@@ -92,13 +92,13 @@ export async function proxy(
 			components.push(
 				new MediaGallery().addItems(
 					mediaFiles.map((attachment) =>
-						new MediaGalleryItem().setMedia(`attachment://${attachment.name}`),
+						new MediaGalleryItem().setMedia(`attachment://${attachment.name}`).setSpoiler(attachment.spoilered),
 					),
 				),
 			);
 		if (otherFiles.length > 0)
 			for (const attachment of otherFiles)
-				components.push(new File().setMedia(`attachment://${attachment.name}`));
+				components.push(new File().setMedia(`attachment://${attachment.name}`).setSpoiler(attachment.spoilered));
 	}
 	if ((message.stickerItems ?? []).length > 0) {
 		components.push(
