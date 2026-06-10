@@ -27,7 +27,7 @@ export async function GET(
 					src={
 						(
 							await readFile(
-								join(process.cwd(), "public/image/solar-centered.png"),
+								join(process.cwd(), "public/image/pfp.png"),
 							)
 						).buffer
 					}

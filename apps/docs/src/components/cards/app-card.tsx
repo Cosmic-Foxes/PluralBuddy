@@ -31,7 +31,7 @@ export function AppCardExample() {
 			>
 				<DiscordMessage
 					author="PluralBuddy"
-					avatar="/image/solar-centered.png"
+					avatar="/image/pfp.png"
 					bot={true}
 					verified={true}
 					roleColor="#1e88e5"

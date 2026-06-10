@@ -21,7 +21,7 @@ export default function SignInPage() {
 						<div className="relative flex items-center">
 							<div className="relative z-10 flex items-center justify-center w-24 h-24 rounded-2xl ring-4 ring-card">
 								<Avatar className="w-full h-full rounded-full">
-									<AvatarImage src="/image/solar-centered.png" alt="Solar" />
+									<AvatarImage src="/image/pfp.png" alt="Solar" />
 									<AvatarFallback>PluralBuddy</AvatarFallback>
 								</Avatar>
 							</div>

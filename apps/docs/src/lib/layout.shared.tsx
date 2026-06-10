@@ -28,7 +28,7 @@ export function baseOptions(): BaseLayoutProps {
 					<Suspense
 						fallback={
 							<Avatar>
-								<AvatarImage src="/image/solar-centered.png" />
+								<AvatarImage src="/image/pfp.png" />
 								<AvatarFallback>Solar</AvatarFallback>
 							</Avatar>
 						}

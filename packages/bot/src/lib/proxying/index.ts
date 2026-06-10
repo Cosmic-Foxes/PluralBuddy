@@ -167,7 +167,7 @@ export async function proxy(
 												.setFooter({
 													text: "Unable to proxy this message",
 													iconUrl:
-														"https://pb.giftedly.dev/image/solar-centered.png",
+														"https://pb.giftedly.dev/image/pfp.png",
 												});
 										})(),
 									]
