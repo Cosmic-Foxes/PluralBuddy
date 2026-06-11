@@ -21,6 +21,7 @@ import type { PGuild } from "plurography";
 import type { PWebhook } from "@/events/on-message-create";
 import { createError } from "@/lib/create-error";
 import { w } from "@/webhooks";
+import { getSystemFeatures } from "@/lib/get-system-flags";
 
 export const proxyTagValid = (
 	proxyTag: {
@@ -210,10 +211,10 @@ export async function performTagProxy(
 		}
 
 		let contents = message.content;
-		if (proxyTag.prefix && contents.startsWith(proxyTag.prefix)) {
+		if (proxyTag.prefix && contents.startsWith(proxyTag.prefix) && user.system && !getSystemFeatures(user.system).keepProxyTags) {
 			contents = contents.slice(proxyTag.prefix.length);
 		}
-		if (proxyTag.suffix && contents.endsWith(proxyTag.suffix)) {
+		if (proxyTag.suffix && contents.endsWith(proxyTag.suffix) && user.system && !getSystemFeatures(user.system).keepProxyTags) {
 			contents = contents.slice(0, contents.length - proxyTag.suffix.length);
 		}
 

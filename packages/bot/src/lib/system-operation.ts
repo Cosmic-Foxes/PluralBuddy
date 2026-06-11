@@ -21,6 +21,7 @@ export async function createSystemOperation(
 	operation: Partial<PSystem>,
 	translations: DefaultLocale,
 	environment: "discord" | "api-exchange" | "api-web",
+	flagDescription?: { flippedProxyTags?: boolean }
 ) {
 	let oldSystem: Partial<PSystem> = {};
 
@@ -136,6 +137,10 @@ export async function createSystemOperation(
 						"%property%",
 						c,
 					).replace("%value%", "?");
+				}
+
+				if (flagDescription?.flippedProxyTags === true) {
+					return translations.OPERATION_SYSTEM_TOGGLE_PROXY_TAGS;
 				}
 
 				return translations.OPERATION_FALLBACK.replace("%property%", c).replace(

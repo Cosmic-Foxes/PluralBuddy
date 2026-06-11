@@ -265,6 +265,7 @@ export const InteractionIdentifier = {
 				SetPrivacy: createStatic("systems/config/general/set-privacy"),
 				ExportSystem: createStatic("systems/config/general/export"),
 				ImportSystem: createStatic("systems/config/general/import"),
+				ToggleIncludeProxyTags: createStatic("systems/config/general/include-proxy-tags"),
 			},
 			OtherAlterPagination: {
 				PreviousPage: createFromAdditionalArg("systems/config/oapg/previous"),

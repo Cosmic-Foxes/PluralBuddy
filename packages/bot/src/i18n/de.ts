@@ -249,7 +249,6 @@ Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer wel
 
 > **Credits:**
 > %linein% Programmed w/ :heart_hands: by @giftedly 
-> %linein% Art by %catjamming% @raincloudzy
 > **Translations:**
 > %linein% 🇩🇪 German translations by @mira.mizuki (thank you, fren)
 
