@@ -81,7 +81,9 @@ Os sistemas podem ter **configurações de privacidade** que determinam quem pod
   WAITING_LONG_TERM: "Carregando... Isso irá demorar um pouco. Por favor, espere um momento.",
   SUCCESSFULLY_IMPORTED: "%alter_count% Integrante(s) importados com sucesso para o sistema: %system_name%.",
   CREATING_NEW_PT_FORM_TITLE: "Nova tag de proxy",
-  CREATING_NEW_PT_FORM_DESC: "Digite a tag proxy onde `text` é o texto na mensagem. Por exemplo: `text -bob`",
+  CREATING_NEW_PT_FORM_DESC: `PluralBuddy has similar proxy tag formatting in regards that it is similar to how other plurality bots format their proxy tags.
+> - **For example:** \`text :bob\` would be valid, and proxy messages ending with \`:bob\`.
+> - You can optionally show these tags with the "Show Proxy Tags" system setting on the second page!`,
   CREATING_NEW_PT_FORM_LABEL: "Tag do proxy",
   CREATING_NEW_PT_ERROR: "2p – Isto não está formatado corretamente. Lembre-se, você precisa ter um prefixo e um sufixo separado por `text`.",
   CREATING_NEW_PT_TOO_MANY_CHARS: "2y – Há muitos caracteres no prefixo ou no lado do sufixo. Lembre-se, você pode ter apenas 20 caracteres para o prefixo e 20 para o sufixo.",
@@ -126,6 +128,8 @@ Os sistemas podem ter **configurações de privacidade** que determinam quem pod
   SYSTEM_TAG_FORM_LABEL: "Tag do Sistema",
   SYSTEM_NICKNAME_FORM_LABEL: "System Nickname Format",
   SYSTEM_NICKNAME_FORM_DESC: 'Where "%username%" is your alter username, "%display%" is your alter display name',
+  SYSTEM_PRIVACY_INFO: `-# By default, your entire PluralBuddy system is entirely private. This means nobody can see information about your system besides if you proxy or if a developer looks into it (unlikely).
+-# - **What are privacy flags:** Privacy flags are things you can _opt into_ being public on your system. This means you have granular control over what is public and private on your own system.`,
   ALTER_PROXY_TAGS: "## Proxy Tags - @%alter%\nProxy tags are the way your alter *fronts* depending on the contents of your message. You can create multiple of these, with 20 characters as the prefix/suffix of each descriptor for proxy tags.",
   ALTER_FORM_TITLE: "Editando Integrante",
   ALTER_GENERAL: "## %general% General Settings - @%alter%\nAlter's are parts of your system. Certain values of your alter can be configured here.",
@@ -136,6 +140,17 @@ Os sistemas podem ter **configurações de privacidade** que determinam quem pod
 -# Your name in %server% is: %name%`,
   ALTER_SET_USERNAME_DESC: "Nomes de usuário de integrantes não pode conter espaços e devem ter no máximo 20 caracteres. Eles são usados para identificar seu sistema em comandos.",
   ALTER_SET_USERNAME_SPACES: "Não pode haver espaços, `@`, `\\` ou `/` em nomes de usuário.",
+  ALTER_INFORMATION: `Represent yourself wisely! PluralBuddy uses an _alter_ system, which are the basis of every single member you could possibly be.
+PluralBuddy uses a **username/display name** system.
+
+## Username/display name system:
+> **Your username:** is how you represent your alter in commands, and the _only_ way to. Make sure you remember this! (Similar to alter IDs from other bots)
+> **Your display name:** is how your alter is represented in webhooks and publicly. You ideally can put whatever special symbols or characters you'd like here!
+ 
+-# Both values can be changed at any time! Just come back to this with \`pb;edit-alter config <username>\`.
+-# Usernames can **not** have @'s or any slashes.
+-# Scroll down to see the rest of this modal.`,
+  ALTER_AFTER: `-# 🎀 Good job! Your alter is awesome!`,
   ALTER_DISPLAY_NAME_FORM_LABEL: "Nome de Exibição",
   ALTER_SET_PRONOUNS: "Definir Pronomes",
   ALTER_SET_DESCRIPTION: "Definir Descrição",
