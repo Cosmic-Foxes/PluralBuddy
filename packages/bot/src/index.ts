@@ -73,6 +73,14 @@ const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"serverBlock",
 ];
 
+process.on('unhandledRejection', async (reason, promise) => {
+	logger?.error("Unhandled rejection, can continue")
+	logger?.error(`Reason: {reason}, Promise: {promise}`, {
+		reason,
+		promise
+	})
+})
+
 export const posthogClient =
 	process.env.POSTHOG_API_KEY === undefined
 		? null

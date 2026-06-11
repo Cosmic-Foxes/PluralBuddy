@@ -98,7 +98,7 @@ ${this.translations.ID_SMALL_PROFILE}\`${alter.alterId.toString()}\``);
 							new Thumbnail()
 								.setMedia(
 									alter.avatarUrl === ""
-										? "https://pb.giftedly.dev/image/solar-centered.png"
+										? "https://pb.giftedly.dev/image/pfp.png"
 										: alter.avatarUrl,
 								)
 								.setDescription(
@@ -115,7 +115,7 @@ ${this.translations.ID_SMALL_PROFILE}\`${alter.alterId.toString()}\``);
 							new MediaGalleryItem()
 								.setMedia(
 									alter.banner === ""
-										? "https://pb.giftedly.dev/image/solar-centered.png"
+										? "https://pb.giftedly.dev/image/pfp.png"
 										: alter.banner,
 								)
 								.setDescription(

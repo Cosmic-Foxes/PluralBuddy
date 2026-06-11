@@ -58,7 +58,7 @@ export async function createError(
 								)
 								.setAccessory(
 									new Thumbnail().setMedia(
-										"https://pb.giftedly.dev/image/solar-centered.png"
+										"https://pb.giftedly.dev/image/pfp.png"
 									),
 								),
 							new Separator().setSpacing(Spacing.Large),

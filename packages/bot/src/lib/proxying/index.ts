@@ -92,13 +92,13 @@ export async function proxy(
 			components.push(
 				new MediaGallery().addItems(
 					mediaFiles.map((attachment) =>
-						new MediaGalleryItem().setMedia(`attachment://${attachment.name}`),
+						new MediaGalleryItem().setMedia(`attachment://${attachment.name}`).setSpoiler(attachment.spoilered),
 					),
 				),
 			);
 		if (otherFiles.length > 0)
 			for (const attachment of otherFiles)
-				components.push(new File().setMedia(`attachment://${attachment.name}`));
+				components.push(new File().setMedia(`attachment://${attachment.name}`).setSpoiler(attachment.spoilered));
 	}
 	if ((message.stickerItems ?? []).length > 0) {
 		components.push(
@@ -120,7 +120,7 @@ export async function proxy(
 
 	if (await message.fetch().catch(() => null)) {
 		// Send the message with file attachments included
-		
+
 		try {
 			webhook.messages
 				.write({
@@ -167,7 +167,7 @@ export async function proxy(
 												.setFooter({
 													text: "Unable to proxy this message",
 													iconUrl:
-														"https://pb.giftedly.dev/image/solar-centered.png",
+														"https://pb.giftedly.dev/image/pfp.png",
 												});
 										})(),
 									]
@@ -208,7 +208,7 @@ export async function proxy(
 									)
 								).arrayBuffer();
 
-								color = (await getColor(image))?.hex() ?? "Green"
+								color = (await getColor(image))?.hex() ?? "Green";
 							} catch (_) {}
 
 							await client.messages
@@ -229,7 +229,10 @@ export async function proxy(
 													)
 													.setAccessory(
 														new Thumbnail().setMedia(
-															(alter?.avatarUrlMap ?? {})[sentMessage?.guildId ?? ""] ?? alter?.avatarUrl ??
+															(alter?.avatarUrlMap ?? {})[
+																sentMessage?.guildId ?? ""
+															] ??
+																alter?.avatarUrl ??
 																"https://cdn.discordapp.com/embed/avatars/0.png",
 														),
 													),
@@ -244,6 +247,15 @@ export async function proxy(
 												}
 -# Proxied message as: \`${message.id}\` → \`${sentMessage?.id ?? "Unknown"}\`
 -# Sent at: <t:${Math.floor(Date.now() / 1000)}:f>`),
+												...(message.referencedMessage
+													? [
+															new Separator(),
+															new TextDisplay().setContent("-# **REFERENCED MESSAGE**"),
+															new TextDisplay().setContent(`-# Message author: <@${message.referencedMessage.author.id}>
+-# Message ID: [${message.referencedMessage.id}](https://discord.com/channels/${message.guildId ?? "@me"}/${message.channelId}/${message.referencedMessage.id})
+-# Message contents: ${message.referencedMessage.content.slice(0, 1000)}`),
+														]
+													: []),
 											)
 											.setColor(color as `#${string}` | "Green"),
 									],
