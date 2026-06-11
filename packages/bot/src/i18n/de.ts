@@ -249,7 +249,6 @@ Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer wel
 
 > **Credits:**
 > %linein% Programmed w/ :heart_hands: by @giftedly 
-> %linein% Art by %catjamming% @raincloudzy
 > **Translations:**
 > %linein% 🇩🇪 German translations by @mira.mizuki (thank you, fren)
 
@@ -275,6 +274,7 @@ Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer wel
   OPERATION_PRONOUNS: "Set system pronouns to %pronouns%.",
   OPERATION_LATCH_DELAY: "Set latch delay to %delay%.",
   OPERATION_FALLBACK: "Set \`%property%\` to \`%value%\`",
+  OPERATION_SYSTEM_TOGGLE_PROXY_TAGS: "Toggled proxy tags on the system",
   EDIT_MESSAGE: "Editing message",
   MESSAGE_CONTENTS: "New Message Contents",
   BLOCKLIST_USER: "Blocklist User ID",
@@ -567,6 +567,9 @@ There is an example below of what an example proxy with this role would look lik
   IMPORT_REQ_DESC: "In order to submit your import data from another bot, you must put it into the PluralBuddy dashboard.",
   IMPORT_REQ_WAITING: "-# Waiting for response...\n-# This expires in 15 minutes.",
   VIEW_DASH: "View on Dashboard",
+  INCLUDE_PROXY_TAGS_DESC: "Include proxy tags will remove the automatic omitting of proxy tags from the result message sent by PluralBuddy.",
+  INCLUDE_PROXY_TAGS_BTN: "Include Proxy Tags",
+  INCLUDE_PROXY_TAGS_OFF_BTN: "Disable Including Proxy Tags",
   VALIDATION_TAG_ERROR: "There was an error while creating that tag:",
   ERROR_CREATING_WEBHOOK_TITLE: "Error while creating webhook for <#{{ channelId }}>",
   ERROR_CREATING_WEBHOOK_DESC: "There was an error while creating the corresponding webhook for <#{{ channelId }}>. Check if PluralBuddy has the correct permissions in that channel.",
