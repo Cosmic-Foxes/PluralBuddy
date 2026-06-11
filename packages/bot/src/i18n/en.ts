@@ -346,7 +346,6 @@ Systems can have **privacy values** which are values that describe who can see w
 **Programmed w/ :heart_hands: by @giftedly**
 -# Developed all major parts of PluralBuddy
 
-**Art by %catjamming% @raincloudzy**
 -# Created the banner, profile picture and overall brand of PluralBuddy
 
 **Translated on Crowdin**
@@ -384,6 +383,8 @@ Systems can have **privacy values** which are values that describe who can see w
 	OPERATION_PRONOUNS: "Set system pronouns to %pronouns%.",
 	OPERATION_LATCH_DELAY: "Set latch delay to %delay%.",
 	OPERATION_FALLBACK: "Set \`%property%\` to \`%value%\`",
+	OPERATION_SYSTEM_TOGGLE_PROXY_TAGS:
+		"Toggled proxy tags on the system",
 
 	EDIT_MESSAGE: "Editing message",
 	MESSAGE_CONTENTS: "New Message Contents",
@@ -747,6 +748,10 @@ There is an example below of what an example proxy with this role would look lik
 	IMPORT_REQ_WAITING: "-# Waiting for response...\n-# This expires in 15 minutes.",
 
 	VIEW_DASH: "View on Dashboard",
+
+	INCLUDE_PROXY_TAGS_DESC: "Include proxy tags will remove the automatic omitting of proxy tags from the result message sent by PluralBuddy.",
+	INCLUDE_PROXY_TAGS_BTN: "Include Proxy Tags",
+	INCLUDE_PROXY_TAGS_OFF_BTN: "Disable Including Proxy Tags",
 
 	VALIDATION_TAG_ERROR: "There was an error while creating that tag:",
 	ERROR_CREATING_WEBHOOK_TITLE: "Error while creating webhook for <#{{ channelId }}>",
