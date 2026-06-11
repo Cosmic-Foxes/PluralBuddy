@@ -3,6 +3,7 @@ import {
 	ComponentCommand,
 	Label,
 	Modal,
+	TextDisplay,
 	TextInput,
 	type ComponentContext,
 } from "seyfert";
@@ -47,6 +48,7 @@ export default class CreateNewAlterBtn extends ComponentCommand {
 				)
 				.setTitle((await ctx.userTranslations()).CREATE_NEW_ALTER_DESCRIPTION)
 				.setComponents([
+					new TextDisplay().setContent((await ctx.userTranslations()).ALTER_INFORMATION),
 					new Label()
 						.setLabel((await ctx.userTranslations()).ALTER_SET_USERNAME)
 						.setDescription((await ctx.userTranslations()).ALTER_SET_USERNAME_SPACES)
@@ -70,6 +72,7 @@ export default class CreateNewAlterBtn extends ComponentCommand {
 									InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterDisplayNameType.create(),
 								),
 						),
+					new TextDisplay().setContent((await ctx.userTranslations()).ALTER_AFTER)
 				]),
 		);
 	}

@@ -1,6 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { ComponentCommand, Label, Modal, TextInput, type ComponentContext } from "seyfert";
+import { ComponentCommand, Label, Modal, TextDisplay, TextInput, type ComponentContext } from "seyfert";
 import { InteractionIdentifier } from "../../../../lib/interaction-ids";
 import { TextInputStyle } from "seyfert/lib/types";
 
@@ -20,9 +20,9 @@ export default class CreateProxyTag extends ComponentCommand {
                 .setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.ProxyForm.create(alterId?.toString() ?? ""))
                 .setTitle((await context.userTranslations()).CREATING_NEW_PT_FORM_TITLE)
                 .addComponents(
+                    new TextDisplay().setContent((await context.userTranslations()).CREATING_NEW_PT_FORM_DESC),
                     new Label()
                         .setLabel((await context.userTranslations()).CREATING_NEW_PT_FORM_LABEL)
-                        .setDescription((await context.userTranslations()).CREATING_NEW_PT_FORM_DESC)
                         .setComponent(
                             new TextInput()
                                 .setStyle(TextInputStyle.Short)
