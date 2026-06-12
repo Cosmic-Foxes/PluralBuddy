@@ -13,7 +13,7 @@ export default class AcceptPolicy extends ModalCommand {
         const newCustomId = InteractionIdentifier.PolicyForm.substring(ctx.customId ?? "").join("-");
 
         return ctx.client.components.commands.map(async(c) => {
-            if (await c.filter?.({...ctx, customId: newCustomId, values: []} as unknown as ModalContext & ComponentContext<never>)) {
+            if (await c.filter?.({...ctx, customId: newCustomId, values: ["","","",""]} as unknown as ModalContext & ComponentContext<never>)) {
                 console.log("found")
                 return await c.run(ctx as ModalContext & ComponentContext<never>)
             }
