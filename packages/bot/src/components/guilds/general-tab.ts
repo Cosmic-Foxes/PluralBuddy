@@ -17,7 +17,7 @@ export default class SetGuildPrefixes extends ComponentCommand {
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
 		const pluralGuild = await ctx.retrievePGuild();
 
-		return await ctx.interaction[ctx.isModal() ? "write" : "update"]({
+		return await ctx.update({
 			components: [
 				...new ServerConfigView((await ctx.userTranslations())).topView(
 					"general",

@@ -91,8 +91,6 @@ export const InteractionIdentifier = {
 		Page: createFromAdditionalArg("help/page"),
 		Menu: createStatic("help/menu"),
 	},
-	PolicyForm: createFromAdditionalArg("policy-form_"),
-	PolicyFormAcceptance: createStatic("policy-form-acceptance"),
 	AutoProxy: {
 		AlterMenu: createStatic("selection/ap/alter-menu"),
 	},

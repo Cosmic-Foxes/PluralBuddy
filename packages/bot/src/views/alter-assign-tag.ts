@@ -37,18 +37,11 @@ export class AlertAssignTagView extends TranslatedView {
 				...new AlertView(this.translations).errorView("ERROR_NO_TAGS"),
 				new ActionRow().setComponents(
 					new Button()
-						.setEmoji(emojis.undo)
-						.setLabel(this.translations.OPTION_BACK)
-						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.Alters.GeneralSettings.create(alter?.alterId ?? "")
-						)
-						.setStyle(ButtonStyle.Secondary),
-					new Button()
 						.setLabel(this.translations.NEW_TAG)
 						.setCustomId(
 							InteractionIdentifier.Systems.Configuration.TagPagination.CreateNewTag.create(),
 						)
-						.setStyle(ButtonStyle.Primary)
+						.setStyle(ButtonStyle.Primary),
 				),
 			];
 		}

@@ -1,10 +1,9 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { ActionRow, Button, CheckboxGroup, CheckboxGroupOption, ComponentCommand, Container, Label, Modal, Separator, TextDisplay, type ComponentContext } from 'seyfert';
+import { ActionRow, Button, ComponentCommand, Container, Separator, TextDisplay, type ComponentContext } from 'seyfert';
 import { ButtonStyle, MessageFlags } from 'seyfert/lib/types';
 import { PluralBuddyIntro } from '../../views/pluralbuddy-intro';
 import { InteractionIdentifier } from '../../lib/interaction-ids';
-import { policyModal } from '@/index';
  
 export default class PluralBuddyIntroNextPage extends ComponentCommand {
     componentType = 'Button' as const;
@@ -14,13 +13,7 @@ export default class PluralBuddyIntroNextPage extends ComponentCommand {
       }
 
     async run(ctx: ComponentContext<typeof this.componentType>) {
-        const user = await ctx.retrievePUser()
-
-        if (user.policyStatus !== 1) {
-            return ctx.modal(await policyModal(ctx, InteractionIdentifier.Setup.Pagination.Page2.create()))
-        }
-
-        return ctx.interaction.update({
+        return ctx.update({
             components: new PluralBuddyIntro((await ctx.userTranslations())).pageTwo(await ctx.getDefaultPrefix() ?? "pb;"),
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral ,
         });

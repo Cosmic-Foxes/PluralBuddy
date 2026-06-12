@@ -7,25 +7,13 @@ import {
 	ActionRow,
 	Button,
 	CacheFrom,
-	CheckboxGroup,
-	CheckboxGroupOption,
 	Client,
 	Container,
-	Label,
 	MemoryAdapter,
-	Modal,
-	TextDisplay,
-	type AnyContext,
 } from "seyfert";
 import { mongoClient, setupDatabases, setupMongoDB } from "./mongodb";
 import { defaultPrefixes, getGuildFromId } from "./types/guild";
-import {
-	ActivityType,
-	ButtonStyle,
-	ComponentType,
-	MessageFlags,
-	PresenceUpdateStatus,
-} from "seyfert/lib/types";
+import { ActivityType, ButtonStyle, ComponentType, MessageFlags, PresenceUpdateStatus } from "seyfert/lib/types";
 import { middlewares } from "./middleware";
 import PluralBuddyHandleCommand from "./handle-command";
 import { PostHog } from "posthog-node";
@@ -50,38 +38,32 @@ import { emojis } from "./lib/emojis";
 import { Pi18nCache } from "./cache/i18n";
 import { startEmojiCleanupTimer } from "./lib/clean-up-emojis";
 
-import winston from "winston";
-import { SeqTransport } from "@datalust/winston-seq";
-import { InteractionIdentifier } from "./lib/interaction-ids";
-import type { CollectorInteraction } from "seyfert/lib/components/handler";
+import winston from 'winston';
+import { SeqTransport } from '@datalust/winston-seq';
 
-export const logger = process.env.SEQ_HOST
-	? winston.createLogger({
-			level: "info",
-			format: winston.format.combine(
-				/* This is required to get errors to log with stack traces. See https://github.com/winstonjs/winston/issues/1498 */
-				winston.format.errors({ stack: true }),
-				winston.format.json(),
-			),
-			defaultMeta: { application: "pluralbuddy" },
-			transports: [
-				new winston.transports.Console({
-					format: winston.format.simple(),
-				}),
-				new SeqTransport({
-					serverUrl: process.env.SEQ_HOST,
-					apiKey: process.env.SEQ_KEY,
-					onError: (e) => {
-						console.error(e);
-					},
-					handleExceptions: true,
-					handleRejections: true,
-				}),
-			],
+export const logger = process.env.SEQ_HOST ? winston.createLogger({
+	level: 'info',
+	format: winston.format.combine(  /* This is required to get errors to log with stack traces. See https://github.com/winstonjs/winston/issues/1498 */
+		winston.format.errors({ stack: true }),
+		winston.format.json(),
+	),
+	defaultMeta: { application: "pluralbuddy" },
+	transports: [
+		new winston.transports.Console({
+			format: winston.format.simple(),
+		}),
+		new SeqTransport({
+			serverUrl: process.env.SEQ_HOST,
+			apiKey: process.env.SEQ_KEY,
+			onError: (e => { console.error(e) }),
+			handleExceptions: true,
+			handleRejections: true,
 		})
-	: null;
+	]
+}) : null;
 
-if (logger) logger.info("PluralBuddy is online");
+if (logger)
+	logger.info("PluralBuddy is online")
 
 export const buildNumber = 2789;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
@@ -91,55 +73,21 @@ const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"serverBlock",
 ];
 
-export const policyModal = async (ctx: AnyContext | CollectorInteraction, nextPage: string) =>
-	new Modal()
-		.setTitle(("userTranslations" in ctx ? await ctx.userTranslations() : client.t("en").get()).POLICY_MODAL_TITLE)
-		.setCustomId(
-			InteractionIdentifier.PolicyForm.create(
-				nextPage,
-			),
-		)
-		.setComponents([
-			new TextDisplay().setContent(
-				("userTranslations" in ctx ? await ctx.userTranslations() : client.t("en").get()).POLICY_MODAL_DESCRIPTION,
-			),
-			new Label()
-				.setLabel(("userTranslations" in ctx ? await ctx.userTranslations() : client.t("en").get()).POLICY_MODAL_CONFIRMATION)
-				.setComponent(
-					new CheckboxGroup()
-						.setRequired(true)
-						.setCustomId(InteractionIdentifier.PolicyFormAcceptance.create())
-						.setSelectionLimit({ max: 2, min: 2 })
-						.setOptions([
-							new CheckboxGroupOption({
-								value: "acceptance",
-								label:("userTranslations" in ctx ? await ctx.userTranslations() : client.t("en").get()).POLICY_MODAL_DETAIL,
-							}),
-							new CheckboxGroupOption({
-								value: "block-acceptance",
-								label: ("userTranslations" in ctx ? await ctx.userTranslations() : client.t("en").get()).POLICY_MODAL_BLOCK_DETAIL,
-								description: ("userTranslations" in ctx ? await ctx.userTranslations() : client.t("en").get())
-									.POLICY_MODAL_BLOCK_DESC,
-							}),
-						]),
-				),
-		]);
-
-process.on("unhandledRejection", async (reason, promise) => {
-	logger?.error("Unhandled rejection, can continue");
+process.on('unhandledRejection', async (reason, promise) => {
+	logger?.error("Unhandled rejection, can continue")
 	logger?.error(`Reason: {reason}, Promise: {promise}`, {
 		reason,
-		promise,
-	});
-});
+		promise
+	})
+})
 
 export const posthogClient =
 	process.env.POSTHOG_API_KEY === undefined
 		? null
 		: new PostHog(process.env.POSTHOG_API_KEY ?? "", {
-				host: "https://us.i.posthog.com",
-				enableExceptionAutocapture: true,
-			});
+			host: "https://us.i.posthog.com",
+			enableExceptionAutocapture: true,
+		});
 
 export const client = new Client({
 	commands: {
@@ -164,7 +112,7 @@ export const client = new Client({
 				),
 			],
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			allowed_mentions: { replied_user: false },
+			allowed_mentions: { replied_user: false }
 		}),
 		defaults: new PluralBuddyErrorCommand(),
 	},
@@ -175,16 +123,19 @@ export const client = new Client({
 });
 
 if (logger)
-	logger.info(
-		"The loaded branch is {branch}; loading PluralBuddy with default prefix(es) {prefix}",
-		{
-			branch: process.env.BRANCH ?? "unknown",
-			prefix:
-				defaultPrefixes[
-					(process.env.BRANCH as "production" | "canary") ?? "production"
-				],
-		},
-	);
+logger.info(
+	"The loaded branch is {branch}; loading PluralBuddy with default prefix(es) {prefix}",
+	{
+		branch:
+			process.env.BRANCH ?? "unknown",
+		prefix:
+			defaultPrefixes[
+			(process.env.BRANCH as "production" | "canary") ?? "production"
+			],
+	}
+);
+
+
 
 client.setServices({
 	middlewares: middlewares,
@@ -202,7 +153,8 @@ client.setServices({
 await setupMongoDB();
 await setupDatabases();
 
-if (logger) logger.info("MongoDB is loaded.");
+if (logger)
+	logger.info("MongoDB is loaded.")
 
 client.cache.statistic = new StatisticResource(client.cache, client);
 client.cache.alterProxy = new ProxyResource(client.cache, client);
@@ -213,7 +165,12 @@ client.cache.similarWebhookResource = new SimilarWebhookResource(
 );
 client.cache.i18n = new Pi18nCache(client.cache, client);
 
-if (logger) logger.info("Created cache");
+if (logger)
+  logger.info("Created cache")
+
+setTimeout(() => {
+	console.log(client.gateway)
+}, 3000);
 
 await client.start({ token: process.env.BOT_TOKEN });
 
@@ -233,6 +190,7 @@ client.gateway.setPresence({
 setInterval(async () => {
 	const data = await client.cache.statistic.get("latest");
 
+
 	client.gateway.setPresence({
 		activities: [
 			{
@@ -245,7 +203,7 @@ setInterval(async () => {
 		since: Date.now(),
 		afk: false,
 	});
-}, 10000);
+}, 10000)
 
 startIndexingCleanupTimer();
 startEmojiCleanupTimer();

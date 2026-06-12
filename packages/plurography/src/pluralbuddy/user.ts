@@ -11,7 +11,6 @@ export const PUserObject = z.object({
     system: PSystemObject.optional(),
     storagePrefix: z.string(),
     blocked: z.boolean().default(false),
-    policyStatus: z.number().default(0).optional(),
     nudging: z.object({
         blockedUsers: z.string().array(),
         currentlyEnabled: z.boolean(),
