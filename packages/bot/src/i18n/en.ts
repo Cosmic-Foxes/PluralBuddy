@@ -111,7 +111,9 @@ Systems can have **privacy values** which are values that describe who can see w
 
 	CREATING_NEW_PT_FORM_TITLE: "New proxy tag",
 	CREATING_NEW_PT_FORM_DESC:
-		"Input the proxy tag where `text` is the text in the message. For example: `text -bob`",
+		`PluralBuddy has similar proxy tag formatting in regards that it is similar to how other plurality bots format their proxy tags.
+> - **For example:** \`text :bob\` would be valid, and proxy messages ending with \`:bob\`.
+> - You can optionally show these tags with the "Show Proxy Tags" system setting on the second page!`,
 	CREATING_NEW_PT_FORM_LABEL: "Proxy Tag",
 	CREATING_NEW_PT_ERROR:
 		"2p – This is not formatted correctly. Remember, you need to have a prefix and a suffix separated by `text`.",
@@ -181,6 +183,8 @@ Systems can have **privacy values** which are values that describe who can see w
 	SYSTEM_NICKNAME_FORM_LABEL: "System Nickname Format",
 	SYSTEM_NICKNAME_FORM_DESC:
 		'Where "%username%" is your alter username, "%display%" is your alter display name',
+	SYSTEM_PRIVACY_INFO: `-# By default, your entire PluralBuddy system is entirely private. This means nobody can see information about your system besides if you proxy or if a developer looks into it (unlikely).
+-# - **What are privacy flags:** Privacy flags are things you can _opt into_ being public on your system. This means you have granular control over what is public and private on your own system.`,
 
 	ALTER_PROXY_TAGS:
 		"## Proxy Tags - @%alter%\nProxy tags are the way your alter *fronts* depending on the contents of your message. You can create multiple of these, with 20 characters as the prefix/suffix of each descriptor for proxy tags.",
@@ -196,6 +200,17 @@ Systems can have **privacy values** which are values that describe who can see w
 		"Alter usernames cannot have any spaces and can only be less than 20 characters. They are used to identify your system in commands.",
 	ALTER_SET_USERNAME_SPACES:
 		"There cannot be spaces, `@`, `\\` or `/` in usernames.",
+	ALTER_INFORMATION: `Represent yourself wisely! PluralBuddy uses an _alter_ system, which are the basis of every single member you could possibly be.
+PluralBuddy uses a **username/display name** system.
+
+## Username/display name system:
+> **Your username:** is how you represent your alter in commands, and the _only_ way to. Make sure you remember this! (Similar to alter IDs from other bots)
+> **Your display name:** is how your alter is represented in webhooks and publicly. You ideally can put whatever special symbols or characters you'd like here!
+ 
+-# Both values can be changed at any time! Just come back to this with \`pb;edit-alter config <username>\`.
+-# Usernames can **not** have @'s or any slashes.
+-# Scroll down to see the rest of this modal.`,
+	ALTER_AFTER: `-# 🎀 Good job! Your alter is awesome!`,
 	ALTER_DISPLAY_NAME_FORM_LABEL: "Display Name",
 	ALTER_SET_PRONOUNS: "Set Pronouns",
 	ALTER_SET_DESCRIPTION: "Set Description",
