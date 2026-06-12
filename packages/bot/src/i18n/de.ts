@@ -22,7 +22,7 @@ Zusätzlich können Sie auch Daten von einem anderen Bot wie PluralKit importier
   CREATING_NEW_SYSTEM_HEADER: "## Ein neues System schaffen",
   ERROR_DISABLED_SYSTEM: "2f – Ihr System ist deaktiviert. Sie können keinen Proxy verwenden.",
   OPTION_DISABLED: "Diese Option kann nicht gewählt werden. Diese Option ist deaktiviert.",
-  TOO_MANY_BLOCKED_ITEMS: "Es gibt zu viele blocks Artikel. Du kannst nur 25 blocks Rollen und 25 blocks Kanäle gleichzeitig haben, aufgrund von Discord modale Einschränkungen.",
+  TOO_MANY_BLOCKED_ITEMS: "There are too many blocked items. You can only have 25 blocked roles, and 25 blocked channels at one time due to Discord modal limitations.",
   TOO_MANY_MANAGER_ITEMS: "Es gibt zu viele Manager Artikel. Aufgrund von Beschränkungen des Discord modal können Sie maximal 25 Manager Artikel gleichzeitig haben.",
   CREATING_NEW_SYSTEM_NAME_MESSAGE: `
 Systeme auf PluralBuddy benötigen einen **System Name**. Dieser muss mindestens 3 und darf maximal 20 Zeichen lang sein. Systemnamen werden angezeigt, wenn jemand eine Nachricht von Ihrem System identifiziert.`,
