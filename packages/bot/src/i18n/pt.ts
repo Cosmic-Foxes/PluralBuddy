@@ -390,7 +390,7 @@ PluralBuddy uses a **username/display name** system.
 ${emojis.reply} This is not a full list of information in PluralBuddy's policies. If you are confused, please open a ticket in the [PluralBuddy Discord Server](https://discord.gg/BF5bJfZY3s).
 ❤️ Thanks for checking out our bot! It means a lot to us! 
 
--# |˶˙ᵕ˙ )ﾉﾞ PluralBuddy was made exclusively by humans, and in no capacity was developed by artifical intelligence. 
+-# |˶˙ᵕ˙ )ﾉﾞ PluralBuddy was made exclusively by humans, and in no capacity was developed by artificial intelligence. 
 -# (๑˃ᴗ˂)ﻭ  Made with **love.**`,
   POLICY_MODAL_CONFIRMATION: "Confirmation",
   POLICY_MODAL_DETAIL: "I agree to PluralBuddy's Privacy Policy and Terms of Service.",
