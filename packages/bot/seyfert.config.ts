@@ -9,5 +9,6 @@ export default config.bot({
         events: "events",
         langs: "i18n"
     },
-    intents: ["Guilds", "MessageContent", "GuildMessages", "GuildWebhooks", "DirectMessages", "GuildMessageReactions"]
+    intents: ["Guilds", "MessageContent", "GuildMessages", "GuildWebhooks", "DirectMessages", "GuildMessageReactions"],
+    debug: process.env.BRANCH === "canary"
 });

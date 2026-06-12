@@ -1,3 +1,5 @@
+import { emojis } from "@/lib/emojis";
+
 export default {
 	INTRODUCTION_MESSAGE: `## Welcome to PluralBuddy
 PluralBuddy is a bot designed to fill the gap for quality customizable plurality exchanges for Discord servers and users.
@@ -519,6 +521,25 @@ PluralBuddy uses a **username/display name** system.
 > - *Off*: Using proxy tags will proxy an alter, otherwise a normal message is sent.`,
     REQUIRED_SERVER_PROXY: "You must be in a server to proxy",
     SELECT_DEFAULT_PROXY: "Select a proxy mode",
+
+	POLICY_MODAL_TITLE: "Welcome to PluralBuddy!",
+	POLICY_MODAL_DESCRIPTION: `${emojis.clockCheck} Hello, welcome to PluralBuddy for Discord! In order for us to keep PluralBuddy a safe bot, we require that you agree to our [Privacy Policy](https://pb.giftedly.dev/en/docs/policies/privacy) & [Terms of Service](https://pb.giftedly.dev/en/docs/policies/terms) to use PluralBuddy.
+
+-# - NSFW content is not tolerated on PluralBuddy. NSFW will result in an instant block. Be careful with the content you upload.
+-# - While PluralBuddy is a **private-first** bot from a user perspective, however due to the nature of centralized Discord bots, all system-related data you provide PluralBuddy is able to be seen by developers.
+-# - Developers do not look at data in your system often in exception to if there is suspicion of a Terms of Service violation.
+-# - Your message & server contents are **not** stored on PluralBuddy's infrastructure. Only resulting message IDs, and server IDs are stored.
+
+${emojis.reply} This is not a full list of information in PluralBuddy's policies. If you are confused, please open a ticket in the [PluralBuddy Discord Server](https://discord.gg/BF5bJfZY3s).
+❤️ Thanks for checking out our bot! It means a lot to us! 
+
+-# |˶˙ᵕ˙ )ﾉﾞ PluralBuddy was made exclusively by humans, and in no capacity was developed by artifical intelligence. 
+-# (๑˃ᴗ˂)ﻭ  Made with **love.**`,
+
+	POLICY_MODAL_CONFIRMATION: "Confirmation",
+	POLICY_MODAL_DETAIL: "I agree to PluralBuddy's Privacy Policy and Terms of Service.",
+	POLICY_MODAL_BLOCK_DETAIL: "I agree I may be blocked if I break these rules.",
+	POLICY_MODAL_BLOCK_DESC: "You have 30 days to appeal being blocked before all data is gone–violating data is removed instantly",
 
     LATCH_NAME: "Latch Mode",
     LATCH_DESC: "Set this alter as the first alter in latch mode.",
