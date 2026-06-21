@@ -22,6 +22,17 @@ import { PluralKitSystem, PrivacyLevel } from "plurography/dist/pluralkit";
 
 export { ImportNotation } from "plurography";
 
+function makeid(length: number) {
+    var result           = '';
+    var characters       = 'abcdefghijklmnopqrstuvwxyz';
+    var charactersLength = characters.length;
+
+    for (let i = 0; i < length; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
+
 export async function buildExportPayload(system: PSystem) {
 	const alters = await alterCollection
 		.find({ systemId: system.associatedUserId })
@@ -48,7 +59,7 @@ export async function buildPkExportPayload(system: PSystem) {
 	const convertedAlters = alters.map((alter, i) => ({
 		originalId: alter.alterId,
 		parsed: PluralKitMember.safeParse({
-			id: i.toString(),
+			id: makeid(6),
 			uuid: crypto.randomUUID(),
 			name: alter.username.substring(0, 100),
 			display_name: alter.displayName.substring(0, 100),
@@ -70,53 +81,55 @@ export async function buildPkExportPayload(system: PSystem) {
 				suffix: c.suffix,
 			})),
 			privacy: {
-				visiblity: listFromMaskAlters(alter.public).includes(
+				visibility: listFromMaskAlters(alter.public).includes(
 					AlterProtectionFlags.VISIBILITY,
 				)
-					? PrivacyLevel.parse("public")
-					: PrivacyLevel.parse("private"),
+					? ("public")
+					: ("private"),
 				name_privacy: listFromMaskAlters(alter.public).includes(
 					AlterProtectionFlags.NAME,
 				)
-					? PrivacyLevel.parse("public")
-					: PrivacyLevel.parse("private"),
+					? ("public")
+					: ("private"),
 				description_privacy: listFromMaskAlters(alter.public).includes(
 					AlterProtectionFlags.DESCRIPTION,
 				)
-					? PrivacyLevel.parse("public")
-					: PrivacyLevel.parse("private"),
+					? ("public")
+					: ("private"),
 				banner_privacy: listFromMaskAlters(alter.public).includes(
 					AlterProtectionFlags.BANNER,
 				)
-					? PrivacyLevel.parse("public")
-					: PrivacyLevel.parse("private"),
-				birthday_privacy: PrivacyLevel.parse("private"),
+					? ("public")
+					: ("private"),
+				birthday_privacy: ("private"),
 				pronoun_privacy: listFromMaskAlters(alter.public).includes(
 					AlterProtectionFlags.PRONOUNS,
 				)
-					? PrivacyLevel.parse("public")
-					: PrivacyLevel.parse("private"),
+					? ("public")
+					: ("private"),
 				avatar_privacy: listFromMaskAlters(alter.public).includes(
 					AlterProtectionFlags.AVATAR,
 				)
-					? PrivacyLevel.parse("public")
-					: PrivacyLevel.parse("private"),
-				metadata_privacy: PrivacyLevel.parse("private"),
-				proxy_privacy: PrivacyLevel.parse("private"),
+					? ("public")
+					: ("private"),
+				metadata_privacy: ("private"),
+				proxy_privacy: ("private"),
 			},
 		}),
 	}));
 
+	console.error("ERRORS", convertedAlters.filter(v => v.parsed.error))
+
 	const convertedTags = tags.map((tag, i) =>
 		PluralKitGroup.safeParse({
-			id: i.toString(),
+			id: makeid(6),
 			uuid: crypto.randomUUID(),
 			name: tag.tagFriendlyName.substring(0, 100).replaceAll(" ", ""),
 			display_name: tag.tagFriendlyName.substring(0, 100),
 			description: tag.tagDescription ?? null,
 			icon: null,
 			banner: null,
-			color: tag.tagColor,
+			color: null,
 			created: new Date(),
 			members: convertedAlters
 				.filter((v) => tag.associatedAlters.includes(v.originalId.toString()))
@@ -125,30 +138,32 @@ export async function buildPkExportPayload(system: PSystem) {
 				name_privacy: listFromMaskTags(tag.public).includes(
 					TagProtectionFlags.NAME,
 				)
-					? PrivacyLevel.parse("public")
-					: PrivacyLevel.parse("private"),
+					? ("public")
+					: ("private"),
 				description_privacy: listFromMaskTags(tag.public).includes(
 					TagProtectionFlags.DESCRIPTION,
 				)
-					? PrivacyLevel.parse("public")
-					: PrivacyLevel.parse("private"),
-				banner_privacy: PrivacyLevel.parse("private"),
-				icon_privacy: PrivacyLevel.parse("private"),
+					? ("public")
+					: ("private"),
+				banner_privacy: ("private"),
+				icon_privacy: ("private"),
 				list_privacy: listFromMaskTags(tag.public).includes(
 					TagProtectionFlags.ALTERS,
 				)
-					? PrivacyLevel.parse("public")
-					: PrivacyLevel.parse("private"),
-				metadata_privacy: PrivacyLevel.parse("private"),
-				visiblity: PrivacyLevel.parse("private"),
+					? ("public")
+					: ("private"),
+				metadata_privacy: ("private"),
+				visibility: ("private"),
 			},
 		}),
 	);
+		console.error("ERRORS", convertedTags.filter(v => v.error))
+
 
 	return JSON.stringify(
 		PluralKitSystem.parse({
 			version: 2,
-			id: system.associatedUserId,
+			id: makeid(6),
 			uuid: crypto.randomUUID(),
 			created: new Date(),
 
@@ -156,49 +171,49 @@ export async function buildPkExportPayload(system: PSystem) {
 			description: system.systemDescription
 				? system.systemDescription.substring(0, 100)
 				: null,
-			tag: system.systemDisplayTag?.substring(0, 100),
+			tag: system.systemDisplayTag ? system.systemDisplayTag?.substring(0, 100) : null,
 			avatar_url: system.systemAvatar,
-			pronouns: system.systemPronouns?.substring(0, 100),
+			pronouns: system.systemPronouns ? system.systemPronouns?.substring(0, 100) : null,
 			banner: system.systemBanner,
 			color: null,
 			privacy: {
 				name_privacy: listFromMaskSystems(system.public).includes(
 					SystemProtectionFlags.NAME,
 				)
-					? PrivacyLevel.parse("public")
-					: PrivacyLevel.parse("private"),
+					? ("public")
+					: ("private"),
 				avatar_privacy: listFromMaskSystems(system.public).includes(
 					SystemProtectionFlags.AVATAR,
 				)
-					? PrivacyLevel.parse("public")
-					: PrivacyLevel.parse("private"),
+					? ("public")
+					: ("private"),
 				description_privacy: listFromMaskSystems(system.public).includes(
 					SystemProtectionFlags.DESCRIPTION,
 				)
-					? PrivacyLevel.parse("public")
-					: PrivacyLevel.parse("private"),
+					? ("public")
+					: ("private"),
 				banner_privacy: listFromMaskSystems(system.public).includes(
 					SystemProtectionFlags.BANNER,
 				)
-					? PrivacyLevel.parse("public")
-					: PrivacyLevel.parse("private"),
+					? ("public")
+					: ("private"),
 				pronoun_privacy: listFromMaskSystems(system.public).includes(
 					SystemProtectionFlags.PRONOUNS,
 				)
-					? PrivacyLevel.parse("public")
-					: PrivacyLevel.parse("private"),
+					? ("public")
+					: ("private"),
 				member_list_privacy: listFromMaskSystems(system.public).includes(
 					SystemProtectionFlags.ALTERS,
 				)
-					? PrivacyLevel.parse("public")
-					: PrivacyLevel.parse("private"),
+					? ("public")
+					: ("private"),
 				group_list_privacy: listFromMaskSystems(system.public).includes(
 					SystemProtectionFlags.TAGS,
 				)
-					? PrivacyLevel.parse("public")
-					: PrivacyLevel.parse("private"),
-				front_privacy: PrivacyLevel.parse("private"),
-				front_history_privacy: PrivacyLevel.parse("private"),
+					? ("public")
+					: ("private"),
+				front_privacy: ("private"),
+				front_history_privacy: ("private"),
 			},
 			webhook_url: null,
 			config: {
@@ -220,9 +235,9 @@ export async function buildPkExportPayload(system: PSystem) {
 				name_format: null,
 				description_templates: [],
 			},
-			accounts: [system.associatedUserId, ...system.subAccounts],
-			members: convertedAlters,
-			groups: convertedTags,
+			accounts: [Number(system.associatedUserId), ...system.subAccounts.map(v => Number(v))],
+			members: convertedAlters.map(v => v.parsed.data),
+			groups: convertedTags.map(v => v.data),
 			switches: []
 		}),
 	);

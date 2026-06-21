@@ -250,6 +250,7 @@ export const InteractionIdentifier = {
 			"systems/configure-public-profile",
 		),
 		ExternalExporting: {
+			Selector: createStatic("systems/external-export/selector"),
 			PluralKit: createStatic("systems/external-export/pluralkit")
 		},
 		Configuration: {
