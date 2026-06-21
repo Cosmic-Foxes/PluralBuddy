@@ -304,6 +304,21 @@ export class SystemSettingsView extends TranslatedView {
 					.setComponents(
 						new TextDisplay().setContent($translations.IMPORT_SYS_DESC),
 					),
+				new Separator(),
+				new TextDisplay().setContent($translations.EXTERNAL_EXPORT_SYS_DESC),
+				new ActionRow().setComponents(
+					new StringSelectMenu()
+						.setCustomId(
+							InteractionIdentifier.Systems.ExternalExporting.Selector.create(),
+						)
+						.setOptions([
+							new StringSelectOption()
+								.setLabel("PluralKit")
+								.setValue(
+									InteractionIdentifier.Systems.ExternalExporting.PluralKit.create(),
+								),
+						]),
+				),
 			),
 			new Container()
 				.setColor("#FF1717")
