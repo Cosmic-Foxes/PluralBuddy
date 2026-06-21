@@ -249,9 +249,6 @@ export const InteractionIdentifier = {
 		ConfigurePublicProfile: createFromAdditionalArg(
 			"systems/configure-public-profile",
 		),
-		ExternalExporting: {
-			PluralKit: createStatic("systems/external-export/pluralkit")
-		},
 		Configuration: {
 			ConfigureAlter: createFromAdditionalArg("systems/config/config-alter"),
 			ConfigureTag: createFromAdditionalArg("systems/config/config-tag"),
