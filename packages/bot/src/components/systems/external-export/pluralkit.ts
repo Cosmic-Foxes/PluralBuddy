@@ -5,7 +5,7 @@ export default class PluralKitExternalExporting extends ComponentCommand {
     componentType = 'StringSelect' as const;
 
     override filter(ctx: ComponentContext<typeof this.componentType>) {
-        return InteractionIdentifier.Systems.Configuration.GeneralTab.SetPrivacy.equals(ctx.customId)  
+        return InteractionIdentifier.Systems.ExternalExporting.PluralKit.equals(ctx.customId)  
     }
 
     async run(ctx: ComponentContext<typeof this.componentType>) {
