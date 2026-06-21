@@ -551,6 +551,7 @@ There is an example below of what an example proxy with this role would look lik
 > - *Off*: Using proxy tags will proxy an alter, otherwise a normal message is sent.`,
   EXPORT_SYS_BTN: "Export System",
   EXPORT_SYS_DESC: "Exporting the system will simply export all data from the system and send it to your DM's. Ensure your DM's are open to PluralBuddy before exporting.",
+  EXTERNAL_EXPORT_SYS_DESC: "You can externally export to another service by hitting the service you'd like to export to below:",
   IMPORT_SYS_BTN: "Import System",
   IMPORT_SYS_DESC: "Importing your system will allow you to take data from other bots in various import modes.",
   DANGER_ZONE_TITLE: "## Danger Zone",
