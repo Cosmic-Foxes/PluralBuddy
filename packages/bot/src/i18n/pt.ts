@@ -555,6 +555,7 @@ There is an example below of what an example proxy with this role would look lik
 > - *Desligado*: Usar tags de proxy irá fazer proxy de um integrante, caso contrário será enviada uma mensagem normal.`,
   EXPORT_SYS_BTN: "Exportar Sistema",
   EXPORT_SYS_DESC: "Exportar o sistema simplesmente exportará todos os dados do sistema e enviará para as suas mensagens diretas. Certifique-se de que as suas mensagens diretas estão abertas para o PluralBuddy antes de exportá-los.",
+  EXTERNAL_EXPORT_SYS_DESC: "You can externally export to another service by hitting the service you'd like to export to below:",
   IMPORT_SYS_BTN: "Importar Sistema",
   IMPORT_SYS_DESC: "Importing your system will allow you to take data from other bots in various import modes.",
   DANGER_ZONE_TITLE: "## Zona de Perigo",
