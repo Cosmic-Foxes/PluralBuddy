@@ -18,7 +18,7 @@ import {
 	listFromMaskSystems,
 	listFromMaskTags,
 } from "./privacy-bitmask";
-import { PluralKitSystem, PrivacyLevel } from "plurography/dist/pluralkit";
+import { PluralKitSystem } from "plurography";
 
 export { ImportNotation } from "plurography";
 
