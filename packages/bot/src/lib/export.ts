@@ -172,9 +172,9 @@ export async function buildPkExportPayload(system: PSystem) {
 				? system.systemDescription.substring(0, 100)
 				: null,
 			tag: system.systemDisplayTag ? system.systemDisplayTag?.substring(0, 100) : null,
-			avatar_url: system.systemAvatar,
+			avatar_url: system.systemAvatar ?? null,
 			pronouns: system.systemPronouns ? system.systemPronouns?.substring(0, 100) : null,
-			banner: system.systemBanner,
+			banner: system.systemBanner ?? null,
 			color: null,
 			privacy: {
 				name_privacy: listFromMaskSystems(system.public).includes(
