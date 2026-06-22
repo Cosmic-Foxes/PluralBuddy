@@ -235,7 +235,7 @@ export async function buildPkExportPayload(system: PSystem) {
 				name_format: null,
 				description_templates: [],
 			},
-			accounts: [Number(system.associatedUserId), ...system.subAccounts.map(v => Number(v))],
+			accounts: [Number(system.associatedUserId), ...(system.subAccounts ?? []).map(v => Number(v))],
 			members: convertedAlters.map(v => v.parsed.data),
 			groups: convertedTags.map(v => v.data),
 			switches: []
