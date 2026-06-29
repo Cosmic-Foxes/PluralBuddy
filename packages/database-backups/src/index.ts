@@ -24,8 +24,8 @@ async function backupDatabase() {
 
     await new Promise<void>((y,n) => {
         const child = spawn(
-            '/Users/giftedly/.local/bin/mongodump',
-            [`--db=pluralbuddy${crontest ? "-canary" : ""}`, `--excludeCollection=analytics`, `--excludeCollection=messages`, `${process.env.MONGO}`]
+            '/usr/bin/env',
+            ["mongodump", `--db=pluralbuddy${crontest ? "-canary" : ""}`, `--excludeCollection=analytics`, `--excludeCollection=messages`, `${process.env.MONGO}`]
         );
         child.stdout.setEncoding('utf8');
         child.stdout.on('data', (data) => {
