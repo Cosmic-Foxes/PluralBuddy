@@ -1,9 +1,10 @@
 import cron from "node-cron";
-import { exec } from "node:child_process";
+import { spawn } from "node:child_process";
 import { lstat, mkdir, rm } from "node:fs/promises";
-import util from "node:util";
+import util, { promisify, styleText } from "node:util";
 import { tar } from "zip-a-folder";
 import findRemoveSync from "find-remove";
+import ora from 'ora';
 
 const crontest = true;
 
@@ -19,11 +20,29 @@ cron.schedule(crontest ? "*/60 * * * *" : "0 0 * * 0", () => {
 });
 
 async function backupDatabase() {
-	const execute = util.promisify(exec);
-	console.log(await execute(
-		`mongodump --db=pluralbuddy${crontest ? "-canary" : ""} --excludeCollection=analytics --excludeCollection=messages ${process.env.MONGO}`,
-	));
-	console.log("dumped");
+    const spinner = ora({ text: 'Dumping database', spinner: "material" }).start();
+
+    await new Promise<void>((y,n) => {
+        const child = spawn(
+            '/Users/giftedly/.local/bin/mongodump',
+            [`--db=pluralbuddy${crontest ? "-canary" : ""}`, `--excludeCollection=analytics`, `--excludeCollection=messages`, `${process.env.MONGO}`]
+        );
+        child.stdout.setEncoding('utf8');
+        child.stdout.on('data', (data) => {
+            console.log(data.toString());
+        });
+        child.stderr.setEncoding('utf8');
+        child.stderr.on('data', (data) => {
+            spinner.clear();
+            spinner.frame();
+            console.log(styleText("whiteBright", `> ${(data.toString() as string).replaceAll("\n", "\n> ")}`));
+        });
+
+        child.on("close", () => {
+            spinner.succeed("Done dumping")
+            y()
+        })
+    })
 
 	if (
 		!(
@@ -32,17 +51,20 @@ async function backupDatabase() {
 	)
 		await mkdir("dumps");
 
-	console.log("tarring");
+    const tarSpinner = ora({ text: 'Creating tar archives', spinner: "material" }).start();
 	await tar(
 		"dump",
 		`dumps/${new Date().toLocaleString().replaceAll(" ", "-").replaceAll("/", "-").replaceAll(",", "-").replace("--", "_").toLocaleLowerCase()}-pb-dump.tar.gz`,
 	);
 	await rm("dump", { recursive: true, force: true });
+    tarSpinner.succeed()
 }
 
 async function removeOldDumps() {
-	console.log("deleted old dumps:", findRemoveSync("./dumps", {
+    const spinner = ora({ text: 'Deleting old archives', spinner: "material" }).start();
+	const result = findRemoveSync("./dumps", {
 		age: { seconds: crontest ? 1 : 604800 },
         extensions: [".gz"]
-	}));
+	})
+    spinner.succeed(`Deleted old archives: ${JSON.stringify(result, null, 2)}`)
 }
