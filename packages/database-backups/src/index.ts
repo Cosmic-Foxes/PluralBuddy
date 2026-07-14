@@ -43,7 +43,7 @@ async function backupDatabase() {
             y()
         })
     })
-
+    
 	if (
 		!(
 			await lstat("dumps").catch(() => ({ isDirectory: () => null }))

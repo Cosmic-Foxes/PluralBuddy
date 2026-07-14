@@ -362,6 +362,8 @@ PluralBuddy uses a **username/display name** system.
 -# **CREDITS**
 **Programmed w/ :heart_hands: by @giftedly**
 -# Developed all major parts of PluralBuddy
+**Co-developed by @causticdisco**
+-# Helped out with smaller parts of PluralBuddy
 
 -# Created the banner, profile picture and overall brand of PluralBuddy
 
