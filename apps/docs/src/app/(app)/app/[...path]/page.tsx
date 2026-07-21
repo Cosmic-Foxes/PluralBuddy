@@ -34,6 +34,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { AppSettings } from "@/components/app/app-settings";
 import { IndexSettingsAppPage } from "@/components/app/pages/page";
 import WebhooksAppPage from "@/components/app/pages/webhooks/page";
+import SyncPage from "@/components/app/pages/sync/page";
 
 declare global {
 	var trpcClient: ReturnType<typeof trpc.createClient>
@@ -96,6 +97,10 @@ export default function PluralBuddyApp() {
 									<Route
 										index
 										element={<IndexSettingsAppPage />}
+									/>
+									<Route
+										path="/app/settings/sync"
+										element={<SyncPage />}
 									/>
 									<Route
 										path="/app/settings/authorized-apps"

@@ -2,7 +2,7 @@ import { Link, useLocation, useRoutes } from "react-router";
 import { Button } from "./ui/shadcn-button";
 import { Separator } from "./ui/separator";
 import { haptic } from "@/lib/haptic/haptic";
-import { Clapperboard, House, Plug, ShieldCheck, TrainFront, Webhook } from "lucide-react";
+import { Clapperboard, House, Plug, RefreshCcw, ShieldCheck, TrainFront, Webhook, Workflow } from "lucide-react";
 import {
 	Sidebar,
 	SidebarContent,
@@ -42,6 +42,11 @@ export function SettingsSidebar() {
 						<SidebarGroupContent>
 							<SidebarMenu>
 								<SidebarMenuItem>
+									<SidebarMenuButton asChild onClick={() => haptic()} isActive={location.pathname === ("/app/settings/sync") ? true : undefined}>
+										<Link to="/app/settings/sync">
+											<Workflow /> Connections
+										</Link>
+									</SidebarMenuButton>
 									<SidebarMenuButton asChild onClick={() => haptic()} isActive={location.pathname === ("/app/settings/authorized-apps") ? true : undefined}>
 										<Link to="/app/settings/authorized-apps">
 											<ShieldCheck /> Authorized Applications
