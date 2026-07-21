@@ -8,7 +8,14 @@ import { DynamicPageTitle } from "../dynamic-title";
 import { Card, CardContent } from "@/components/ui/card";
 import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from "@/components/ui/item";
 import { Link } from "react-router";
-import { BadgeCheckIcon, ChevronRightIcon, TrainFront, Webhook } from "lucide-react";
+import { BadgeCheckIcon, ChevronRightIcon, TrainFront, Webhook, Workflow } from "lucide-react";
+
+const pages = [
+	{title: "Connections", href: "/app/settings/sync", icon: Workflow},
+	{title: "Authorized Applications", href: "/app/settings/authorized-apps", icon: BadgeCheckIcon},
+	{title: "PluralBuddy Express", href: "/app/settings/express", icon: TrainFront},
+	{title: "Webhooks", href: "/app/settings/webhooks", icon: Webhook}
+]
 
 export function IndexSettingsAppPage() {
 	return (
@@ -25,45 +32,19 @@ export function IndexSettingsAppPage() {
 					</Breadcrumb>
 				</CardContent>
 			</Card>
-			<Item variant="outline" size="sm" asChild>
-				<Link to="/app/settings/authorized-apps">
+			{pages.map(page => <Item variant="outline" size="sm" asChild key={page.title}>
+				<Link to={page.href}>
 					<ItemMedia>
-						<BadgeCheckIcon className="size-5" />
+						<page.icon className="size-5" />
 					</ItemMedia>
 					<ItemContent>
-						<ItemTitle>Authorized Applications</ItemTitle>
+						<ItemTitle>{page.title}</ItemTitle>
 					</ItemContent>
 					<ItemActions>
 						<ChevronRightIcon className="size-4" />
 					</ItemActions>
 				</Link>
-			</Item>
-			<Item variant="outline" size="sm" asChild>
-				<Link to="/app/settings/express">
-					<ItemMedia>
-						<TrainFront className="size-5" />
-					</ItemMedia>
-					<ItemContent>
-						<ItemTitle>PluralBuddy Express</ItemTitle>
-					</ItemContent>
-					<ItemActions>
-						<ChevronRightIcon className="size-4" />
-					</ItemActions>
-				</Link>
-			</Item>
-			<Item variant="outline" size="sm" asChild>
-				<Link to="/app/settings/webhooks">
-					<ItemMedia>
-						<Webhook className="size-5" />
-					</ItemMedia>
-					<ItemContent>
-						<ItemTitle>Webhooks</ItemTitle>
-					</ItemContent>
-					<ItemActions>
-						<ChevronRightIcon className="size-4" />
-					</ItemActions>
-				</Link>
-			</Item>
+			</Item>)}
 		</main>
 	);
 }

@@ -8,7 +8,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Handle, Position } from "@xyflow/react";
+import { Handle, Node, NodeProps, Position, useReactFlow } from "@xyflow/react";
 import { NodeTemplate } from "./node-template";
 
 export type SpecificAlterInputItem = "username" | "display_name" | "all";
@@ -26,9 +26,18 @@ const equalsTypesItems = [
 	{ label: "is lowercase", value: "is_lc" },
 ];
 
-export function SpecifcAltersFilterNode(props: {
-	data: { inputItem: SpecificAlterInputItem; equalType: EqualTypeInputItem };
-}) {
+export function SpecifcAltersFilterNode({
+	id,
+	data,
+}: NodeProps<
+	Node<{
+		inputItem: SpecificAlterInputItem;
+		equalType: EqualTypeInputItem;
+		input: string;
+	}>
+>) {
+	const { updateNodeData } = useReactFlow();
+
 	return (
 		<NodeTemplate>
 			<div className="w-[300px] flex items-start border rounded-lg bg-background transition-all">
@@ -66,7 +75,7 @@ export function SpecifcAltersFilterNode(props: {
 					<code className="uppercase text-sm">Filter</code>
 					<strong className="block text-lg">If alter</strong>
 					<p className="text-sm">Filter out specific alters from the system.</p>
-					<Select>
+					<Select value={data.equalType}>
 						<SelectTrigger className="w-full mt-4">
 							<SelectValue />
 						</SelectTrigger>
