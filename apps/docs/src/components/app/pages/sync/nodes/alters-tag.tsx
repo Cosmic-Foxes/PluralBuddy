@@ -10,14 +10,17 @@ import {
 } from "@/components/ui/select";
 import { Handle, Position } from "@xyflow/react";
 import { NodeTemplate } from "./node-template";
+import { Callout } from "@/components/callout";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 export type SpecificAlterInputItem = "username" | "display_name" | "all";
 export type EqualTypeInputItem = "contains" | "is" | "is_lc";
 
 const inputItems = [
-	{ label: "Username", value: "username" },
+	{ label: "Group/Tag ID", value: "id" },
+	{ label: "Name", value: "name" },
 	{ label: "Display Name", value: "display_name" },
-	{ label: "All Alters", value: "all" },
 ];
 
 const equalsTypesItems = [
@@ -26,9 +29,10 @@ const equalsTypesItems = [
 	{ label: "is lowercase", value: "is_lc" },
 ];
 
-export function SpecifcAltersFilterNode(props: {
+export function SpecifcAltersTagFilterNode(props: {
 	data: { inputItem: SpecificAlterInputItem; equalType: EqualTypeInputItem };
 }) {
+	const [expandWarning, setExpandWarning] = useState(false);
 	return (
 		<NodeTemplate>
 			<div className="w-[300px] flex items-start border rounded-lg bg-background transition-all">
@@ -64,10 +68,20 @@ export function SpecifcAltersFilterNode(props: {
 				</div>
 				<div className="p-2 block text-left min-w-[200px]">
 					<code className="uppercase text-sm">Filter</code>
-					<strong className="block text-lg">If alter</strong>
-					<p className="text-sm">Filter out specific alters from the system.</p>
+					<strong className="block text-lg">If alter has group/tag</strong>
+					<p className="text-sm">
+						Filter out specific alters with a corresponding group/tag from the
+						flow.
+					</p>
+					<Callout className="text-xs">
+						{!expandWarning ? (
+							<button className="cursor-pointer whitespace-normal" onClick={() => setExpandWarning(true)} type="button">Click to expand this warning</button>
+						) : (
+							`The tag which matches the criteria specified below will be the filter for the alters. If no tag is selected, all alters will be matched as ELSE.`
+						)}
+					</Callout>
 					<Select>
-						<SelectTrigger className="w-full mt-4">
+						<SelectTrigger className="w-full">
 							<SelectValue />
 						</SelectTrigger>
 						<SelectContent>

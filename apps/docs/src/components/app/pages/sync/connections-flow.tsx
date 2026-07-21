@@ -5,15 +5,13 @@ import {
 	applyEdgeChanges,
 	addEdge,
 	Controls,
-	MiniMap,
 	Background,
 	BackgroundVariant,
 	EdgeChange,
 	Connection,
 	NodeChange,
 	ColorMode,
-	Position,
-	Panel,
+	Edge,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useTheme } from "next-themes";
@@ -21,50 +19,48 @@ import { PluralBuddySystemNode } from "./nodes/pluralbuddy";
 import { PluralKitSystemNode } from "./nodes/pluralkit";
 import { SpecifcAltersFilterNode } from "./nodes/specific-alters";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/shadcn-button";
-import { Plus, Sidebar, X } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
 import { ConnectionsSidebar } from "./connections-sidebar";
+import { SpecifcAltersTagFilterNode } from "./nodes/alters-tag";
+import { FloralitySystemNode } from "./nodes/florality";
+import { StripAlterDataNode } from "./nodes/strip-data-alters";
+import { StopSyncNode } from "./nodes/stop-sync";
+import { LogTextNode } from "./nodes/log";
+import { StripTagDataNode } from "./nodes/strip-data-tags";
 
 const nodeTypes = {
 	pluralbuddy: PluralBuddySystemNode,
 	pluralkit: PluralKitSystemNode,
+	florality: FloralitySystemNode,
 	specificalters: SpecifcAltersFilterNode,
+	alterstags: SpecifcAltersTagFilterNode,
+	stripalterdata: StripAlterDataNode,
+	striptagdata: StripTagDataNode,
+	stop: StopSyncNode,
+	log: LogTextNode,
 };
 
-export function ConnectionsFlow() {
-	const initialNodes = [
+export function ConnectionsFlow({
+	systemMetadata,
+}: {
+	systemMetadata: {
+		systemExists: boolean;
+		alters: number;
+		tags: number;
+	};
+}) {
+	const initialNodes = systemMetadata.systemExists ? [
 		{
 			id: "n1",
 			position: { x: 0, y: 0 },
-			data: { alters: 312, tags: 328 },
+			data: { alters: systemMetadata.alters, tags: systemMetadata.tags },
 			type: "pluralbuddy",
 			deletable: false,
 		},
-	];
-	const initialEdges = [
-		{
-			id: "n2-nf",
-			source: "n2",
-			target: "nf",
-			type: "smoothstep",
-			animated: true,
-			sourceHandle: "read",
-			targetHandle: "data",
-		},
-		{
-			id: "nf-n1",
-			source: "nf",
-			target: "n1",
-			type: "smoothstep",
-			animated: true,
-			sourceHandle: "output_true",
-			targetHandle: "write",
-		},
-	];
+	] : [];
 
 	const [nodes, setNodes] = useState(initialNodes);
-	const [edges, setEdges] = useState(initialEdges);
+	const [edges, setEdges] = useState<Edge[]>([]);
+	const [sidebar, setSidebar] = useState(false);
 	const { resolvedTheme } = useTheme();
 
 	const onNodesChange = useCallback(
@@ -74,7 +70,9 @@ export function ConnectionsFlow() {
 	);
 	const onEdgesChange = useCallback(
 		(changes: EdgeChange<any>[]) =>
-			setEdges((edgesSnapshot) => applyEdgeChanges(changes, edgesSnapshot)),
+			setEdges((edgesSnapshot: Edge[]) =>
+				applyEdgeChanges(changes, edgesSnapshot),
+			),
 		[],
 	);
 	const onConnect = useCallback((params: Connection) => {
@@ -104,9 +102,9 @@ export function ConnectionsFlow() {
 				}}
 				fitView
 			>
-				<Controls />
+				{!sidebar && <Controls />}
 				<Background variant={BackgroundVariant.Dots} gap={12} size={1} />
-				<ConnectionsSidebar />
+				<ConnectionsSidebar sidebar={sidebar} setSidebar={setSidebar} />
 			</ReactFlow>
 		</div>
 	);

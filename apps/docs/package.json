@@ -12,6 +12,7 @@
 		"postbuild": "next-sitemap"
 	},
 	"dependencies": {
+		"@base-ui/react": "^1.6.0",
 		"@better-auth/infra": "0.2.5",
 		"@better-auth/oauth-provider": "1.6.9",
 		"@discordjs/builders": "^1.13.1",
@@ -76,7 +77,7 @@
 		"react-router": "^7.14.0",
 		"react-string-replace": "^2.0.1",
 		"rough-notation": "^0.5.1",
-		"shadcn": "^4.0.8",
+		"shadcn": "^4.13.1",
 		"shiki": "^4.0.2",
 		"sonner": "^2.0.7",
 		"superjson": "^2.2.6",

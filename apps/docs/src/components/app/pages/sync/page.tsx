@@ -31,11 +31,27 @@ import {
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { ConnectionsFlow } from "./connections-flow";
+import { useTRPCClient } from "@/server/client";
 
 export default function SyncPage() {
+	const trpc = useTRPCClient();
+	const { data: v, isPending } = useQuery({
+		queryKey: [`connections/system-data`],
+		queryFn: async () => trpc.connections.getSystemMetadata.query(),
+	});
+
+	if (isPending)
+		return (
+			<div className="grid grid-cols-1 my-[30px] border p-3 rounded-2xl relative">
+				<div className="fixed block top-[50%] right-[50%] ">
+					<Spinner />
+				</div>
+			</div>
+		);
+
 	return (
 		<main className="flex w-full flex-1 flex-col gap-6 md:md:px-4 max-md:px-2 pt-18 items-center mx-auto max-w-[1000px] mb-3">
-			<DynamicPageTitle title="Authorized Apps • PluralBuddy App" />
+			<DynamicPageTitle title="Connections • PluralBuddy App" />
 			<Card className="w-full">
 				<CardContent>
 					<Breadcrumb className="text-left">
@@ -65,7 +81,7 @@ export default function SyncPage() {
 				</Card>
 				<Separator className="mb-4" />
 				<div className="w-full h-[600px] border rounded-xl">
-					<ConnectionsFlow />
+					<ConnectionsFlow systemMetadata={v ?? { systemExists: false, tags: 0, alters: 0 }} />
 				</div>
 			</div>
 		</main>

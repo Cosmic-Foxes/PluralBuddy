@@ -8,6 +8,7 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { toast } from "sonner";
 
 export function NodeTemplate({ children }: { children: JSX.Element }) {
 	const flow = useReactFlow();
@@ -41,9 +42,10 @@ export function NodeTemplate({ children }: { children: JSX.Element }) {
 					) : (
 						<Button
 							variant="destructive"
-							onClick={() =>
-								flow.deleteElements({ nodes: [{ id: nodeId ?? "" }] })
-							}
+							onClick={() => {
+								flow.deleteElements({ nodes: [{ id: nodeId ?? "" }] });
+								toast.success(`Deleted the block on Connections.`);
+							}}
 						>
 							<Trash /> Delete
 						</Button>

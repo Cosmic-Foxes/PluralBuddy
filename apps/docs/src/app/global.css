@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "fumadocs-ui/css/shadcn.css";
 @import "fumadocs-ui/css/preset.css";
+@import "shadcn/tailwind.css";
 @import "tw-animate-css";
 @import "@fontsource-variable/atkinson-hyperlegible-mono";
 @import 'fumadocs-openapi/css/preset.css';
@@ -251,4 +252,8 @@ discord-header:first-child:nth-child(2) {
 
 .discord-left-border {
 	width: 8px !important;
+}
+
+.selected {
+	@apply *:border-primary
 }
