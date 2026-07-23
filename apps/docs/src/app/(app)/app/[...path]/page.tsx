@@ -109,10 +109,6 @@ export default function PluralBuddyApp() {
 										element={<IndexSettingsAppPage />}
 									/>
 									<Route
-										path="/app/settings/sync"
-										element={<SyncPage />}
-									/>
-									<Route
 										path="/app/settings/authorized-apps"
 										element={<AuthorizedAppsPage />}
 									/>

@@ -37,7 +37,6 @@ const pages = [
 	{ separate: "Account" },
 	{ title: "Profile", href: "/app/settings/account", icon: CircleUser },
 	{ title: "Social", href: "/app/settings/social", icon: Ban },
-	{ title: "Connections", href: "/app/settings/sync", icon: Link2 },
 	{
 		title: "Authorized Apps",
 		href: "/app/settings/authorized-apps",

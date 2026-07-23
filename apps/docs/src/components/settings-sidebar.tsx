@@ -98,19 +98,6 @@ export function SettingsSidebar() {
 										asChild
 										onClick={() => haptic()}
 										isActive={
-											location.pathname === "/app/settings/sync"
-												? true
-												: undefined
-										}
-									>
-										<Link to="/app/settings/sync">
-											<Link2 /> Connections
-										</Link>
-									</SidebarMenuButton>
-									<SidebarMenuButton
-										asChild
-										onClick={() => haptic()}
-										isActive={
 											location.pathname === "/app/settings/authorized-apps"
 												? true
 												: undefined
