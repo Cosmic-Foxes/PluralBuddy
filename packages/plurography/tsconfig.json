@@ -21,21 +21,18 @@
 		"skipLibCheck": true,
 		"noErrorTruncation": true,
 		"stripInternal": true,
-		"types": [
-			"bun"
-		],   
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+		"types": ["bun"],
+		"ignoreDeprecations": "6.0",
+		"paths": {
+			"@/*": ["./src/*"]
+		}
 	},
 	"exclude": [
 		"**/lib",
 		"**/__test__",
 		"**/node_modules",
 		"**/.*/",
-    "src/openapi/**/**"
+		"src/openapi/**/**"
 	],
-	"include": [
-		"src"
-	]
+	"include": ["src"]
 }

@@ -12,6 +12,17 @@ export const register = (registry: OpenAPIRegistry) =>
             "List data about alters in a system. `{user}` can be `@me` to target the current OAuth user. This endpoint **does** allow for external system tag data (if achievable in conjunction with the system's privacy settings and the logged in OAuth user).",
         security: [{ oAuth2: ["alters:read"] }],
         parameters: [
+
+			{
+				name: "user",
+				in: "path",
+				required: true,
+				description:
+					"`{user}` is a Discord user Snowflake, or `@me`, referencing the current OAuth user.",
+				schema: {
+					type: "string",
+				},
+			},
             {
                 description:
                     "How many entries to show at most if in a pagination. Can only be at most 30 alters.",

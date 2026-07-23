@@ -13,6 +13,16 @@ export const register = (registry: OpenAPIRegistry) =>
 		security: [{ oAuth2: ["alters:read"] }],
 		parameters: [
 			{
+				name: "user",
+				in: "path",
+				required: true,
+				description:
+					"`{user}` is a Discord user Snowflake, or `@me`, referencing the current OAuth user.",
+				schema: {
+					type: "string",
+				},
+			},
+			{
 				description:
 					"How many entries to show at most if in a pagination. Can only be at most 30 alters.",
 				name: "max",

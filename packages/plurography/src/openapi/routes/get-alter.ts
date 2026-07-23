@@ -13,6 +13,27 @@ export const register = (registry: OpenAPIRegistry) =>
         description:
             "Get data about a specific alter by ID. `{user}` can be `@me` to target the current OAuth user. This endpoint **does** allow for external system alter data (if achievable in conjunction with the system's privacy settings and the logged in OAuth user).",
         security: [{ oAuth2: ["alters:read"] }],
+		parameters: [
+			{
+				name: "user",
+				in: "path",
+				required: true,
+				description:
+					"`{user}` is a Discord user Snowflake, or `@me`, referencing the current OAuth user.",
+				schema: {
+					type: "string",
+				},
+			},
+            {
+                name: "alter",
+                in: "path",
+                required: true,
+                description: "`{alter}` is the alter ID.",
+                schema: {
+                    type: "string"
+                }
+            }
+		],
         responses: {
             "200": {
                 description: "Success.",
