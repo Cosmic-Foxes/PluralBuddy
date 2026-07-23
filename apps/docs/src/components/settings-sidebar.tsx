@@ -90,7 +90,7 @@ export function SettingsSidebar() {
 												: undefined
 										}
 									>
-										<Link to="/app/settings/account">
+										<Link to="/app/settings/social">
 											<Ban /> Social
 										</Link>
 									</SidebarMenuButton>

@@ -96,14 +96,14 @@ function PageBtn({ page }: { page: (typeof pages)[2] }) {
 	const LinkComponent =
 		page.external === true
 			? ({ to, children }: { to: string; children: any }) => (
-					<NextLink href={to}>{children}</NextLink>
+					<NextLink href={to} className="w-full">{children}</NextLink>
 				)
-			: Link;
+			: ({ to, children }: { to: string; children: any }) => (<Link to={to} className="w-full hover:bg-muted rounded-lg">{children}</Link>);
 
 	if (!("separate" in page))
 		return (
-			<LinkComponent to={page.href}>
-				<Item variant="outline" size="sm" key={page.title}>
+			<LinkComponent to={page.href} >
+				<Item variant="outline" size="sm" key={page.title}> 
 					<ItemMedia>
 						<page.icon className="size-5" />
 					</ItemMedia>
