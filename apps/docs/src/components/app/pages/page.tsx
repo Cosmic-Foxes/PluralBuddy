@@ -6,16 +6,64 @@ import {
 } from "@/components/ui/breadcrumb";
 import { DynamicPageTitle } from "../dynamic-title";
 import { Card, CardContent } from "@/components/ui/card";
-import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from "@/components/ui/item";
+import {
+	Item,
+	ItemActions,
+	ItemContent,
+	ItemMedia,
+	ItemTitle,
+} from "@/components/ui/item";
 import { Link } from "react-router";
-import { BadgeCheckIcon, ChevronRightIcon, TrainFront, Webhook, Workflow } from "lucide-react";
+import NextLink from "next/link";
+import {
+	BadgeCheckIcon,
+	ChevronRightIcon,
+	Code,
+	TrainFront,
+	Webhook,
+	Link2,
+	CircleUser,
+	Ban,
+	Info,
+	BookOpen,
+	SquareArrowOutUpRight,
+	ArrowUpRight,
+} from "lucide-react";
+import { Marker, MarkerContent } from "@/components/ui/marker";
+import { motion } from "motion/react";
+import { JSX, ReactElement } from "react";
 
 const pages = [
-	{title: "Connections", href: "/app/settings/sync", icon: Workflow},
-	{title: "Authorized Applications", href: "/app/settings/authorized-apps", icon: BadgeCheckIcon},
-	{title: "PluralBuddy Express", href: "/app/settings/express", icon: TrainFront},
-	{title: "Webhooks", href: "/app/settings/webhooks", icon: Webhook}
-]
+	{ separate: "Account" },
+	{ title: "Profile", href: "/app/settings/account", icon: CircleUser },
+	{ title: "Social", href: "/app/settings/social", icon: Ban },
+	{ title: "Connections", href: "/app/settings/sync", icon: Link2 },
+	{
+		title: "Authorized Apps",
+		href: "/app/settings/authorized-apps",
+		icon: BadgeCheckIcon,
+	},
+	{ separate: "Developers" },
+	{ title: "Webhooks", href: "/app/settings/webhooks", icon: Webhook },
+	{
+		title: "OAuth Applications",
+		href: "/app/settings/developers-v2",
+		icon: Code,
+	},
+	{
+		title: "API Documentation",
+		href: "/docs/pluralbuddy/api",
+		icon: BookOpen,
+		external: true,
+	},
+	{ separate: "Product" },
+	{
+		title: "PluralBuddy Express",
+		href: "/app/settings/express",
+		icon: TrainFront,
+	},
+	{ title: "About PluralBuddy", href: "/app/settings/about", icon: Info },
+];
 
 export function IndexSettingsAppPage() {
 	return (
@@ -32,8 +80,31 @@ export function IndexSettingsAppPage() {
 					</Breadcrumb>
 				</CardContent>
 			</Card>
-			{pages.map(page => <Item variant="outline" size="sm" asChild key={page.title}>
-				<Link to={page.href}>
+			{pages.map((page) =>
+				"separate" in page ? (
+					<Marker key={page.separate} variant="separator" className="mt-6">
+						<MarkerContent>{page.separate}</MarkerContent>
+					</Marker>
+				) : (
+					<PageBtn page={page} key={page.title} />
+				),
+			)}
+		</main>
+	);
+}
+
+function PageBtn({ page }: { page: (typeof pages)[2] }) {
+	const LinkComponent =
+		page.external === true
+			? ({ to, children }: { to: string; children: any }) => (
+					<NextLink href={to}>{children}</NextLink>
+				)
+			: Link;
+
+	if (!("separate" in page))
+		return (
+			<LinkComponent to={page.href}>
+				<Item variant="outline" size="sm" key={page.title}>
 					<ItemMedia>
 						<page.icon className="size-5" />
 					</ItemMedia>
@@ -41,10 +112,16 @@ export function IndexSettingsAppPage() {
 						<ItemTitle>{page.title}</ItemTitle>
 					</ItemContent>
 					<ItemActions>
-						<ChevronRightIcon className="size-4" />
+						<motion.div initial={{ x: 0 }} whileHover={{ x: 3 }}>
+							{page.external === true ? (
+								<ArrowUpRight className="size-4" />
+							) : (
+								<ChevronRightIcon className="size-4" />
+							)}
+						</motion.div>
 					</ItemActions>
-				</Link>
-			</Item>)}
-		</main>
-	);
+				</Item>
+			</LinkComponent>
+		);
+	return null;
 }

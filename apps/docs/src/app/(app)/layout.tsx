@@ -8,11 +8,6 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { ThemeProvider } from "next-themes";
 import { Metadata } from "next";
 
-export const metadata = {
-	title: "PluralBuddy App",
-	description: "PluralBuddy app"
-} satisfies Metadata
-
 export default async function Layout({ children }: LayoutProps<"/[lang]">) {
 	const messages = (await import(`../../../messages/en.json`)).default;
 

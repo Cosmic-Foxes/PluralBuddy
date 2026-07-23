@@ -13,6 +13,7 @@ import { authClient } from "@/lib/auth-client";
 import { TRPCProvider } from "@/server/client";
 import { trpc } from "@/server/client-trpc";
 import {
+	QueryCache,
 	QueryClient,
 	QueryClientProvider,
 	useQueryClient,
@@ -35,12 +36,20 @@ import { AppSettings } from "@/components/app/app-settings";
 import { IndexSettingsAppPage } from "@/components/app/pages/page";
 import WebhooksAppPage from "@/components/app/pages/webhooks/page";
 import SyncPage from "@/components/app/pages/sync/page";
+import { toast } from "sonner";
+import DeveloperApplications from "@/components/app/pages/applications/page";
+import { DynamicPageTitle, DynamicPageTitleRouterLess } from "@/components/app/dynamic-title";
 
 declare global {
 	var trpcClient: ReturnType<typeof trpc.createClient>
 }
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: (error) =>
+      toast.error(`Something went wrong: ${error.message}`),
+  })
+});
 
 export default function PluralBuddyApp() {
 	const { data: session, isPending } = authClient.useSession();
@@ -65,6 +74,7 @@ export default function PluralBuddyApp() {
 					<Spinner />
 				</span>
 
+				<DynamicPageTitleRouterLess title="|˶˙ᵕ˙ )ﾉﾞ Loading PluralBuddy"/>
 				<span className="text-sm pt-2">Loading app...</span>
 			</div>
 		);
@@ -117,6 +127,10 @@ export default function PluralBuddyApp() {
 									<Route
 										path="/app/settings/express"
 										element={<ExpressList />}
+									/>
+									<Route
+										path="/app/settings/developers-v2"
+										element={<DeveloperApplications />}
 									/>
 								</Route>
 								<Route
