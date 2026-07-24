@@ -43,7 +43,7 @@ export async function authenticateOAuth(
 					errors: [{ type: "invalid-scopes", friendly:e?.body?.message }],
 				}, { status: 401 }),
 			};
-		return { response: NextResponse.json({ errors: [{ type: "invalid-auth", friendly: "invalid auth token." } ]})}
+		return { response: NextResponse.json({ errors: [{ type: "invalid-auth", friendly: "invalid auth token." } ]}, { status: 401 })}
 	});
 
 	if (token && "response" in token)
