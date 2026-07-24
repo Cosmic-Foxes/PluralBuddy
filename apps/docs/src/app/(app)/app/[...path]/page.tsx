@@ -40,6 +40,7 @@ import DeveloperApplications from "@/components/app/pages/applications/page";
 import { DynamicPageTitle, DynamicPageTitleRouterLess } from "@/components/app/dynamic-title";
 import SocialPage from "@/components/app/pages/social/page";
 import { AboutPage } from "@/components/app/pages/about/page";
+import ProfilePage from "@/components/app/pages/profile/page";
 
 declare global {
 	var trpcClient: ReturnType<typeof trpc.createClient>
@@ -108,6 +109,10 @@ export default function PluralBuddyApp() {
 									<Route
 										index
 										element={<IndexSettingsAppPage />}
+									/>
+									<Route
+										path="/app/settings/account"
+										element={<ProfilePage />}
 									/>
 									<Route
 										path="/app/settings/authorized-apps"
