@@ -6,6 +6,7 @@ import { ImportStagingRouter } from './import-staging';
 import { getDiscordIdBySessionId } from '@/lib/discord-id';
 import { Svix } from "svix";
 import { SocialRouter } from './social';
+import { AccountRouter } from './account';
 
 export const appRouter = createTRPCRouter({
   hello: baseProcedure
@@ -23,6 +24,7 @@ export const appRouter = createTRPCRouter({
     "express": ExpressRouter,
     "import_staging": ImportStagingRouter,
     social: SocialRouter,
+    account: AccountRouter,
 
     getDiscordId: baseProcedure.query(async ({ ctx }) => {
       const session = ctx.session;

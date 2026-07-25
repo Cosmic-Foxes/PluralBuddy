@@ -31,6 +31,7 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
+import { DiscordSnowflake } from "@sapphire/snowflake";
 
 export function SocialNudgingCard({ data }: { data: SocialSettings }) {
 	const trpc = useTRPCClient();
@@ -156,6 +157,11 @@ export function SocialNudgingCard({ data }: { data: SocialSettings }) {
 											if (Number.isNaN(Number(userInput))) {
 												setInputError("Not a valid user ID.");
 												return;
+											}
+											if (DiscordSnowflake.deconstruct(userInput).workerId === BigInt(0)) {
+												setInputError("Not a valid user ID.");
+												return;
+
 											}
 											setBlockedUsers((input) => [...input, userInput]);
 										}}

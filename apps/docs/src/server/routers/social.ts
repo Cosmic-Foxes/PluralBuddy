@@ -37,7 +37,7 @@ export const SocialRouter = createTRPCRouter({
 	getUser: baseProcedure
 		.input(
 			z.object({
-				userId: z.string(),
+				userId: z.string().refine(c => DiscordSnowflake.deconstruct(c).workerId !== BigInt(0)),
 			}),
 		)
 		.query(async ({ ctx, input }) => {
@@ -63,7 +63,7 @@ export const SocialRouter = createTRPCRouter({
 				blockedUsers: z
 					.string()
 					.max(20)
-					.refine((val) => DiscordSnowflake.decode(val))
+					.refine(c => DiscordSnowflake.deconstruct(c).workerId !== BigInt(0))
 					.array()
 					.optional(),
 			}),
@@ -88,12 +88,12 @@ export const SocialRouter = createTRPCRouter({
 			let editObject: Record<string, boolean | string[]> = {};
 
 			if (input.nudgingEnabled !== undefined)
-				editObject.currentlyEnabled = input.nudgingEnabled;
+				editObject["nudging.currentlyEnabled"] = input.nudgingEnabled;
 
-			if (input.dmReplied !== undefined) editObject.dmReply = input.dmReplied;
+			if (input.dmReplied !== undefined) editObject["nudging.dmReply"] = input.dmReplied;
 
 			if (input.blockedUsers !== undefined)
-				editObject.blockedUsers = input.blockedUsers;
+				editObject["nudging.blockedUsers"] = input.blockedUsers;
 
 			await users.updateOne(
 				{
