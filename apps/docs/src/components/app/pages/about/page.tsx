@@ -74,7 +74,7 @@ export function AboutPage() {
 						size={2.4}
 						speed={2}
 						scale={1.56}
-						offsetX={0.1}
+						offsetX={0  }
 						offsetY={0.8}
 					/>
 					<div className="absolute flex justify-between flex-col items-center z-10 w-full p-4 space-y-2">
