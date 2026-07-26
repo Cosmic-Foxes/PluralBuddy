@@ -109,7 +109,7 @@ export default async function HomePage() {
 						</span>
 						<div className="flex w-full items-center justify-center gap-4 flex-wrap pt-4 fade-in animate-in">
 							<Link
-								href="https://discord.com/oauth2/authorize?client_id=1436973163211657278"
+								href="https://discord.com/oauth2/authorize?client_id=1436973163211657278&integration_type=0&scope=bot&permissions=671099904"
 								className={cn(
 									buttonVariants(),
 									"max-sm:text-sm items-center gap-2",
@@ -275,7 +275,7 @@ export default async function HomePage() {
 				</div>
 
 				<Link
-					href="https://discord.com/oauth2/authorize?client_id=1436973163211657278"
+					href="https://discord.com/oauth2/authorize?client_id=1436973163211657278&integration_type=0&scope=bot&permissions=671099904"
 					className={cn(
 						buttonVariants({ variant: "secondary" }),
 						"max-sm:text-sm max-lg:w-[calc(100vw-24px)] items-center gap-2 w-1/3 mt-auto absolute bottom-[40px]",
