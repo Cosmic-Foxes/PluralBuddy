@@ -813,5 +813,8 @@ PluralBuddy Express is a way that alters can gain the ability to proxy in DMs, o
 
 Hit the button to the right to open this alter in the dashboard.`,
 	STATUS_AP: `### Auto-Proxy Status
-Your system is currently auto proxying in **{{ mode }} mode**.`
+Your system is currently auto proxying in **{{ mode }}**.`,
+	NO_STATUS_AP: `You are not currently auto proxying in this server.`,
+	NO_ALTER_AP: `Your auto proxy is not currently attached to an alter.`,
+	AP_AS: "-# **AUTO-PROXYING AS:**"
 }
