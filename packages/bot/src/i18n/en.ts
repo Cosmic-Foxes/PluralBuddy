@@ -811,5 +811,7 @@ PluralBuddy Express is a way that alters can gain the ability to proxy in DMs, o
  - PluralBuddy gathers the token, encrypts it, and hosts a singular-command bot associated to your alter
  - $0, forever
 
-Hit the button to the right to open this alter in the dashboard.`
+Hit the button to the right to open this alter in the dashboard.`,
+	STATUS_AP: `### Auto-Proxy Status
+Your system is currently auto proxying in **{{ mode }} mode**.`
 }
