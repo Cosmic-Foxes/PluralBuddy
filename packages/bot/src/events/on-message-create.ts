@@ -195,8 +195,6 @@ export default createEvent({
 
 		if (await notValidPermissions(message)) return;
 
-		startTimer(`proxy: data-gathering (${message.id})`)
-
 		const channel = await message.channel();
 		const parent =
 			"parentId" in channel && channel.isThread() ? channel.parentId : null;
@@ -216,8 +214,6 @@ export default createEvent({
 		if (user.system === undefined) return;
 		if (user.blocked) { client.logger.info(`${message.id} ended because user was blocked`); return };
 		if (user.system.disabled) return;
-
-		endTimer(`proxy: data-gathering (${message.id})`)
 
 		if (
 			user.system.systemAutoproxy.some(
