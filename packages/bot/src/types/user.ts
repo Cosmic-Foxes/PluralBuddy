@@ -5,6 +5,7 @@ import { defaultUserStructure, type PUser } from "plurography";
 export { PUserObject, defaultUserStructure, type PUser } from "plurography";
 
 export async function getUserById(id: string): Promise<PUser> {
+    console.log(defaultUserStructure(id))
     return await userCollection.findOne({ userId: id }) ?? defaultUserStructure(id);
 }
 
