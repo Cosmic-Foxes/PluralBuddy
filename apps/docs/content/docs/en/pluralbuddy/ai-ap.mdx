@@ -20,3 +20,20 @@ pb;ap fronttracker
 where `fronttracker` is the AI/AP ID of the integration.
 
 Then, all messages sent from that point on from that system, will always be the latest alter pushed from the integration.
+
+## Implementation Guide
+
+### 0. Assign an AI/AP ID
+
+In the Developer portal, you must select your application, and at the bottom type an identifier that matches your application. This can be your product name, or just a name that fits your front tracker.
+
+Remember, this is the ID that your user will have to input to select the alter that your front tracker pushed to front. For example, if you AI/AP ID is `pluralfront`, then users would have to input `pb;ap pluralfront` to select the alter your chose.
+
+### 1. Login via OAuth
+
+Use the [OAuth Application Guide](/docs/pluralbuddy/oauth-apps) to login a user with the OAuth scope atleast `system:ai-ap`.
+
+<Callout type="info">
+    You need a **PluralBuddy** alter ID to assign an alter to front. You may also need `alters:read` if you do not know the PluralBuddy alter IDs of the
+    associated alters in your store.
+</Callout>

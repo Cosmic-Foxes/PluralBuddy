@@ -46,6 +46,8 @@ export async function authenticateOAuth(
 		return { response: NextResponse.json({ errors: [{ type: "invalid-auth", friendly: "invalid auth token." } ]}, { status: 401 })}
 	});
 
+	console.log(token)
+
 	if (token && "response" in token)
 		return { response: token.response as NextResponse };
 
