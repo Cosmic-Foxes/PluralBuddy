@@ -20,6 +20,8 @@ import { Button } from "../ui/shadcn-button";
 import { useForm } from "@tanstack/react-form";
 import z from "zod";
 import { toast } from "sonner";
+import { useTRPCClient } from "@/server/client";
+import { useMutation } from "@tanstack/react-query";
 
 const parkedIds = [
 	"status",
@@ -41,19 +43,35 @@ const formSchema = z.object({
 		.max(40)
 		.refine((id) => !parkedIds.includes(id as (typeof parkedIds)[0]), {
 			message: "ID cannot be a native auto-proxy command.",
+		})
+		.refine((id) => !id.includes(" "), {
+			message: "Cannot contain spaces."
 		}),
 });
 
-export function AIAPCard() {
+export function AIAPCard({ integrationId, existingId }: { integrationId: string, existingId: string }) {
+    const trpcClient = useTRPCClient();
+	console.log(existingId)
+    
+    const submitMutation = useMutation({
+        mutationFn: async (id: string) => trpcClient.developers.updateAIAPID.mutate({
+            newId: id,
+            integrationId
+        })
+    })
 	const form = useForm({
 		validators: {
 			onSubmit: formSchema,
 		},
 		defaultValues: {
-			id: "",
+			id: existingId,
 		},
 		onSubmit: async ({ value }) => {
-			toast.success("Form submitted successfully");
+			toast.promise(async () => submitMutation.mutateAsync(value.id), {
+				success: "Successfully changed AI/AP ID",
+				loading: "Loading...",
+				error: "This ID was already taken, or something else went wrong."
+			});
 		},
 	});
 

@@ -44,6 +44,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { DiscordLoginComponent } from "@/components/discord-login";
 import { AIAPCard } from "@/components/devs/aiap";
+import { TRPCReactProvider } from "@/server/client";
 
 export const metadata: Metadata = {
 	title: "Application",
@@ -149,7 +150,10 @@ export default async function ApplicationPage({
 
 			<ScopesForm application={app} />
 
-			<AIAPCard />
+			{/** Whoops :3 Probably should have put this provider in the layout, oh well. */}
+			<TRPCReactProvider>
+				<AIAPCard integrationId={app.client_id} existingId={app.aaid as string ?? ""} />
+			</TRPCReactProvider>
 		</main>
 	);
 }
