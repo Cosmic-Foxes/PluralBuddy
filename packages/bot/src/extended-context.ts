@@ -26,7 +26,7 @@ import {
 import { getUserById } from "./types/user";
 import { defaultPrefixes, getGuildFromId, PGuildObject } from "./types/guild";
 import { LoadingView } from "./views/loading";
-import type { PAlter } from "plurography";
+import { assetStringGeneration, type PAlter } from "plurography";
 import { client, policyModal } from ".";
 import { getLanguageByUserId, langMemoryCache } from "./lib/lang";
 import { InteractionIdentifier } from "./lib/interaction-ids";
@@ -88,7 +88,7 @@ export const extendedContext = extendContext((interaction) => {
 
 					await userCollection.updateOne(
 						{ userId: interaction.author.id },
-						{ $set: { policyStatus: 1 } },
+						{ $set: { policyStatus: 1, storagePrefix: assetStringGeneration(8) } },
 						{ upsert: true },
 					);
 
