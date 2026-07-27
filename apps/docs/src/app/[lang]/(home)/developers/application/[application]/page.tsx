@@ -8,7 +8,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/animate-ui/components/radix/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { EllipsisIcon, Pencil, Trash, X } from "lucide-react";
+import { ArrowUpRight, EllipsisIcon, Pencil, Trash, X } from "lucide-react";
 import Link from "next/link";
 import { DeleteAppForm } from "@/components/devs/delete-app-form";
 import { Separator } from "@/components/ui/separator";
@@ -21,7 +21,14 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { ClientSecretInput } from "@/components/devs/client-secret-input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
 import { ScopesForm } from "@/components/devs/scopes-form";
 import {
 	InputGroup,
@@ -36,6 +43,7 @@ import type { Metadata, ResolvingMetadata, Viewport } from "next";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { DiscordLoginComponent } from "@/components/discord-login";
+import { AIAPCard } from "@/components/devs/aiap";
 
 export const metadata: Metadata = {
 	title: "Application",
@@ -139,14 +147,9 @@ export default async function ApplicationPage({
 				</CardContent>
 			</Card>
 
-			<Card className="w-full">
-				<CardHeader>
-					<CardTitle>Scopes</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<ScopesForm application={app} />
-				</CardContent>
-			</Card>
+			<ScopesForm application={app} />
+
+			<AIAPCard />
 		</main>
 	);
 }
