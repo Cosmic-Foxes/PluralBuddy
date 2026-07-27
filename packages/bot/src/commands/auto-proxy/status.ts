@@ -10,6 +10,7 @@ import {
 	SubCommand,
 	TextDisplay,
 } from "seyfert";
+import type { ColorResolvable } from "seyfert/lib/common";
 import { MessageFlags } from "seyfert/lib/types";
 
 @Declare({
@@ -48,23 +49,34 @@ export default class StatusAutoProxy extends SubCommand {
 			(v) => v.serverId === guild.id,
 		);
 
-        if (!currentAp) {
-            return await ctx.ephemeral({
-                components: [
-                    new Container().setComponents(
-                        new TextDisplay().setContent(translations.NO_STATUS_AP)
-                    )
-                ],
-                flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
-            }, undefined, undefined, ctx)
-        }
+		if (!currentAp) {
+			return await ctx.ephemeral(
+				{
+					components: [
+						new Container().setComponents(
+							new TextDisplay().setContent(translations.NO_STATUS_AP),
+						),
+					],
+					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+				},
+				undefined,
+				undefined,
+				ctx,
+			);
+		}
 
-        const currentAlter = 
-                            currentAp.autoproxyAlter !== undefined ? (await alterCollection.findOne({alterId: Number(currentAp.autoproxyAlter), systemId: ctx.author.id})) : null
+		const currentAlter =
+			currentAp.autoproxyAlter !== undefined
+				? await alterCollection.findOne({
+						alterId: Number(currentAp.autoproxyAlter),
+						systemId: ctx.author.id,
+					})
+				: null;
+
 		return await ctx.ephemeral(
 			{
 				components: [
-					new Container().setComponents(
+					colorifyContainer(currentAlter === null ? undefined : currentAlter.color).setComponents(
 						new TextDisplay().setContent(
 							translations.STATUS_AP.replace(
 								"{{ mode }}",
@@ -72,15 +84,19 @@ export default class StatusAutoProxy extends SubCommand {
 									? translations.LATCH_NAME
 									: currentAp?.autoproxyMode === "alter"
 										? translations.ALTER_NAME
-										: currentAp?.autoproxyMode ?? "",
+										: (currentAp?.autoproxyMode ?? ""),
 							),
 						),
-                        new Separator(),
-                        new TextDisplay().setContent(translations.AP_AS),
-                        ...(currentAlter === null ?
-                            [new TextDisplay().setContent(translations.NO_STATUS_AP)] :
-                           ( (await new AlterView(translations).alterProfileView(currentAlter, false))[0]?.components ?? [])
-                        )
+						new Separator(),
+						new TextDisplay().setContent(translations.AP_AS),
+						...(currentAlter === null
+							? [new TextDisplay().setContent(translations.NO_STATUS_AP)]
+							: ((
+									await new AlterView(translations).alterProfileView(
+										currentAlter,
+										false,
+									)
+								)[0]?.components ?? [])),
 					),
 				],
 
@@ -91,4 +107,9 @@ export default class StatusAutoProxy extends SubCommand {
 			ctx,
 		);
 	}
+}
+
+function colorifyContainer(color: string | null | undefined) {
+    return color === null || color === undefined || !color.startsWith("#") ?
+        new Container() : new Container().setColor(color as ColorResolvable)
 }
