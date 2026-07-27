@@ -29,9 +29,16 @@ export const proxyTagValid = (
 		suffix: string;
 	},
 	message: Message,
-) =>
-	(proxyTag.suffix !== "" && message.content.endsWith(proxyTag.suffix)) ||
-	(proxyTag.prefix !== "" && message.content.startsWith(proxyTag.prefix));
+) => {
+	const hasPrefix = proxyTag.prefix !== "";
+	const hasSuffix = proxyTag.suffix !== "";
+	if (!hasPrefix && !hasSuffix) return false;
+	
+	return (
+		(!hasPrefix || message.content.startsWith(proxyTag.prefix)) &&
+		(!hasSuffix || message.content.endsWith(proxyTag.suffix))
+	);
+};
 
 export async function performTagProxy(
 	checkAlter: PAlter,
@@ -48,9 +55,10 @@ export async function performTagProxy(
 	(async () => {
 		const channel = await message.channel();
 
-		if (channel.isTextable() && !guild.getFeatures().disabledProxyTyping) channel.typing().catch(() => null);
+		if (channel.isTextable() && !guild.getFeatures().disabledProxyTyping)
+			channel.typing().catch(() => null);
 	})();
-	
+
 	alterCollection.updateOne(
 		{ alterId: checkAlter?.alterId, systemId: checkAlter?.systemId },
 		{
@@ -64,7 +72,7 @@ export async function performTagProxy(
 		alter: {
 			...checkAlter,
 			messageCount: checkAlter.messageCount + 1,
-			lastMessageTimestamp: new Date()
+			lastMessageTimestamp: new Date(),
 		},
 	});
 
@@ -211,10 +219,20 @@ export async function performTagProxy(
 		}
 
 		let contents = message.content;
-		if (proxyTag.prefix && contents.startsWith(proxyTag.prefix) && user.system && !getSystemFeatures(user.system).keepProxyTags) {
+		if (
+			proxyTag.prefix &&
+			contents.startsWith(proxyTag.prefix) &&
+			user.system &&
+			!getSystemFeatures(user.system).keepProxyTags
+		) {
 			contents = contents.slice(proxyTag.prefix.length);
 		}
-		if (proxyTag.suffix && contents.endsWith(proxyTag.suffix) && user.system && !getSystemFeatures(user.system).keepProxyTags) {
+		if (
+			proxyTag.suffix &&
+			contents.endsWith(proxyTag.suffix) &&
+			user.system &&
+			!getSystemFeatures(user.system).keepProxyTags
+		) {
 			contents = contents.slice(0, contents.length - proxyTag.suffix.length);
 		}
 
@@ -241,8 +259,9 @@ export async function performTagProxy(
 						return (bRole?.position ?? -1) - (aRole?.position ?? -1);
 					});
 
-				const guildPositionRole =
-					sortedRolePreferences.find((c) => c.roleId === topPositionRole.id);
+				const guildPositionRole = sortedRolePreferences.find(
+					(c) => c.roleId === topPositionRole.id,
+				);
 
 				if (
 					guildPositionRole &&
@@ -313,7 +332,6 @@ export async function performTagProxy(
 						...roleAfterComponents,
 					];
 
-		
 		if (message.guildId)
 			proxy(
 				webhook,
@@ -327,7 +345,9 @@ export async function performTagProxy(
 				messageComponents,
 				uploadedEmojis,
 				guild,
-				(checkAlter?.avatarUrlMap ?? {})[message.guildId] ?? checkAlter?.avatarUrl ?? undefined,
+				(checkAlter?.avatarUrlMap ?? {})[message.guildId] ??
+					checkAlter?.avatarUrl ??
+					undefined,
 			);
 
 		if (message.guildId && user.system)
