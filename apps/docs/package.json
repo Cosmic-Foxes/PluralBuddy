@@ -12,6 +12,7 @@
 		"postbuild": "next-sitemap"
 	},
 	"dependencies": {
+		"@base-ui/react": "^1.6.0",
 		"@better-auth/infra": "0.2.5",
 		"@better-auth/oauth-provider": "1.6.9",
 		"@discordjs/builders": "^1.13.1",
