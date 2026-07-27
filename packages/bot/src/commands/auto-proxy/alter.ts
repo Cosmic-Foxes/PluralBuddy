@@ -12,6 +12,7 @@ import {
 	SubCommand,
 	Options,
 	User,
+	IgnoreCommand,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
@@ -28,6 +29,7 @@ const options = {
 	description: "Use alter mode in auto-proxy",
 	aliases: ["a"],
 	contexts: ["Guild"],
+	ignore: IgnoreCommand.Message
 })
 @Options(options)
 export default class AlterProxyMode extends SubCommand {
@@ -39,9 +41,9 @@ export default class AlterProxyMode extends SubCommand {
 		const query = Number.isNaN(Number.parseInt(alterName))
 			? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
 			: alterCollection.findOne({
-					$or: [{ username: alterName }, { alterId: Number(alterName) }],
-					systemId,
-				});
+				$or: [{ username: alterName }, { alterId: Number(alterName) }],
+				systemId,
+			});
 		const alter = await query;
 		const { system } = await ctx.retrievePUser();
 
@@ -92,7 +94,7 @@ export default class AlterProxyMode extends SubCommand {
 						"system.systemAutoproxy": {
 							autoproxyMode: "alter",
 							autoproxyAlter: alter.alterId.toString(),
-                            serverId: ctx.guildId
+							serverId: ctx.guildId
 						} satisfies Partial<PAutoProxy>,
 					},
 				},

@@ -9,7 +9,7 @@ export async function authenticateOAuth(
 	request: NextRequest,
 	requiredScopes: string[],
 ): Promise<
-	{ response: NextResponse } | { mongo: MongoClient; accountId: string }
+	{ response: NextResponse } | { mongo: MongoClient; accountId: string, clientId: string | null }
 > {
 	const authorization = request.headers.get("authorization");
 	const accessToken = authorization?.startsWith("Bearer ")
@@ -23,12 +23,6 @@ export async function authenticateOAuth(
 			}, { status: 401 }),
 		};
 	}
-
-	const userInfo = await auth.api
-		.oauth2UserInfo({
-			request,
-		})
-		.catch((e) => {return null});
 	const token = await verifyAccessToken(accessToken, {
 		verifyOptions: {
 			issuer: `${process.env.BETTER_AUTH_URL}/api/auth`,
@@ -46,8 +40,6 @@ export async function authenticateOAuth(
 		return { response: NextResponse.json({ errors: [{ type: "invalid-auth", friendly: "invalid auth token." } ]}, { status: 401 })}
 	});
 
-	console.log(token)
-
 	if (token && "response" in token)
 		return { response: token.response as NextResponse };
 
@@ -55,7 +47,7 @@ export async function authenticateOAuth(
 
 	await client.connect();
 
-	if (!userInfo) {
+	if (!token) {
 		return {
 			response: NextResponse.json({
 				errors: [{ type: "unknown-token", friendly: "unknown auth token" }],
@@ -66,9 +58,10 @@ export async function authenticateOAuth(
 	const discordAccountId = await client
 		.db(`${process.env.ENV}-pluralbuddy-app`)
 		.collection("account")
-		.findOne({ userId: new ObjectId(userInfo.sub) });
+		.findOne({ userId: new ObjectId(token.sub) });
 
-	return { mongo: client, accountId: discordAccountId?.accountId };
+
+	return { mongo: client, accountId: discordAccountId?.accountId, clientId: (token.client_id as string) ?? token.azp ?? null };
 }
 
 export async function userlessOAuth(

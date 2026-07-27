@@ -51,8 +51,6 @@ const formSchema = z.object({
 
 export function AIAPCard({ integrationId, existingId }: { integrationId: string, existingId: string }) {
     const trpcClient = useTRPCClient();
-	console.log(existingId)
-    
     const submitMutation = useMutation({
         mutationFn: async (id: string) => trpcClient.developers.updateAIAPID.mutate({
             newId: id,

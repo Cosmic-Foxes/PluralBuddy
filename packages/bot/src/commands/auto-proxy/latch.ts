@@ -12,6 +12,7 @@ import {
 	SubCommand,
 	Options,
 	User,
+	IgnoreCommand,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
@@ -27,6 +28,7 @@ const options = {
 	description: "Use latch mode in auto-proxy",
 	aliases: ["l", "lch"],
 	contexts: ["Guild"],
+	ignore: IgnoreCommand.Message
 })
 @Options(options)
 export default class AlterProxyMode extends SubCommand {
@@ -42,9 +44,9 @@ export default class AlterProxyMode extends SubCommand {
 			const query = Number.isNaN(Number.parseInt(alterName))
 				? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
 				: alterCollection.findOne({
-						$or: [{ username: alterName }, { alterId: Number(alterName) }],
-						systemId,
-					});
+					$or: [{ username: alterName }, { alterId: Number(alterName) }],
+					systemId,
+				});
 			alter = await query;
 
 			if (alter === null || system === undefined) {
@@ -88,12 +90,12 @@ export default class AlterProxyMode extends SubCommand {
 						"system.systemAutoproxy.$[serverEntry].autoproxyMode": "latch",
 						...(alter !== null
 							? {
-									"system.systemAutoproxy.$[serverEntry].autoproxyAlter":
-										alter.alterId.toString(),
-								}
+								"system.systemAutoproxy.$[serverEntry].autoproxyAlter":
+									alter.alterId.toString(),
+							}
 							: {
-									"system.systemAutoproxy.$[serverEntry].autoproxyAlter": null,
-								}),
+								"system.systemAutoproxy.$[serverEntry].autoproxyAlter": null,
+							}),
 					},
 				},
 				{
@@ -110,8 +112,8 @@ export default class AlterProxyMode extends SubCommand {
 							autoproxyMode: "latch",
 							...(alter !== null
 								? {
-										autoproxyAlter: alter.alterId.toString(),
-									}
+									autoproxyAlter: alter.alterId.toString(),
+								}
 								: {}),
 							serverId: ctx.guildId,
 						} satisfies Partial<PAutoProxy>,

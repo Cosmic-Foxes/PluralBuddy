@@ -27,6 +27,7 @@ export * from "./pluralbuddy/operation";
 export * from "./pluralbuddy/system";
 export * from "./pluralbuddy/tag";
 export * from "./pluralbuddy/user";
+export * from "./pluralbuddy/front";
 export * from "./pluralbuddy/util";
 export * from "./pluralbuddy/import-staging";
 export * from "./pluralbuddy/import-notation";

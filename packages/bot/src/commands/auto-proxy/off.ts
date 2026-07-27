@@ -4,21 +4,22 @@ import { sendAutoproxyOperationDM } from "@/lib/autoproxy-operation";
 import { userCollection } from "@/mongodb";
 import type { PAutoProxy } from "@/types/auto-proxy";
 import { AlertView } from "@/views/alert";
-import { CommandContext, Declare, SubCommand } from "seyfert";
+import { CommandContext, Declare, IgnoreCommand, SubCommand } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { Shortcut } from "yunaforseyfert";
 
 @Declare({
-    name: "off",
-    description: "Disable auto-proxy",
-    contexts: ["Guild", "BotDM"],
-	aliases: ["shutup"]
+	name: "off",
+	description: "Disable auto-proxy",
+	contexts: ["Guild", "BotDM"],
+	aliases: ["shutup"],
+	ignore: IgnoreCommand.Message
 })
 @Shortcut()
 export default class OffAutoProxy extends SubCommand {
-    override async run(ctx: CommandContext) {
+	override async run(ctx: CommandContext) {
 		await ctx.deferReply(true);
-        
+
 		const { system } = await ctx.retrievePUser();
 
 		if (system === undefined) {
@@ -65,7 +66,7 @@ export default class OffAutoProxy extends SubCommand {
 					$push: {
 						"system.systemAutoproxy": {
 							autoproxyMode: "off",
-                            serverId: ctx.guildId
+							serverId: ctx.guildId
 						} satisfies Partial<PAutoProxy>,
 					},
 				},
@@ -88,5 +89,5 @@ export default class OffAutoProxy extends SubCommand {
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
-    }
+	}
 }
