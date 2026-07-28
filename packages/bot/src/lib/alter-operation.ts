@@ -18,7 +18,7 @@ import { operationStringGeneration, type POperation } from "../types/operation";
 import type { PAlter } from "../types/alter";
 import type { TranslationString } from "../lang";
 import { InteractionIdentifier } from "./interaction-ids";
-import { ButtonStyle, MessageFlags } from "seyfert/types";
+import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { getUserById, writeUserById } from "../types/user";
 import { emojis } from "./emojis";
 import {
@@ -53,9 +53,9 @@ export async function createPartialAlterOperation(
 	const listItems = await Promise.all(
 		operationDb.changedOperationStrings
 			.filter(
-				(v: string | number) => JSON.stringify(operation[v]) !== JSON.stringify(PartialAlter[v]),
+				(v) => JSON.stringify(operation[v]) !== JSON.stringify(PartialAlter[v]),
 			)
-			.map(async (c: string) => {
+			.map(async (c) => {
 				if (c === "username") {
 					return translations.OPERATION_CHANGE_NAME.replace(
 						"%name%",
@@ -129,25 +129,24 @@ export async function createPartialAlterOperation(
 										)
 										.setComponents(
 											new TextDisplay().setContent(
-												listItems.map((c: any) => `- ${c}`).join("\n"),
+												listItems.map((c) => `- ${c}`).join("\n"),
 											),
 										),
-									new TextDisplay().setContent(`-# ${
-										environment === "discord"
+									new TextDisplay().setContent(`-# ${environment === "discord"
 											? translations.OPERATION_DISCORD.replace(
-													"%clock%",
-													emojis.clock,
-												).replace("%discord%", emojis.discord)
+												"%clock%",
+												emojis.clock,
+											).replace("%discord%", emojis.discord)
 											: environment === "api-exchange"
 												? translations.OPERATION_WEB.replace(
-														"%clock%",
-														emojis.clock,
-													).replace("%web%", emojis.web)
+													"%clock%",
+													emojis.clock,
+												).replace("%web%", emojis.web)
 												: translations.OPERATION_WEB_NEXT.replace(
-														"%clock%",
-														emojis.clock,
-													).replace("%web%", emojis.web)
-									}
+													"%clock%",
+													emojis.clock,
+												).replace("%web%", emojis.web)
+										}
 -# ${translations.OPERATION_ID.replace("%id%", `\`${operationDb.id}\``)}`),
 								)
 								.setColor("#F9DC00"),
@@ -167,7 +166,7 @@ export async function createPartialAlterOperation(
 						flags: MessageFlags.IsComponentsV2,
 					})
 					.catch(() => null);
-		} catch (_) {}
+		} catch (_) { }
 
 	return {
 		...PartialAlter,
