@@ -18,7 +18,7 @@ import { operationStringGeneration, type POperation } from "../types/operation";
 import type { PAlter } from "../types/alter";
 import type { TranslationString } from "../lang";
 import { InteractionIdentifier } from "./interaction-ids";
-import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
+import { ButtonStyle, MessageFlags } from "seyfert/types";
 import { getUserById, writeUserById } from "../types/user";
 import { emojis } from "./emojis";
 import {
@@ -53,9 +53,9 @@ export async function createPartialAlterOperation(
 	const listItems = await Promise.all(
 		operationDb.changedOperationStrings
 			.filter(
-				(v) => JSON.stringify(operation[v]) !== JSON.stringify(PartialAlter[v]),
+				(v: string | number) => JSON.stringify(operation[v]) !== JSON.stringify(PartialAlter[v]),
 			)
-			.map(async (c) => {
+			.map(async (c: string) => {
 				if (c === "username") {
 					return translations.OPERATION_CHANGE_NAME.replace(
 						"%name%",
@@ -129,7 +129,7 @@ export async function createPartialAlterOperation(
 										)
 										.setComponents(
 											new TextDisplay().setContent(
-												listItems.map((c) => `- ${c}`).join("\n"),
+												listItems.map((c: any) => `- ${c}`).join("\n"),
 											),
 										),
 									new TextDisplay().setContent(`-# ${
