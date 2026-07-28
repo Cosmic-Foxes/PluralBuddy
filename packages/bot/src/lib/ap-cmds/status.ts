@@ -1,4 +1,4 @@
-import { alterCollection } from "@/mongodb";
+import { alterCollection, frontsCollection, mongoClient } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import { AlterView } from "@/views/alters";
 import {
@@ -31,7 +31,7 @@ export async function runStatusCommand(ctx: CommandContext) {
     }
 
     if (guild === undefined) {
-        return await ctx.editResponse({
+        return ctx.editResponse({
             components: new AlertView(await ctx.userTranslations()).errorView(
                 "DN_ERROR_SE",
             ),
@@ -39,12 +39,10 @@ export async function runStatusCommand(ctx: CommandContext) {
         });
     }
 
-    const currentAp = system.systemAutoproxy.find(
-        (v) => v.serverId === guild.id,
-    );
+    const currentAp = system.systemAutoproxy.find((v) => v.serverId === guild.id);
 
     if (!currentAp) {
-        return await ctx.ephemeral(
+        return ctx.ephemeral(
             {
                 components: [
                     new Container().setComponents(
@@ -59,31 +57,57 @@ export async function runStatusCommand(ctx: CommandContext) {
         );
     }
 
+    let integration = null;
+    let alterId = null;
+
+    if (currentAp?.autoproxyMode !== "alter" &&
+        currentAp?.autoproxyMode !== "latch" &&
+        currentAp?.autoproxyMode !== "off") {
+        const fronts = await frontsCollection.findOne({ aiapId: currentAp?.autoproxyMode, systemId: ctx.author.id })
+        alterId = fronts?.alterId;
+        const appDb = mongoClient.db(process.env.WEBSITE_DB ?? "")
+        const clients = appDb.collection<{ clientId: string, metadata: { aaid: string }, name: string }>("oauthClient");
+
+        integration = await clients.findOne({ clientId: fronts?.clientId })
+    }
+
     const currentAlter =
-        currentAp.autoproxyAlter !== undefined
+        (alterId ?? currentAp.autoproxyAlter) !== undefined
             ? await alterCollection.findOne({
-                alterId: Number(currentAp.autoproxyAlter),
+                alterId: Number(alterId ?? currentAp.autoproxyAlter),
                 systemId: ctx.author.id,
             })
             : null;
 
-    return await ctx.ephemeral(
+
+    return ctx.ephemeral(
         {
             components: [
-                colorifyContainer(currentAlter === null ? undefined : currentAlter.color).setComponents(
+                colorifyContainer(
+                    currentAlter === null ? undefined : currentAlter.color,
+                ).setComponents(
                     new TextDisplay().setContent(
-                        translations.STATUS_AP.replace(
-                            "{{ mode }}",
-                            currentAp?.autoproxyMode === "latch"
-                                ? translations.LATCH_NAME
-                                : currentAp?.autoproxyMode === "alter"
-                                    ? translations.ALTER_NAME
-                                    : (currentAp?.autoproxyMode ?? ""),
-                        ),
+                        translations[
+                            currentAp?.autoproxyMode !== "alter" &&
+                                currentAp?.autoproxyMode !== "latch" &&
+                                currentAp?.autoproxyMode !== "off" ? "INTEGRATION_AP" : "STATUS_AP"].replace(
+                                    "{{ mode }}",
+                                    currentAp?.autoproxyMode === "latch"
+                                        ? translations.LATCH_NAME
+                                        : currentAp?.autoproxyMode === "alter"
+                                            ? translations.ALTER_NAME
+                                            : (integration?.name ?? currentAp?.autoproxyMode ?? ""),
+                                ),
                     ),
                     new Separator(),
-                    new TextDisplay().setContent(translations.AP_AS),
-                    ...(currentAlter === null
+                    new TextDisplay().setContent(
+                        currentAp?.autoproxyMode !== "alter" &&
+                            currentAp?.autoproxyMode !== "latch" &&
+                            currentAp?.autoproxyMode !== "off"
+                            ? translations.AP_INTEGRATION_AS.replace("{{ provider }}", (integration?.name ?? "").toLocaleUpperCase())
+                            : translations.AP_AS,
+                    ),
+                    ...((currentAlter) === null
                         ? [new TextDisplay().setContent(translations.NO_STATUS_AP)]
                         : ((
                             await new AlterView(translations).alterProfileView(
@@ -100,10 +124,10 @@ export async function runStatusCommand(ctx: CommandContext) {
         undefined,
         ctx,
     );
-
 }
 
 function colorifyContainer(color: string | null | undefined) {
-    return color === null || color === undefined || !color.startsWith("#") ?
-        new Container() : new Container().setColor(color as ColorResolvable)
+    return color === null || color === undefined || !color.startsWith("#")
+        ? new Container()
+        : new Container().setColor(color as ColorResolvable);
 }

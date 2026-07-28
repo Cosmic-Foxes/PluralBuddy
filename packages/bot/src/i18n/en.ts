@@ -816,9 +816,12 @@ PluralBuddy Express is a way that alters can gain the ability to proxy in DMs, o
 Hit the button to the right to open this alter in the dashboard.`,
 	STATUS_AP: `### Auto-Proxy Status
 Your system is currently auto proxying in **{{ mode }}**.`,
+	INTEGRATION_AP: `### Auto-Proxy Status
+Your system is using the front state of **{{ mode }}**.`,
 	NO_STATUS_AP: `You are not currently auto proxying in this server.`,
 	NO_ALTER_AP: `Your auto proxy is not currently attached to an alter.`,
 	AP_AS: "-# **AUTO-PROXYING AS:**",
+	AP_INTEGRATION_AS: "-# **{{ provider }} FRONTING AS:**", 
 
 	PROVIDER_NOT_FOUND: `That auto-proxy provider was not found, or you didn't authorize with the [\`system:ai-ap\`](https://pb.giftedly.dev/docs/pluralbuddy/ai-ap) scope. Contact the developer of this integration if you believe this is incorrect.
 	
