@@ -37,3 +37,19 @@ Use the [OAuth Application Guide](/docs/pluralbuddy/oauth-apps) to login a user 
     You need a **PluralBuddy** alter ID to assign an alter to front. You may also need `alters:read` if you do not know the PluralBuddy alter IDs of the
     associated alters in your store.
 </Callout>
+
+### 2. Push an alter
+
+You can push an alter to front at any time. That alter will then immediately become the auto-proxy target for the user.
+
+```json
+POST /api/v1/users/@me/front
+Content-Type: application/json
+Authorization: Bearer ...
+
+{
+    "alter": "1531049866753478700"
+}
+```
+
+Tell the user then to use `pb;ap <AI/AP ID>`. Their fronting alter will sync over instantly.

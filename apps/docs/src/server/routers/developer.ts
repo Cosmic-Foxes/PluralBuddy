@@ -3,6 +3,7 @@ import { baseProcedure } from "../init";
 import { router } from "../trpc";
 import { MongoClient, ObjectId } from "mongodb";
 import { waitUntil } from "@vercel/functions";
+import { PIntegrationFront } from "plurography";
 
 const parkedIds = [
 	"status",
@@ -45,10 +46,15 @@ export const DeveloperRouter = router({
 			const clients = client
 				.db(`${process.env.ENV}-pluralbuddy-app`)
 				.collection("oauthClient");
+			const db = client.db(
+				`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
+			);
+			const fronts = db.collection<PIntegrationFront>("fronts");
 			const existing = await clients.findOne({ "metadata.aaid": input.newId })
+
 			if (existing)
 				throw new Error("Already taken.")
-			
+
 			const modified = await clients.updateOne(
 				{
 					$and: [
@@ -61,6 +67,8 @@ export const DeveloperRouter = router({
 
 			if (modified.modifiedCount !== 1)
 				throw new Error("Failed to find OAuth client");
+
+			await fronts.updateMany({ clientId: input.integrationId }, { $set: { aiapId: input.newId } })
 
 			return { success: true };
 		}),

@@ -829,5 +829,11 @@ Your system is using the front state of **{{ mode }}**.`,
 	AP_INVALID_SYNTAX: `Invalid autoproxy mode or provider \`{{ mode }}\`.
 
 **Auto-proxy Usage:**
-\`pb;autoproxy [off|latch|alter|{{ aiap }}]\``
+\`pb;autoproxy [off|latch|alter|status|{{ aiap }}]\``,
+	AP_ALTER_INVALID_SYNTAX: `You must add an alter for the \`alter\` proxy mode.
+
+**Auto-proxy Usage:**
+\`pb;autoproxy [off|latch|alter|status|{{ aiap }}]\``,
+	AP_SYNTAX: `**Auto-proxy Usage:**
+\`pb;autoproxy [off|latch|alter|status|{{ aiap }}]\``
 }

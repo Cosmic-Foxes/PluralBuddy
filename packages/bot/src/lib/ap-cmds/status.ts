@@ -13,8 +13,9 @@ import {
 } from "seyfert";
 import type { ColorResolvable } from "seyfert/lib/common";
 import { MessageFlags } from "seyfert/lib/types";
+import { getOAuthConsents } from "../oauth";
 
-export async function runStatusCommand(ctx: CommandContext) {
+export async function runStatusCommand(ctx: CommandContext, help: boolean) {
     await ctx.deferReply(true);
 
     const { system } = await ctx.retrievePUser();
@@ -47,6 +48,11 @@ export async function runStatusCommand(ctx: CommandContext) {
                 components: [
                     new Container().setComponents(
                         new TextDisplay().setContent(translations.NO_STATUS_AP),
+
+                        ...(help ? [
+                            new Separator(),
+                            new TextDisplay().setContent(translations.AP_SYNTAX.replace("{{ aiap }}", (await getOAuthConsents(ctx.author.id)).map(v => v.metadata?.aaid).join("|")))
+                        ] : [])
                     ),
                 ],
                 flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -86,20 +92,21 @@ export async function runStatusCommand(ctx: CommandContext) {
                 colorifyContainer(
                     currentAlter === null ? undefined : currentAlter.color,
                 ).setComponents(
-                    new TextDisplay().setContent(
-                        translations[
-                            currentAp?.autoproxyMode !== "alter" &&
-                                currentAp?.autoproxyMode !== "latch" &&
-                                currentAp?.autoproxyMode !== "off" ? "INTEGRATION_AP" : "STATUS_AP"].replace(
-                                    "{{ mode }}",
-                                    currentAp?.autoproxyMode === "latch"
-                                        ? translations.LATCH_NAME
-                                        : currentAp?.autoproxyMode === "alter"
-                                            ? translations.ALTER_NAME
-                                            : (integration?.name ?? currentAp?.autoproxyMode ?? ""),
-                                ),
-                    ),
-                    new Separator(),
+                    ...(currentAp !== undefined ? [
+                        new TextDisplay().setContent(
+                            translations[
+                                currentAp?.autoproxyMode !== "alter" &&
+                                    currentAp?.autoproxyMode !== "latch" &&
+                                    currentAp?.autoproxyMode !== "off" ? "INTEGRATION_AP" : "STATUS_AP"].replace(
+                                        "{{ mode }}",
+                                        currentAp?.autoproxyMode === "latch"
+                                            ? translations.LATCH_NAME
+                                            : currentAp?.autoproxyMode === "alter"
+                                                ? translations.ALTER_NAME
+                                                : (integration?.name ?? currentAp?.autoproxyMode ?? ""),
+                                    ),
+                        ),
+                        new Separator(),] : []),
                     new TextDisplay().setContent(
                         currentAp?.autoproxyMode !== "alter" &&
                             currentAp?.autoproxyMode !== "latch" &&
@@ -115,6 +122,10 @@ export async function runStatusCommand(ctx: CommandContext) {
                                 false,
                             )
                         )[0]?.components ?? [])),
+                    ...(help ? [
+                        new Separator(),
+                        new TextDisplay().setContent(translations.AP_SYNTAX.replace("{{ aiap }}", (await getOAuthConsents(ctx.author.id)).map(v => v.metadata?.aaid).join("|")))
+                    ] : [])
                 ),
             ],
 

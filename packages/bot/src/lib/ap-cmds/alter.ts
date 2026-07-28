@@ -16,7 +16,7 @@ import {
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
-const options = {
+export const alterOptions = {
 	alter: createStringOption({
 		description: "The alter to automatically proxy.",
 		autocomplete: autocompleteAlters,
@@ -24,98 +24,88 @@ const options = {
 	}),
 };
 
-@Declare({
-	name: "alter",
-	description: "Use alter mode in auto-proxy",
-	aliases: ["a"],
-	contexts: ["Guild"],
-	ignore: IgnoreCommand.Message
-})
-@Options(options)
-export default class AlterProxyMode extends SubCommand {
-	override async run(ctx: CommandContext<typeof options>) {
-		await ctx.deferReply(true);
-		const { alter: alterName } = ctx.options;
+export async function runAlterCommand(ctx: CommandContext<typeof alterOptions>) {
+	await ctx.deferReply(true);
+	const { alter: alterName } = ctx.options;
 
-		const systemId = ctx.author.id;
-		const query = Number.isNaN(Number.parseInt(alterName))
-			? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
-			: alterCollection.findOne({
-				$or: [{ username: alterName }, { alterId: Number(alterName) }],
-				systemId,
-			});
-		const alter = await query;
-		const { system } = await ctx.retrievePUser();
+	const systemId = ctx.author.id;
+	const query = Number.isNaN(Number.parseInt(alterName))
+		? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
+		: alterCollection.findOne({
+			$or: [{ username: alterName }, { alterId: Number(alterName) }],
+			systemId,
+		});
+	const alter = await query;
+	const { system } = await ctx.retrievePUser();
 
-		if (alter === null || system === undefined) {
-			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
-					"ERROR_ALTER_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
-
-		const guild = await ctx.guild();
-
-		if (guild === undefined) {
-			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
-					"DN_ERROR_SE",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
-
-		const existingGuildPolicies = system.systemAutoproxy.some(
-			(ap) => ap.serverId === guild.id,
-		);
-
-		if (existingGuildPolicies) {
-			await userCollection.updateOne(
-				{ userId: system.associatedUserId },
-				{
-					$set: {
-						"system.systemAutoproxy.$[serverEntry].autoproxyMode": "alter",
-						"system.systemAutoproxy.$[serverEntry].autoproxyAlter":
-							alter.alterId.toString(),
-					},
-				},
-				{
-					arrayFilters: [{ "serverEntry.serverId": ctx.guildId }],
-				},
-			);
-		} else {
-			// Append a new mapping to the nameMap array
-			await userCollection.updateOne(
-				{ userId: system.associatedUserId },
-				{
-					$push: {
-						"system.systemAutoproxy": {
-							autoproxyMode: "alter",
-							autoproxyAlter: alter.alterId.toString(),
-							serverId: ctx.guildId
-						} satisfies Partial<PAutoProxy>,
-					},
-				},
-			);
-		}
-
-		await sendAutoproxyOperationDM(
-			system,
-			guild,
-			(await ctx.userTranslations()),
-			"discord",
-			"alter",
-		);
-
+	if (alter === null || system === undefined) {
 		return await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).successViewCustom(
-				((await ctx.userTranslations()))
-					.SET_AUTO_PROXY.replaceAll("%server_name%", guild.name)
-					.replaceAll("%mode%", "alter"),
+			components: new AlertView((await ctx.userTranslations())).errorView(
+				"ERROR_ALTER_DOESNT_EXIST",
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
 	}
+
+	const guild = await ctx.guild();
+
+	if (guild === undefined) {
+		return await ctx.editResponse({
+			components: new AlertView((await ctx.userTranslations())).errorView(
+				"DN_ERROR_SE",
+			),
+			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+		});
+	}
+
+	const existingGuildPolicies = system.systemAutoproxy.some(
+		(ap) => ap.serverId === guild.id,
+	);
+
+	if (existingGuildPolicies) {
+		await userCollection.updateOne(
+			{ userId: system.associatedUserId },
+			{
+				$set: {
+					"system.systemAutoproxy.$[serverEntry].autoproxyMode": "alter",
+					"system.systemAutoproxy.$[serverEntry].autoproxyAlter":
+						alter.alterId.toString(),
+				},
+			},
+			{
+				arrayFilters: [{ "serverEntry.serverId": ctx.guildId }],
+			},
+		);
+	} else {
+		// Append a new mapping to the nameMap array
+		await userCollection.updateOne(
+			{ userId: system.associatedUserId },
+			{
+				$push: {
+					"system.systemAutoproxy": {
+						autoproxyMode: "alter",
+						autoproxyAlter: alter.alterId.toString(),
+						serverId: ctx.guildId
+					} satisfies Partial<PAutoProxy>,
+				},
+			},
+		);
+	}
+
+	await sendAutoproxyOperationDM(
+		system,
+		guild,
+		(await ctx.userTranslations()),
+		"discord",
+		"alter",
+	);
+
+	return await ctx.editResponse({
+		components: new AlertView((await ctx.userTranslations())).successViewCustom(
+			((await ctx.userTranslations()))
+				.SET_AUTO_PROXY.replaceAll("%server_name%", guild.name)
+				.replaceAll("%mode%", "alter"),
+		),
+		flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+	});
 }
