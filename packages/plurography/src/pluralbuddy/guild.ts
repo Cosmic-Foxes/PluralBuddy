@@ -28,7 +28,8 @@ export enum GuildFlags {
 	FORCED_NICKNAME_MODE = 1 << 7,
 	LOGGING = 1 << 8,
 	DISABLE_PERMISSION_CHECK = 1 << 9,
-	DISABLE_PROXY_TYPING = 1 << 10
+	DISABLE_PROXY_TYPING = 1 << 10,
+	SILENT_PROXYING = 1 << 11,
 }
 
 export const PGuildObject = z
@@ -114,6 +115,8 @@ export const PGuildObject = z
 			disabledPermissionCheck:
 				(data.flags & GuildFlags.DISABLE_PERMISSION_CHECK) !== 0,
 			logging: (data.flags & GuildFlags.LOGGING) !== 0,
+			silentProxying: 
+				(data.flags & GuildFlags.SILENT_PROXYING) !== 0,
 
 			has: (flag: GuildFlags) => (data.flags & flag) !== 0,
 			disable: (flag: GuildFlags) =>
@@ -202,5 +205,9 @@ export const friendlyFeatureIndex: Record<
 	DISABLE_PROXY_TYPING: {
 		title: "Disable Proxy Typing",
 		description: "By default, PluralBuddy types in the channel after a message is proxied. Enabling this feature will disable proxy typing."
+	},
+	SILENT_PROXYING: {
+		title: "Silent Proxying",
+		description: "PluralBuddy double pings when a user reply pings. If this feature is enabled, all messages will be silent proxied messages, and so users will only be pinged at most once when reply pinged."
 	}
 };
