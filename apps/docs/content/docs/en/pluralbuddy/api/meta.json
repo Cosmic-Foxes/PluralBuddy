@@ -2,19 +2,19 @@
   "title": "API References",
   "pages": [
     "auth",
-    "ai-ap",
     "alter-update/post",
-    "v1/stats/get",
     "tag-update/post",
+    "v1/stats/get",
     "v1/messages/id/get",
+    "v1/users/user/front/post",
     "v1/users/user/system/get",
-    "v1/users/user/alters/alter/get",
     "v1/users/user/tags/tag/get",
-    "v1/users/user/system/list-alters/get",
     "v1/users/user/system/list-tags/get",
+    "v1/users/user/system/list-alters/get",
     "v1/users/user/system/edit/post",
-    "v1/users/user/alters/alter/edit/post",
-    "v1/users/user/tags/tag/edit/post"
+    "v1/users/user/alters/alter/get",
+    "v1/users/user/tags/tag/edit/post",
+    "v1/users/user/alters/alter/edit/post"
   ],
   "icon": "Notebook"
 }
