@@ -93,7 +93,7 @@ export async function POST(
 			{
 				errors: [
 					{
-						type: "no-alter",
+						type: "unknown-alter",
 						friendly: "Unable to find the specific alter.",
 					},
 				],
