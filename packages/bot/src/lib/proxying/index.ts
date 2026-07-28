@@ -136,41 +136,41 @@ export async function proxy(
 							new AttachmentBuilder().setFile("buffer", c.buff).setName(c.name),
 						),
 						allowed_mentions:
-							message.referencedMessage &&
-							!message.mentions.users
-								.map((v) => v.id)
-								.includes(message.referencedMessage.author.id)
+							(message.referencedMessage &&
+								!message.mentions.users
+									.map((v) => v.id)
+									.includes(message.referencedMessage.author.id)) || guild.getFeatures().silentProxying
 								? {
-										parse: [],
-									}
+									parse: [],
+								}
 								: {
-										parse: ["users"],
-									},
+									parse: ["users"],
+								},
 						embeds:
 							components.length === 0
 								? [
-										await (async () => {
-											const author = await client.users.fetch(systemId, true);
+									await (async () => {
+										const author = await client.users.fetch(systemId, true);
 
-											return new Embed()
-												.setDescription(
-													"This message was unable to be rendered using Components V2 components. This message is not proxy-able.",
-												)
-												.setColor("Red")
-												.setTitle(
-													`${emojis.x}   Unable to render this message.`,
-												)
-												.setAuthor({
-													name: author.name,
-													iconUrl: author.avatarURL(),
-												})
-												.setFooter({
-													text: "Unable to proxy this message",
-													iconUrl:
-														"https://pb.giftedly.dev/image/pfp.png",
-												});
-										})(),
-									]
+										return new Embed()
+											.setDescription(
+												"This message was unable to be rendered using Components V2 components. This message is not proxy-able.",
+											)
+											.setColor("Red")
+											.setTitle(
+												`${emojis.x}   Unable to render this message.`,
+											)
+											.setAuthor({
+												name: author.name,
+												iconUrl: author.avatarURL(),
+											})
+											.setFooter({
+												text: "Unable to proxy this message",
+												iconUrl:
+													"https://pb.giftedly.dev/image/pfp.png",
+											});
+									})(),
+								]
 								: [],
 					},
 					query: {
@@ -209,7 +209,7 @@ export async function proxy(
 								).arrayBuffer();
 
 								color = (await getColor(image))?.hex() ?? "Green";
-							} catch (_) {}
+							} catch (_) { }
 
 							await client.messages
 								.write(guild.logChannel, {
@@ -230,31 +230,30 @@ export async function proxy(
 													.setAccessory(
 														new Thumbnail().setMedia(
 															(alter?.avatarUrlMap ?? {})[
-																sentMessage?.guildId ?? ""
+															sentMessage?.guildId ?? ""
 															] ??
-																alter?.avatarUrl ??
-																"https://cdn.discordapp.com/embed/avatars/0.png",
+															alter?.avatarUrl ??
+															"https://cdn.discordapp.com/embed/avatars/0.png",
 														),
 													),
 												new Separator().setSpacing(Spacing.Large),
 												new TextDisplay().setContent(`-# Sent by system/user \`${systemId}\`, by alter \`${alterId}\`
 -# Mention: @${user.username} (<@${systemId}>)
--# Alter Mention: @${alter?.username} (${alter?.nameMap.find((c) => c.server === guild.guildId)?.name ?? alter?.username})${
-													message.messageReference !== undefined
+-# Alter Mention: @${alter?.username} (${alter?.nameMap.find((c) => c.server === guild.guildId)?.name ?? alter?.username})${message.messageReference !== undefined
 														? `
 -# Reply: https://discord.com/channels/${message.messageReference.guildId ?? "@me"}/${message.messageReference.channelId}/${message.messageReference.messageId}`
 														: ""
-												}
+													}
 -# Proxied message as: \`${message.id}\` → \`${sentMessage?.id ?? "Unknown"}\`
 -# Sent at: <t:${Math.floor(Date.now() / 1000)}:f>`),
 												...(message.referencedMessage
 													? [
-															new Separator(),
-															new TextDisplay().setContent("-# **REFERENCED MESSAGE**"),
-															new TextDisplay().setContent(`-# Message author: <@${message.referencedMessage.author.id}>
+														new Separator(),
+														new TextDisplay().setContent("-# **REFERENCED MESSAGE**"),
+														new TextDisplay().setContent(`-# Message author: <@${message.referencedMessage.author.id}>
 -# Message ID: [${message.referencedMessage.id}](https://discord.com/channels/${message.guildId ?? "@me"}/${message.channelId}/${message.referencedMessage.id})
 -# Message contents: ${message.referencedMessage.content.slice(0, 1000)}`),
-														]
+													]
 													: []),
 											)
 											.setColor(color as `#${string}` | "Green"),
