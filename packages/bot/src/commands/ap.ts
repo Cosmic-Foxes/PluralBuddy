@@ -1,4 +1,13 @@
-import { Command, CommandContext, Declare, IgnoreCommand } from "seyfert";
+import { runStatusCommand } from "@/lib/ap-cmds/status";
+import { AlertView } from "@/views/alert";
+import { Command, CommandContext, createStringOption, Declare, IgnoreCommand, Options } from "seyfert";
+
+const options = {
+    args: createStringOption({
+        description: "",
+        required: false
+    })
+}
 
 @Declare({
     name: "autoproxy",
@@ -7,8 +16,14 @@ import { Command, CommandContext, Declare, IgnoreCommand } from "seyfert";
     contexts: ["Guild"],
     ignore: IgnoreCommand.Slash
 })
+@Options(options)
 export default class AutoProxyCommand extends Command { 
-    override run(context: CommandContext) {
-        console.log("run")
+    override async run(ctx: CommandContext<typeof options>) {
+        const { args } = ctx.options;
+        const translations = await ctx.userTranslations()
+
+        if (!args || args.replaceAll(" ", '') === "" || args.split(" ")[0] === "status") {
+            return await runStatusCommand(ctx);
+        }
     }
 }
