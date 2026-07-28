@@ -13,7 +13,7 @@ export async function language<T extends boolean | undefined>(id: string, noCach
 				return null as T extends true ? null | string : string;
 			data = (await getUserById(id)).userLang ?? "en";
 			try {
-				await client.cache.i18n.set(CacheFrom.Gateway, id, { l: data });
+				await client.cache.i18n.set(CacheFrom.Gateway, id, { l: data! });
 				langMemoryCache[id] = data;
 
 			} catch (e) {
