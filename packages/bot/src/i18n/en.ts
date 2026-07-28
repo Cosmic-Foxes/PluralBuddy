@@ -377,6 +377,8 @@ PluralBuddy uses a **username/display name** system.
 	TAG_ASSIGN_ALTER: "Assign Tag",
 	SET_AUTO_PROXY:
 		"Successfully set proxy mode to **%mode%** for your system in **%server_name%**.",
+	SET_AUTO_PROXY_CUSTOM:
+		"Successfully changed control of your proxy mode to **%app%** in **%server_name%**. **%app%** will be able to control your front state until you disable this auto proxy mode.",
 	SET_AUTO_PROXY_DMS:
 		"Successfully set proxy mode to **%mode%** for your system in that server.",
 	TAG_ALREADY_ASSIGNED: "**%tag%** has already been assigned to **@%alter%.",
@@ -816,5 +818,9 @@ Hit the button to the right to open this alter in the dashboard.`,
 Your system is currently auto proxying in **{{ mode }}**.`,
 	NO_STATUS_AP: `You are not currently auto proxying in this server.`,
 	NO_ALTER_AP: `Your auto proxy is not currently attached to an alter.`,
-	AP_AS: "-# **AUTO-PROXYING AS:**"
+	AP_AS: "-# **AUTO-PROXYING AS:**",
+
+	PROVIDER_NOT_FOUND: `That auto-proxy provider was not found, or you didn't authorize with the [\`system:ai-ap\`](https://pb.giftedly.dev/docs/pluralbuddy/ai-ap) scope. Contact the developer of this integration if you believe this is incorrect.
+	
+-# Integration: \`{{ id }}\``
 }

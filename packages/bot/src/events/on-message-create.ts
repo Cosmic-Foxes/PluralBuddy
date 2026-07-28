@@ -24,7 +24,7 @@ import {
 	type RESTPostAPIWebhookWithTokenQuery,
 } from "seyfert/lib/types";
 import { getUserById } from "../types/user";
-import { alterCollection, errorCollection } from "../mongodb";
+import { alterCollection, errorCollection, frontsCollection } from "../mongodb";
 import { AlertView } from "@/views/alert";
 import {
 	performTagProxy,
@@ -221,14 +221,28 @@ export default createEvent({
 
 		if (
 			user.system.systemAutoproxy.some(
-				(ap) => ap.autoproxyMode === "alter" && ap.serverId === message.guildId,
+				(ap) => (ap.autoproxyMode !== "latch" && ap.autoproxyMode !== "off") && ap.serverId === message.guildId,
 			)
 		) {
 			startTimer(`proxy: pre-system autoproxy (${message.id})`)
 
-			const alter = user.system.systemAutoproxy.find(
+			let alter = user.system.systemAutoproxy.find(
 				(ap) => ap.autoproxyMode === "alter" && ap.serverId === message.guildId,
 			)?.autoproxyAlter;
+
+			if (!alter) {
+				// Check for AI/AP
+
+				const ap = user.system.systemAutoproxy.find(
+					(ap) => ap.autoproxyMode !== "alter" && ap.serverId === message.guildId,
+				);
+				const fronts = await frontsCollection.findOne({ aiapId: ap?.autoproxyMode, systemId: message.author.id })
+				
+				if (fronts?.alterId) {
+					alter = fronts.alterId
+				}
+				
+			}
 
 			if (message.content.startsWith("\\")) {
 				return;
