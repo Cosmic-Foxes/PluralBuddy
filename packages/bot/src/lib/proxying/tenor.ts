@@ -9,7 +9,7 @@ export function extractTenorId(url: string): string | null {
 export async function getGifLink(url: string) {
     const meta = await fetch(
         `${process.env.LINK_SCRAPER_API}?url=${encodeURIComponent(url)}`,
-        { signal: AbortSignal.timeout(3000) },
+        { signal: AbortSignal.timeout(5000) },
     );
     const json = (await meta.json()) as Record<string, unknown>;
 
