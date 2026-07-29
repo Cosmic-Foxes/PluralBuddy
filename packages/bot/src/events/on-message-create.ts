@@ -466,6 +466,8 @@ export default createEvent({
 				setLastLatchAlter(guild.guildId, user.system);
 				return;
 			}
+			if (message.content.startsWith("\\"))
+				return;
 
 			const currentAutoProxyPolicy = user.system.systemAutoproxy.find(
 				(ap) => ap.autoproxyMode === "latch" && ap.serverId === message.guildId,
