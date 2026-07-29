@@ -226,7 +226,7 @@ export default createEvent({
 				(ap) => ap.autoproxyMode === "alter" && ap.serverId === message.guildId,
 			)?.autoproxyAlter;
 
-			if (message.content.startsWith("\\")) {
+			if (message.content.startsWith("\\\\")) {
 				return;
 			}
 
