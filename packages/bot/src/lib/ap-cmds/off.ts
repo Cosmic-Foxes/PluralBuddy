@@ -37,7 +37,6 @@ export async function runOffCommand(ctx: CommandContext) {
 		{
 			$pull: {
 				"system.systemAutoproxy": {
-					autoproxyMode: "off",
 					serverId: ctx.guildId
 				} satisfies Partial<PAutoProxy>,
 			},

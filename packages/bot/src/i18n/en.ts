@@ -820,6 +820,7 @@ Your system is currently auto proxying in **{{ mode }}**.`,
 Your system is using the front state of **{{ mode }}**.`,
 	NO_STATUS_AP: `You are not currently auto proxying in this server.`,
 	NO_ALTER_AP: `Your auto proxy is not currently attached to an alter.`,
+	DISABLED_SERVER: `This server is disabled from proxying.`,
 	AP_AS: "-# **AUTO-PROXYING AS:**",
 	AP_INTEGRATION_AS: "-# **{{ provider }} FRONTING AS:**", 
 
@@ -835,5 +836,11 @@ Your system is using the front state of **{{ mode }}**.`,
 **Auto-proxy Usage:**
 \`pb;autoproxy [off|latch|alter|status|{{ aiap }}]\``,
 	AP_SYNTAX: `**Auto-proxy Usage:**
-\`pb;autoproxy [off|latch|alter|status|{{ aiap }}]\``
+\`pb;autoproxy [off|latch|alter|status|{{ aiap }}]\``,
+
+	SUCCESS_DISABLE_GUILD: "Successfully disabled proxying in **{{ guild }}**.",
+	SUCCESS_ENABLE_GUILD: "Successfully enabled proxying in **{{ guild }}**.",
+
+	PROXYING_ALREADY_ENABLED: "Proxying was already enabled in this server.",
+	PROXYING_ALREADY_DISABLED: "Proxying was already disabled in this server.",
 }
