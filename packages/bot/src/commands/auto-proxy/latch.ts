@@ -22,6 +22,14 @@ const options = {
 		description: "The alter to latch onto first.",
 		autocomplete: autocompleteAlters,
 	}),
+	scope: createStringOption({
+		description: "Where to use this auto-proxy mode. Default server-wide.",
+		choices: [
+			{ name: "Globally", value: "global" },
+			{ name: "Server-wide", value: "server" },
+			{ name: "Channel-wide", value: "channels" }
+		]
+	})
 };
 
 @Declare({

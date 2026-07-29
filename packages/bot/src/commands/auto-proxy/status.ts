@@ -5,6 +5,7 @@ import { AlterView } from "@/views/alters";
 import {
     CommandContext,
     Container,
+    createStringOption,
     Declare,
     IgnoreCommand,
     Options,
@@ -15,6 +16,17 @@ import {
 import type { ColorResolvable } from "seyfert/lib/common";
 import { MessageFlags } from "seyfert/lib/types";
 
+const options = {
+    scope: createStringOption({
+        description: "Where to use this auto-proxy mode.",
+        choices: [
+            { name: "Globally", value: "global" },
+            { name: "Server-wide", value: "server" },
+            { name: "Channel-wide", value: "channels" },
+        ],
+    }),
+};
+
 @Declare({
     name: "status",
     description: "Get the status of the current auto-proxy",
@@ -22,8 +34,9 @@ import { MessageFlags } from "seyfert/lib/types";
     contexts: ["Guild"],
     ignore: IgnoreCommand.Message
 })
+@Options(options)
 export default class StatusAutoProxy extends SubCommand {
-    override async run(ctx: CommandContext) {
+    override async run(ctx: CommandContext<typeof options>) {
         return await runStatusCommand(ctx, false);
     }
 }

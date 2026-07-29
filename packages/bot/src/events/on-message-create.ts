@@ -52,6 +52,7 @@ import { latencyDataPoints } from "@/analytics";
 import { handleDMReply } from "@/lib/proxying/dm-replying";
 import { getLanguageByUserId } from "@/lib/lang";
 import { endTimer, startTimer } from "@/lib/timings";
+import { getWiderAutoProxy } from "@/lib/autoproxy-util";
 
 export const indexingMap: Record<string, NodeJS.Timeout> = {};
 export const indexingMessageMap: Record<string, Message> = {};
@@ -218,32 +219,28 @@ export default createEvent({
 		if (user.system.disabled) return;
 		if (user.system.disabledGuilds.includes(message.guildId ?? ""))
 			return;
+		if (!message.guildId)
+			return;
+
+		const apMode = getWiderAutoProxy(user.system, message.guildId, message.channelId)
 
 		endTimer(`proxy: data-gathering (${message.id})`)
 
-		if (
-			user.system.systemAutoproxy.some(
-				(ap) => (ap.autoproxyMode !== "latch" && ap.autoproxyMode !== "off") && ap.serverId === message.guildId,
-			)
+		if (apMode.autoproxyMode !== "latch" && apMode.autoproxyMode !== "off"
 		) {
 			startTimer(`proxy: pre-system autoproxy (${message.id})`)
 
-			let alter = user.system.systemAutoproxy.find(
-				(ap) => ap.autoproxyMode === "alter" && ap.serverId === message.guildId,
-			)?.autoproxyAlter;
+			let alter = apMode.autoproxyAlter;
 
-			if (!alter) {
+			if (apMode.autoproxyMode !== "alter" && !alter) {
 				// Check for AI/AP
 
-				const ap = user.system.systemAutoproxy.find(
-					(ap) => ap.autoproxyMode !== "alter" && ap.serverId === message.guildId,
-				);
-				const fronts = await frontsCollection.findOne({ aiapId: ap?.autoproxyMode, systemId: message.author.id })
-				
+				const fronts = await frontsCollection.findOne({ aiapId: apMode?.autoproxyMode, systemId: message.author.id })
+
 				if (fronts?.alterId) {
 					alter = fronts.alterId
 				}
-				
+
 			}
 
 			if (message.content.startsWith("\\")) {
@@ -425,7 +422,7 @@ export default createEvent({
 								((user.system?.displayTagMap ?? {})[message.guildId] ??
 									user.system.systemDisplayTag) === null)
 						) {
-			endTimer(`proxy: bruteforce proxy (${message.id})`)
+							endTimer(`proxy: bruteforce proxy (${message.id})`)
 							createProxyError(user, message, {
 								title: locale.DISPLAY_TAG_ENFORCE,
 								description: locale.DISPLAY_TAG_ENFORCE_DESC,
@@ -446,12 +443,12 @@ export default createEvent({
 
 
 						if (!(await blockedRole(guild, locale, message))) {
-			endTimer(`proxy: bruteforce proxy (${message.id})`)
+							endTimer(`proxy: bruteforce proxy (${message.id})`)
 							removeFromMap();
 							return;
 						}
 						if (!(await blockedChannel(guild, locale, message))) {
-			endTimer(`proxy: bruteforce proxy (${message.id})`)
+							endTimer(`proxy: bruteforce proxy (${message.id})`)
 							removeFromMap();
 							return;
 						}
@@ -476,9 +473,7 @@ export default createEvent({
 		}
 
 		if (
-			user.system.systemAutoproxy.some(
-				(ap) => ap.autoproxyMode === "latch" && ap.serverId === message.guildId,
-			)
+			apMode.autoproxyMode === "latch"
 		) {
 			startTimer(`proxy: latch proxy (${message.id})`)
 
@@ -487,15 +482,11 @@ export default createEvent({
 				return;
 			}
 
-			const currentAutoProxyPolicy = user.system.systemAutoproxy.find(
-				(ap) => ap.autoproxyMode === "latch" && ap.serverId === message.guildId,
-			);
-
 			const HOUR = 3_600_000;
 
 			if (user.system.latchExpiration)
 				if (
-					(currentAutoProxyPolicy?.lastLatchTimestamp?.getTime() ??
+					(apMode?.lastLatchTimestamp?.getTime() ??
 						Date.now()) +
 					user.system.latchExpiration <
 					Date.now()
@@ -504,7 +495,7 @@ export default createEvent({
 					return;
 				}
 
-			const alter = currentAutoProxyPolicy?.autoproxyAlter;
+			const alter = apMode?.autoproxyAlter;
 
 			if (alter) {
 				const fetchedAlter = await alterCollection.findOne({
@@ -519,7 +510,7 @@ export default createEvent({
 					if (!(await blockedRole(guild, locale, message, true))) return;
 					if (!(await blockedChannel(guild, locale, message, true))) return;
 
-			endTimer(`proxy: latch proxy (${message.id})`)
+					endTimer(`proxy: latch proxy (${message.id})`)
 					performAlterAutoProxy(
 						message,
 						similarWebhooks,

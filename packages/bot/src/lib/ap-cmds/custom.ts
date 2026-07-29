@@ -5,6 +5,7 @@ import { AlertView } from "@/views/alert";
 import type { PAutoProxy } from "plurography";
 import { CommandContext, Container, createStringOption, Declare, IgnoreCommand, Options, SubCommand } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { getCorrectLabel } from "../autoproxy-util";
 
 export const customOptions = {
     provider: createStringOption({
@@ -21,6 +22,14 @@ export const customOptions = {
 
             )
         }
+    }),
+    scope: createStringOption({
+        description: "Where to use this auto-proxy mode. Default server-wide.",
+        choices: [
+            { name: "Globally", value: "global" },
+            { name: "Server-wide", value: "server" },
+            { name: "Channel-wide", value: "channels" }
+        ]
     })
 }
 
@@ -62,9 +71,14 @@ export async function runCustomProviderCommand(ctx: CommandContext<typeof custom
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
         })
     }
-
+    
+    const label = getCorrectLabel (
+        (ctx.options.scope as "server" | "global" | "channels") ?? "server",
+        guild.id,
+        ctx.channelId,
+    );
     const existingGuildPolicies = system.systemAutoproxy.some(
-        (ap) => ap.serverId === guild.id,
+        (ap) => ap.serverId === label,
     );
 
 
@@ -78,7 +92,7 @@ export async function runCustomProviderCommand(ctx: CommandContext<typeof custom
                 },
             },
             {
-                arrayFilters: [{ "serverEntry.serverId": ctx.guildId }],
+                arrayFilters: [{ "serverEntry.serverId": label }],
             },
         );
     } else {
@@ -107,8 +121,12 @@ export async function runCustomProviderCommand(ctx: CommandContext<typeof custom
 
     return await ctx.editResponse({
         components: new AlertView((await ctx.userTranslations())).successViewCustom(
-            ((await ctx.userTranslations()))
-                .SET_AUTO_PROXY_CUSTOM.replaceAll("%server_name%", guild.name)
+            ((await ctx.userTranslations()))[
+				ctx.options.scope !== "global"
+					? "SET_AUTO_PROXY_CUSTOM"
+					: "SET_AUTO_PROXY_CUSTOM_GLOBAL"
+			].replaceAll("%server_name%", 
+					ctx.options.scope !== "server" ? `<#${ctx.channelId}>` : guild.name)
                 .replaceAll("%app%", providerApp.name ?? providerApp.metadata.aaid),
         ),
         flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,

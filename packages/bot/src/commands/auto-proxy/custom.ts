@@ -22,7 +22,15 @@ const options = {
 
             )
         }
-    })
+    }),
+	scope: createStringOption({
+		description: "Where to use this auto-proxy mode. Default server-wide.",
+		choices: [
+			{ name: "Globally", value: "global" },
+			{ name: "Server-wide", value: "server" },
+			{ name: "Channel-wide", value: "channels" }
+		]
+	})
 }
 
 @Declare({

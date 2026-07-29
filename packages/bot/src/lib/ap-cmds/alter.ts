@@ -15,6 +15,7 @@ import {
 	IgnoreCommand,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { getCorrectLabel } from "../autoproxy-util";
 
 export const alterOptions = {
 	alter: createStringOption({
@@ -22,9 +23,19 @@ export const alterOptions = {
 		autocomplete: autocompleteAlters,
 		required: true,
 	}),
+	scope: createStringOption({
+		description: "Where to use this auto-proxy mode.",
+		choices: [
+			{ name: "Globally", value: "global" },
+			{ name: "Server-wide", value: "server" },
+			{ name: "Channel-wide", value: "channels" },
+		],
+	}),
 };
 
-export async function runAlterCommand(ctx: CommandContext<typeof alterOptions>) {
+export async function runAlterCommand(
+	ctx: CommandContext<typeof alterOptions>,
+) {
 	await ctx.deferReply(true);
 	const { alter: alterName } = ctx.options;
 
@@ -32,15 +43,15 @@ export async function runAlterCommand(ctx: CommandContext<typeof alterOptions>) 
 	const query = Number.isNaN(Number.parseInt(alterName))
 		? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
 		: alterCollection.findOne({
-			$or: [{ username: alterName }, { alterId: Number(alterName) }],
-			systemId,
-		});
+				$or: [{ username: alterName }, { alterId: Number(alterName) }],
+				systemId,
+			});
 	const alter = await query;
 	const { system } = await ctx.retrievePUser();
 
 	if (alter === null || system === undefined) {
 		return await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).errorView(
+			components: new AlertView(await ctx.userTranslations()).errorView(
 				"ERROR_ALTER_DOESNT_EXIST",
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -51,15 +62,20 @@ export async function runAlterCommand(ctx: CommandContext<typeof alterOptions>) 
 
 	if (guild === undefined) {
 		return await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).errorView(
+			components: new AlertView(await ctx.userTranslations()).errorView(
 				"DN_ERROR_SE",
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
 	}
 
+	const label = getCorrectLabel(
+		(ctx.options.scope as "server" | "global" | "channels") ?? "server",
+		guild.id,
+		ctx.channelId,
+	);
 	const existingGuildPolicies = system.systemAutoproxy.some(
-		(ap) => ap.serverId === guild.id,
+		(ap) => ap.serverId === label,
 	);
 
 	if (existingGuildPolicies) {
@@ -73,7 +89,7 @@ export async function runAlterCommand(ctx: CommandContext<typeof alterOptions>) 
 				},
 			},
 			{
-				arrayFilters: [{ "serverEntry.serverId": ctx.guildId }],
+				arrayFilters: [{ "serverEntry.serverId": label }],
 			},
 		);
 	} else {
@@ -85,7 +101,7 @@ export async function runAlterCommand(ctx: CommandContext<typeof alterOptions>) 
 					"system.systemAutoproxy": {
 						autoproxyMode: "alter",
 						autoproxyAlter: alter.alterId.toString(),
-						serverId: ctx.guildId
+						serverId: label,
 					} satisfies Partial<PAutoProxy>,
 				},
 			},
@@ -95,15 +111,22 @@ export async function runAlterCommand(ctx: CommandContext<typeof alterOptions>) 
 	await sendAutoproxyOperationDM(
 		system,
 		guild,
-		(await ctx.userTranslations()),
+		await ctx.userTranslations(),
 		"discord",
 		"alter",
 	);
 
 	return await ctx.editResponse({
-		components: new AlertView((await ctx.userTranslations())).successViewCustom(
-			((await ctx.userTranslations()))
-				.SET_AUTO_PROXY.replaceAll("%server_name%", guild.name)
+		components: new AlertView(await ctx.userTranslations()).successViewCustom(
+			(await ctx.userTranslations())[
+				ctx.options.scope !== "global"
+					? "SET_AUTO_PROXY_SRV"
+					: "SET_AUTO_PROXY_GLOBAL"
+			]
+				.replaceAll(
+					"%server_name%",
+					ctx.options.scope !== "server" ? `<#${ctx.channelId}>` : guild.name,
+				)
 				.replaceAll("%mode%", "alter"),
 		),
 		flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,

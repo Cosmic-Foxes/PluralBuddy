@@ -15,11 +15,20 @@ import {
 	IgnoreCommand,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { getCorrectLabel } from "../autoproxy-util";
 
 export const latchOptions = {
 	"first-alter": createStringOption({
 		description: "The alter to latch onto first.",
 		autocomplete: autocompleteAlters,
+	}),
+	scope: createStringOption({
+		description: "Where to use this auto-proxy mode.",
+		choices: [
+			{ name: "Globally", value: "global" },
+			{ name: "Server-wide", value: "server" },
+			{ name: "Channel-wide", value: "channels" },
+		],
 	}),
 };
 
@@ -69,8 +78,13 @@ export async function runLatchCommand(ctx: CommandContext<typeof latchOptions>) 
 		});
 	}
 
+	const label = getCorrectLabel (
+		(ctx.options.scope as "server" | "global" | "channels") ?? "server",
+		guild.id,
+		ctx.channelId,
+	);
 	const existingGuildPolicies = system.systemAutoproxy.some(
-		(ap) => ap.serverId === guild.id,
+		(ap) => ap.serverId === label,
 	);
 
 	if (existingGuildPolicies) {
@@ -90,7 +104,7 @@ export async function runLatchCommand(ctx: CommandContext<typeof latchOptions>) 
 				},
 			},
 			{
-				arrayFilters: [{ "serverEntry.serverId": ctx.guildId }],
+				arrayFilters: [{ "serverEntry.serverId": label }],
 			},
 		);
 	} else {
@@ -106,7 +120,7 @@ export async function runLatchCommand(ctx: CommandContext<typeof latchOptions>) 
 								autoproxyAlter: alter.alterId.toString(),
 							}
 							: {}),
-						serverId: ctx.guildId,
+						serverId: label,
 					} satisfies Partial<PAutoProxy>,
 				},
 			},
@@ -123,8 +137,12 @@ export async function runLatchCommand(ctx: CommandContext<typeof latchOptions>) 
 
 	return await ctx.editResponse({
 		components: new AlertView((await ctx.userTranslations())).successViewCustom(
-			((await ctx.userTranslations()))
-				.SET_AUTO_PROXY.replaceAll("%server_name%", guild.name)
+			((await ctx.userTranslations()))[
+				ctx.options.scope !== "global"
+					? "SET_AUTO_PROXY_SRV"
+					: "SET_AUTO_PROXY_GLOBAL"
+			].replaceAll("%server_name%", 
+					ctx.options.scope !== "server" ? `<#${ctx.channelId}>` : guild.name)
 				.replaceAll("%mode%", "latch"),
 		),
 		flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
