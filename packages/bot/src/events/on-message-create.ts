@@ -226,7 +226,7 @@ export default createEvent({
 				(ap) => ap.autoproxyMode === "alter" && ap.serverId === message.guildId,
 			)?.autoproxyAlter;
 
-			if (message.content.startsWith("\\\\")) {
+			if (message.content.startsWith("\\")) {
 				return;
 			}
 
@@ -462,7 +462,7 @@ export default createEvent({
 		) {
 			startTimer(`proxy: latch proxy (${message.id})`)
 
-			if (message.content.startsWith("\\")) {
+			if (message.content.startsWith("\\\\")) {
 				setLastLatchAlter(guild.guildId, user.system);
 				return;
 			}
