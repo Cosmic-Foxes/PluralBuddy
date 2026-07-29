@@ -216,6 +216,8 @@ export default createEvent({
 		if (user.system === undefined) return;
 		if (user.blocked) { client.logger.info(`${message.id} ended because user was blocked`); return };
 		if (user.system.disabled) return;
+		if (user.system.disabledGuilds.includes(message.guildId ?? ""))
+			return;
 
 		endTimer(`proxy: data-gathering (${message.id})`)
 
