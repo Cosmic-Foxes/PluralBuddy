@@ -35,7 +35,7 @@ export default class EnableProxying extends SubCommand {
 			});
 		}
 
-		if (!system.disabledGuilds.includes(guild.id)) {
+		if (!(system.disabledGuilds ?? []).includes(guild.id)) {
 			return await ctx.editResponse({
 				components: [
 					...new AlertView(await ctx.userTranslations()).errorView(
