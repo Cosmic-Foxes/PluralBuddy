@@ -56,7 +56,6 @@ export const clientRoutes = app
 			const importStageCollection =
 				appDb.collection<ImportStage>("import-staging");
 			const importStage = await importStageCollection.findOne({
-				// @ts-ignore
 				"webhook.id": importStageId,
 			});
 
@@ -71,7 +70,9 @@ export const clientRoutes = app
 					{ status: 400 },
 				);
 
-			const input = ImportStagingValidation(importStage.response.dataType).safeParse(importStage.response.data);
+			const input = ImportStagingValidation(
+				importStage.response.dataType,
+			).safeParse(importStage.response.data);
 
 			if (input.error) {
 				return Response.json({ errors: input.error }, { status: 400 });
@@ -80,8 +81,6 @@ export const clientRoutes = app
 			const translations = await getLanguageByUserId(
 				importStage.originatingSystemId,
 			);
-
-
 
 			client.interactions
 				.editOriginal(importStage.webhook.token, {
@@ -133,6 +132,9 @@ export const clientRoutes = app
 					});
 				});
 
+			await importStageCollection.deleteOne({
+				"webhook.id": importStageId,
+			});
 			return json({ done: "Handed back off to the user." });
 		},
 	)

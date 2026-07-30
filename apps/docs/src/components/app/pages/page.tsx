@@ -6,9 +6,63 @@ import {
 } from "@/components/ui/breadcrumb";
 import { DynamicPageTitle } from "../dynamic-title";
 import { Card, CardContent } from "@/components/ui/card";
-import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from "@/components/ui/item";
+import {
+	Item,
+	ItemActions,
+	ItemContent,
+	ItemMedia,
+	ItemTitle,
+} from "@/components/ui/item";
 import { Link } from "react-router";
-import { BadgeCheckIcon, ChevronRightIcon, TrainFront, Webhook } from "lucide-react";
+import NextLink from "next/link";
+import {
+	BadgeCheckIcon,
+	ChevronRightIcon,
+	Code,
+	TrainFront,
+	Webhook,
+	Link2,
+	CircleUser,
+	Ban,
+	Info,
+	BookOpen,
+	SquareArrowOutUpRight,
+	ArrowUpRight,
+} from "lucide-react";
+import { Marker, MarkerContent } from "@/components/ui/marker";
+import { motion } from "motion/react";
+import { JSX, ReactElement } from "react";
+
+const pages = [
+	{ separate: "Account" },
+	{ title: "Profile", href: "/app/settings/account", icon: CircleUser },
+	{ title: "Social", href: "/app/settings/social", icon: Ban },
+	{
+		title: "Authorized Apps",
+		href: "/app/settings/authorized-apps",
+		icon: BadgeCheckIcon,
+	},
+	{ separate: "Developers" },
+	{ title: "Webhooks", href: "/app/settings/webhooks", icon: Webhook },
+	{
+		title: "OAuth Applications",
+		href: "/app/settings/developers-v2",
+		icon: Code,
+	},
+	{
+		title: "API Documentation",
+		href: "/docs/pluralbuddy/api",
+		icon: BookOpen,
+		external: true,
+	},
+	{ separate: "Product" },
+	{
+		title: "PluralBuddy Express",
+		href: "/app/settings/express",
+		icon: TrainFront,
+	},
+	{ title: "About PluralBuddy", href: "/app/settings/about", icon: Info },
+];
 
 export function IndexSettingsAppPage() {
 	return (
@@ -25,45 +79,48 @@ export function IndexSettingsAppPage() {
 					</Breadcrumb>
 				</CardContent>
 			</Card>
-			<Item variant="outline" size="sm" asChild>
-				<Link to="/app/settings/authorized-apps">
-					<ItemMedia>
-						<BadgeCheckIcon className="size-5" />
-					</ItemMedia>
-					<ItemContent>
-						<ItemTitle>Authorized Applications</ItemTitle>
-					</ItemContent>
-					<ItemActions>
-						<ChevronRightIcon className="size-4" />
-					</ItemActions>
-				</Link>
-			</Item>
-			<Item variant="outline" size="sm" asChild>
-				<Link to="/app/settings/express">
-					<ItemMedia>
-						<TrainFront className="size-5" />
-					</ItemMedia>
-					<ItemContent>
-						<ItemTitle>PluralBuddy Express</ItemTitle>
-					</ItemContent>
-					<ItemActions>
-						<ChevronRightIcon className="size-4" />
-					</ItemActions>
-				</Link>
-			</Item>
-			<Item variant="outline" size="sm" asChild>
-				<Link to="/app/settings/webhooks">
-					<ItemMedia>
-						<Webhook className="size-5" />
-					</ItemMedia>
-					<ItemContent>
-						<ItemTitle>Webhooks</ItemTitle>
-					</ItemContent>
-					<ItemActions>
-						<ChevronRightIcon className="size-4" />
-					</ItemActions>
-				</Link>
-			</Item>
+			{pages.map((page) =>
+				"separate" in page ? (
+					<Marker key={page.separate} variant="separator" className="mt-6">
+						<MarkerContent>{page.separate}</MarkerContent>
+					</Marker>
+				) : (
+					<PageBtn page={page} key={page.title} />
+				),
+			)}
 		</main>
 	);
+}
+
+function PageBtn({ page }: { page: (typeof pages)[2] }) {
+	const LinkComponent =
+		page.external === true
+			? ({ to, children }: { to: string; children: any }) => (
+					<NextLink href={to} className="w-full">{children}</NextLink>
+				)
+			: ({ to, children }: { to: string; children: any }) => (<Link to={to} className="w-full hover:bg-muted rounded-lg">{children}</Link>);
+
+	if (!("separate" in page))
+		return (
+			<LinkComponent to={page.href} >
+				<Item variant="outline" size="sm" key={page.title}> 
+					<ItemMedia>
+						<page.icon className="size-5" />
+					</ItemMedia>
+					<ItemContent>
+						<ItemTitle>{page.title}</ItemTitle>
+					</ItemContent>
+					<ItemActions>
+						<motion.div initial={{ x: 0 }} whileHover={{ x: 3 }}>
+							{page.external === true ? (
+								<ArrowUpRight className="size-4" />
+							) : (
+								<ChevronRightIcon className="size-4" />
+							)}
+						</motion.div>
+					</ItemActions>
+				</Item>
+			</LinkComponent>
+		);
+	return null;
 }

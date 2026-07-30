@@ -13,6 +13,7 @@ import { authClient } from "@/lib/auth-client";
 import { TRPCProvider } from "@/server/client";
 import { trpc } from "@/server/client-trpc";
 import {
+	QueryCache,
 	QueryClient,
 	QueryClientProvider,
 	useQueryClient,
@@ -34,12 +35,23 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { AppSettings } from "@/components/app/app-settings";
 import { IndexSettingsAppPage } from "@/components/app/pages/page";
 import WebhooksAppPage from "@/components/app/pages/webhooks/page";
+import { toast } from "sonner";
+import DeveloperApplications from "@/components/app/pages/applications/page";
+import { DynamicPageTitle, DynamicPageTitleRouterLess } from "@/components/app/dynamic-title";
+import SocialPage from "@/components/app/pages/social/page";
+import { AboutPage } from "@/components/app/pages/about/page";
+import ProfilePage from "@/components/app/pages/profile/page";
 
 declare global {
 	var trpcClient: ReturnType<typeof trpc.createClient>
 }
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: (error) =>
+      toast.error(`Something went wrong: ${error.message}`),
+  })
+});
 
 export default function PluralBuddyApp() {
 	const { data: session, isPending } = authClient.useSession();
@@ -64,6 +76,7 @@ export default function PluralBuddyApp() {
 					<Spinner />
 				</span>
 
+				<DynamicPageTitleRouterLess title="|˶˙ᵕ˙ )ﾉﾞ Loading PluralBuddy"/>
 				<span className="text-sm pt-2">Loading app...</span>
 			</div>
 		);
@@ -98,8 +111,16 @@ export default function PluralBuddyApp() {
 										element={<IndexSettingsAppPage />}
 									/>
 									<Route
+										path="/app/settings/account"
+										element={<ProfilePage />}
+									/>
+									<Route
 										path="/app/settings/authorized-apps"
 										element={<AuthorizedAppsPage />}
+									/>
+									<Route
+										path="/app/settings/social"
+										element={<SocialPage />}
 									/>
 									<Route
 										path="/app/settings/webhooks"
@@ -112,6 +133,14 @@ export default function PluralBuddyApp() {
 									<Route
 										path="/app/settings/express"
 										element={<ExpressList />}
+									/>
+									<Route
+										path="/app/settings/developers-v2"
+										element={<DeveloperApplications />}
+									/>
+									<Route
+										path="/app/settings/about"
+										element={<AboutPage />}
 									/>
 								</Route>
 								<Route

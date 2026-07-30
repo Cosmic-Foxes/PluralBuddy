@@ -14,6 +14,7 @@
 	},
 	"workspaces": ["packages/*", "apps/*"],
 	"dependencies": {
+		"@xyflow/react": "^12.11.2",
 		"posthog-node": "^5.24.17"
 	}
 }
