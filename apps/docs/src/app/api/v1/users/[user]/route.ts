@@ -16,8 +16,9 @@ export async function GET(
 	if (!accessToken) {
 		return NextResponse.json(
 			{
-				error_description: "authorization header not found",
-				error: 10001,
+				errors: [
+					{ type: "unknown-auth", friendly: "authorization header not found" },
+				],
 			},
 			{ status: 405 },
 		);
@@ -27,9 +28,13 @@ export async function GET(
 	if (user !== "@me") {
 		return Response.json(
 			{
-				error_description:
-					"you cannot get data about users other than the current OAuth scope",
-				error: 20002,
+				errors: [
+					{
+						type: "not-matching-oauth",
+						friendly:
+							"This endpoint requires the user currently logged in via OAuth.",
+					},
+				],
 			},
 			{ status: 400 },
 		);
@@ -44,8 +49,12 @@ export async function GET(
 	} catch (e) {
 		return Response.json(
 			{
-				error_description: (e as APIError).body?.error_description,
-				error: 20001,
+				errors: [
+					{
+						type: "user-info",
+						friendly: (e as APIError).body?.error_description,
+					},
+				],
 			},
 			{ status: (e as APIError).statusCode },
 		);
