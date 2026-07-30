@@ -30,7 +30,7 @@ const options = {
 @Declare({
 	name: "autoproxy",
 	description: "Set autoproxy settings",
-	aliases: ["ap", "proxy"],
+	aliases: ["ap"],
 	contexts: ["Guild"],
 	ignore: IgnoreCommand.Slash,
 })
