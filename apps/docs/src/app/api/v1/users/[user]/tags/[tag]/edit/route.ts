@@ -2,6 +2,7 @@ import { authenticateOAuth } from "@/lib/oauth";
 import { api } from "@/lib/rpc";
 import { waitUntil } from "@vercel/functions";
 import { NextRequest } from "next/server";
+import { alterCollection } from "node_modules/bot/src/mongodb";
 import {
 	PAlter,
 	PAlterObject,
@@ -65,32 +66,49 @@ export async function POST(
 	const tagObj = await tagCollection.findOne({
 		$and: [{ systemId: oauthResponse.accountId }, { tagId: tag }],
 	});
+	const { fields, ...omittedData } = data;
 
 	if (!tagObj) {
 		return Response.json(
 			{
-				errors: [
-					{ type: "unknown-tag", friendly: "Couldn't find this tag." },
-				],
+				errors: [{ type: "unknown-tag", friendly: "Couldn't find this tag." }],
 			},
 			{ status: 404 },
 		);
 	}
 
-	await tagCollection.updateOne(
-		{
-			$and: [{ systemId: oauthResponse.accountId }, { tagId: tag }],
-		},
-		{
-			$set: Object.assign(
-				{},
-				...Object.entries(data).map(([v, c]) => ({
-					// @ts-ignore
-					[v]: c ?? tagObj?.[v],
-				})),
-			),
-		},
-	);
+	await Promise.allSettled([
+		tagCollection.updateOne(
+			{
+				$and: [{ systemId: oauthResponse.accountId }, { tagId: tag }],
+			},
+			{
+				$set: Object.assign(
+					{},
+					...Object.entries(omittedData).map(([v, c]) => ({
+						// @ts-ignore
+						[v]: c ?? tagObj?.[v],
+					})),
+				),
+			},
+		),
+		...(fields !== undefined &&
+		fields[oauthResponse.clientId ?? ""] !== undefined
+			? [
+					tagCollection.updateOne(
+						{
+							$and: [{ systemId: oauthResponse.accountId }, { tagId: tag }],
+						},
+						{
+							$set: {
+								[`fields.${oauthResponse.clientId}`]:
+									fields[oauthResponse.clientId ?? ""],
+							},
+						},
+					),
+				]
+			: []),
+	]);
 
 	waitUntil(oauthResponse.mongo.close());
 

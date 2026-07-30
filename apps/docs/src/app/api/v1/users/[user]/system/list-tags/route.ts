@@ -45,16 +45,16 @@ export async function GET(
 		);
 	}
 
-	const maxAlters = Number((await searchParams).max ?? 30);
+	const maxAlters = Number((await searchParams).max ?? 250);
 	const skipAlters = Number((await searchParams).skip ?? 0);
 
-	if (maxAlters > 30)
+	if (maxAlters > 250)
 		return Response.json(
 			{
 				errors: [
 					{
 						type: "max-too-high",
-						friendly: "At most, you can only get 30 tags.",
+						friendly: "At most, you can only get 250 tags.",
 					},
 				],
 			},

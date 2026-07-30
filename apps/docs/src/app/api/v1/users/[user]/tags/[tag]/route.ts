@@ -32,5 +32,8 @@ export async function GET(
 	});
 
 	await oauthResponse.mongo.close();
-	return Response.json({ isSelf, data: redactTag(isSelf, response) });
+	return Response.json({
+		isSelf,
+		data: redactTag(isSelf, response, oauthResponse.clientId ?? ""),
+	});
 }

@@ -11,7 +11,7 @@ const AlterEditInput = PAlterObject.omit({
 	systemId: true,
 	created: true,
 	lastMessageTimestamp: true,
-	messageCount: true
+	messageCount: true,
 })
 	.partial()
 	.default({});
@@ -72,21 +72,46 @@ export async function POST(
 			{ status: 404 },
 		);
 	}
+	const { fields, ...omittedData } = data;
 
-	await alterCollection.updateOne(
-		{
-			$and: [{ systemId: oauthResponse.accountId }, { alterId: Number(alter) }],
-		},
-		{
-			$set: Object.assign(
-				{},
-				...Object.entries(data).map(([v, c]) => ({
-					// @ts-ignore
-					[v]: c ?? alterObj?.[v],
-				})),
-			),
-		},
-	);
+	await Promise.allSettled([
+		alterCollection.updateOne(
+			{
+				$and: [
+					{ systemId: oauthResponse.accountId },
+					{ alterId: Number(alter) },
+				],
+			},
+			{
+				$set: Object.assign(
+					{},
+					...Object.entries(omittedData).map(([v, c]) => ({
+						// @ts-ignore
+						[v]: c ?? alterObj?.[v],
+					})),
+				),
+			},
+		),
+		...(fields !== undefined &&
+		fields[oauthResponse.clientId ?? ""] !== undefined
+			? [
+					alterCollection.updateOne(
+						{
+							$and: [
+								{ systemId: oauthResponse.accountId },
+								{ alterId: Number(alter) },
+							],
+						},
+						{
+							$set: {
+								[`fields.${oauthResponse.clientId}`]:
+									fields[oauthResponse.clientId ?? ""],
+							},
+						},
+					),
+				]
+			: []),
+	]);
 
 	waitUntil(oauthResponse.mongo.close());
 

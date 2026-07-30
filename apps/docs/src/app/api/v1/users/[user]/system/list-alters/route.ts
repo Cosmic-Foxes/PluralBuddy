@@ -45,7 +45,7 @@ export async function GET(
 		);
 	}
 
-	const maxAlters = Number((await searchParams).max ?? 30);
+	const maxAlters = Number((await searchParams).max ?? 250);
 	const skipAlters = Number((await searchParams).skip ?? 0);
 
 	if (maxAlters > 30)
@@ -54,7 +54,7 @@ export async function GET(
 				errors: [
 					{
 						type: "max-too-high",
-						friendly: "At most, you can only get 30 alters.",
+						friendly: "At most, you can only get 250 alters.",
 					},
 				],
 			},

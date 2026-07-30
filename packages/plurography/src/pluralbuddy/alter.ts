@@ -54,7 +54,7 @@ export const PAlterObject = z.object({
 
     tagIds: z.string().array().default([]),
     public: z.number().nonnegative().default(0).meta({ description: publicDescription }),
-    fields: z.record(z.string(), z.string()).optional().default({}),
+    fields: z.record(z.string().max(20), z.string().max(150)).optional().default({}),
 }).meta({ id: "PAlter" })
 
 export type PAlter = z.infer<typeof PAlterObject>

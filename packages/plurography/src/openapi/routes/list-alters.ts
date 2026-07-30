@@ -25,10 +25,10 @@ export const register = (registry: OpenAPIRegistry) =>
 			},
             {
                 description:
-                    "How many entries to show at most if in a pagination. Can only be at most 30 alters.",
+                    "How many entries to show at most if in a pagination. Can only be at most 250 alters.",
                 name: "max",
                 in: "query",
-                schema: { type: "number", maximum: 30 }
+                schema: { type: "number", maximum: 250 }
             },
             {
                 description: "How many entries to skip if in a pagination.",
