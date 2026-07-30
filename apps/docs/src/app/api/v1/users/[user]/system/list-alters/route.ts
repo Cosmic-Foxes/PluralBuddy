@@ -19,17 +19,10 @@ export const GET = createOAuthFunction<
 		const skipAlters = Number(ctx.urlData.searchParams.skip ?? 0);
 
 		if (maxAlters > 30)
-			return Response.json(
-				{
-					errors: [
-						{
-							type: "max-too-high",
-							friendly: "At most, you can only get 250 alters.",
-						},
-					],
-				},
-				{ status: 400 },
-			);
+			return ctx.error({
+				type: "max-too-high",
+				friendly: "At most, you can only get 250 alters.",
+			});
 
 		const applicationsList = await ctx.alterCollection
 			.find({ systemId: ctx.auth.accountId })
