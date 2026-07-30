@@ -164,7 +164,7 @@ export const posthogClient =
 export const client = new Client({
 	commands: {
 		prefix: async (msg) => {
-			if (msg.guildId === undefined)
+			if (msg.guildId === undefined || !import.meta.main)
 				return defaultPrefixes[
 					(process.env.BRANCH as "production" | "canary") ?? "production"
 				];
