@@ -1,10 +1,10 @@
-import { AutoLoad, Command, Declare } from "seyfert";
+import { AutoLoad, Command, Declare, IgnoreCommand } from "seyfert";
 
 @Declare({
     name: "autoproxy",
     description: "Set autoproxy settings",
-    aliases: ["ap", "proxy"],
-    contexts: ["Guild"]
+    contexts: ["Guild"],
+    ignore: IgnoreCommand.Message
 })
 @AutoLoad()
-export default class AutoProxyCommand extends Command {}
+export default class AutoProxyCommand extends Command { }

@@ -44,7 +44,7 @@ import {
 	DrawerTrigger,
 } from "../ui/drawer";
 import { authClient } from "@/lib/auth-client";
-import {Spinner} from "../ui/spinner";
+import { Spinner } from "../ui/spinner";
 
 export const scopeList = [
 	{ title: "profile", description: "Access to your profile data – required." },
@@ -63,6 +63,10 @@ export const scopeList = [
 	{
 		title: "system:admin",
 		description: "Access to read and write to systems AND alters.",
+	},
+	{
+		title: "system:ai-ap",
+		description: "Create a custom auto-proxy mode for this application.",
 	},
 ] as const;
 

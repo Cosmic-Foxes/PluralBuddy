@@ -1,4 +1,4 @@
-import { PAlterObject } from "@/pluralbuddy/alter";
+import { PAlterObject } from "../../pluralbuddy/alter";
 import type { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
 import { UnauthorizedSchema } from "../utils";
 import z from "zod";
@@ -37,15 +37,15 @@ export const register = (registry: OpenAPIRegistry) =>
 				content: {
 					"application/json": {
 						schema: PAlterObject.omit({
-							tagIds: true,
 							alterId: true,
 							systemId: true,
 							created: true,
 							lastMessageTimestamp: true,
 							messageCount: true,
 						})
+							.strict()
 							.partial()
-							.default({}),
+							.default({})
 					},
 				},
 			},

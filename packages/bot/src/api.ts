@@ -26,7 +26,12 @@ const SystemEditInput = PSystemObject.omit({
 	systemAutoproxy: true,
 	createdAt: true,
 	associatedUserId: true,
-}).partial();
+	systemOperationDM: true,
+	subAccounts: true,
+})
+	.strict()
+	.partial()
+	.default({});
 const app = new Hono();
 
 app.use("/api/*", async (ctx, next) => {
@@ -56,7 +61,6 @@ export const clientRoutes = app
 			const importStageCollection =
 				appDb.collection<ImportStage>("import-staging");
 			const importStage = await importStageCollection.findOne({
-				// @ts-ignore
 				"webhook.id": importStageId,
 			});
 
@@ -71,7 +75,9 @@ export const clientRoutes = app
 					{ status: 400 },
 				);
 
-			const input = ImportStagingValidation(importStage.response.dataType).safeParse(importStage.response.data);
+			const input = ImportStagingValidation(
+				importStage.response.dataType,
+			).safeParse(importStage.response.data);
 
 			if (input.error) {
 				return Response.json({ errors: input.error }, { status: 400 });
@@ -80,8 +86,6 @@ export const clientRoutes = app
 			const translations = await getLanguageByUserId(
 				importStage.originatingSystemId,
 			);
-
-
 
 			client.interactions
 				.editOriginal(importStage.webhook.token, {
@@ -133,6 +137,9 @@ export const clientRoutes = app
 					});
 				});
 
+			await importStageCollection.deleteOne({
+				"webhook.id": importStageId,
+			});
 			return json({ done: "Handed back off to the user." });
 		},
 	)
@@ -143,17 +150,22 @@ export const clientRoutes = app
 			z.object({
 				method: z.enum(["exchange", "next"]),
 				changedOperation: SystemEditInput,
-				oldSystem: PSystemObject,
+				oldSystem: PSystemObject.omit({
+					subAccounts: true,
+					systemAutoproxy: true
+				}),
 			}),
 		),
 		async ({ req, json }) => {
 			const { method, changedOperation, oldSystem } = req.valid("json");
 			const translations = await getLanguageByUserId(
-				oldSystem.associatedUserId,
+				oldSystem.associatedUserId ?? "",
 			);
 
+			console.log("notfying.?")
+
 			createSystemOperation(
-				oldSystem,
+				{...oldSystem, subAccounts: [], systemAutoproxy: []},
 				changedOperation,
 				translations,
 				method === "exchange" ? "api-exchange" : "api-web",

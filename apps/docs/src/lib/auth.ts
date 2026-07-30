@@ -96,6 +96,7 @@ export const auth = betterAuth({
 				"system:read",
 				"system:write",
 				"system:admin",
+				"system:ai-ap"
 			],
 			defaultScope: "profile",
 			silenceWarnings: {

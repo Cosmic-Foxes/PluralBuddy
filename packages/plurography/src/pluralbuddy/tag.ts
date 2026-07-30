@@ -11,7 +11,6 @@ const publicDescription = `This is a bitwise operation-based number which determ
 | ALTERS          | \`32\` \`(1 << 5)\`     | Allows external users to see the tag's associated alters. |
 | COLOR           | \`64\` \`(1 << 6)\`     | Allows external users to see the tag's banner. |`;
 
-
 export enum TagProtectionFlags {
 	NAME = 1 << 0,
 	DESCRIPTION = 1 << 1,
@@ -58,18 +57,27 @@ export const tagHexColors = [
 	"FF97A5",
 ];
 
-export const PTagObject = z.object({
-	tagId: z.string(),
-	systemId: z.string(),
+export const PTagObject = z
+	.object({
+		tagId: z.string(),
+		systemId: z.string(),
 
-	tagFriendlyName: z.string().max(100),
-	tagDescription: z.string().max(1000).optional(),
-	tagColor: z.enum(tagColors),
+		tagFriendlyName: z.string().max(100),
+		tagDescription: z.string().max(1000).optional(),
+		tagColor: z.enum(tagColors),
 
-	associatedAlters: z.string().array(),
+		associatedAlters: z.string().array(),
 
-	/** @see {@link TagProtectionFlags} */
-	public: z.number().nonnegative().meta({ description: publicDescription, example: 0 }),
-}).meta({ id: "PTag" });
+		/** @see {@link TagProtectionFlags} */
+		public: z
+			.number()
+			.nonnegative()
+			.meta({ description: publicDescription, example: 0 }),
+		fields: z
+			.record(z.string().max(20), z.string().max(150))
+			.optional()
+			.default({}),
+	})
+	.meta({ id: "PTag" });
 
 export type PTag = z.infer<typeof PTagObject>;

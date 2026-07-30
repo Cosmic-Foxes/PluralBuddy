@@ -162,13 +162,11 @@ export async function createSystemOperation(
 				...operation,
 			},
 		});
-
 	if (!system.systemOperationDM)
 		try {
 			const dmChannel = await client.users
 				.createDM(system.associatedUserId, true)
 				.catch(() => null);
-
 			if (dmChannel)
 				client.messages
 					.write(dmChannel.id, {
@@ -234,7 +232,9 @@ export async function createSystemOperation(
 						flags: MessageFlags.IsComponentsV2,
 					})
 					.catch(() => null);
-		} catch (_) {}
+		} catch (e) {
+			console.log(e)
+		}
 
 	return {
 		...system,

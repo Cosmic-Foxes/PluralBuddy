@@ -14,7 +14,7 @@ export default function SignInPage() {
 	const { resolvedTheme } = useTheme();
 
 	return (
-		<div className="grid w-full flex-grow relative items-center justify-center px-4">
+		<div className="grid w-full grow relative items-center justify-center px-4">
 			<Card className="w-full space-y-4 z-10 justify-center rounded-2xl p-8 sm:w-96">
 				<header className="text-center rounded-lg p-2">
 					<div className="flex items-center justify-center">
@@ -40,13 +40,14 @@ export default function SignInPage() {
 						"w-full mt-8 gap-2",
 					)}
 					type="button"
+					variant="outline"
 					onClick={async () => {
 						await authClient.signIn.social({
 							provider: "discord",
 						});
 					}}
 				>
-					<Discord className="size-[16px]" /> Continue with Discord
+					<Discord className="size-4" /> Continue with Discord
 				</Button>
 			</Card>
 			<Dithering

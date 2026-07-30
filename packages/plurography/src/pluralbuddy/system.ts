@@ -77,6 +77,7 @@ export const PSystemObject = z.object({
 
 	public: z.number().nonnegative().meta({ description: publicDescription }),
 	flags: z.number().nonnegative().meta({ description: flagDescription }).default(0),
+	disabledGuilds: z.string().array().optional().default([]),
 
 	/** WIP */
 	subAccounts: z.array(z.string()),

@@ -17,6 +17,7 @@ import { CreateExpressModal } from "../../create-express-modal";
 import { cn } from "@/lib/cn";
 import { Avatar, AvatarFallback, AvatarImage } from "../../../ui/avatar";
 import { Link } from "react-router";
+import NextLink from "next/link";
 import { AlterView } from "../../alter-view";
 import { useTranslations } from "next-intl";
 import { DynamicPageTitle } from "../../dynamic-title";
@@ -29,6 +30,7 @@ import {
 	BreadcrumbList,
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { ArrowUpRight } from "lucide-react";
 
 export function ExpressList() {
 	const trpc = useTRPCClient();
@@ -75,12 +77,24 @@ export function ExpressList() {
 							<CardTitle>PluralBuddy Express</CardTitle>
 							<CardDescription>{t("desc")}</CardDescription>
 						</div>
+					</CardContent>
+					<CardFooter className="flex items-center justify-between">
+						<span className="text-muted-foreground flex items-center gap-1">
+							Learn more about{" "}
+							<NextLink
+								href="/docs/pluralbuddy/express"
+								target="_blank"
+								className="text-primary flex items-center gap-1"
+							>
+								PluralBuddy Express <ArrowUpRight className="size-4" />
+							</NextLink>
+						</span>
 						<CreateExpressModal>
 							<Button className="max-md:mt-3" onClick={() => haptic()}>
 								{t("btn")}
 							</Button>
 						</CreateExpressModal>
-					</CardContent>
+					</CardFooter>
 				</Card>
 				<Separator orientation="horizontal" className="h-px mb-3" />
 				<div className="gap-3 grid">

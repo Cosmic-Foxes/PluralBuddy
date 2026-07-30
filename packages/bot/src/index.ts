@@ -239,6 +239,8 @@ if (import.meta.main) {
 
 	await client.start({ token: process.env.BOT_TOKEN });
 
+	await client.uploadCommands({ cachePath: "./commands.json" })
+
 	client.gateway.setPresence({
 		activities: [
 			{

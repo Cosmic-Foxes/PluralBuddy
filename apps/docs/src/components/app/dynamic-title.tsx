@@ -10,3 +10,13 @@ export const DynamicPageTitle = ({ title }: { title: string }) => {
 
 	return null;
 };
+
+
+export const DynamicPageTitleRouterLess = ({ title }: { title: string }) => {
+
+	useEffect(() => {
+		document.title = title;
+	}, [title]);
+
+	return null;
+};
