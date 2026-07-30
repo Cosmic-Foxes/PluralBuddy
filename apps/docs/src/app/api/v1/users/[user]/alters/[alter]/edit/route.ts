@@ -21,7 +21,15 @@ export async function POST(
 	{ params }: { params: Promise<{ user: string; alter: string }> },
 ) {
 	const { user, alter } = await params;
+	const input = AlterEditInput.safeParse(await request.json());
 
+	if (input.error) {
+		return Response.json(
+			{ errors: [{ type: "zod", friendly: input.error }] },
+			{ status: 400 },
+		);
+	}
+	
 	const oauthResponse = await authenticateOAuth(request, [
 		"alters:write",
 		"system:admin",
@@ -44,14 +52,6 @@ export async function POST(
 		);
 	}
 
-	const input = AlterEditInput.safeParse(await request.json());
-
-	if (input.error) {
-		return Response.json(
-			{ errors: [{ type: "zod", friendly: input.error }] },
-			{ status: 400 },
-		);
-	}
 
 	const { data } = input;
 	const db = oauthResponse.mongo.db(

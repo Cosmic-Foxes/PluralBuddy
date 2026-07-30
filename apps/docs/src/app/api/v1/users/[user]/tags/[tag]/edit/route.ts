@@ -26,6 +26,14 @@ export async function POST(
 	{ params }: { params: Promise<{ user: string; tag: string }> },
 ) {
 	const { user, tag } = await params;
+	const input = TagEditInput.safeParse(await request.json());
+
+	if (input.error) {
+		return Response.json(
+			{ errors: [{ type: "zod", friendly: input.error }] },
+			{ status: 400 },
+		);
+	}
 
 	const oauthResponse = await authenticateOAuth(request, [
 		"alters:write",
@@ -49,14 +57,6 @@ export async function POST(
 		);
 	}
 
-	const input = TagEditInput.safeParse(await request.json());
-
-	if (input.error) {
-		return Response.json(
-			{ errors: [{ type: "zod", friendly: input.error }] },
-			{ status: 400 },
-		);
-	}
 
 	const { data } = input;
 	const db = oauthResponse.mongo.db(
