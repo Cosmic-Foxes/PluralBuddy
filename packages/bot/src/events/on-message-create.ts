@@ -45,7 +45,7 @@ import { emojis } from "@/lib/emojis";
 import { createProxyError } from "@/lib/proxying/error";
 import { helpPages } from "@/commands/help";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { buildNumber, client } from "..";
+import { build, client } from "..";
 import type { ResolverProps, SendResolverProps } from "seyfert/lib/common";
 import { blockedChannel, blockedRole } from "@/lib/blocked";
 import { latencyDataPoints } from "@/analytics";
@@ -126,7 +126,7 @@ export default createEvent({
 			return await message.reply({
 				components: [
 					new TextDisplay().setContent(
-						locale.AWAKE.replace("{{ buildNumber }}", String(buildNumber)).replace("{{ branch }}", process.env.BRANCH ?? "unknown")
+						locale.AWAKE.replace("{{ buildNumber }}", String(build)).replace("{{ branch }}", process.env.BRANCH ?? "unknown")
 					),
 					new ActionRow().setComponents(
 						[

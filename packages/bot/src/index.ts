@@ -83,7 +83,7 @@ export const logger = process.env.SEQ_HOST
 
 if (logger) logger.info("PluralBuddy is online");
 
-export const buildNumber = 2789;
+export const build = `26.1/${process.env.SOURCE_COMMIT?.slice(0, 7)}`;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"latency",
 	"noWebhookMiddleware",
@@ -208,7 +208,6 @@ if (import.meta.main) {
 		);
 
 
-		console.log(process.env.SOURCE_COMMIT)
 	client.setServices({
 		middlewares: middlewares,
 		handleCommand: PluralBuddyHandleCommand,

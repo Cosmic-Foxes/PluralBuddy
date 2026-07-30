@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { buildNumber, client } from ".";
+import { build, client } from ".";
 import { trimTrailingSlash } from "hono/trailing-slash";
 import { zValidator } from "@hono/zod-validator";
 import z from "zod";
@@ -164,7 +164,7 @@ export const clientRoutes = app
 	)
 	.get("/api/health", (c) =>
 		c.json({
-			about: `PluralBuddy b${buildNumber}`,
+			about: `PluralBuddy ${build}`,
 			routes: app.routes
 				.filter((v) => !v.path.endsWith("*"))
 				.map((v) => v.path),

@@ -352,7 +352,7 @@ PluralBuddy uses a **username/display name** system.
 	DISABLED_DM_REPLIES: "Successfully toggled DM replies off. Use `pb;nudge-preferences` to re-enable them.",
 
 	ABOUT_PB: `-# **DEVELOPMENT INFO**
-> PluralBuddy Build #%version% · \`%branch%\`
+> PluralBuddy Build %version% · \`%branch%\`
 
 -# **ABOUT PLURALBUDDY**
 > PluralBuddy is an accessibility tool for those who are systems, allowing system *alters* to make pseudo-accounts as webhooks to represent a certain alter.
@@ -767,7 +767,7 @@ There is an example below of what an example proxy with this role would look lik
 	REACTION_ERR: "Unable to remove user reaction",	
 
 	REPLY_IN_RESPONSE: "-# {{ reply }} In response to: {{ link }}",
-	AWAKE: "Hi! I'm awake, running PluralBuddy \`#{{ buildNumber }}/{{ branch }}\`.",
+	AWAKE: "Hi! I'm awake, running PluralBuddy \`{{ buildNumber }}/{{ branch }}\`.",
 
 	LINK_INVITE: "Invite",
 	LINK_SUPPORT: "Support",
