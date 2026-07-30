@@ -1,9 +1,9 @@
 
-import { PSystemObject } from "@/pluralbuddy/system";
+import { PSystemObject } from "../../pluralbuddy/system";
 import type { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
-import { UnmatchedOAuthSchema, UnauthorizedSchema } from "@/openapi/utils"
+import { UnmatchedOAuthSchema, UnauthorizedSchema } from "../utils";
 import z from "zod";
-import { PAlterObject } from "@/pluralbuddy/alter";
+import { PAlterObject } from "../../pluralbuddy/alter";
 
 export const register = (registry: OpenAPIRegistry) => 
     registry.registerPath({

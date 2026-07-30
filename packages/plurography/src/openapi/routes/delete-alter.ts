@@ -5,11 +5,11 @@ import z from "zod";
 
 export const register = (registry: OpenAPIRegistry) =>
 	registry.registerPath({
-		method: "post",
-		path: "/v1/users/{user}/alters/{alter}/edit",
-		summary: "Edit a system alter",
+		method: "delete",
+		path: "/v1/users/{user}/alters/{alter}",
+		summary: "Delete a system alter",
 		description:
-			"Edit a system alter by its ID. `{user}` can be `@me` to target the current OAuth user.",
+			"Delete a system alter by its ID. `{user}` can be `@me` to target the current OAuth user.",
 		security: [{ oAuth2: ["alters:write"] }],
 		parameters: [
 			{
@@ -32,30 +32,14 @@ export const register = (registry: OpenAPIRegistry) =>
                 }
             }
 		],
-		request: {
-			body: {
-				content: {
-					"application/json": {
-						schema: PAlterObject.omit({
-							alterId: true,
-							systemId: true,
-							created: true,
-							lastMessageTimestamp: true,
-							messageCount: true,
-						})
-							.strict()
-							.partial()
-							.default({})
-					},
-				},
-			},
-		},
 		responses: {
 			"200": {
 				description: "Success.",
 				content: {
 					"application/json": {
-						schema: PAlterObject,
+						schema: z.object({
+							success: z.literal(true)
+						}),
 					},
 				},
 			},

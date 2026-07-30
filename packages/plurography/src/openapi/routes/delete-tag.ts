@@ -1,16 +1,15 @@
-import { PAlterObject } from "../../pluralbuddy/alter";
-import type { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
 import { UnauthorizedSchema } from "../utils";
+import type { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
 import z from "zod";
 
 export const register = (registry: OpenAPIRegistry) =>
 	registry.registerPath({
-		method: "post",
-		path: "/v1/users/{user}/alters/{alter}/edit",
-		summary: "Edit a system alter",
+		method: "delete",
+		path: "/v1/users/{user}/tags/{tag}",
+		summary: "Delete a system tag",
 		description:
-			"Edit a system alter by its ID. `{user}` can be `@me` to target the current OAuth user.",
-		security: [{ oAuth2: ["alters:write"] }],
+			"Delete a system tag by its ID. `{user}` can be `@me` to target the current OAuth user.",
+		security: [{ oAuth2: ["tags:write"] }],
 		parameters: [
 			{
 				name: "user",
@@ -22,40 +21,24 @@ export const register = (registry: OpenAPIRegistry) =>
 					type: "string",
 				},
 			},
-            {
-                name: "alter",
-                in: "path",
-                required: true,
-                description: "`{alter}` is the alter ID.",
-                schema: {
-                    type: "string"
-                }
-            }
-		],
-		request: {
-			body: {
-				content: {
-					"application/json": {
-						schema: PAlterObject.omit({
-							alterId: true,
-							systemId: true,
-							created: true,
-							lastMessageTimestamp: true,
-							messageCount: true,
-						})
-							.strict()
-							.partial()
-							.default({})
-					},
+			{
+				name: "tag",
+				in: "path",
+				required: true,
+				description: "`{tag}` is the tag ID.",
+				schema: {
+					type: "string",
 				},
 			},
-		},
+		],
 		responses: {
 			"200": {
 				description: "Success.",
 				content: {
 					"application/json": {
-						schema: PAlterObject,
+						schema: z.object({
+							success: z.literal(true)
+						}),
 					},
 				},
 			},
@@ -83,12 +66,12 @@ export const register = (registry: OpenAPIRegistry) =>
 				},
 			},
 			"404": {
-				description: "Couldn't find the alter",
+				description: "Couldn't find the tag",
 				content: {
 					"application/json": {
 						schema: z.object({
-							type: z.literal("unknown-alter"),
-							friendly: z.literal("Couldn't find this alter."),
+							type: z.literal("unknown-tag"),
+							friendly: z.literal("Couldn't find this tag."),
 						}),
 					},
 				},
