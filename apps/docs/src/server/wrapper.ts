@@ -2,10 +2,10 @@ import { Collection, Db, MongoClient } from "mongodb";
 import { after, NextRequest, NextResponse } from "next/server";
 import clientPromise from "./db";
 import { PAlter, PIntegrationFront, PTag, PUser } from "plurography";
-import { waitUntil } from "@vercel/functions";
 import { authenticateOAuth } from "@/lib/oauth";
 import { unstable_cache } from "next/cache";
 import z from "zod";
+import { SchemaClient } from "@better-auth/oauth-provider";
 
 export const getCachedTag = unstable_cache(
 	async (id: string, userId: string) => {
@@ -42,43 +42,44 @@ export const getCachedAlter = unstable_cache(
 type OptionalArray<K> = K | K[];
 
 export type Ctx<Params, SearchParams, BodyResolver extends z.ZodType> = {
-	db: MongoClient;
-	request: NextRequest;
-	urlData: { params: Params; searchParams: SearchParams };
-	error: (
-		errors: OptionalArray<{
-			type: string;
-			friendly: string | Record<string, unknown>;
-		}>,
-		statusCode?: number,
-	) => NextResponse;
-	respond: <K>(data?: K, statusCode?: number) => NextResponse<K>;
+		db: MongoClient;
+		request: NextRequest;
+		urlData: { params: Params; searchParams: SearchParams };
+		error: (
+			errors: OptionalArray<{
+				type: string;
+				friendly: string | Record<string, unknown>;
+			}>,
+			statusCode?: number,
+		) => NextResponse;
+		respond: <K>(data?: K, statusCode?: number) => NextResponse<K>;
 
-	webDb: Db;
-	botDb: Db;
-	userCollection: Collection<PUser>;
-	alterCollection: Collection<PAlter>;
-	tagCollection: Collection<PTag>;
-	frontCollection: Collection<PIntegrationFront>;
+		webDb: Db;
+		botDb: Db;
+		userCollection: Collection<PUser>;
+		alterCollection: Collection<PAlter>;
+		tagCollection: Collection<PTag>;
+		frontCollection: Collection<PIntegrationFront>;
+		oauthClientsCollection: Collection<SchemaClient>;
 
-	body: () => Promise<z.infer<BodyResolver>>;
+		body: () => Promise<z.infer<BodyResolver>>;
 
-	fetchUser: () => Promise<PUser | undefined>;
-	fetchAlter: (
-		query: { systemId: string; alterId: string },
-		cache?: boolean,
-	) => Promise<PAlter | undefined>;
-	fetchTag: (
-		query: { systemId: string; tagId: string },
-		cache?: boolean,
-	) => Promise<PTag | undefined>;
+		fetchUser: () => Promise<PUser | undefined>;
+		fetchAlter: (
+			query: { systemId: string; alterId: string },
+			cache?: boolean,
+		) => Promise<PAlter | undefined>;
+		fetchTag: (
+			query: { systemId: string; tagId: string },
+			cache?: boolean,
+		) => Promise<PTag | undefined>;
 
-	auth: {
-		accountId: string;
-		clientId: string;
-		scopes: string[];
+		auth: {
+			accountId: string;
+			clientId: string;
+			scopes: string[];
+		};
 	};
-};
 
 export function createOAuthFunction<
 	Params = unknown,
@@ -139,6 +140,8 @@ export function createOAuthFunction<
 			alterCollection: botDb.collection("alters"),
 			tagCollection: botDb.collection("tags"),
 			frontCollection: botDb.collection("fronts"),
+
+			oauthClientsCollection: webDb.collection("oauthClient"),
 			data: () => {},
 
 			fetchUser: async (userId?: string) => {

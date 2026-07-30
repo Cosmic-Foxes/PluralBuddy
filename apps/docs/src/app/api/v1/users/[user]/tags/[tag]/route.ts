@@ -52,11 +52,20 @@ export const DELETE = createOAuthFunction<{ user: string; tag: string }>(
 			});
 		}
 
-		await ctx.tagCollection.deleteOne({
-			tagId: tag.tagId,
-			systemId: ctx.auth.accountId,
-		});
+		await Promise.allSettled([
+			ctx.tagCollection.deleteOne({
+				tagId: tag.tagId,
+				systemId: ctx.auth.accountId,
+			}),
 
+			ctx.userCollection.updateOne(
+				{
+					userId: ctx.auth.accountId,
+				},
+				{ $pull: { "system.tagIds": tag.tagId } },
+			),
+		]);
+		
 		return ctx.respond();
 	},
 );

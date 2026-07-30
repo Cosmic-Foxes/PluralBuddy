@@ -1,4 +1,5 @@
 import { authenticateOAuth } from "@/lib/oauth";
+import { createOAuthFunction } from "@/server/wrapper";
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import { NextRequest, NextResponse } from "next/server";
 import { PAlter, PAlterObject, PUser } from "plurography";
@@ -12,130 +13,73 @@ const CreateAlterParams = z.object({
 	displayName: z.string().max(100),
 });
 
-export async function POST(
-	request: NextRequest,
-	{ params }: { params: Promise<{ user: string }> },
-) {
-	const { user } = await params;
-	const input = CreateAlterParams.safeParse(await request.json());
+export const POST = createOAuthFunction<
+	{ user: string },
+	typeof CreateAlterParams
+>(
+	{
+		scopes: ["alters:write", "system:admin"],
+		mustMatchOAuth: true,
+		expectSystem: true,
+		bodyResolver: CreateAlterParams,
+	},
+	async (ctx) => {
+		const user = await ctx.fetchUser();
+		const input = await ctx.body();
+		const possibleExistingAlter = await ctx.alterCollection.findOne({
+			username: input.username,
+			systemId: user?.userId,
+		});
 
-	if (input.error) {
-		return Response.json(
-			{ errors: [{ type: "zod", friendly: input.error }] },
-			{ status: 400 },
-		);
-	}
+		if (!user || !user.system || user.system.alterIds.length >= 2000) {
+			return ctx.error({
+				type: "too-many-alters",
+				friendly: "There are too many alters in the system.",
+			});
+		}
 
-	const oauthResponse = await authenticateOAuth(request, [
-		"alters:write",
-		"system:admin",
-	]);
+		if (possibleExistingAlter) {
+			return ctx.error({
+				type: "duplicate",
+				friendly: "There is a duplicate alter with this username.",
+			});
+		}
 
-	if ("response" in oauthResponse) return oauthResponse.response;
+		const alter = PAlterObject.safeParse({
+			alterId: Number(DiscordSnowflake.generate()),
+			systemId: user.userId,
 
-	const parsedUserId = user === "@me" ? oauthResponse.accountId : user;
-	const db = oauthResponse.mongo.db(
-		`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
-	);
-	const [userCollection, alterCollection] = [
-		db.collection<PUser>("users"),
-		db.collection<PAlter>("alters"),
-	];
+			username: input.username,
+			displayName: input.displayName,
+			nameMap: [],
+			color: null,
+			pronouns: null,
+			description: null,
+			created: new Date(),
+			avatarUrl: null,
+			webhookAvatarUrl: null,
+			banner: null,
+			lastMessageTimestamp: null,
+			messageCount: 0,
+			alterMode: "webhook",
+			public: 0,
+		});
 
-	if (parsedUserId !== oauthResponse.accountId) {
-		return Response.json(
-			{
-				errors: [
-					{
-						type: "not-matching-oauth",
-						friendly:
-							"This endpoint requires the user currently logged in via OAuth.",
-					},
-				],
-			},
-			{ status: 400 },
-		);
-	}
+		if (!alter.data || alter.error) {
+			return ctx.error({
+				type: "zod",
+				friendly: z.treeifyError(alter.error),
+			});
+		}
 
-	const [userObj, alterObj] = await Promise.all([
-		userCollection.findOne({
-			userId: oauthResponse.accountId,
-		}),
-		alterCollection.findOne({
-			username: input.data.username,
-			systemId: oauthResponse.accountId,
-		}),
-	]);
+		await Promise.allSettled([
+			ctx.alterCollection.insertOne(alter.data),
+			ctx.userCollection.updateOne(
+				{ userId: ctx.auth.accountId },
+				{ $push: { "system.alterIds": alter.data.alterId } },
+			),
+		]);
 
-	if (!userObj || !userObj.system || userObj.system.alterIds.length >= 2000) {
-		return Response.json(
-			{
-				errors: [
-					{
-						type: "too-many-alters",
-						friendly: "There are too many alters in the system.",
-					},
-				],
-			},
-			{ status: 400 },
-		);
-	}
-
-	if (alterObj) {
-		return Response.json(
-			{
-				errors: [
-					{
-						type: "duplicate",
-						friendly: "There is a duplicate alter with this username.",
-					},
-				],
-			},
-			{ status: 400 },
-		);
-	}
-
-	const alter = PAlterObject.safeParse({
-		alterId: Number(DiscordSnowflake.generate()),
-		systemId: userObj.userId,
-
-		username: input.data.username,
-		displayName: input.data.displayName,
-		nameMap: [],
-		color: null,
-		pronouns: null,
-		description: null,
-		created: new Date(),
-		avatarUrl: null,
-		webhookAvatarUrl: null,
-		banner: null,
-		lastMessageTimestamp: null,
-		messageCount: 0,
-		alterMode: "webhook",
-		public: 0,
-	});
-
-	if (!alter.data || alter.error) {
-		return Response.json(
-			{
-				errors: [
-					{
-						type: "zod",
-						friendly: input.error,
-					},
-				],
-			},
-			{ status: 400 },
-		);
-	}
-
-	await Promise.allSettled([
-		alterCollection.insertOne(alter.data),
-		userCollection.updateOne(
-			{ userId: oauthResponse.accountId },
-			{ $push: { "system.alterIds": alter.data.alterId } },
-		),
-	]);
-
-	return NextResponse.json(alter.data);
-}
+		return ctx.respond(alter.data);
+	},
+);
