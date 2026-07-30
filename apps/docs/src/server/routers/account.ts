@@ -140,24 +140,25 @@ export const AccountRouter = createTRPCRouter({
 		const messages = pb.collection<PMessage>("messages");
 		const apps = pb.collection<PExpressApplication>("applications");
 
-		await accounts.deleteOne({ userId: new ObjectId(session.user.id) });
-		await oauthClient.deleteMany({ userId: new ObjectId(session.user.id) });
-		await oauthConsent.deleteMany({ userId: new ObjectId(session.user.id) });
-		await sessions.deleteMany({ userId: new ObjectId(session.user.id) });
-		await user.deleteOne({ _id: new ObjectId(session.user.id) });
-		await oauthAccessToken.deleteMany({ userId: new ObjectId(session.user.id) });
-		await oauthRefreshToken.deleteMany({ userId: new ObjectId(session.user.id) });
-
-		await users.deleteOne({ userId: discordId });
-		await alterOperations.deleteMany({ "oldAlter.systemId": discordId });
-		await alters.deleteMany({ systemId: discordId });
-		await tags.deleteMany({ systemId: discordId });
-		await messages.deleteMany({ systemId: discordId });
-		await apps.deleteMany({ owner: discordId });
-		await systemOperations.deleteMany({ "oldSystem.associatedUserId": discordId });
+		await Promise.allSettled([
+			accounts.deleteOne({ userId: new ObjectId(session.user.id) }),
+			oauthClient.deleteMany({ userId: new ObjectId(session.user.id) }),
+			oauthConsent.deleteMany({ userId: new ObjectId(session.user.id) }),
+			sessions.deleteMany({ userId: new ObjectId(session.user.id) }),
+			user.deleteOne({ _id: new ObjectId(session.user.id) }),
+			oauthAccessToken.deleteMany({ userId: new ObjectId(session.user.id) }),
+			oauthRefreshToken.deleteMany({ userId: new ObjectId(session.user.id) }),
+			users.deleteOne({ userId: discordId }),
+			alterOperations.deleteMany({ "oldAlter.systemId": discordId }),
+			alters.deleteMany({ systemId: discordId }),
+			tags.deleteMany({ systemId: discordId }),
+			messages.deleteMany({ systemId: discordId }),
+			apps.deleteMany({ owner: discordId }),
+			systemOperations.deleteMany({ "oldSystem.associatedUserId": discordId }),
+		]);
 
 		if (systemUser?.storagePrefix)
-			await deleteAttachment(systemUser?.storagePrefix, gcpAccessToken)
+			await deleteAttachment(systemUser?.storagePrefix, gcpAccessToken);
 
 		return { success: true };
 	}),

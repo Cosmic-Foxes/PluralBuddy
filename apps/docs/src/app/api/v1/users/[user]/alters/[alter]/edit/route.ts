@@ -1,12 +1,26 @@
 import { authenticateOAuth } from "@/lib/oauth";
-import { api } from "@/lib/rpc";
+import clientPromise from "@/server/db";
 import { waitUntil } from "@vercel/functions";
+import { unstable_cache } from "next/cache";
 import { NextRequest } from "next/server";
-import { PAlter, PAlterObject, PSystemObject, PUser } from "plurography";
-import z from "zod";
+import { PAlter, PAlterObject, PTag } from "plurography";
+
+export const getCachedTag = unstable_cache(
+	async (id: string, userId: string) => {
+		const db = (await clientPromise).db(
+			`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
+		);
+
+		return db.collection<PTag>("tags").findOne({ tagId: id, systemId: userId });
+	},
+	["tag"],
+	{
+		tags: ["tag"],
+		revalidate: 3600,
+	},
+);
 
 const AlterEditInput = PAlterObject.omit({
-	tagIds: true,
 	alterId: true,
 	systemId: true,
 	created: true,
@@ -29,7 +43,7 @@ export async function POST(
 			{ status: 400 },
 		);
 	}
-	
+
 	const oauthResponse = await authenticateOAuth(request, [
 		"alters:write",
 		"system:admin",
@@ -52,7 +66,6 @@ export async function POST(
 		);
 	}
 
-
 	const { data } = input;
 	const db = oauthResponse.mongo.db(
 		`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
@@ -72,7 +85,16 @@ export async function POST(
 			{ status: 404 },
 		);
 	}
-	const { fields, ...omittedData } = data;
+	const { fields, tagIds, ...omittedData } = data;
+	let validTags = [];
+
+	if (
+		tagIds !== undefined &&
+		JSON.stringify(tagIds) !== JSON.stringify(alterObj.tagIds)
+	) {
+		const newTags = tagIds.filter((c) => !alterObj.tagIds.includes(c));
+		const removedTags = alterObj.tagIds.filter((c) => !tagIds.includes(c));
+	}
 
 	await Promise.allSettled([
 		alterCollection.updateOne(

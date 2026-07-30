@@ -8,9 +8,10 @@ import { verifyAccessToken } from "better-auth/oauth2";
 export async function authenticateOAuth(
 	request: NextRequest,
 	requiredScopes: string[],
+	mongoClient?: MongoClient
 ): Promise<
 	| { response: NextResponse }
-	| { mongo: MongoClient; accountId: string; clientId: string | null }
+	| { mongo: MongoClient; accountId: string; clientId: string | null; scopes: string[]; }
 > {
 	const authorization = request.headers.get("authorization");
 	const accessToken = authorization?.startsWith("Bearer ")
@@ -79,7 +80,7 @@ export async function authenticateOAuth(
 	}
 
 	const scopes = (scope as string).split(" ");
-	if (!scopes.some((v) => requiredScopes.includes(v))) {
+	if (requiredScopes.length !== 0 && !scopes.some((v) => requiredScopes.includes(v))) {
 		return {
 			response: NextResponse.json(
 				{
@@ -95,9 +96,10 @@ export async function authenticateOAuth(
 		};
 	}
 
-	const client = new MongoClient(process.env.MONGO ?? "");
+	const client = mongoClient ?? new MongoClient(process.env.MONGO ?? "");
 
-	await client.connect();
+	if (!mongoClient)
+		await client.connect();
 
 	if (!token) {
 		return {
@@ -119,6 +121,7 @@ export async function authenticateOAuth(
 		mongo: client,
 		accountId: discordAccountId?.accountId,
 		clientId: (token.client_id as string) ?? token.azp ?? null,
+		scopes
 	};
 }
 

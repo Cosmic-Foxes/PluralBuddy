@@ -1,108 +1,62 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { auth } from "@/lib/auth";
-import { authenticateOAuth } from "@/lib/oauth";
-import { redactAlter, redactTag } from "@/lib/redact";
-import { MongoClient } from "mongodb";
-import { NextRequest } from "next/server";
-import { PAlter, PTag, PUser } from "plurography";
+import { redactTag } from "@/lib/redact";
+import { createOAuthFunction } from "@/server/wrapper";
 
-export async function GET(
-	request: NextRequest,
-	{ params }: { params: Promise<{ user: string; tag: string }> },
-) {
-	const { user, tag } = await params;
+export const GET = createOAuthFunction<{ user: string; tag: string }>(
+	{ scopes: ["tags:read", "system:admin"] },
+	async (ctx) => {
+		const { user, tag } = ctx.urlData.params;
 
-	const oauthResponse = await authenticateOAuth(request, [
-		"tags:read",
-		"system:admin",
-	]);
+		const parsedUserId = user === "@me" ? ctx.auth.accountId : user;
+		const isSelf = user === "@me" || user === ctx.auth.accountId;
 
-	if ("response" in oauthResponse) return oauthResponse.response;
-
-	auth.api.oauth2Token()
-
-	const parsedUserId = user === "@me" ? oauthResponse.accountId : user;
-	const db = oauthResponse.mongo.db(`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`);
-	const tagCollection = db.collection<PTag>("tags");
-	const isSelf = user === "@me" || user === oauthResponse.accountId;
-	const response = await tagCollection.findOne({
-		tagId: tag,
-		systemId: parsedUserId,
-	});
-
-	await oauthResponse.mongo.close();
-	return Response.json({
-		isSelf,
-		data: redactTag(isSelf, response, oauthResponse.clientId ?? ""),
-	});
-}
-
-
-export async function DELETE(
-	request: NextRequest,
-	{ params }: { params: Promise<{ user: string; tag: string }> },
-) {
-	const { user, tag } = await params;
-
-	const oauthResponse = await authenticateOAuth(request, [
-		"tags:write",
-		"system:admin",
-	]);
-
-	if ("response" in oauthResponse) return oauthResponse.response;
-
-	const parsedUserId = user === "@me" ? oauthResponse.accountId : user;
-	if (parsedUserId !== oauthResponse.accountId) {
-		return Response.json(
-			{
-				errors: [
-					{
-						type: "not-matching-oauth",
-						friendly:
-							"This endpoint requires the user currently logged in via OAuth.",
-					},
-				],
-			},
-			{ status: 400 },
-		);
-	}
-
-	const db = oauthResponse.mongo.db(
-		`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
-	);
-	const [userCollection, tagCollection] = [
-		db.collection<PUser>("users"),
-		db.collection<PTag>("tags"),
-	];
-	const [userObj, alterObj] = await Promise.all([
-		userCollection.findOne({
-			userId: oauthResponse.accountId,
-		}),
-		tagCollection.findOne({
+		const response = await ctx.fetchTag({
 			tagId: tag,
-			systemId: oauthResponse.accountId,
-		}),
-	]);
+			systemId: parsedUserId,
+		});
 
-	if (!userObj || !userObj.system || !alterObj) {
-		return Response.json(
-			{
-				errors: [
-					{
-						type: "no-system-tag",
-						friendly: "This system or tag doesn't exist.",
-					},
-				],
-			},
-			{ status: 400 },
-		);
-	}
+		if (!response) {
+			return ctx.error(
+				{
+					type: "no-tag",
+					friendly: "No such tag.",
+				},
+				404,
+			);
+		}
 
-	await tagCollection.deleteOne({
-		tagId: tag,
-		systemId: oauthResponse.accountId,
-	});
+		return ctx.respond({
+			isSelf,
+			data: redactTag(isSelf, response, ctx.auth.clientId),
+		});
+	},
+);
 
-	return Response.json({ success: true })
-}
+export const DELETE = createOAuthFunction<{ user: string; tag: string }>(
+	{
+		scopes: ["tags:write", "system:admin"],
+		mustMatchOAuth: true,
+		expectSystem: true,
+	},
+	async (ctx) => {
+		const tag = await ctx.fetchTag({
+			tagId: ctx.urlData.params.tag,
+			systemId: ctx.auth.accountId,
+		});
+
+		if (!tag) {
+			return ctx.error({
+				type: "no-tag",
+				friendly: "This tag doesn't exist.",
+			});
+		}
+
+		await ctx.tagCollection.deleteOne({
+			tagId: tag.tagId,
+			systemId: ctx.auth.accountId,
+		});
+
+		return ctx.respond();
+	},
+);

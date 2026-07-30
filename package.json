@@ -12,9 +12,5 @@
 		"docs:openapi": "cd packages/plurography && bun run src/openapi && cd ../../apps/docs && rm -rf content/docs/en/pluralbuddy/api && bun run scripts/generate-docs.ts",
 		"test": "cd packages/tests && bun test"
 	},
-	"workspaces": ["packages/*", "apps/*"],
-	"dependencies": {
-		"@xyflow/react": "^12.11.2",
-		"posthog-node": "^5.24.17"
-	}
+	"workspaces": ["packages/*", "apps/*"]
 }
