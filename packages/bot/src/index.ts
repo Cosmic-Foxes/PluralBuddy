@@ -207,6 +207,8 @@ if (import.meta.main) {
 			},
 		);
 
+
+		console.log(process.env.SOURCE_COMMIT)
 	client.setServices({
 		middlewares: middlewares,
 		handleCommand: PluralBuddyHandleCommand,
