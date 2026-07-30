@@ -375,8 +375,14 @@ PluralBuddy uses a **username/display name** system.
 > -# [Terms of Service](<https://pb.giftedly.dev/docs/policies/terms>) · [Privacy Policy](<https://pb.giftedly.dev/docs/policies/privacy>)`,
 
 	TAG_ASSIGN_ALTER: "Assign Tag",
-	SET_AUTO_PROXY:
+	SET_AUTO_PROXY_SRV:
 		"Successfully set proxy mode to **%mode%** for your system in **%server_name%**.",
+	SET_AUTO_PROXY_GLOBAL:
+		"Successfully set proxy mode to **%mode%** for your system everywhere.",
+	SET_AUTO_PROXY_CUSTOM:
+		"Successfully changed control of your proxy mode to **%app%** in **%server_name%**. **%app%** will be able to control your front state until you disable this auto proxy mode.",
+	SET_AUTO_PROXY_CUSTOM_GLOBAL:
+		"Successfully changed control of your proxy mode to **%app%** everywhere. **%app%** will be able to control your front state until you disable this auto proxy mode.",
 	SET_AUTO_PROXY_DMS:
 		"Successfully set proxy mode to **%mode%** for your system in that server.",
 	TAG_ALREADY_ASSIGNED: "**%tag%** has already been assigned to **@%alter%.",
@@ -811,5 +817,34 @@ PluralBuddy Express is a way that alters can gain the ability to proxy in DMs, o
  - PluralBuddy gathers the token, encrypts it, and hosts a singular-command bot associated to your alter
  - $0, forever
 
-Hit the button to the right to open this alter in the dashboard.`
+Hit the button to the right to open this alter in the dashboard.`,
+	STATUS_AP: `### Auto-Proxy Status
+Your system is currently auto proxying in **{{ mode }}**.`,
+	INTEGRATION_AP: `### Auto-Proxy Status
+Your system is using the front state of **{{ mode }}**.`,
+	NO_STATUS_AP: `You are not currently auto proxying on that scope.`,
+	NO_ALTER_AP: `Your auto proxy is not currently attached to an alter.`,
+	DISABLED_SERVER: `This server is disabled from proxying.`,
+	AP_AS: "-# **AUTO-PROXYING AS:**",
+	AP_INTEGRATION_AS: "-# **{{ provider }} FRONTING AS:**", 
+
+	PROVIDER_NOT_FOUND: `That auto-proxy provider was not found, or you didn't authorize with the [\`system:ai-ap\`](https://pb.giftedly.dev/docs/pluralbuddy/ai-ap) scope. Contact the developer of this integration if you believe this is incorrect.
+	
+-# Integration: \`{{ id }}\``,
+	AP_INVALID_SYNTAX: `Invalid autoproxy mode or provider \`{{ mode }}\`.
+
+**Auto-proxy Usage:**
+\`pb;autoproxy [off|latch|alter|status|{{ aiap }}]\``,
+	AP_ALTER_INVALID_SYNTAX: `You must add an alter for the \`alter\` proxy mode.
+
+**Auto-proxy Usage:**
+\`pb;autoproxy [off|latch|alter|status|{{ aiap }}]\``,
+	AP_SYNTAX: `**Auto-proxy Usage:**
+\`pb;autoproxy [off|latch|alter|status|{{ aiap }}]\``,
+
+	SUCCESS_DISABLE_GUILD: "Successfully disabled proxying in **{{ guild }}**.",
+	SUCCESS_ENABLE_GUILD: "Successfully enabled proxying in **{{ guild }}**.",
+
+	PROXYING_ALREADY_ENABLED: "Proxying was already enabled in this server.",
+	PROXYING_ALREADY_DISABLED: "Proxying was already disabled in this server.",
 }

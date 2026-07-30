@@ -7,7 +7,7 @@ import type { PAlter } from "./types/alter";
 import type { POperation } from "./types/operation";
 import type { PMessage } from "./types/message";
 import type { PTag } from "./types/tag";
-import type { PExpressApplication, PGuildError } from "plurography";
+import type { PExpressApplication, PGuildError, PIntegrationFront } from "plurography";
 import type { PAlterOperation } from "plurography";
 import { connectMongo } from "./lib/libby";
 import type { PAnalytics } from "./types/analytics";
@@ -21,6 +21,7 @@ export let tagCollection: Collection<PTag>;
 export let operationCollection: Collection<POperation>;
 export let alterOperationCollection: Collection<PAlterOperation>;
 export let errorCollection: Collection<PGuildError>;
+export let frontsCollection: Collection<PIntegrationFront>;
 export let messagesCollection: Collection<PMessage>;
 export let applicationsCollection: Collection<PExpressApplication>;
 export let analyticsCollection: Collection<PAnalytics>;
@@ -38,7 +39,6 @@ export async function createPeriodicExpirationDates() {
     await alterOperationCollection.createIndex({ createdAt: 1 }, { expireAfterSeconds: 1800 });
     await errorCollection.createIndex({ createdAt: 1 }, { expireAfterSeconds: 21600 });
 
-
 }
 
 export async function setupDatabases() {
@@ -54,6 +54,7 @@ export async function setupDatabases() {
     applicationsCollection = mainDb.collection("applications")
     analyticsCollection = mainDb.collection("analytics")
     alterOperationCollection = mainDb.collection("alter-operations");
+    frontsCollection = mainDb.collection("fronts")
 
     await createPeriodicExpirationDates()
 }

@@ -40,7 +40,6 @@ export async function authenticateOAuth(
 			),
 		};
 	}
-
 	const token = await verifyAccessToken(accessToken, {
 		verifyOptions: {
 			issuer: `${process.env.BETTER_AUTH_URL}/api/auth`,

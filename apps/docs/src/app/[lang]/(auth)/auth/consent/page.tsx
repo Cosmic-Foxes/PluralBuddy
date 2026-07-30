@@ -20,7 +20,7 @@ import { CircleAlert, FileExclamationPoint } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import React, { useState } from "react";
 import { toast } from "sonner";
 
 export default function ConsentPage() {
@@ -87,7 +87,7 @@ export default function ConsentPage() {
 									scopeList.findIndex((s) => s.title === b),
 							)
 							.map((scope, i) => (
-								<>
+								<React.Fragment key={scope}>
 									<div
 										className={cn(
 											"w-full p-4 text-sm",
@@ -111,13 +111,14 @@ export default function ConsentPage() {
 										{t(`scopes.${scopeList.find((v) => v.title === scope)?.title}`)}
 									</div>
 									{i + 1 !== scopes.length && <Separator />}
-								</>
+								</React.Fragment>
 							))}
 					</div>
 
-					<div className="flex items-center w-full gap-2">
+					<div className="space-y-2">
 						<Button
 							type="button"
+							variant="outline"
 							className={cn(
 								"gap-1 w-full",
 							)}

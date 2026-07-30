@@ -42,6 +42,7 @@ components:
             system:read: Read system data
             system:write: Write to system data
             system:admin: "Read/write to alter, tags & system data."
+            system:ai-ap: Create custom auto proxy modes as if this integration was a front tracker.
         clientCredentials: 
           authorizationUrl: https://pb.giftedly.dev/api/auth/oauth2/authorize
           tokenUrl: https://pb.giftedly.dev/api/auth/oauth2/token
@@ -298,11 +299,13 @@ components:
             type: object
             properties: 
               autoproxyMode: 
-                type: string
-                enum: 
-                  - "off"
-                  - latch
-                  - alter
+                anyOf: 
+                  - type: string
+                    enum: 
+                      - "off"
+                      - latch
+                      - alter
+                  - type: string
               autoproxyAlter: 
                 type: string
               serverId: 

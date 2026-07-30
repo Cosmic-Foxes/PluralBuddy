@@ -24,7 +24,7 @@ import {
 	type RESTPostAPIWebhookWithTokenQuery,
 } from "seyfert/lib/types";
 import { getUserById } from "../types/user";
-import { alterCollection, errorCollection } from "../mongodb";
+import { alterCollection, errorCollection, frontsCollection } from "../mongodb";
 import { AlertView } from "@/views/alert";
 import {
 	performTagProxy,
@@ -52,6 +52,7 @@ import { latencyDataPoints } from "@/analytics";
 import { handleDMReply } from "@/lib/proxying/dm-replying";
 import { getLanguageByUserId } from "@/lib/lang";
 import { endTimer, startTimer } from "@/lib/timings";
+import { getWiderAutoProxy } from "@/lib/autoproxy-util";
 
 export const indexingMap: Record<string, NodeJS.Timeout> = {};
 export const indexingMessageMap: Record<string, Message> = {};
@@ -214,17 +215,29 @@ export default createEvent({
 		if (user.system === undefined) return;
 		if (user.blocked) { client.logger.info(`${message.id} ended because user was blocked`); return };
 		if (user.system.disabled) return;
+		if (user.system.disabledGuilds.includes(message.guildId ?? ""))
+			return;
+		if (!message.guildId)
+			return;
 
-		if (
-			user.system.systemAutoproxy.some(
-				(ap) => ap.autoproxyMode === "alter" && ap.serverId === message.guildId,
-			)
+		const apMode = getWiderAutoProxy(user.system, message.guildId, message.channelId)
+
+		if (apMode.autoproxyMode !== "latch" && apMode.autoproxyMode !== "off"
 		) {
 			startTimer(`proxy: pre-system autoproxy (${message.id})`)
 
-			const alter = user.system.systemAutoproxy.find(
-				(ap) => ap.autoproxyMode === "alter" && ap.serverId === message.guildId,
-			)?.autoproxyAlter;
+			let alter = apMode.autoproxyAlter;
+
+			if (apMode.autoproxyMode !== "alter" && !alter) {
+				// Check for AI/AP
+
+				const fronts = await frontsCollection.findOne({ aiapId: apMode?.autoproxyMode, systemId: message.author.id })
+
+				if (fronts?.alterId) {
+					alter = fronts.alterId
+				}
+
+			}
 
 			if (message.content.startsWith("\\")) {
 				return;
@@ -405,7 +418,7 @@ export default createEvent({
 								((user.system?.displayTagMap ?? {})[message.guildId] ??
 									user.system.systemDisplayTag) === null)
 						) {
-			endTimer(`proxy: bruteforce proxy (${message.id})`)
+							endTimer(`proxy: bruteforce proxy (${message.id})`)
 							createProxyError(user, message, {
 								title: locale.DISPLAY_TAG_ENFORCE,
 								description: locale.DISPLAY_TAG_ENFORCE_DESC,
@@ -426,12 +439,12 @@ export default createEvent({
 
 
 						if (!(await blockedRole(guild, locale, message))) {
-			endTimer(`proxy: bruteforce proxy (${message.id})`)
+							endTimer(`proxy: bruteforce proxy (${message.id})`)
 							removeFromMap();
 							return;
 						}
 						if (!(await blockedChannel(guild, locale, message))) {
-			endTimer(`proxy: bruteforce proxy (${message.id})`)
+							endTimer(`proxy: bruteforce proxy (${message.id})`)
 							removeFromMap();
 							return;
 						}
@@ -456,9 +469,7 @@ export default createEvent({
 		}
 
 		if (
-			user.system.systemAutoproxy.some(
-				(ap) => ap.autoproxyMode === "latch" && ap.serverId === message.guildId,
-			)
+			apMode.autoproxyMode === "latch"
 		) {
 			startTimer(`proxy: latch proxy (${message.id})`)
 
@@ -469,15 +480,11 @@ export default createEvent({
 			if (message.content.startsWith("\\"))
 				return;
 
-			const currentAutoProxyPolicy = user.system.systemAutoproxy.find(
-				(ap) => ap.autoproxyMode === "latch" && ap.serverId === message.guildId,
-			);
-
 			const HOUR = 3_600_000;
 
 			if (user.system.latchExpiration)
 				if (
-					(currentAutoProxyPolicy?.lastLatchTimestamp?.getTime() ??
+					(apMode?.lastLatchTimestamp?.getTime() ??
 						Date.now()) +
 					user.system.latchExpiration <
 					Date.now()
@@ -486,7 +493,7 @@ export default createEvent({
 					return;
 				}
 
-			const alter = currentAutoProxyPolicy?.autoproxyAlter;
+			const alter = apMode?.autoproxyAlter;
 
 			if (alter) {
 				const fetchedAlter = await alterCollection.findOne({
@@ -501,7 +508,7 @@ export default createEvent({
 					if (!(await blockedRole(guild, locale, message, true))) return;
 					if (!(await blockedChannel(guild, locale, message, true))) return;
 
-			endTimer(`proxy: latch proxy (${message.id})`)
+					endTimer(`proxy: latch proxy (${message.id})`)
 					performAlterAutoProxy(
 						message,
 						similarWebhooks,

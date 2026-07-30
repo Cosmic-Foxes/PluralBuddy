@@ -15,7 +15,7 @@ export async function sendAutoproxyOperationDM(
 	changedServer: Guild<"cached" | "api">,
 	translations: TranslationString,
 	environment: "discord" | "web",
-	mode: "off" | "latch" | "alter",
+	mode: string,
 ) {
 	if (system.systemOperationDM)
 		try {
