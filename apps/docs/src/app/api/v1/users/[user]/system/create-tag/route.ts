@@ -107,5 +107,5 @@ export async function POST(
 		),
 	]);
 
-	return NextResponse.json({ success: true });
+	return NextResponse.json(tag.data);
 }

@@ -137,5 +137,5 @@ export async function POST(
 		),
 	]);
 
-	return alter.data;
+	return NextResponse.json(alter.data);
 }
