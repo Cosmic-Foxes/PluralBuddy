@@ -101,17 +101,7 @@ export default function OramaSearchDialog({
 					<SearchDialogInput />
 					<SearchDialogClose />
 				</SearchDialogHeader>
-				<SearchDialogList
-					items={query.data !== "empty" ? query.data : null}
-					Item={(props) => (
-						<SearchDialogListItem
-							{...props}
-							renderHighlights={(text) => {
-								return <>cheeseburger</>
-							}}
-						/>
-					)}
-				/>
+				<SearchDialogList items={query.data !== 'empty' ? query.data : defaultItems} />
 				<SearchDialogFooter>
 					{tags.length > 0 ? (
 						<TagsList tag={tag} onTagChange={setTag} allowClear={allowClear}>

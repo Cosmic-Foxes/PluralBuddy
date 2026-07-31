@@ -10,6 +10,9 @@ import OramaSearchDialog from "@/components/search-orama";
 import { i18nUI } from "@/lib/layout.shared";
 import { NextIntlClientProvider } from "next-intl";
 import { notFound } from "next/navigation";
+import { Banner } from "@/components/banner";
+import Link from "next/link";
+import { AdjustableBanner } from "@/components/adjustable-banner";
 
 const inter = Inter({
 	subsets: ["latin"],
@@ -28,6 +31,7 @@ export default async function Layout({
 	return (
 		<Html>
 			<Body>
+				<AdjustableBanner />
 				<RootProvider
 					theme={{
 						enabled: true,
