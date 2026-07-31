@@ -94,8 +94,7 @@ export async function runStatusCommand(ctx: CommandContext<typeof statusOptions>
 			ctx,
 		);
 	}
-	if (system.disabledGuilds.includes(guild.id)) {
-		console.log("hello??");
+	if ((system.disabledGuilds ?? []).includes(guild.id)) {
 		return ctx.ephemeral(
 			{
 				components: [
