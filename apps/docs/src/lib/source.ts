@@ -13,6 +13,8 @@ import { loader } from "fumadocs-core/source";
 import { icons } from "lucide-react";
 import { createElement } from "react";
 
+export const docsImageRoute = "/og/docs";
+
 // You can customise Zod schemas for frontmatter and `meta.json` here
 // see https://fumadocs.dev/docs/mdx/collections
 export const docs = defineDocs({
@@ -40,3 +42,16 @@ export const source = loader({
 		if (icon in icons) return createElement(icons[icon as keyof typeof icons]);
 	},
 });
+
+export function getPageImageUrl(page: (typeof source)["$inferPage"]) {
+	const segments = [...page.slugs, "image.png"];
+
+	return {
+		segments,
+		url:
+			"/" +
+			[page.locale, ...docsImageRoute.split("/"), ...segments]
+				.filter(Boolean)
+				.join("/"),
+	};
+}
