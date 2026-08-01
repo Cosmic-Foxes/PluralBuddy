@@ -9,14 +9,15 @@ await mkdir("content/docs/pluralbuddy/api");
 await generateFiles({
 	input: openapi,
 	output: "./content/docs/pluralbuddy/api",
-	// we recommend to enable it
-	// make sure your endpoint description doesn't break MDX syntax.
 	includeDescription: true,
 	groupBy: "route",
 
 	index: {
 		// for generating `href`
-		url: (file) => `/docs/pluralbuddy/api/${file.replace(".mdx", "")}`,
+		url: {
+			baseUrl: "/docs",
+			contentDir: "./content/docs",
+		},
 		items: [
 			{
 				path: "index.mdx",

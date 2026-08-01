@@ -8,10 +8,15 @@ export default function proxy(request: NextRequest, event: NextFetchEvent) {
   return NextResponse.redirect(new URL(`/api/auth/oauth2/authorize?${request.nextUrl.searchParams.toString()}`, request.url))
   if (request.url.endsWith("/developers/applications") )
     return NextResponse.redirect(new URL(`/app/settings/developers-v2`, request.url))
+  if (request.url.includes("/docs")) {
+    if (request.url.includes("/en/docs"))
+      return NextResponse.redirect(new URL(`/docs/${request.url.split("/docs")[1]}`, request.url))
+    return;
+  }
 
   return createI18nMiddleware(i18n)(request, event);
 }
  
 export const config = {
-  matcher: ['/oauth2/authorize', '/((?!api|image|openapi.yml|sitemap.xml|docs|sitemap-0.xml|robots.txt|og|app|.well-known|font|_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/oauth2/authorize', '/((?!api|image|openapi.yml|sitemap.xml|sitemap-0.xml|robots.txt|og|app|.well-known|font|_next/static|_next/image|favicon.ico).*)'],
 }
