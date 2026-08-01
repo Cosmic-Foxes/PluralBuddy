@@ -253,7 +253,7 @@ PluralBuddy uses a **username/display name** system.
   UNABLE_TO_BE_FUNNY: "Você não tem permissão para usar os comandos engraçados.",
   DISABLED_DM_REPLIES: "Resposta de mensagem direta desabilitada com sucesso. Use `pb;nudge-preferences` para reativá-las.",
   ABOUT_PB: `-# **DEVELOPMENT INFO**
-> PluralBuddy Build %version% · \`%branch%\`
+> PluralBuddy Build #%version% · \`%branch%\`
 
 -# **ABOUT PLURALBUDDY**
 > PluralBuddy is an accessibility tool for those who are systems, allowing system *alters* to make pseudo-accounts as webhooks to represent a certain alter.
@@ -263,10 +263,6 @@ PluralBuddy uses a **username/display name** system.
 -# **CREDITS**
 **Programmed w/ :heart_hands: by @giftedly**
 -# Developed all major parts of PluralBuddy
-**Co-developed by @causticdisco**
--# Helped out with smaller parts of PluralBuddy
-
--# Created the banner, profile picture and overall brand of PluralBuddy
 
 **Translated on Crowdin**
 -# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
@@ -593,7 +589,7 @@ There is an example below of what an example proxy with this role would look lik
   SELF_REACTION_DESC: "PluralBuddy não conseguiu remover o emoji de carregamento ao tentar executar uma [Ação de Menu de Contexto](<https://pb.giftedly.dev/docs/pluralbuddy/context-actions>).",
   REACTION_ERR: "Não foi possível remover a reação do usuário",
   REPLY_IN_RESPONSE: "-# {{ reply }} Em resposta a: {{ link }}",
-  AWAKE: "Hi! I'm awake, running PluralBuddy \`{{ buildNumber }}/{{ branch }}\`.",
+  AWAKE: "Hi! I'm awake, running PluralBuddy `#{{ buildNumber }}/{{ branch }}`.",
   LINK_INVITE: "Convite",
   LINK_SUPPORT: "Suporte",
   LINK_DOCS: "Documentação",
