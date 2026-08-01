@@ -10,20 +10,6 @@ await generateFiles({
 	input: openapi,
 	output: "./content/docs/pluralbuddy/api",
 	includeDescription: true,
-	groupBy: "route",
-
-	index: {
-		// for generating `href`
-		url: {
-			baseUrl: "/docs",
-			contentDir: "./content/docs",
-		},
-		items: [
-			{
-				path: "index.mdx",
-			},
-		],
-	},
 });
 
 Bun.write(
