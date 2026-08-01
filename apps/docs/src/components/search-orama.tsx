@@ -130,8 +130,6 @@ export default function OramaSearchDialog({
 		setTag(v);
 	});
 
-	const label = showOrama && <Label />;
-
 	return (
 		<SearchDialog
 			search={search}
@@ -156,34 +154,17 @@ export default function OramaSearchDialog({
 							: null
 					} />
 				<SearchDialogFooter>
-					{tags.length > 0 ? (
-						<TagsList tag={tag} onTagChange={setTag} allowClear={allowClear}>
-							<TagsListItem key="PluralBuddy" value="pluralbuddy">
-								PluralBuddy
-							</TagsListItem>
-							<TagsListItem key="Policies" value="policies">
-								Policies
-							</TagsListItem>
-							{label}
-						</TagsList>
-					) : (
-						label
-					)}
+					<TagsList tag={tag} onTagChange={setTag} allowClear={allowClear}>
+						<TagsListItem key="PluralBuddy" value="pluralbuddy">
+							PluralBuddy
+						</TagsListItem>
+						<TagsListItem key="Policies" value="policies">
+							Policies
+						</TagsListItem>
+					</TagsList>
 					{footer}
 				</SearchDialogFooter>
 			</SearchDialogContent>
 		</SearchDialog>
-	);
-}
-
-function Label() {
-	return (
-		<a
-			href="https://orama.com"
-			rel="noreferrer noopener"
-			className="ms-auto text-xs text-fd-muted-foreground"
-		>
-			Search powered by Oramaa
-		</a>
 	);
 }

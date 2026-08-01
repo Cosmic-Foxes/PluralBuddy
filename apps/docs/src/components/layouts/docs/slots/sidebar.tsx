@@ -1,7 +1,7 @@
 'use client';
 import * as Base from '@fumadocs/base-ui/components/sidebar/base';
 import { cn } from '@/lib/cn';
-import { type ComponentProps, type ReactNode, useMemo, useRef, useState } from 'react';
+import { type ComponentProps, CSSProperties, type ReactNode, useMemo, useRef, useState } from 'react';
 import { cva } from 'class-variance-authority';
 import {
   createPageTreeRenderer,
@@ -19,6 +19,7 @@ import { usePathname } from 'fumadocs-core/framework';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import Link from 'fumadocs-core/link';
 import { useTreePath } from '@fumadocs/base-ui/contexts/tree';
+import { AuthComponents } from '../auth-components';
 
 const itemVariants = cva(
   'relative flex flex-row items-center gap-2 rounded-lg p-2 text-start text-fd-muted-foreground wrap-anywhere [&_svg]:size-4 [&_svg]:shrink-0',
@@ -128,6 +129,7 @@ export function Sidebar({ footer, banner, collapsible = true, components, ...res
                   {item.icon}
                 </LinkItem>
               ))}
+              <AuthComponents style="docs" />
               {slots.themeSwitch && (
                 <slots.themeSwitch className="px-1 py-0 border-y-0 border-e-0 rounded-none ms-auto *:rounded-md" />
               )}
@@ -420,7 +422,7 @@ function SidebarTabsDropdown({
 
   const item = selected ? (
     <>
-      <div className="size-9 shrink-0 empty:hidden md:size-5">{selected.icon}</div>
+      <div className="size-9 shrink-0 empty:hidden md:size-5 text-fd-primary">{selected.icon}</div>
       <div>
         <p className="text-sm font-medium">{selected.title}</p>
         <p className="text-sm text-fd-muted-foreground empty:hidden md:hidden">
@@ -462,7 +464,9 @@ function SidebarTabsDropdown({
                 item.props?.className,
               )}
             >
-              <div className="shrink-0 size-9 md:mb-auto md:size-5 empty:hidden">{item.icon}</div>
+              <div className="shrink-0 size-9 md:mb-auto md:size-5 empty:hidden text-(--tab-color)" style={{
+                "--tab-color": `var(--${(item.title as string).toLocaleLowerCase()}-color, var(--color-fd-foreground))`
+              } as CSSProperties}>{item.icon}</div>
               <div>
                 <p className="text-sm font-medium leading-none">{item.title}</p>
                 <p className="text-[0.8125rem] text-fd-muted-foreground mt-1 empty:hidden">

@@ -20,9 +20,10 @@ import { buttonVariants } from '@/components/ui/button';
 import { ChevronDown, Languages } from 'lucide-react';
 import { useIsScrollTop } from '@/lib/use-is-scroll-top';
 import { useHomeLayout } from '..';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/fuma-collapsible';
 import { mergeRefs } from '@/lib/merge-refs';
 import { useTranslations } from '@fuma-translate/react';
+import { AuthComponents } from '../../docs/auth-components';
 
 export const navItemVariants = cva('[&_svg]:size-4', {
   variants: {
@@ -71,6 +72,8 @@ export function Header(props: ComponentProps<'header'>) {
   });
 
   useEffect(() => {
+    setOpen(true)
+    console.log(open)
     window.addEventListener('click', onClick);
 
     return () => {
@@ -104,7 +107,8 @@ export function Header(props: ComponentProps<'header'>) {
             className="w-full rounded-full ps-2.5 max-w-[240px]"
           />
         )}
-        {slots.themeSwitch && <slots.themeSwitch />}
+        {slots.themeSwitch && <slots.themeSwitch />} 
+        <AuthComponents style="main" />
         {slots.languageSelect && (
           <slots.languageSelect.root>
             <Languages className="size-5" />
@@ -133,8 +137,8 @@ export function Header(props: ComponentProps<'header'>) {
           onPointerEnter={
             nav?.enableHoverToOpen
               ? () => {
-                  setOpen(true);
-                }
+                setOpen(true);
+              }
               : undefined
           }
         >
@@ -190,6 +194,7 @@ export function Header(props: ComponentProps<'header'>) {
                       </slots.languageSelect.root>
                     )}
                     {slots.themeSwitch && <slots.themeSwitch />}
+                      <AuthComponents style="main" />
                   </div>
                 </MobileNavigationMenuContext>
               </div>
