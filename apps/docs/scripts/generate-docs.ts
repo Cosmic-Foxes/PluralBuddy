@@ -4,11 +4,11 @@ import { globby } from "globby";
 import { mkdir } from "node:fs/promises";
 import Bun from "bun";
 
-await mkdir("content/docs/en/pluralbuddy/api");
+await mkdir("content/docs/pluralbuddy/api");
 
 await generateFiles({
 	input: openapi,
-	output: "./content/docs/en/pluralbuddy/api",
+	output: "./content/docs/pluralbuddy/api",
 	// we recommend to enable it
 	// make sure your endpoint description doesn't break MDX syntax.
 	includeDescription: true,
@@ -16,7 +16,7 @@ await generateFiles({
 
 	index: {
 		// for generating `href`
-		url: (file) => `/en/docs/pluralbuddy/api/${file.replace(".mdx", "")}`,
+		url: (file) => `/docs/pluralbuddy/api/${file.replace(".mdx", "")}`,
 		items: [
 			{
 				path: "index.mdx",
@@ -26,16 +26,16 @@ await generateFiles({
 });
 
 Bun.write(
-	"./content/docs/en/pluralbuddy/api/meta.json",
+	"./content/docs/pluralbuddy/api/meta.json",
 	JSON.stringify(
 		{
 			title: "API References",
 			pages: [
 				"auth",
-				...(await globby(["./content/docs/en/pluralbuddy/api/**/*.mdx"]))
+				...(await globby(["./content/docs/pluralbuddy/api/**/*.mdx"]))
 					.map((v) =>
 						v
-							.replace("./content/docs/en/pluralbuddy/api/", "")
+							.replace("./content/docs/pluralbuddy/api/", "")
 							.replace(".mdx", ""),
 					)
 					.slice(1)
@@ -49,15 +49,15 @@ Bun.write(
 );
 
 Bun.write(
-	"./content/docs/en/pluralbuddy/api/auth/meta.json",
+	"./content/docs/pluralbuddy/api/auth/meta.json",
 	JSON.stringify(
 		{
 			title: "Authentication",
 			pages: [
-				...(await globby(["./content/docs/en/pluralbuddy/api/**/*.mdx"]))
+				...(await globby(["./content/docs/pluralbuddy/api/**/*.mdx"]))
 					.map((v) =>
 						v
-							.replace("./content/docs/en/pluralbuddy/api/", "")
+							.replace("./content/docs/pluralbuddy/api/", "")
 							.replace(".mdx", ""),
 					)
 					.slice(1)

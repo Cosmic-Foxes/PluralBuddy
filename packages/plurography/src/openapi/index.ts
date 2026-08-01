@@ -33,6 +33,6 @@ const document = generator.generateDocument({
 });
 
 Bun.write(
-	"../../apps/docs/./public/openapi.yml",
+	"../../apps/docs/openapi.yml",
 	YAML.stringify(document, null, 2),
 );

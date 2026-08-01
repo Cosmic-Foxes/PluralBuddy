@@ -10,7 +10,6 @@ import { onSendFeedback } from "./app/actions";
 import { BlockedChannelExample } from "./components/cards/blocked-channel";
 import { RoleContainerExample } from "./components/cards/role-container-card";
 import { DMRepliesExample } from "./components/cards/dm-replies-card";
-import { APIPage } from "./components/api-page";
 
 export const MDXFeedbackBlock = (props: any) => (
 	<FeedbackBlock
@@ -24,7 +23,6 @@ export const MDXFeedbackBlock = (props: any) => (
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
 	return {
 		...defaultMdxComponents,
-		mark: (a) => <div>{a}</div>,
 		img: (props) => {
 			return <ImageZoom {...(props as any)} {...(props.src as any)} />;
 		},
@@ -35,7 +33,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
 		BlockedChannelExample,
 		DMRepliesExample,
 		RoleContainerExample,
-		APIPage,
+		// APIPage,
 
 		FeedbackBlock: (props) => (
 			<MDXFeedbackBlock {...props} />
