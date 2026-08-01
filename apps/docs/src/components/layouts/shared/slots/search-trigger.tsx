@@ -5,7 +5,7 @@ import { useTranslations } from '@fuma-translate/react';
 import { cn } from '@/lib/cn';
 import { type ButtonProps, buttonVariants } from '@/components/ui/button';
 import { Dialog } from '@base-ui/react/dialog';
-import { useSearchContext } from '@/contexts/search';
+import { useSearchContext } from '@fumadocs/base-ui/contexts/search';
 
 export interface SearchTriggerProps extends Omit<ComponentProps<'button'>, 'color'>, ButtonProps {
   hideIfDisabled?: boolean;

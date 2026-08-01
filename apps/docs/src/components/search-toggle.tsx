@@ -1,7 +1,7 @@
 'use client';
 import type { ComponentProps } from 'react';
 import { Search } from 'lucide-react';
-import { useSearchContext } from 'fumadocs-ui/contexts/search';
+import { useSearchContext } from '@fumadocs/base-ui/contexts/search';
 import { useI18n } from 'fumadocs-ui/contexts/i18n';
 import { cn } from '../lib/cn';
 import { type ButtonProps, buttonVariants } from './ui/button';

@@ -1,8 +1,6 @@
 import { source } from "@/lib/source";
 import { DocsLayout } from "@/components/layouts/docs";
 import { baseOptions } from "@/lib/layout.shared";
-import { Handshake } from "lucide-react";
-import { AdjustableBanner } from "@/components/adjustable-banner";
 
 export default async function Layout({
 	params,

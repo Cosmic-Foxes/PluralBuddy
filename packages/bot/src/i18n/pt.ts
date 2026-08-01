@@ -249,8 +249,6 @@ Systems can have **privacy values** which are values that describe who can see w
 **Programmed w/ :heart_hands: by @giftedly**
 -# Developed all major parts of PluralBuddy
 
--# Created the banner, profile picture and overall brand of PluralBuddy
-
 **Translated on Crowdin**
 -# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
 

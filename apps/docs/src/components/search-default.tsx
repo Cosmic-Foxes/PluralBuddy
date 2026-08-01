@@ -19,7 +19,7 @@ import {
   TagsListItem,
 } from '@fumadocs/base-ui/components/dialog/search';
 import type { SortedResult } from 'fumadocs-core/search';
-import type { SearchLink, TagItem } from '@/contexts/search';
+import type { SearchLink, TagItem } from '@fumadocs/base-ui/contexts/search';
 
 export interface DefaultSearchDialogProps extends SharedProps {
   /** @deprecated re-create the dialog instead for other clients, see https://fumadocs.dev/docs/search/orama */

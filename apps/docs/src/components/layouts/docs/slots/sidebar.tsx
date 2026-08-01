@@ -100,7 +100,7 @@ export function Sidebar({ footer, banner, collapsible = true, components, ...res
               </SidebarCollapseTrigger>
             )}
           </div>
-          {slots.searchTrigger && <slots.searchTrigger.full />}
+          {slots.searchTrigger && <slots.searchTrigger.full hideIfDisabled />}
           {tabs.length > 0 && tabMode === 'auto' && <SidebarTabsDropdown tabs={tabs} />}
           {banner}
         </div>

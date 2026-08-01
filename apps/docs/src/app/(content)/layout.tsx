@@ -1,4 +1,4 @@
-import { RootProvider } from "fumadocs-ui/provider/next";
+import { RootProvider } from "@fumadocs/base-ui/provider/base";
 import "../global.css";
 import { Inter } from "next/font/google";
 import { Body } from "@/components/body";
@@ -6,14 +6,12 @@ import { Html } from "@/components/html";
 import { Toaster } from "@/components/ui/sonner";
 import { Viewport } from "next";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import OramaSearchDialog from "@/components/search-orama";
-import { i18nUI } from "@/lib/layout.shared";
 import { NextIntlClientProvider } from "next-intl";
-import { notFound } from "next/navigation";
-import { Banner } from "@/components/banner";
-import Link from "next/link";
-import { AdjustableBanner } from "@/components/adjustable-banner"; 
-import { i18nProvider } from 'fumadocs-ui/i18n';
+import { AdjustableBanner } from "@/components/adjustable-banner";
+import { NextProvider } from "fumadocs-core/framework/next";
+import OramaSearchDialog from "@/components/search-orama";
+import { TreeContextProvider } from "@fumadocs/base-ui/contexts/tree";
+import { source } from "@/lib/source";
 
 
 const inter = Inter({
@@ -34,22 +32,26 @@ export default async function Layout({
 		<Html>
 			<Body>
 				<AdjustableBanner />
-				<RootProvider
-					theme={{
-						enabled: true,
-					}}
-					search={{
-						SearchDialog: OramaSearchDialog,
-					}}
-				>
-					<TooltipProvider>
-						<NextIntlClientProvider>
-							{children}
+				<NextProvider>
+					<TreeContextProvider tree={source.getPageTree()}>
+						<RootProvider
+							theme={{
+								enabled: true,
+							}}
+							search={{
+								SearchDialog: OramaSearchDialog
+							}}
+						>
+							<TooltipProvider>
+								<NextIntlClientProvider>
+									{children}
 
-							<Toaster position="bottom-right" />
-						</NextIntlClientProvider>
-					</TooltipProvider>
-				</RootProvider>
+									<Toaster position="bottom-right" />
+								</NextIntlClientProvider>
+							</TooltipProvider>
+						</RootProvider>
+					</TreeContextProvider>
+				</NextProvider>
 			</Body>
 		</Html>
 	);

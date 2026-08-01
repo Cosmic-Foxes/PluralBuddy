@@ -83,6 +83,10 @@ interface SearchContextType {
   dialogHandle: Dialog.Handle<unknown>;
 }
 
+interface SearchIsOpenType {
+  setIsOpen: (initial: boolean) => boolean
+}
+
 const SearchContext = createContext<SearchContextType>({
   enabled: false,
   open: false,
@@ -91,8 +95,16 @@ const SearchContext = createContext<SearchContextType>({
   dialogHandle,
 });
 
+const SearchIsOpen = createContext<SearchIsOpenType>({
+  setIsOpen: () => false,
+})
+
 export function useSearchContext(): SearchContextType {
   return use(SearchContext);
+}
+
+export function useIsOpenContext(): SearchIsOpenType {
+  return use(SearchIsOpen);
 }
 
 function MetaOrControl() {
@@ -116,10 +128,8 @@ const DEFAULT_HOT_KEYS: HotKey[] = [
   },
 ];
 
-const DefaultSearchDialog = lazy(() => import('@/components/search-default'));
-
 export function SearchProvider<DialogProps extends SharedProps = DefaultSearchDialogProps>({
-  SearchDialog = DefaultSearchDialog,
+  SearchDialog,
   children,
   options,
   hotKey = DEFAULT_HOT_KEYS,
@@ -128,6 +138,7 @@ export function SearchProvider<DialogProps extends SharedProps = DefaultSearchDi
   const [isOpen, setIsOpen] = useState(false);
   const onKeyDown = useEffectEvent((e: KeyboardEvent) => {
     if (hotKey.every((v) => (typeof v.key === 'string' ? e.key === v.key : v.key(e)))) {
+      console.log("ok", isOpen)
       setIsOpen((open) => !open);
       e.preventDefault();
     }

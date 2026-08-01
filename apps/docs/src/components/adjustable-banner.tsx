@@ -19,7 +19,7 @@ export function AdjustableBanner() {
 
 	if (open)
 		return (
-			<Banner className="flex items-center justify-between backdrop-blur-xl bg-white/30" variant="rainbow"
+			<Banner className="flex items-center justify-between backdrop-blur-xl bg-background/30" variant="rainbow"
 				rainbowColors={[
 					'rgba(255,100,0, 0.5)',
 					'rgba(255,100,0, 0.5)',
