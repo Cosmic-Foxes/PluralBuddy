@@ -270,8 +270,6 @@ PluralBuddy uses a **username/display name** system.
 **Co-developed by @causticdisco**
 -# Helped out with smaller parts of PluralBuddy
 
--# Created the banner, profile picture and overall brand of PluralBuddy
-
 **Translated on Crowdin**
 -# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
 
