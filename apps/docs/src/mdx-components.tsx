@@ -10,6 +10,7 @@ import { onSendFeedback } from "./app/actions";
 import { BlockedChannelExample } from "./components/cards/blocked-channel";
 import { RoleContainerExample } from "./components/cards/role-container-card";
 import { DMRepliesExample } from "./components/cards/dm-replies-card";
+import { AlphabeticalSort } from "./components/sort";
 
 export const MDXFeedbackBlock = (props: any) => (
 	<FeedbackBlock
@@ -33,6 +34,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
 		BlockedChannelExample,
 		DMRepliesExample,
 		RoleContainerExample,
+		AlphabeticalSort,
 		// APIPage,
 
 		FeedbackBlock: (props) => (
