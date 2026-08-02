@@ -132,6 +132,13 @@ export function AboutPage() {
 													/>
 													<AvatarFallback>GH</AvatarFallback>
 												</Avatar>
+												<Avatar>
+													<AvatarImage
+														src="https://github.com/Stjernesys.png"
+														alt="@Stjernesys"
+													/>
+													<AvatarFallback>ST</AvatarFallback>
+												</Avatar>
 											</div>
 										</ItemMedia>
 										<ItemContent>
