@@ -25,7 +25,6 @@ Bun.write(
 							.replace("./content/docs/pluralbuddy/api/", "")
 							.replace(".mdx", ""),
 					)
-					.slice(1)
 					.filter((v) => !v.startsWith("auth/")),
 			],
 			icon: "Notebook",
