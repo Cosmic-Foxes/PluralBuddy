@@ -142,7 +142,7 @@ export async function runLatchCommand(ctx: CommandContext<typeof latchOptions>) 
 					? "SET_AUTO_PROXY_SRV"
 					: "SET_AUTO_PROXY_GLOBAL"
 			].replaceAll("%server_name%", 
-					ctx.options.scope !== "server" ? `<#${ctx.channelId}>` : guild.name)
+					(ctx.options.scope ?? "server") !== "server" ? `<#${ctx.channelId}>` : guild.name)
 				.replaceAll("%mode%", "latch"),
 		),
 		flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,

@@ -125,7 +125,9 @@ export async function runAlterCommand(
 			]
 				.replaceAll(
 					"%server_name%",
-					ctx.options.scope !== "server" ? `<#${ctx.channelId}>` : guild.name,
+					(ctx.options.scope ?? "server") !== "server"
+						? `<#${ctx.channelId}>`
+						: guild.name,
 				)
 				.replaceAll("%mode%", "alter"),
 		),

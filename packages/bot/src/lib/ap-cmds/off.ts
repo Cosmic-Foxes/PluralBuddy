@@ -88,7 +88,7 @@ export async function runOffCommand(ctx: CommandContext<typeof offOptions>) {
 					? "SET_AUTO_PROXY_SRV"
 					: "SET_AUTO_PROXY_GLOBAL"
 			].replaceAll("%server_name%", 
-					ctx.options.scope !== "server" ? `<#${ctx.channelId}>` : guild.name)
+					(ctx.options.scope ?? "server") !== "server" ? `<#${ctx.channelId}>` : guild.name)
 				.replaceAll("%mode%", "off"),
 		),
 		flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,

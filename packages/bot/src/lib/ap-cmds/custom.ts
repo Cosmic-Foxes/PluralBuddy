@@ -120,15 +120,25 @@ export async function runCustomProviderCommand(ctx: CommandContext<typeof custom
     );
 
     return await ctx.editResponse({
-        components: new AlertView((await ctx.userTranslations())).successViewCustom(
-            ((await ctx.userTranslations()))[
-				ctx.options.scope !== "global"
-					? "SET_AUTO_PROXY_CUSTOM"
-					: "SET_AUTO_PROXY_CUSTOM_GLOBAL"
-			].replaceAll("%server_name%", 
-					ctx.options.scope !== "server" ? `<#${ctx.channelId}>` : guild.name)
-                .replaceAll("%app%", providerApp.name ?? providerApp.metadata.aaid),
-        ),
-        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-    });
+					components: new AlertView(
+						await ctx.userTranslations(),
+					).successViewCustom(
+						(await ctx.userTranslations())[
+							ctx.options.scope !== "global"
+								? "SET_AUTO_PROXY_CUSTOM"
+								: "SET_AUTO_PROXY_CUSTOM_GLOBAL"
+						]
+							.replaceAll(
+								"%server_name%",
+								(ctx.options.scope ?? "server") !== "server"
+									? `<#${ctx.channelId}>`
+									: guild.name,
+							)
+							.replaceAll(
+								"%app%",
+								providerApp.name ?? providerApp.metadata.aaid,
+							),
+					),
+					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				});
 }
