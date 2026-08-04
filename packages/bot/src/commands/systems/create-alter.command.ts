@@ -25,7 +25,7 @@ const options = {
     }),
     "display-name": createStringOption({
         description: 'The display name for the alter. These can include spaces.',
-        required: true,
+        required: false,
         max_length: 100,
         min_length: 3
     })
@@ -68,7 +68,7 @@ export default class CreateAlterCommand extends SubCommand {
             systemId: user.system.associatedUserId,
 
             username,
-            displayName,
+            displayName: username ?? displayName,
             nameMap: [],
             color: null,
             pronouns: null,

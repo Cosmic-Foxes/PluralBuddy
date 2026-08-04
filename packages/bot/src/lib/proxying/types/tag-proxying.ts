@@ -31,7 +31,7 @@ export const proxyTagValid = (
 	message: Message,
 ) => {
 	const hasPrefix = proxyTag.prefix !== "";
-	const hasSuffix = proxyTag.suffix !== "";
+	const hasSuffix = proxyTag.suffix !== ""; 
 	if (!hasPrefix && !hasSuffix) return false;
 	
 	return (

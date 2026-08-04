@@ -74,7 +74,6 @@ export const extendedContext = extendContext((interaction) => {
 			if (!message) return;
 
 			const collector = message.createComponentCollector();
-				console.log("ran")
 
 			collector.run(`ephemeral-${interaction.id}`, async (i) => {
 				const locale = await getLanguageByUserId(i.user.id);
