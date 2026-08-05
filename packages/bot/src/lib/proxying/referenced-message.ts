@@ -10,17 +10,19 @@ export async function getReferencedMessageString(
 	let userString = `<@${message.referencedMessage?.author.id}>`;
 	let messageString = `[${
 		message.referencedMessage?.content
-		.replace(/<#(.*)>/, "")
-		.replaceAll("https://", "")
-.replaceAll("\n", "")
-		.replaceAll("http://", "")
-		.replaceAll(/<@!?(\d+)>/g, "") === ""
+			.replace(/<#(.*)>/, "")
+			.replaceAll("https://", "")
+			.replaceAll("\n", "")
+			.replaceAll("discord.com", "discord")
+			.replaceAll("http://", "")
+			.replaceAll(/<@!?(\d+)>/g, "") === ""
 			? "Jump to message"
 			: message.referencedMessage?.content
 					.replace(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:")
 					.substring(0, 74)
 					.replaceAll("https://", "")
-     .replaceAll("\n", "")
+					.replaceAll("discord.com", "discord")
+					.replaceAll("\n", "")
 					.replaceAll("http://", "")
 					.replaceAll(/<@!?(\d+)>/g, "")
 					.replaceAll("@everyone", "--")
@@ -62,18 +64,21 @@ export async function getReferencedMessageString(
 			if (alter !== null) {
 				userString = `@${alter?.username}`;
 				messageString = `[${
-					contents.replace(/<#(.*)>/, "")
-					.replaceAll("https://", "")
-			.replaceAll("\n", "")
-					.replaceAll("http://", "")
-					.replaceAll(/<@!?(\d+)>/g, "") === ""
+					contents
+						.replace(/<#(.*)>/, "")
+						.replaceAll("https://", "")
+						.replaceAll("discord.com", "discord")
+						.replaceAll("\n", "")
+						.replaceAll("http://", "")
+						.replaceAll(/<@!?(\d+)>/g, "") === ""
 						? "Jump to message"
 						: contents
 								.replace(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:")
 								.substring(0, 74)
 								.replaceAll("https://", "")
 								.replaceAll("http://", "")
-        .replaceAll("\n", "")
+								.replaceAll("discord.com", "discord")
+								.replaceAll("\n", "")
 								.replaceAll(/<@!?(\d+)>/g, "")
 								.replaceAll("@everyone", "--")
 								.replace(/<#(.*)>/, "")
