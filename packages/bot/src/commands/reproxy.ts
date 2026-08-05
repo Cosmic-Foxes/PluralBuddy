@@ -48,6 +48,7 @@ const options = {
 	name: "reproxy",
 	description: "Reproxy as an alter",
 	contexts: ["Guild"],
+	aliases: ["rp"]
 })
 @Options(options)
 export default class ReproxyCommand extends Command {
