@@ -20,6 +20,7 @@ export default class IncludeProxyTags extends SubCommand {
 						"ERROR_SYSTEM_DOESNT_EXIST",
 					),
 				],
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
 			});
 		}
 
