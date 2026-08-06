@@ -43,7 +43,8 @@ export enum SystemProtectionFlags {
 }
 
 export enum SystemFlags {
-	KEEP_PROXY_TAGS = 1 << 0
+	KEEP_PROXY_TAGS = 1 << 0,
+	KEEP_PRONOUNS = 1 << 1
 }
 
 export const PSystemObject = z.object({
