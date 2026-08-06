@@ -234,7 +234,7 @@ ${z.prettifyError(alter.error)}
 										? `> - ${(await ctx.userTranslations()).CREATE_NEW_ALTER_ASSIGN.replace("{{ tag }}", assignableTag.tagFriendlyName)}`
 										: "",
 									now === true
-										? `> - ${done ? `${emojis.loading}  ` : ""}${(await ctx.userTranslations()).CREATE_NEW_ALTER_NOW}`
+										? `> - ${!done ? `${emojis.loading}  ` : ""}${(await ctx.userTranslations()).CREATE_NEW_ALTER_NOW}`
 										: "",
 								]
 									.filter((v) => v !== "")
@@ -244,7 +244,7 @@ ${z.prettifyError(alter.error)}
 				],
 			});
 
-		successMessage(false);
+		await successMessage(false);
 
 		if (now === true) {
 			const ap = getSpecificAutoProxy(user.system, ctx.guildId ?? "@global");
@@ -264,8 +264,7 @@ ${z.prettifyError(alter.error)}
 						],
 					},
 				);
-			}
-			if (ap === null) {
+			} else {
 				await userCollection.updateOne(
 					{ userId: user.system.associatedUserId },
 					{
@@ -280,6 +279,8 @@ ${z.prettifyError(alter.error)}
 					},
 				);
 			}
+
+			await successMessage(true)
 		}
 	}
 }
