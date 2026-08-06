@@ -20,7 +20,8 @@ const flagDescription = `This is a bitwise operation-based number which determin
 
 | Public Flag     | Value                   | Description |
 |-----------------|-------------------------|-------------|
-| KEEP_PROXY_TAGS | \`1\` \`(1 << 0)\`      | All messages sent in the system will maintain their proxy tags. |`
+| KEEP_PROXY_TAGS | \`1\` \`(1 << 0)\`      | All messages sent in the system will maintain their proxy tags. |
+| KEEP_PRONOUNS   | \`2\` \`(1 << 1)\`      | Pronouns will be shown in the webhook name of the proxying. |`;
 
 const tagMapDescription = `This is a map that shows the association between a Discord server ID and a custom display tag.
 
