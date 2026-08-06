@@ -28,9 +28,9 @@ const options = {
 };
 
 @Declare({
-	name: "autoproxy",
+	name: "ap",
 	description: "Set autoproxy settings",
-	aliases: ["ap"],
+	aliases: ["autoproxy"],
 	contexts: ["Guild"],
 	ignore: IgnoreCommand.Slash,
 })
