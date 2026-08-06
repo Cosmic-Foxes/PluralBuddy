@@ -897,4 +897,14 @@ Your system is using the front state of **{{ mode }}**.`,
 
 	PROXYING_ALREADY_ENABLED: "Proxying was already enabled in this server.",
 	PROXYING_ALREADY_DISABLED: "Proxying was already disabled in this server.",
+
+	TOGGLED_INCLUDING_PROXY_TAGS_E:
+		"Successfully toggled including proxy tags. (enabled)",
+	TOGGLED_INCLUDING_PROXY_TAGS_D:
+		"Successfully toggled including proxy tags. (disabled)",
+
+	TOGGLED_INCLUDING_PRONOUNS_E:
+		"Successfully toggled including pronouns. (enabled)",
+	TOGGLED_INCLUDING_PRONOUNS_D:
+		"Successfully toggled including pronouns. (disabled)",
 };

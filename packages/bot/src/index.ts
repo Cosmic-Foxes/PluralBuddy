@@ -200,7 +200,8 @@ if (import.meta.main) {
 	await setupMongoDB();
 	await setupDatabases();
 
-	if (logger) logger.info("MongoDB is loaded.");
+
+	(logger ?? console).info("MongoDB is loaded.");
 
 	client.cache.statistic = new StatisticResource(client.cache, client);
 	client.cache.alterProxy = new ProxyResource(client.cache, client);
@@ -215,6 +216,13 @@ if (import.meta.main) {
 
 	await client.start({ token: process.env.BOT_TOKEN });
 
+	try {
+		await client.uploadCommands({ cachePath: "./commands.json" });
+	} catch (e) {
+		(logger ?? console).warn(e);
+		// uploading commands has an extremely low ratelimit.
+	}
+	
 	client.gateway.setPresence({
 		activities: [
 			{

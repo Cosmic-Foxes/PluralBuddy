@@ -42,8 +42,6 @@ export default class PublicProfileBtn extends ComponentCommand {
 			},
 		);
 
-		system.disabled = !system.disabled;
-
 		return await ctx.update({
 			components: [
 				...new SystemSettingsView(await ctx.userTranslations()).topView(
