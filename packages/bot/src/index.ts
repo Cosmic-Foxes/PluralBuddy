@@ -217,12 +217,12 @@ if (import.meta.main) {
 	await client.start({ token: process.env.BOT_TOKEN });
 
 	try {
-		await client.uploadCommands({ cachePath: "./commands.json" });
+		await client.uploadCommands();
 	} catch (e) {
 		(logger ?? console).warn(e);
 		// uploading commands has an extremely low ratelimit.
 	}
-	
+
 	client.gateway.setPresence({
 		activities: [
 			{
