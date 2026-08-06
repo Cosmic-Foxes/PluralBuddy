@@ -253,6 +253,7 @@ export class SystemSettingsView extends TranslatedView {
 	}) {
 		const keepProxyTags =
 			((system.flags ?? 0) & SystemFlags.KEEP_PROXY_TAGS) === 0;
+		const includePronouns = ((system.flags ?? 0) & SystemFlags.INCLUDE_PRONOUNS) === 0;
 
 		return [
 			new Container().setColor("#1190FF").setComponents(
@@ -278,6 +279,22 @@ export class SystemSettingsView extends TranslatedView {
 					)
 					.setComponents(
 						new TextDisplay().setContent($translations.INCLUDE_PROXY_TAGS_DESC),
+					),
+				new Section()
+					.setAccessory(
+						new Button()
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel(
+								includePronouns
+									? $translations.INCLUDE_PRONOUNS_BTN
+									: $translations.INCLUDE_PRONOUNS_OFF_BTN,
+							)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.GeneralTab.ToggleIncludePronouns.create(),
+							),
+					)
+					.setComponents(
+						new TextDisplay().setContent($translations.INCLUDE_PRONOUNS_DESC),
 					),
 				new Separator(),
 				new Section()

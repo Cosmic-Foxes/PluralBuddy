@@ -332,13 +332,13 @@ export async function performTagProxy(
 						...roleAfterComponents,
 					];
 
-		if (message.guildId)
+		if (message.guildId && user.system)
 			proxy(
 				webhook,
 				client,
 				message,
 				processedContents,
-				`${checkAlter.nameMap.find((c) => c.server === message.guildId)?.name ?? checkAlter?.displayName ?? ""} ${(user.system?.displayTagMap ?? {})[message.guildId] ?? user.system?.systemDisplayTag ?? ""}`,
+				`${checkAlter.nameMap.find((c) => c.server === message.guildId)?.name ?? checkAlter?.displayName ?? ""}${getSystemFeatures(user.system).includePronouns ? ` (${checkAlter?.pronouns})` : ""} ${(user.system?.displayTagMap ?? {})[message.guildId] ?? user.system?.systemDisplayTag ?? ""}`,
 				checkAlter?.alterId as number,
 				checkAlter?.systemId as string,
 				[...referencedMessage],

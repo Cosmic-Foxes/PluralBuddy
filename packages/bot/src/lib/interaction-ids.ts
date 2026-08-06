@@ -272,6 +272,7 @@ export const InteractionIdentifier = {
 				ExportSystem: createStatic("systems/config/general/export"),
 				ImportSystem: createStatic("systems/config/general/import"),
 				ToggleIncludeProxyTags: createStatic("systems/config/general/include-proxy-tags"),
+				ToggleIncludePronouns: createStatic("systems/config/general/include-pronouns")
 			},
 			OtherAlterPagination: {
 				PreviousPage: createFromAdditionalArg("systems/config/oapg/previous"),

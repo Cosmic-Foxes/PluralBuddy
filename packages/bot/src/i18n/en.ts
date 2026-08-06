@@ -421,6 +421,7 @@ PluralBuddy uses a **username/display name** system.
 	OPERATION_LATCH_DELAY: "Set latch delay to %delay%.",
 	OPERATION_FALLBACK: "Set \`%property%\` to \`%value%\`",
 	OPERATION_SYSTEM_TOGGLE_PROXY_TAGS: "Toggled proxy tags on the system",
+	OPERATION_SYSTEM_TOGGLE_PRONOUNS: "Toggled displaying pronouns on the system",
 
 	EDIT_MESSAGE: "Editing message",
 	MESSAGE_CONTENTS: "New Message Contents",
@@ -841,6 +842,10 @@ There is an example below of what an example proxy with this role would look lik
 		"Include proxy tags will remove the automatic omitting of proxy tags from the result message sent by PluralBuddy.",
 	INCLUDE_PROXY_TAGS_BTN: "Include Proxy Tags",
 	INCLUDE_PROXY_TAGS_OFF_BTN: "Disable Including Proxy Tags",
+	INCLUDE_PRONOUNS_DESC:
+		"Including pronouns will add pronouns to the webhook name every time you proxy in parentheses.",
+	INCLUDE_PRONOUNS_BTN: "Include Pronouns",
+	INCLUDE_PRONOUNS_OFF_BTN: "Disable Including Pronouns",
 
 	VALIDATION_TAG_ERROR: "There was an error while creating that tag:",
 	ERROR_CREATING_WEBHOOK_TITLE:
