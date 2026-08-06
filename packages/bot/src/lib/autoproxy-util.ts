@@ -5,11 +5,11 @@ export const getSpecificAutoProxy = (system: PSystem, label: string) =>
 
 export const getWiderAutoProxy = (
 	system: PSystem,
-	serverId: string,
-	channelId: string,
+	serverId?: string | undefined,
+	channelId?: string | undefined,
 ) => {
-	const channelLevel = getSpecificAutoProxy(system, `${serverId}/${channelId}`);
-	const serverLevel = getSpecificAutoProxy(system, serverId);
+	const channelLevel = serverId && channelId ? getSpecificAutoProxy(system, `${serverId}/${channelId}`) : null;
+	const serverLevel = serverId ? getSpecificAutoProxy(system, serverId) : null;
 	const globalLevel = getSpecificAutoProxy(system, "@global");
 
 	return (

@@ -252,45 +252,6 @@ export class PluralBuddyIntro extends TranslatedView {
 
 		textContainer.setComponents(
 			new TextDisplay().setContent(this.translations.SP_IMPORT_START),
-			new Separator().setSpacing(Spacing.Large),
-			new TextDisplay().setContent(this.translations.SP_IMPORT_DESC),
-			new MediaGallery().setItems(
-				new MediaGalleryItem()
-					.setMedia("attachment://sp-1.png")
-					.setDescription(this.translations.ALT_NAV_MENU),
-				new MediaGalleryItem()
-					.setMedia("attachment://sp-2.png")
-					.setDescription(this.translations.ALT_GEAR),
-				new MediaGalleryItem()
-					.setMedia("attachment://sp-3.png")
-					.setDescription(this.translations.ALT_ACCOUNTS),
-				new MediaGalleryItem()
-					.setMedia("attachment://sp-4.png")
-					.setDescription(this.translations.ALT_TOKENS),
-				new MediaGalleryItem()
-					.setMedia("attachment://sp-5.png")
-					.setDescription(this.translations.ALT_NEW_TOKEN),
-				new MediaGalleryItem()
-					.setMedia("attachment://sp-6.png")
-					.setDescription(this.translations.ALT_READ_SCOPE),
-				new MediaGalleryItem()
-					.setMedia("attachment://sp-7.png")
-					.setDescription(this.translations.ALT_COPY_TOKEN),
-			),
-			new Separator(),
-			new Section()
-				.setComponents(
-					new TextDisplay().setContent(this.translations.SP_STEPTWO_DESC),
-				)
-				.setAccessory(
-					new Button()
-						.setCustomId(
-							InteractionIdentifier.Setup.SimplyPluralUploadToken.create(),
-						)
-						.setEmoji(emojis.plus)
-						.setLabel(this.translations.SP_UPLOAD)
-						.setStyle(ButtonStyle.Primary),
-				),
 		);
 
 		paginationContainer.setComponents([

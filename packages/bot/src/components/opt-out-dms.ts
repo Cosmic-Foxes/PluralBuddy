@@ -16,7 +16,7 @@ export default class OptOutDMs extends ComponentCommand {
 		const { system } = await ctx.retrievePUser();
 
 		if (system === undefined) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
