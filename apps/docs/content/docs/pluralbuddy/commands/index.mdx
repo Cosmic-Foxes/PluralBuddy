@@ -44,7 +44,7 @@ _All arguments in `<value>` format are required. All arguments in `[value]` are 
 - `pb;system avatar [avatar url or attachment]` - Set the profile picture of the system, viewable on the system profile. Cleared when not provided.
 - `pb;system banner [banner url or attachment]` - Set the banner of the system, viewable on the system profile. Cleared when not provided.
 - `pb;system config` - Opens the visual configuration for your system.
-- `pb;system create-alter <username> <display name>` - Creates a new alter in the system.
+- `pb;[system] create-alter <username> <display name>` - Creates a new alter in the system.
 - `pb;system create-tag <display name>` - Creates a new tag in the system.
 - `pb;system delete [-mi]` - Completely delete the system. Using `-mi` will also remove media uploaded related to the system in 7-8 days after deletion operation.
 - `pb;system description [description]` - Set or view the current system description.
@@ -59,6 +59,8 @@ _All arguments in `<value>` format are required. All arguments in `[value]` are 
 - `pb;system random [-qt]` - View a random alter. Optionally query a tag with `-qt`. 
 - `pb;system tags` - View all tags in a system. Searchable.
 - `pb;system toggle` - Toggle system being able to proxy. (disabled systems will NOT be able to proxy)
+- `pb;system include-pronouns` - Toggling including pronouns in the webhook name after proxying with an alter.
+- `pb;system include-proxy-tags` - Toggling including proxy tags after proxying with an alter.
 - `pb;ping` - Get current PluralBuddy ping
 - `pb;express` - Sends a link directly to adding another alter in PluralBuddy Express
 
