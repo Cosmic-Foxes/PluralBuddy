@@ -7,6 +7,9 @@ import { Command, createMiddleware, Message, SubCommand } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
 export const serverBlock = createMiddleware<void>(async (middle) => {
+
+	if (!middle.context.guildId)
+		return middle.next()
 	const { blockedChannels, blockedRoles, blockedCategories } =
 		PGuildObject.parse(
 			(
