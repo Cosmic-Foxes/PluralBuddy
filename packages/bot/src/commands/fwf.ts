@@ -23,12 +23,17 @@ const options = {
 @Declare({
 	name: "fwf",
 	description: "Flat worm Friday in Wall Street",
+	contexts: ["Guild", "BotDM", "PrivateChannel"],
+	integrationTypes: ["GuildInstall", "UserInstall"],
 })
 @Options(options)
 export default class WhoAskedCommand extends Command {
 	override async run(ctx: CommandContext<typeof options>) {
-		const roles = await ctx.member?.roles?.list()
-		const date = new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York', weekday: 'long' });
+		const roles = await ctx.member?.roles?.list();
+		const date = new Date().toLocaleDateString("en-US", {
+			timeZone: "America/New_York",
+			weekday: "long",
+		});
 
 		if (date === "Friday" || ctx.options["time-machine"] !== true) {
 			return ctx.write({
@@ -38,14 +43,19 @@ export default class WhoAskedCommand extends Command {
 				flags: MessageFlags.IsComponentsV2,
 			});
 		}
-		if (ctx.guildId === "1077258761443483708" && !roles?.some(v => v.id === "1080157688752767046")) {
+		if (
+			ctx.guildId === "1077258761443483708" &&
+			!roles?.some((v) => v.id === "1080157688752767046")
+		) {
 			return ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView("UNABLE_TO_BE_FUNNY"),
-				flags: MessageFlags.IsComponentsV2
-			})
+				components: new AlertView(await ctx.userTranslations()).errorView(
+					"UNABLE_TO_BE_FUNNY",
+				),
+				flags: MessageFlags.IsComponentsV2,
+			});
 		}
 
-        await ctx.deferReply();
+		await ctx.deferReply();
 		return ctx.editResponse({
 			components: [
 				new Container().setComponents(
