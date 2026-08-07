@@ -35,7 +35,7 @@ export default class WhoAskedCommand extends Command {
 			weekday: "long",
 		});
 
-		if (date === "Friday" || ctx.options["time-machine"] !== true) {
+		if (date !== "Friday" && ctx.options["time-machine"] !== true) {
 			return ctx.write({
 				components: new AlertView(await ctx.userTranslations()).errorView(
 					"NOT_FRIDAY",
