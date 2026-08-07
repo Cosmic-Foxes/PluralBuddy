@@ -15,6 +15,8 @@ export async function getReferencedMessageString(
 			.replaceAll("\n", "")
 			.replaceAll("discord.com", "discord")
 			.replaceAll("http://", "")
+			.replaceAll("]", "")
+			.replaceAll("[", "")
 			.replaceAll(/<@!?(\d+)>/g, "") === ""
 			? "Jump to message"
 			: message.referencedMessage?.content
@@ -23,6 +25,8 @@ export async function getReferencedMessageString(
 					.replaceAll("https://", "")
 					.replaceAll("discord.com", "discord")
 					.replaceAll("\n", "")
+					.replaceAll("]", "")
+					.replaceAll("[", "")
 					.replaceAll("http://", "")
 					.replaceAll(/<@!?(\d+)>/g, "")
 					.replaceAll("@everyone", "--")
@@ -70,6 +74,8 @@ export async function getReferencedMessageString(
 						.replaceAll("discord.com", "discord")
 						.replaceAll("\n", "")
 						.replaceAll("http://", "")
+						.replaceAll("]", "")
+						.replaceAll("[", "")
 						.replaceAll(/<@!?(\d+)>/g, "") === ""
 						? "Jump to message"
 						: contents
@@ -79,6 +85,8 @@ export async function getReferencedMessageString(
 								.replaceAll("http://", "")
 								.replaceAll("discord.com", "discord")
 								.replaceAll("\n", "")
+								.replaceAll("]", "")
+								.replaceAll("[", "")
 								.replaceAll(/<@!?(\d+)>/g, "")
 								.replaceAll("@everyone", "--")
 								.replace(/<#(.*)>/, "")
