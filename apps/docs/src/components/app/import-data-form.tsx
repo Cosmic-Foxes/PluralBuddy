@@ -336,7 +336,7 @@ export function ImportDataForm({ importData }: { importData: ImportStage }) {
 							onClick={async () => {
 								setLoading(true);
 
-								await trpc.import_staging.markImportStagingDone.query({
+								await trpc.import_staging.markImportStagingDone.mutate({
 									from: type as "PluralBuddy" | "PluralKit" | "TupperBox",
 									importStagingId: importData.webhook.id,
 									data,

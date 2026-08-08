@@ -69,7 +69,7 @@ export const ImportStagingRouter = router({
 					{ error: "Configuration is not consistent with import type." },
 				),
 		)
-		.query(async ({ ctx, input }) => {
+		.mutation(async ({ ctx, input }) => {
 			const session = await auth.api.getSession({
 				headers: await headers(),
 			});
