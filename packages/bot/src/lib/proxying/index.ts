@@ -92,13 +92,19 @@ export async function proxy(
 			components.push(
 				new MediaGallery().addItems(
 					mediaFiles.map((attachment) =>
-						new MediaGalleryItem().setMedia(`attachment://${attachment.name}`).setSpoiler(attachment.spoilered),
+						new MediaGalleryItem()
+							.setMedia(`attachment://${attachment.name}`)
+							.setSpoiler(attachment.spoilered),
 					),
 				),
 			);
 		if (otherFiles.length > 0)
 			for (const attachment of otherFiles)
-				components.push(new File().setMedia(`attachment://${attachment.name}`).setSpoiler(attachment.spoilered));
+				components.push(
+					new File()
+						.setMedia(`attachment://${attachment.name}`)
+						.setSpoiler(attachment.spoilered),
+				);
 	}
 	if ((message.stickerItems ?? []).length > 0) {
 		components.push(
@@ -118,6 +124,10 @@ export async function proxy(
 	const parent =
 		"parentId" in channel && channel.isThread() ? channel.parentId : null;
 
+	if (components.length === 0) {
+		return;
+	}
+	
 	if (await message.fetch().catch(() => null)) {
 		// Send the message with file attachments included
 
@@ -132,8 +142,10 @@ export async function proxy(
 								: (0 as MessageFlags),
 						username: username.substring(0, 80),
 						avatar_url: picture,
-						files: fileAttachments.map((c) =>
-							new AttachmentBuilder().setFile("buffer", c.buff).setName(c.name),
+						files: fileAttachments.map((c, i) =>
+							new AttachmentBuilder()
+								.setFile("buffer", c.buff)
+								.setName(`${c.name}`),
 						),
 						allowed_mentions:
 							message.referencedMessage &&
@@ -166,8 +178,7 @@ export async function proxy(
 												})
 												.setFooter({
 													text: "Unable to proxy this message",
-													iconUrl:
-														"https://pb.giftedly.dev/image/pfp.png",
+													iconUrl: "https://pb.giftedly.dev/image/pfp.png",
 												});
 										})(),
 									]
@@ -250,7 +261,9 @@ export async function proxy(
 												...(message.referencedMessage
 													? [
 															new Separator(),
-															new TextDisplay().setContent("-# **REFERENCED MESSAGE**"),
+															new TextDisplay().setContent(
+																"-# **REFERENCED MESSAGE**",
+															),
 															new TextDisplay().setContent(`-# Message author: <@${message.referencedMessage.author.id}>
 -# Message ID: [${message.referencedMessage.id}](https://discord.com/channels/${message.guildId ?? "@me"}/${message.channelId}/${message.referencedMessage.id})
 -# Message contents: ${message.referencedMessage.content.slice(0, 1000)}`),
