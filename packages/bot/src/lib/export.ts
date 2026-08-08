@@ -63,7 +63,7 @@ export async function buildPkExportPayload(system: PSystem) {
 			uuid: crypto.randomUUID(),
 			name: alter.username.substring(0, 100),
 			display_name: alter.displayName.substring(0, 100),
-			color: alter.color,
+			color: alter.color !== null ? alter.color.slice(1) : null,
 			birthday: null,
 			avatar_url: alter.avatarUrl,
 			webhook_avatar_url: null,
