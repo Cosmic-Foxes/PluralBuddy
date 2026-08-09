@@ -376,8 +376,10 @@ PluralBuddy uses a **username/display name** system.
 -# **CREDITS**
 **Programmed w/ :heart_hands: by @giftedly**
 -# Developed all major parts of PluralBuddy
-**Co-developed by @causticdisco**
--# Helped out with smaller parts of PluralBuddy
+
+**OSS Contributions** - [PluralBuddy is MIT licensed](https://github.com/giftedl/PluralBuddy/blob/main/LICENSE)
+-# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco)
+-# Docs: [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.), [@Stjernesys](https://github.com/Stjernesys) (@thatskymaridelrosynthia)
 
 **Translated on Crowdin**
 -# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
@@ -909,5 +911,5 @@ Your system is using the front state of **{{ mode }}**.`,
 		"Successfully toggled including pronouns. (disabled)",
 
 	NOT_FRIDAY:
-		"Flatworm Friday is only on Friday in New York, come back next Friday to Wall Street or use `--time-machine`."
+		"Flatworm Friday is only on Friday in New York, come back next Friday to Wall Street or use `--time-machine`.",
 };
