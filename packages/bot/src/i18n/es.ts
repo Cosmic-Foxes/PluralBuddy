@@ -127,17 +127,17 @@ SimplyPlural ha sido descontinuado.`,
 
 	PLURALBUDDY_IMPORT_DESC: "Copia y pega los datos JSON exportados a continuación",
 	PLURALBUDDY_IMPORT_ERROR:
-		"2q – Ocurrió un error al procesar los datos:
+		`2q – Ocurrió un error al procesar los datos:
 
 \`\`\`
 %zod_errors%
-\`\`\`",
+\`\`\``,
 	PLURALBUDDY_OPTIONS_ERROR:
-		"2r – Ocurrió un error al evaluar los argumentos de ese comando:
+		`2r – Ocurrió un error al evaluar los argumentos de ese comando:
 
 \`\`\`
 %options_errors%
-\`\`\`",
+\`\`\``,
 
 	CREATE_NEW_ALTER_DONE:
 		"Se ha creado con éxito un nuevo alter en tu sistema. Usa `%prefix%alter %alter_id%` para más detalles.",
@@ -158,10 +158,10 @@ SimplyPlural ha sido descontinuado.`,
 		"Ya tienes una etiqueta llamada **%display%** en tu sistema.",
 
 	CONFIRMATION_SYSTEM_DELETION:
-		"# :warning: __ESTÁS A PUNTO DE ELIMINAR TU SISTEMA__ :warning:
+		`# :warning: __ESTÁS A PUNTO DE ELIMINAR TU SISTEMA__ :warning:
 **Esta acción NO SE PUEDE deshacer por el soporte de PluralBuddy**, ni por ti mismo/a de ninguna forma en el futuro. __Esto eliminará TODOS los datos del sistema, incluyendo etiquetas, alters y otros elementos de tu sistema__.
 
-> **Consejo:** Si solo necesitas desactivar el proxy para todos los alters, puede ser mejor **desactivar** el sistema en su lugar.",
+> **Consejo:** Si solo necesitas desactivar el proxy para todos los alters, puede ser mejor **desactivar** el sistema en su lugar.`,
 	CONFIRMATION_SYSTEM_DELETION_PRIVACY:
 		"-# De acuerdo con la [Política de privacidad de PluralBuddy](https://gftl.fyi/privacy), esta acción eliminará todos los datos relacionados con tu sistema, **excepto** los banners e imágenes de perfil del sistema. Estos se pueden eliminar usando la bandera `media-included` de %command%.",
 	CONFIRMATION_SYSTEM_DELETION_BTN:
@@ -171,16 +171,16 @@ SimplyPlural ha sido descontinuado.`,
 		"¿Estás seguro/a de que deseas eliminar a @%alter%? **Esta acción no se puede deshacer.**",
 
 	SYSTEM_DELETION_FINISHED:
-		"Se ha eliminado tu sistema con éxito. 
+		`Se ha eliminado tu sistema con éxito. 
 -# A continuación también se incluye una copia de seguimiento de la exportación de tu sistema.",
 	OPTED_OUT_OF_DMS:
 		"Has desactivado con éxito los mensajes directos (DM). Ya no recibirás DMs para operaciones relacionadas con el sistema.
 
-> **Por qué no se recomienda:** Desactivar los DMs de operaciones elimina una salvaguarda contra aplicaciones OAuth potencialmente peligrosas que realicen cambios pequeños pero significativos en tu sistema. Desactivarlos removerá por completo esta protección, lo cual podría no ser lo deseado. El soporte de PluralBuddy podría no ser capaz de recuperar datos destruidos por aplicaciones OAuth.",
+> **Por qué no se recomienda:** Desactivar los DMs de operaciones elimina una salvaguarda contra aplicaciones OAuth potencialmente peligrosas que realicen cambios pequeños pero significativos en tu sistema. Desactivarlos removerá por completo esta protección, lo cual podría no ser lo deseado. El soporte de PluralBuddy podría no ser capaz de recuperar datos destruidos por aplicaciones OAuth.`,
 	OPTED_IN_OF_DMS: "Has vuelto a activar los mensajes directos (DM) con éxito.",
 	SYSTEM_DELETION_MEDIA_FINISHED:
-		"Se ha eliminado con éxito tu sistema **y los archivos multimedia de tu sistema**. 
--# Si tienes los DMs abiertos, también se te ha enviado una copia de la exportación de tu sistema.",
+		`Se ha eliminado con éxito tu sistema **y los archivos multimedia de tu sistema**. 
+-# Si tienes los DMs abiertos, también se te ha enviado una copia de la exportación de tu sistema.`,
 	SYSTEM_DELETION_DM: "Aquí tienes los datos de exportación debido a la eliminación del %time%:",
 	ALTER_DELETION_FINISHED: "Se ha eliminado ese alter con éxito.",
 	ALTER_SERVER_DN_FORM_LABEL: "Nombre para mostrar en el servidor",
@@ -215,13 +215,13 @@ SimplyPlural ha sido descontinuado.`,
 -# - **Qué son las opciones de privacidad:** Las opciones de privacidad son elementos que puedes elegir hacer públicos en tu sistema. Esto te otorga un control detallado sobre qué es público y qué es privado.`,
 
 	ALTER_PROXY_TAGS:
-		"## Etiquetas Proxy - @%alter%
-Las etiquetas proxy son la forma en que tu alter *se presenta* según el contenido de tu mensaje. Puedes crear varias de estas, con un máximo de 20 caracteres para el prefijo/sufijo de cada descriptor.",
+		`## Etiquetas Proxy - @%alter%
+Las etiquetas proxy son la forma en que tu alter *se presenta* según el contenido de tu mensaje. Puedes crear varias de estas, con un máximo de 20 caracteres para el prefijo/sufijo de cada descriptor.`,
 	ALTER_FORM_TITLE: "Editando alter",
 	ALTER_GENERAL:
-		"## %general% Configuración general - @%alter%
+		`## %general% Configuración general - @%alter%
 Los alters son partes de tu sistema. Aquí puedes configurar ciertos valores de tu alter.",
-	ALTER_SET_USERNAME: "Establecer nombre de usuario del alter",
+	ALTER_SET_USERNAME: "Establecer nombre de usuario del alter`,
 	ALTER_SET_DISPLAY: "Establecer nombre para mostrar",
 	ALTER_SET_SERVER_NAME: "Establecer nombre para mostrar en el servidor",
 	ALTER_SET_SERVER_NAME_DESC: `Establecer este valor cambiará el nombre para mostrar de este alter cuando esté al frente en %server%.
@@ -262,8 +262,8 @@ PluralBuddy usa un sistema de **nombre de usuario/nombre para mostrar**.
 		"Ocurrió un error al obtener datos de tu sistema de Simply Plural. ¿Era el token correcto? ¿Le otorgaste los permisos adecuados?",
 
 	TAG_GENERAL:
-		"## %general% Configuración general - %tag%
-Las etiquetas son grupos específicos de los que tu alter puede formar parte. Ciertos valores de tu etiqueta se pueden configurar aquí.",
+		`## %general% Configuración general - %tag%
+Las etiquetas son grupos específicos de los que tu alter puede formar parte. Ciertos valores de tu etiqueta se pueden configurar aquí.`,
 	TAG_SET_DISPLAY_NAME_DESC:
 		"Los nombres para mostrar de las etiquetas son su única forma de identificación. Deben tener menos de 100 caracteres.",
 	TAG_SET_COLOR_DESC:
@@ -298,8 +298,8 @@ Las etiquetas son grupos específicos de los que tu alter puede formar parte. Ci
 	NO_GCP_SE:
 		"No puedes subir archivos adjuntos directamente para recursos específicos de un servidor. Debes usar una URL directa debido a razones técnicas.",
 	WAITING_INDEXING:
-		"PluralBuddy está intentando procesar tu sistema. **Esto puede tomar un tiempo.**
--# **Estado actual:** {{ percentage }} indexado.",
+		`PluralBuddy está intentando procesar tu sistema. **Esto puede tomar un tiempo.**
+-# **Estado actual:** {{ percentage }} indexado.`,
 	TOO_MANY_ALTERS:
 		"Hay demasiados alters en tu sistema de PluralBuddy (2000 alters). Por favor, contacta con soporte si crees que esto es un error.",
 	TOO_MANY_TAGS:
@@ -437,8 +437,8 @@ Las etiquetas son grupos específicos de los que tu alter puede formar parte. Ci
 	OPERATION_AVATAR_UNDEFINED: "Avatar del sistema restablecido",
 	OPERATION_BANNER: "Banner del sistema actualizado a una **[nueva imagen](<%link%>)**.",
 	OPERATION_BANNER_UNDEFINED: "Banner del sistema restablecido",
-	OPERATION_DESCRIPTION: "Descripción del sistema cambiada a:
- > %description%",
+	OPERATION_DESCRIPTION: `Descripción del sistema cambiada a:
+ > %description%`,
 	OPERATION_PRONOUNS: "Pronombres del sistema cambiados a %pronouns%.",
 	OPERATION_LATCH_DELAY: "Tiempo de retención del modo fijado cambiado a %delay%.",
 	OPERATION_FALLBACK: "Se cambió \`%property%\` a \`%value%\`",
@@ -476,21 +476,21 @@ Las etiquetas son grupos específicos de los que tu alter puede formar parte. Ci
 		"2ag – No tienes permiso para editar esta información.",
 
 	SUCCESS_CHANGED_SERVER_PREFIXES:
-		"Este servidor ahora tiene los siguientes prefijos: 
-%prefixes%",
+		`Este servidor ahora tiene los siguientes prefijos: 
+%prefixes%`,
 	SUCCESS_ADD_ITEM_BLOCKED: "%item% ha sido bloqueado con éxito.",
 	SUCCESS_REMOVE_ITEM_BLOCKED: "%item% ha sido desbloqueado con éxito.",
 	SUCCESS_CHANGED_SERVER_BLOCKS:
-		"Este servidor ahora tiene la siguiente configuración de bloqueos: 
-%block_items%",
+		`Este servidor ahora tiene la siguiente configuración de bloqueos: 
+%block_items%`,
 	PREFIX_ALREADY_EXISTS:
 		"Ese prefijo ya existe o hay un duplicado en la lista.",
 	BLOCK_ALREADY_EXISTS: "Ese rol o canal ya está bloqueado.",
 	SUCCESS_ADD_MANAGER_ROLE:
 		"%item% ha sido añadido a la lista de roles de administrador con éxito.",
 	SUCCESS_CHANGED_MANAGER_BLOCKS:
-		"Este servidor ahora tiene la siguiente configuración de roles de administrador: 
-%manager_roles%",
+		`Este servidor ahora tiene la siguiente configuración de roles de administrador: 
+%manager_roles%`,
 	LATCH_DELAY_INVALID:
 		"Los tiempos de retención no pueden ser mayores a 10 horas ni ser un valor inválido.",
 	MANAGER_ALREADY_EXISTS:
@@ -779,8 +779,8 @@ A continuación hay un ejemplo de cómo se vería un mensaje proxy con este rol:
 
 	SYSTEM_PRIVACY_BTN: "Establecer privacidad del sistema",
 	SYSTEM_PRIVACY_DESC:
-		"Por defecto, tu sistema es completamente privado, salvo por la automoderación del servidor y si usas comandos públicamente 
-(con `-public` al final). Configurar estos valores le indica a PluralBuddy qué mostrar a los demás.",
+		`Por defecto, tu sistema es completamente privado, salvo por la automoderación del servidor y si usas comandos públicamente 
+(con \`-public\` al final). Configurar estos valores le indica a PluralBuddy qué mostrar a los demás.`,
 	SYSTEM_AP_DESC: `Puedes configurar el modo de proxy automático. Hay tres tipos de modos de proxy automático que son **globales para todo el sistema**:
 > - *Modo Alter*: Todos los mensajes enviados desde este sistema usarán proxy con un alter específico. Las etiquetas proxy se ignorarán. **Requiere seleccionar un alter.**
 > - *Modo Fijado (Latch)*: Se elegirá el alter del último mensaje enviado con etiquetas proxy para los siguientes mensajes.
@@ -870,8 +870,8 @@ Tu perfil público es cómo se ve tu sistema para otros usuarios cuando identifi
 	IMPORT_REQ_DESC:
 		"Para enviar tus datos de importación desde otro bot, debes ingresarlos en el panel de control de PluralBuddy.",
 	IMPORT_REQ_WAITING:
-		"-# Esperando respuesta...
--# Esto expira en 15 minutos.",
+		`-# Esperando respuesta...
+-# Esto expira en 15 minutos.`,
 
 	VIEW_DASH: "Ver en el panel de control",
 
