@@ -304,6 +304,7 @@ export async function add(
 							: []),
 					],
 				),
+				fields: {}
 			} satisfies PTag),
 		)
 		.filter((v) => v.data !== undefined)
@@ -323,8 +324,8 @@ export async function add(
 		},
 		{
 			$push: {
-				"system.alterIds": newAlters.map((c) => c.alterId),
-				"system.tagIds": newTags.map((c) => c.tagId),
+				"system.alterIds": { $each: newAlters.map((c) => c.alterId) },
+				"system.tagIds": { $each: newTags.map((c) => c.tagId) },
 			},
 		},
 	);
@@ -393,8 +394,8 @@ export async function deleteM(
 		},
 		{
 			$pull: {
-				"system.alterIds": { $in: pendingDeletedAlters.map((v) => v.alterId) },
-				"system.tagIds": { $in: pendingDeletedTags.map((v) => v.tagId) },
+				"system.alterIds": { $each: pendingDeletedAlters.map((v) => v.alterId) },
+				"system.tagIds": { $each: pendingDeletedTags.map((v) => v.tagId) },
 			},
 		},
 	);
