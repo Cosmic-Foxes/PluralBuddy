@@ -36,8 +36,8 @@
         "administrate_desc": "PluralBuddy has numerous administrator related features – designed to keep a balance between admin and user control.",
 
         "change_bot_headline": "Change the bot",
-        "change_bot_title": "Disable or enable different features of the bot",
-        "change_bot_desc": "PluralBuddy is split into feature flags, dynamically changing the features allowed on PluralBuddy based on your server's guidelines or needs",
+        "change_bot_title": "Disable or enable different features of the bot.",
+        "change_bot_desc": "PluralBuddy is split into feature flags, dynamically changing the features allowed on PluralBuddy based on your server's guidelines or needs.",
 
         "alter_containers_headline": "Alter containers",
         "alter_containers_title": "Emphasize your staff members.",
