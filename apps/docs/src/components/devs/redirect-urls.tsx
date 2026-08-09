@@ -11,7 +11,6 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/shadcn-button";
 import { X } from "lucide-react";
 import { useState } from "react";
-import { urlRegex } from "./create-new-app-form";
 import { toast } from "sonner";
 import { OAuthClient } from "@better-auth/oauth-provider";
 import { authClient } from "@/lib/auth-client";
@@ -39,8 +38,6 @@ export function RedirectURLs({ application }: { application: OAuthClient }) {
 						variant="secondary"
 						disabled={existingURIs.length === 10}
 						onClick={async () => {
-							if (!urlRegex.test(value)) toast.error("Value is not a URL");
-							else {
 								setExistingURIs((existing) => [...existing, value]);
 								setValue("");
 								
@@ -50,7 +47,7 @@ export function RedirectURLs({ application }: { application: OAuthClient }) {
 										redirect_uris: [...existingURIs, value],
 									}
 								})
-							}
+							
 						}}
 					>
 						Add
