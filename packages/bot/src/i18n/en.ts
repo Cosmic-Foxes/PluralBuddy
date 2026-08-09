@@ -80,16 +80,16 @@ SimplyPlural has been discontinued.`,
 	IMPORT_TOKEN_DESCRIPTION: "SimplyPlural Token",
 	CREATE_NEW_SYS_DESCRIPTION: "Create New System",
 	PLURALBUDDY_IMPORT_ERROR_TOO_LARGE:
-		"2j – Importing files cannot be larger than 2mb. Please contact support if you are genuinely trying to import a system larger than 2mb.",
+		"2j – Importing files cannot be larger than 2MB. Please contact support if you are genuinely trying to import a system larger than 2MB.",
 	ERROR_ATTACHMENT_TOO_LARGE:
-		"2j – Attachments for banners or profile pictures cannot be larger than 2mb.",
+		"2j – Attachments for banners or profile pictures cannot be larger than 1MB.",
 	CREATE_NEW_ALTER_DESCRIPTION: "Create New Alter",
 	CREATE_NEW_TAG_DESCRIPTION: "Create New Tag",
 	PLURALBUDDY_IMPORT_ERROR_INVALID_JSON:
 		"2k – The file you imported is not valid JSON.",
 
 	ERROR_INTERACTION_TOO_OLD:
-		"2l – This interaction has no longer been kept track of. (have you waited too long?)",
+		"2l – This interaction has no longer been kept track of. (Have you waited too long?)",
 	ERROR_SYSTEM_DOESNT_EXIST:
 		"2m – This operation cannot be concluded because there is no system to operate on.",
 	ERROR_ALTER_DOESNT_EXIST:
@@ -104,9 +104,9 @@ SimplyPlural has been discontinued.`,
 	SYSTEM_PRONOUNS_FORM_LABEL: "Pronouns",
 	SYSTEM_DESCRIPTION_FORM_LABEL: "Description",
 	SYSTEM_SYSTEM_TAG_FORM_LABEL: "System Tag",
-	ALTER_SUCCESS_PRONOUNS: "Successfully set pronouns for @%alter% to %new%",
+	ALTER_SUCCESS_PRONOUNS: "Successfully set pronouns for @%alter% to %new%".,
 	ALTER_SUCCESS_PRIVACY:
-		"Successfully set the public privacy values for @%alter% to %new% (%number% total values)",
+		"Successfully set the public privacy values for @%alter% to %new% (%number% total values).",
 	ALTER_SUCCESS_DESC: "Successfully set description for @%alter%.",
 	PAGINATION_TITLE: "Page",
 	WAITING: "Loading...",
@@ -125,7 +125,7 @@ SimplyPlural has been discontinued.`,
 		"2y – There is too many characters on either the prefix or suffix side. Remember, you can only have 20 characters for the prefix & 20 characters for the suffix.",
 	SUCCESSFULLY_NEW_PT: "Successfully created a new proxy tag!",
 
-	PLURALBUDDY_IMPORT_DESC: "Copy and paste the exported JSON data below",
+	PLURALBUDDY_IMPORT_DESC: "Copy and paste the exported JSON data below:",
 	PLURALBUDDY_IMPORT_ERROR:
 		"2q – There was some error(s) while parsing that:\n\n\`\`\`\n%zod_errors%\n\`\`\`",
 	PLURALBUDDY_OPTIONS_ERROR:
@@ -376,8 +376,10 @@ PluralBuddy uses a **username/display name** system.
 -# **CREDITS**
 **Programmed w/ :heart_hands: by @giftedly**
 -# Developed all major parts of PluralBuddy
-**Co-developed by @causticdisco**
--# Helped out with smaller parts of PluralBuddy
+
+**OSS Contributions** - [PluralBuddy is MIT licensed](https://github.com/giftedl/PluralBuddy/blob/main/LICENSE)
+-# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco)
+-# Docs: [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.), [@Stjernesys](https://github.com/Stjernesys) (@thatskymaridelrosynthia)
 
 **Translated on Crowdin**
 -# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
@@ -420,8 +422,8 @@ PluralBuddy uses a **username/display name** system.
 	OPERATION_PRONOUNS: "Set system pronouns to %pronouns%.",
 	OPERATION_LATCH_DELAY: "Set latch delay to %delay%.",
 	OPERATION_FALLBACK: "Set \`%property%\` to \`%value%\`",
-	OPERATION_SYSTEM_TOGGLE_PROXY_TAGS: "Toggled proxy tags on the system",
-	OPERATION_SYSTEM_TOGGLE_PRONOUNS: "Toggled displaying pronouns on the system",
+	OPERATION_SYSTEM_TOGGLE_PROXY_TAGS: "Toggled proxy tags on the system.",
+	OPERATION_SYSTEM_TOGGLE_PRONOUNS: "Toggled displaying pronouns on the system.",
 
 	EDIT_MESSAGE: "Editing message",
 	MESSAGE_CONTENTS: "New Message Contents",
@@ -560,7 +562,7 @@ ${emojis.reply} This is not a full list of information in PluralBuddy's policies
 		"I agree to PluralBuddy's Privacy Policy and Terms of Service.",
 	POLICY_MODAL_BLOCK_DETAIL: "I agree I may be blocked if I break these rules.",
 	POLICY_MODAL_BLOCK_DESC:
-		"You have 30 days to appeal being blocked before all data is gone–violating data is removed instantly",
+		"You have 30 days to appeal being blocked before all data is gone–violating data is removed instantly.",
 
 	LATCH_NAME: "Latch Mode",
 	LATCH_DESC: "Set this alter as the first alter in latch mode.",
@@ -863,9 +865,9 @@ You can set the language that PluralBuddy uses while using commands. If a string
 
 	EXPRESS_HERO: `### Introducing PluralBuddy Express
 PluralBuddy Express is a way that alters can gain the ability to proxy in DMs, or in other environments where PluralBuddy isn't directly available.
- - You create an application in Discord's Developer Portal
- - PluralBuddy gathers the token, encrypts it, and hosts a singular-command bot associated to your alter
- - $0, forever
+ - You create an application in Discord's Developer Portal.
+ - PluralBuddy gathers the token, encrypts it, and hosts a singular-command bot associated to your alter.
+ - $0, forever.
 
 Hit the button to the right to open this alter in the dashboard.`,
 	STATUS_AP: `### Auto-Proxy Status
@@ -899,15 +901,15 @@ Your system is using the front state of **{{ mode }}**.`,
 	PROXYING_ALREADY_DISABLED: "Proxying was already disabled in this server.",
 
 	TOGGLED_INCLUDING_PROXY_TAGS_E:
-		"Successfully toggled including proxy tags. (enabled)",
+		"Successfully toggled including proxy tags. (Enabled)",
 	TOGGLED_INCLUDING_PROXY_TAGS_D:
-		"Successfully toggled including proxy tags. (disabled)",
+		"Successfully toggled including proxy tags. (Disabled)",
 
 	TOGGLED_INCLUDING_PRONOUNS_E:
-		"Successfully toggled including pronouns. (enabled)",
+		"Successfully toggled including pronouns. (Enabled)",
 	TOGGLED_INCLUDING_PRONOUNS_D:
-		"Successfully toggled including pronouns. (disabled)",
+		"Successfully toggled including pronouns. (Disabled)",
 
 	NOT_FRIDAY:
-		"Flatworm Friday is only on Friday in New York, come back next Friday to Wall Street or use `--time-machine`."
+		"Flatworm Friday is only on Friday in New York, come back next Friday to Wall Street or use `--time-machine`.",
 };

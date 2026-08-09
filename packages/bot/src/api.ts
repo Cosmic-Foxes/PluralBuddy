@@ -93,6 +93,7 @@ export const clientRoutes = app
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 				})
 				.then(async (message) => {
+					console.log(message)
 					if (importStage.response === null) return;
 
 					const system = await userCollection.findOne({
@@ -121,7 +122,7 @@ export const clientRoutes = app
 							userId: importStage.originatingSystemId,
 						},
 						import: JSON.parse(importStage.response?.data ?? ""),
-					});
+					}).catch(e => console.error(e));
 
 					client.interactions.editOriginal(importStage.webhook.token, {
 						components: new AlertView(translations).successViewCustom(

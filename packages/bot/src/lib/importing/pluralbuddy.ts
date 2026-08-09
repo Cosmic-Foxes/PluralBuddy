@@ -194,8 +194,8 @@ export async function deleteM(
 		},
 		{
 			$pull: {
-				"system.alterIds": { $in: pendingDeletedAlters.map((v) => v.alterId) },
-				"system.tagIds": { $in: pendingDeletedTags.map((v) => v.tagId) },
+				"system.alterIds": { $each: pendingDeletedAlters.map((v) => v.alterId) },
+				"system.tagIds": { $each: pendingDeletedTags.map((v) => v.tagId) },
 			},
 		},
 	);
