@@ -70,9 +70,6 @@ export const scopeList = [
 	},
 ] as const;
 
-export const urlRegex =
-	/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi;
-
 const formSchema = z.object({
 	applicationName: z.string().max(90).min(3),
 	redirectUris: z.string().max(300).array().max(10),
@@ -251,11 +248,10 @@ export function CreateNewAppForm({ children }: { children: ReactNode }) {
 
 	function RedirectURI({ field }: { field: any }) {
 		const [value, setValue] = useState("");
-		const [error, setError] = useState(false);
 		const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
 		return (
-			<Field data-invalid={error || isInvalid}>
+			<Field data-invalid={isInvalid}>
 				<FieldLabel>Redirect URI(s)</FieldLabel>
 				<FieldDescription>
 					This is the allowed redirect URI's for the application.
@@ -265,19 +261,14 @@ export function CreateNewAppForm({ children }: { children: ReactNode }) {
 						placeholder="https://acme.com/api/callback"
 						value={value}
 						onChange={(e) => {
-							setError(false);
 							setValue(e.target.value);
 						}}
-						aria-invalid={error || isInvalid}
+						aria-invalid={isInvalid}
 					/>
 					<InputGroupAddon align="inline-end">
 						<InputGroupButton
 							variant="secondary"
 							onClick={() => {
-								if (!urlRegex.test(value)) {
-									setError(true);
-									return;
-								}
 								if (value !== "") field.pushValue(value);
 								setValue("");
 							}}
@@ -288,7 +279,6 @@ export function CreateNewAppForm({ children }: { children: ReactNode }) {
 				</InputGroup>
 				<FieldError
 					errors={[
-						...(error ? [{ message: "Must be a valid URL" }] : []),
 						...field.state.meta.errors,
 					]}
 				/>
