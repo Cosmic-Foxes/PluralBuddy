@@ -262,7 +262,7 @@ PluralBuddy uses a **username/display name** system.
   UNABLE_TO_BE_FUNNY: "Você não tem permissão para usar os comandos engraçados.",
   DISABLED_DM_REPLIES: "Resposta de mensagem direta desabilitada com sucesso. Use `pb;nudge-preferences` para reativá-las.",
   ABOUT_PB: `-# **DEVELOPMENT INFO**
-> PluralBuddy Build #%version% · \`%branch%\`
+> PluralBuddy Build %version% · \`%branch%\`
 
 -# **ABOUT PLURALBUDDY**
 > PluralBuddy is an accessibility tool for those who are systems, allowing system *alters* to make pseudo-accounts as webhooks to represent a certain alter.
@@ -272,6 +272,10 @@ PluralBuddy uses a **username/display name** system.
 -# **CREDITS**
 **Programmed w/ :heart_hands: by @giftedly**
 -# Developed all major parts of PluralBuddy
+
+**OSS Contributions** - [PluralBuddy is MIT licensed](https://github.com/giftedl/PluralBuddy/blob/main/LICENSE)
+-# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco)
+-# Docs: [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.), [@Stjernesys](https://github.com/Stjernesys) (@thatskymaridelrosynthia)
 
 **Translated on Crowdin**
 -# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
