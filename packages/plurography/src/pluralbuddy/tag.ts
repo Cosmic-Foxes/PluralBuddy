@@ -63,7 +63,7 @@ export const PTagObject = z
 		systemId: z.string(),
 
 		tagFriendlyName: z.string().max(100),
-		tagDescription: z.string().max(1000).optional(),
+		tagDescription: z.string().max(1000).optional().nullable(),
 		tagColor: z.enum(tagColors),
 
 		associatedAlters: z.string().array(),
