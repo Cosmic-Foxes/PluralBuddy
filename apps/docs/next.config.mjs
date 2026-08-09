@@ -24,7 +24,7 @@ const config = {
 	headers() {
 		return [
 			{
-				source: '/api/v1/*',
+				source: '/api/v1/:path*',
 				headers: [
 					{
 						key: 'Access-Control-Allow-Origin',
