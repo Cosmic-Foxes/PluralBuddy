@@ -1,20 +1,20 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { ActionRow, Button, Container, Section, TextDisplay, type DefaultLocale } from "seyfert";
+import { ActionRow, Button, Container, type DefaultLocale, Section, TextDisplay } from "seyfert";
+import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { client } from "..";
+import type { TranslationString } from "../lang";
 import { operationCollection } from "../mongodb";
 import { operationStringGeneration, type POperation } from "../types/operation";
 import type { PSystem } from "../types/system";
-import type { TranslationString } from "../lang";
-import { InteractionIdentifier } from "./interaction-ids";
-import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { getUserById, writeUserById } from "../types/user";
+import convert from "./delay-converter";
 import { emojis } from "./emojis";
+import { InteractionIdentifier } from "./interaction-ids";
 import {
 	friendlyProtectionSystem,
 	listFromMaskSystems,
 } from "./privacy-bitmask";
-import convert from "./delay-converter";
 
 export async function createSystemOperation(
 	system: PSystem,

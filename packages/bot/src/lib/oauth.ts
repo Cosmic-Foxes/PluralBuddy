@@ -1,5 +1,5 @@
-import { mongoClient } from "@/mongodb"
 import { ObjectId } from "mongodb"
+import { mongoClient } from "@/mongodb"
 
 export const getOAuthConsents = async (userId: string) => {
     const appDb = mongoClient.db(process.env.WEBSITE_DB ?? "")

@@ -1,7 +1,8 @@
 {
 	"name": "pluralbuddy",
 	"devDependencies": {
-		"@biomejs/biome": "2.0.6"
+		"@biomejs/biome": "2.0.6",
+		"@trivago/prettier-plugin-sort-imports": "^6.0.2"
 	},
 	"private": true,
 	"scripts": {

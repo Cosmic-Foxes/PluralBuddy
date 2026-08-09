@@ -17,7 +17,6 @@ import { PSystemObject, type PSystem } from "../../../../types/system";
 import { AlertView } from "../../../../views/alert";
 import { PluralKitSystem } from "plurography";
 import { AlterProtectionFlags, PAlterObject, type PAlter } from "@/types/alter";
-import { DiscordSnowflake } from "@sapphire/snowflake";
 import { alterCollection, tagCollection } from "@/mongodb";
 import { getUserById, writeUserById } from "@/types/user";
 import { combine } from "@/lib/privacy-bitmask";
@@ -144,6 +143,8 @@ export default class PluralBuddyImportModal extends ModalCommand {
 			displayTagMap: {},
 			subAccounts: [],
 			disabled: false,
+			flags: 0,
+			disabledGuilds: []
 		} satisfies PSystem);
 
 		if (newSystem.error) {
@@ -225,6 +226,9 @@ export default class PluralBuddyImportModal extends ModalCommand {
 						],
 					),
 					avatarUrlMap: {},
+					fields: {
+						"@pk": member.id.substring(0, 30)
+					}
 				} satisfies PAlter),
 				originalPkId: member.id,
 			};
@@ -258,6 +262,9 @@ export default class PluralBuddyImportModal extends ModalCommand {
 							: []),
 					],
 				),
+				fields: {
+					"@pk": group.id.substring(0, 30)
+				}
 			} satisfies PTag);
 		});
 

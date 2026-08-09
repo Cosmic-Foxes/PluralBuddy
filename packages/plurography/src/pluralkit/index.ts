@@ -85,3 +85,16 @@ export const PluralKitSystem = z.object({
 
     return groupNames.length === uniqueGroupNames.size;
 }, { error: "All groups must be unique" })
+
+export type PluralKitSystemType = z.infer<typeof PluralKitSystem>;
+
+export function makePkId(length: number) {
+	let result = "";
+	const characters = "abcdefghijklmnopqrstuvwxyz";
+	const charactersLength = characters.length
+    
+	for (let i = 0; i < length; i++) {
+		result += characters.charAt(Math.floor(Math.random() * charactersLength));
+	}
+	return result;
+}

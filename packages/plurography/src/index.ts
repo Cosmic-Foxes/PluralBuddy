@@ -3,12 +3,12 @@
 import { PluralKitConfiguration, PluralKitSystem } from "./pluralkit";
 import { PluralKitGroup } from "./pluralkit/group";
 import { PluralKitMember } from "./pluralkit/member";
+import { SimplyPluralSystem } from "./simplyplural";
+import { SimplyPluralMember } from "./simplyplural/alter";
+import { SimplyPluralGroup } from "./simplyplural/group";
 import { TupperBoxSystem } from "./tupperbox";
 import { TupperBoxGroup } from "./tupperbox/group";
 import { Tupper } from "./tupperbox/tupper";
-import { SimplyPluralMember } from "./simplyplural/alter";
-import { SimplyPluralSystem } from "./simplyplural";
-import { SimplyPluralGroup } from "./simplyplural/group";
 
 export {
 	PluralKitConfiguration,
@@ -19,18 +19,21 @@ export {
 export { Tupper, TupperBoxGroup, TupperBoxSystem };
 export { SimplyPluralSystem, SimplyPluralMember, SimplyPluralGroup }
 
+export * from "./converters"
+export * from "./converters/pluralkit"
+export * from "./converters/tupperbox"
 export * from "./pluralbuddy/alter";
 export * from "./pluralbuddy/auto-proxy";
+export * from "./pluralbuddy/express-application";
+export * from "./pluralbuddy/front";
 export * from "./pluralbuddy/guild";
+export * from "./pluralbuddy/import-notation";
+export * from "./pluralbuddy/import-staging";
 export * from "./pluralbuddy/message";
 export * from "./pluralbuddy/operation";
 export * from "./pluralbuddy/system";
 export * from "./pluralbuddy/tag";
 export * from "./pluralbuddy/user";
-export * from "./pluralbuddy/front";
 export * from "./pluralbuddy/util";
-export * from "./pluralbuddy/import-staging";
-export * from "./pluralbuddy/import-notation";
-export * from "./pluralbuddy/express-application";
 
 export * from "./supportbuddy/blocked-note";
