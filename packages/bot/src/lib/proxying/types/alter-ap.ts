@@ -25,6 +25,7 @@ import type {
 import { CacheFrom } from "seyfert";
 import { createError } from "@/lib/create-error";
 import { w } from "@/webhooks";
+import { getSystemFeatures } from "@/lib/get-system-flags";
 
 export async function performAlterAutoProxy(
 	message: Message,
@@ -38,7 +39,7 @@ export async function performAlterAutoProxy(
 		const channel = await message.channel();
 
 		if (channel.isTextable() && !guild.getFeatures().disabledProxyTyping) {
-			channel.typing();
+			channel.typing().catch(() => null);
 		}
 	})();
 	alterCollection.updateOne(
@@ -54,7 +55,7 @@ export async function performAlterAutoProxy(
 		alter: {
 			...alter,
 			messageCount: alter.messageCount + 1,
-			lastMessageTimestamp: new Date()
+			lastMessageTimestamp: new Date(),
 		},
 	});
 
@@ -280,13 +281,13 @@ export async function performAlterAutoProxy(
 			...roleAfterComponents,
 		];
 
-		if (message.guildId)
+		if (message.guildId && user.system)
 			proxy(
 				webhook,
 				client,
 				message,
 				processedContents,
-				`${alter.nameMap.find((c) => c.server === message.guildId)?.name ?? alter?.displayName ?? ""} ${(user.system?.displayTagMap ?? {})[message.guildId] ?? user.system?.systemDisplayTag ?? ""}`,
+				`${alter.nameMap.find((c) => c.server === message.guildId)?.name ?? alter?.displayName ?? ""}${getSystemFeatures(user.system).includePronouns ? ` (${alter?.pronouns})` : ""} ${(user.system?.displayTagMap ?? {})[message.guildId] ?? user.system?.systemDisplayTag ?? ""}`,
 				alter?.alterId as number,
 				alter?.systemId as string,
 				[...referencedMessage],

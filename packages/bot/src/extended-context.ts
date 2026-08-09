@@ -26,9 +26,11 @@ import {
 import { getUserById } from "./types/user";
 import { defaultPrefixes, getGuildFromId, PGuildObject } from "./types/guild";
 import { LoadingView } from "./views/loading";
-import type { PAlter } from "plurography";
-import { client } from ".";
+import { assetStringGeneration, type PAlter } from "plurography";
+import { client, policyModal } from ".";
 import { getLanguageByUserId, langMemoryCache } from "./lib/lang";
+import { InteractionIdentifier } from "./lib/interaction-ids";
+import { userCollection } from "./mongodb";
 
 export const extendedContext = extendContext((interaction) => {
 	let contextAlter: PAlter | null = null;
@@ -76,6 +78,47 @@ export const extendedContext = extendContext((interaction) => {
 			collector.run(`ephemeral-${interaction.id}`, async (i) => {
 				const locale = await getLanguageByUserId(i.user.id);
 
+				const user = await getUserById(i.user.id);
+
+				if (user.policyStatus !== 1) {
+					const modal = await i.modal(
+						await policyModal(i, `ephemeral-${interaction.id}`),
+						{},
+					);
+
+					await userCollection.updateOne(
+						{ userId: interaction.author.id },
+						{ $set: { policyStatus: 1, storagePrefix: assetStringGeneration(8) } },
+						{ upsert: true },
+					);
+
+					if (!modal) return;
+
+					if (i.user.id !== interaction.user.id)
+						return modal.write({
+							components: [
+								new Container().setComponents(
+									new TextDisplay().setContent(locale.NOT_ORIGINAL_RECIPIENT),
+								),
+							],
+							flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+						});
+
+					if (i.isButton()) {
+						message.delete();
+						const writtenMessage = await modal.write(body, true);
+
+						if (afterSendTask)
+							afterSendTask({
+								reply: interaction.message?.reply,
+								editMessage: (body: InteractionCreateBodyRequest) =>
+									modal.editMessage("@original", body),
+							});
+
+						return writtenMessage;
+					}
+				}
+
 				if (i.user.id !== interaction.user.id)
 					return i.write({
 						components: [
@@ -116,7 +159,9 @@ export const extendedContext = extendContext((interaction) => {
 	};
 	const language = async () => {
 		try {
-			let data = langMemoryCache[interaction.user.id] ?? (await client.cache.i18n.get(interaction.user.id))?.l;
+			let data =
+				langMemoryCache[interaction.user.id] ??
+				(await client.cache.i18n.get(interaction.user.id))?.l;
 
 			if (data === undefined) {
 				data = (await getUserById(interaction.user.id)).userLang;

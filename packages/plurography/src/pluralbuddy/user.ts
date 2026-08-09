@@ -1,7 +1,7 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import z from "zod";
-import { PSystemObject, type PSystem } from "./system";
+import { PSystemObject } from "./system";
 import { assetStringGeneration } from "./operation";
 
 export const PUserObject = z.object({
@@ -11,6 +11,7 @@ export const PUserObject = z.object({
     system: PSystemObject.optional(),
     storagePrefix: z.string(),
     blocked: z.boolean().default(false),
+    policyStatus: z.number().default(0).optional(),
     nudging: z.object({
         blockedUsers: z.string().array(),
         currentlyEnabled: z.boolean(),

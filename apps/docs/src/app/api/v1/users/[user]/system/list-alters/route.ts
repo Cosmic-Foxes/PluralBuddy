@@ -1,74 +1,40 @@
-import { authenticateOAuth } from "@/lib/oauth";
-import { NextRequest } from "next/server";
-import { PAlter, PUser } from "plurography";
+import { createOAuthFunction } from "@/server/wrapper";
+import type { ZodType } from "zod";
 
-export async function GET(
-	request: NextRequest,
+export const GET = createOAuthFunction<
+	{ user: string },
+	ZodType,
 	{
-		params,
-		searchParams,
-	}: {
-		params: Promise<{ user: string }>;
-		searchParams: Promise<{
-			max: string | undefined;
-			skip: string | undefined;
-		}>;
-	},
-) {
-	const { user } = await params;
-
-	const oauthResponse = await authenticateOAuth(request, [
-		"alters:read",
-		"system:admin",
-	]);
-
-	if ("response" in oauthResponse) return oauthResponse.response;
-
-	const parsedUserId = user === "@me" ? oauthResponse.accountId : user;
-	const db = oauthResponse.mongo.db(
-		`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
-	);
-	const alterCollection = db.collection<PAlter>("alters");
-
-	if (parsedUserId !== oauthResponse.accountId) {
-		return Response.json(
-			{
-				errors: [
-					{
-						type: "not-matching-oauth",
-						friendly:
-							"This endpoint requires the user currently logged in via OAuth.",
-					},
-				],
-			},
-			{ status: 400 },
-		);
+		max: string | undefined;
+		skip: string | undefined;
 	}
+>(
+	{
+		scopes: ["alters:read", "system:admin"],
+		mustMatchOAuth: true,
+		expectSystem: true,
+	},
+	async (ctx) => {
+		const maxAlters = Number(ctx.urlData.searchParams.max ?? 250);
+		const skipAlters = Number(ctx.urlData.searchParams.skip ?? 0);
 
-	const maxAlters = Number((await searchParams).max ?? 30);
-	const skipAlters = Number((await searchParams).skip ?? 0);
+		if (maxAlters > 30)
+			return ctx.error({
+				type: "max-too-high",
+				friendly: "At most, you can only get 250 alters.",
+			});
 
-	if (maxAlters > 30)
-		return Response.json(
-			{
-				errors: [
-					{
-						type: "max-too-high",
-						friendly: "At most, you can only get 30 alters.",
-					},
-				],
-			},
-			{ status: 400 },
+		const applicationsList = await ctx.alterCollection
+			.find({ systemId: ctx.auth.accountId })
+			.skip(skipAlters ?? 0)
+			.limit(maxAlters)
+			.toArray();
+
+		return ctx.respond(
+			applicationsList.map((v) => {
+				let { _id, ...c } = v;
+				return c;
+			}),
 		);
-
-	const applicationsList = await alterCollection
-		.find({ systemId: user })
-		.skip(skipAlters ?? 0)
-		.limit(maxAlters)
-		.toArray();
-
-	return applicationsList.map((v) => {
-		let { _id, ...c } = v;
-		return c;
-	});
-}
+	},
+);

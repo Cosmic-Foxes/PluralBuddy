@@ -5,7 +5,8 @@
 	"private": true,
 	"exports": {
 		".": {
-			"types": "./src/index.ts"
+			"types": "./src/index.ts",
+			"default": "./src/index.ts"
 		}
 	},
 	"devDependencies": {
@@ -20,6 +21,7 @@
 		"@hono/zod-validator": "^0.7.6",
 		"@sapphire/snowflake": "^3.5.5",
 		"@slipher/redis-adapter": "^0.0.6",
+		"bson": "7.2.0",
 		"colorthief": "^3.3.1",
 		"file-type": "^21.3.0",
 		"hono": "^4.12.1",
@@ -27,7 +29,7 @@
 		"parse-duration": "^2.1.5",
 		"plurography": "workspace:*",
 		"posthog-node": "^5.17.2",
-		"seyfert": "^4.3.1-dev-25327763678.0",
+		"seyfert": "4.3.1-dev-25327763678.0",
 		"svix": "^1.92.2",
 		"winston": "^3.19.0",
 		"yunaforseyfert": "^1.1.3",

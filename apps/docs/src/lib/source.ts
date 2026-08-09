@@ -1,30 +1,57 @@
-import { docs } from 'fumadocs-mdx:collections/server';
-import { type InferPageType, loader, multiple } from 'fumadocs-core/source';
-import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
-import { openapiPlugin } from 'fumadocs-openapi/server';
-import { i18n } from '@/lib/i18n';
+import {
+	defineConfig,
+	frontmatterSchema,
+	metaSchema,
+} from "fumadocs-mdx/config";
+import { defineDocs } from "fumadocs-mdx/macro";
+import {
+	remarkFeedbackBlock,
+	type RemarkFeedbackBlockOptions,
+} from "fumadocs-core/mdx-plugins/remark-feedback-block";
+import { openapiPlugin } from "fumadocs-openapi/server";
+import { loader } from "fumadocs-core/source";
+import { icons } from "lucide-react";
+import { createElement } from "react";
 
-// See https://fumadocs.dev/docs/headless/source-api for more info
-export const source = loader({
-  baseUrl: '/docs',
-  source: docs.toFumadocsSource(),
-  plugins: [lucideIconsPlugin(), openapiPlugin()],
-  i18n
+export const docsImageRoute = "/og/docs";
+
+// You can customise Zod schemas for frontmatter and `meta.json` here
+// see https://fumadocs.dev/docs/mdx/collections
+export const docs = defineDocs({
+	dir: "content/docs",
 });
 
-export function getPageImage(page: InferPageType<typeof source>) {
-  const segments = [...page.slugs, 'image.png'];
+export default defineConfig({
+	mdxOptions: {
+		// MDX options
+		remarkPlugins: [[remarkFeedbackBlock]],
+	},
+});
 
-  return {
-    segments,
-    url: `/og/docs/${segments.join('/')}`,
-  };
-}
+export const source = loader({
+	// optional: adds a badge to each page item in page tree
+	plugins: [openapiPlugin()],
+	source: docs.toFumadocsSource(),
+	baseUrl: "/docs",
 
-export async function getLLMText(page: InferPageType<typeof source>) {
-  const processed = await page.data.getText('processed');
+	icon(icon) {
+		if (!icon) {
+			// You may set a default icon
+			return;
+		}
+		if (icon in icons) return createElement(icons[icon as keyof typeof icons]);
+	},
+});
 
-  return `# ${page.data.title}
+export function getPageImageUrl(page: (typeof source)["$inferPage"]) {
+	const segments = [...page.slugs, "image.png"];
 
-${processed}`;
+	return {
+		segments,
+		url:
+			"/" +
+			[page.locale, ...docsImageRoute.split("/"), ...segments]
+				.filter(Boolean)
+				.join("/"),
+	};
 }

@@ -10,7 +10,7 @@ export const register = (registry: OpenAPIRegistry) =>
 		requestBody: {
 			required: true,
 			content: {
-				"application/json": {
+				"application/x-www-form-urlencoded": {
 					schema: {
 						type: "object",
 						properties: {

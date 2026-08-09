@@ -1,0 +1,17 @@
+{
+  "name": "tests",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "bot": "workspace:*",
+    "dotenv": "^17.4.2",
+    "seyfert": "^4.3.0"
+  }
+}

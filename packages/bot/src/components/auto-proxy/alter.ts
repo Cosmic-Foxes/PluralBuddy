@@ -103,7 +103,7 @@ export default class AlterAutoProxySelectMenu extends ComponentCommand {
 		return await ctx.write({
 			components: new AlertView((await ctx.userTranslations())).successViewCustom(
 				((await ctx.userTranslations()))
-					.SET_AUTO_PROXY.replaceAll("%server_name%", guild?.name ?? "??")
+					.SET_AUTO_PROXY_SRV.replaceAll("%server_name%", guild?.name ?? "??")
 					.replaceAll("%mode%", "alter"),
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,

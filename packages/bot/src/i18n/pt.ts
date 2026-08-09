@@ -34,85 +34,74 @@ Os sistemas no PluralBuddy requerem um **nome do sistema**. O nome deve ter pelo
 Esse servidor requer uma **tag de sistema** para sistemas que estão fazendo proxy aqui. Para criar um sistema aqui, você deve ter uma tag do sistema.`,
   CREATING_NEW_SYSTEM_PRIVACY_BUTTON: "Definir configurações de privacidade",
   CREATING_NEW_SYSTEM_PRIVACY_MESSAGE: `
-Os sistemas podem ter **configurações de privacidade** que determinam quem pode ver qual parte do seu sistema. Por padrão, o sistema é completamente privado, não contando a moderação automática do servidor e as mensagens enviadas pelo sistema. No entanto, alterando-as mudará quem pode ver cada parte do seu sistema.`,
-  CREATING_NEW_SYSTEM_PRIVACY_SET: "As configurações de privacidade pública são:",
-  CREATING_NEW_SYSTEM_PRIVACY_FORM_DESC: "Selecione as configurações de privacidade que você deseja abrir ao público.",
-  CREATING_NEW_SYSTEM_SUCCESS: `Novo sistema criado com sucesso!
-### Próximos passos
-> - Para criar um novo integrante, tente usar %command1%
-> - Para criar uma nova tag, tente usar %command2%`,
-  SETUP_ERROR_SYSTEM_ALREADY_EXISTS: "2b – Você não pode configurar um novo sistema se um sistema sob a sua.",
-  SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN: "Remover sistema e configurar novamente",
-  ERROR_PAGINATION_TOO_OLD: "2g – O componente de paginação desse Integrante é muito antigo, você não pode continuar. Por favor, aperte a aba \"integrantes\" na parte superior da mensagem para redefinir a paginação.",
-  ERROR_TAG_PAGINATION_TOO_OLD: "2h – O componente de paginação dessa tag é muito antigo, não é possível prosseguir. Por favor, aperte a aba \"Tags\" na parte superior da mensagem para redefinir a paginação.",
-  ERROR_ASSIGN_PAGINATION_TOO_OLD: "2i – O componente de paginação é muito antigo, você não pode prosseguir. Por favor, volte e aperte o botão \"Atribuir\" novamente para que o componente de paginação funcione novamente.",
-  ERROR_NO_ALTERS: "2w – Você não tem integrantes! Crie um abaixo!",
-  ERROR_NO_TAGS: "2x – Você não tem tags! Crie uma abaixo!",
-  PK_IMPORT_START: "## Importando do PluralKit",
-  SP_IMPORT_START: `## Simply Plural Importing
-	
-SimplyPlural has been discontinued.`,
-  PAGE_NEW_SYS_TEXT: "-# Página 3/3 · Alguns campos não foram preenchidos. · * Necessário",
-  PAGE_NEW_SYS_TEXT_FILLED: "-# Página 3/3 · * Necessário",
-  IMPORT_PLURALKIT_DESCRIPTION: "Importar de PluralKit",
-  IMPORT_TUPPERBOX_DESCRIPTION: "Importar de TupperBox",
-  IMPORT_PLURALBUDDY_DESCRIPTION: "Importar de PluralBuddy",
-  IMPORT_SIMPLYPLURAL_DESCRIPTION: "Importar de SimplyPlural",
-  IMPORT_SOURCE_DESCRIPTION: "Fonte de importação",
-  IMPORT_TOKEN_DESCRIPTION: "Token do bot SimplyPlural",
-  CREATE_NEW_SYS_DESCRIPTION: "Criar novo sistema",
-  PLURALBUDDY_IMPORT_ERROR_TOO_LARGE: "2j – Importing files cannot be larger than 2MB. Please contact support if you are genuinely trying to import a system larger than 1MB.",
+Systems can have **privacy values** which are values that describe who can see what part of your system. By default, your system is completely private besides server automatic moderation and the message that your system sends. However, changing them will change those values.`,
+  CREATING_NEW_SYSTEM_PRIVACY_SET: "Public Privacy values are:",
+  CREATING_NEW_SYSTEM_PRIVACY_FORM_DESC: "Select the privacy values you want open to the public.",
+  CREATING_NEW_SYSTEM_SUCCESS: `Successfully created new system!
+### Next Steps
+> - To create a new alter, try using %command1%
+> - To create a new tag, try using %command2%`,
+  SETUP_ERROR_SYSTEM_ALREADY_EXISTS: "2b – You cannot setup a new system if a system under your account already exists.",
+  SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN: "Remove system & setup again",
+  ERROR_PAGINATION_TOO_OLD: '2g – That alter pagination component is too old, you cannot proceed. Please hit the "Alters" tab at the top of the message to reset the pagination.',
+  ERROR_TAG_PAGINATION_TOO_OLD: '2h – That tag pagination component is too old, you cannot proceed. Please hit the "Tags" tab at the top of the message to reset the pagination.',
+  ERROR_ASSIGN_PAGINATION_TOO_OLD: "2i – That pagination component is too old, you cannot proceed. Please go back and hit the Assign button again to make the pagination component work again.",
+  ERROR_NO_ALTERS: "2w – You have no alters! Create one below!",
+  ERROR_NO_TAGS: "2x – You have no tags! Create one below!",
+  PK_IMPORT_START: "## PluralKit Importing",
+  SP_IMPORT_START: "## Simply Plural Importing",
+  PAGE_NEW_SYS_TEXT: "-# Page 3/3 · Some fields haven't been filled out. · * Required",
+  PAGE_NEW_SYS_TEXT_FILLED: "-# Page 3/3 · * Required",
+  IMPORT_PLURALKIT_DESCRIPTION: "Import from PluralKit",
+  IMPORT_TUPPERBOX_DESCRIPTION: "Import from TupperBox",
+  IMPORT_PLURALBUDDY_DESCRIPTION: "Import from PluralBuddy",
+  IMPORT_SIMPLYPLURAL_DESCRIPTION: "Import from SimplyPlural",
+  IMPORT_SOURCE_DESCRIPTION: "Import Source",
+  IMPORT_TOKEN_DESCRIPTION: "SimplyPlural Token",
+  CREATE_NEW_SYS_DESCRIPTION: "Create New System",
+  PLURALBUDDY_IMPORT_ERROR_TOO_LARGE: "2j – Importing files cannot be larger than 2MB. Please contact support if you are genuinely trying to import a system larger than 2MB.",
   ERROR_ATTACHMENT_TOO_LARGE: "2j – Attachments for banners or profile pictures cannot be larger than 2MB.",
-  CREATE_NEW_ALTER_DESCRIPTION: "Criar Novo Integrante",
-  CREATE_NEW_TAG_DESCRIPTION: "Criar Tag Nova",
-  PLURALBUDDY_IMPORT_ERROR_INVALID_JSON: "2k – O arquivo que você importou não é um JSON válido.",
-  ERROR_INTERACTION_TOO_OLD: "2l – Essa interação não está mais sendo mais rastreada (você esperou por muito tempo?)",
-  ERROR_SYSTEM_DOESNT_EXIST: "2m – Esta operação não pode ser concluída porque não existe um sistema no qual operar.",
-  ERROR_ALTER_DOESNT_EXIST: "2n – Esta operação não pode ser concluída por conta de não haver integrante para operar ou não há nenhum sistema associado ao usuário que criou a solicitação.",
-  ERROR_ALTER_DOESNT_EXIST_SUGGESTION: "2n – Este integrante não pôde ser encontrada. Você quis dizer `%suggestion%`?",
-  ERROR_TAG_DOESNT_EXIST: "2o – Esta operação não pode ser concluída porque não há tag para operar, ou não há nenhum sistema associado ao usuário que criou a solicitação.",
-  CREATING_NEW_SYSTEM_FORM_TITLE: "Definir Informações do Sistema",
-  EDIT_SYSTEM_FORM_TITLE: "Editando Sistema",
-  SYSTEM_PRONOUNS_FORM_LABEL: "Pronomes",
-  SYSTEM_DESCRIPTION_FORM_LABEL: "Descrição",
-  SYSTEM_SYSTEM_TAG_FORM_LABEL: "Tag do Sistema",
-  ALTER_SUCCESS_PRONOUNS: "Definido com sucesso os pronomes de @%alter% para %new%",
-  ALTER_SUCCESS_PRIVACY: "Definido com sucesso os valores de privacidade pública de @%alter% para %new% (total de valores%number%)",
-  ALTER_SUCCESS_DESC: "Descrição definida com sucesso para @%alter%.",
-  PAGINATION_TITLE: "Página",
-  WAITING: "Carregando...",
-  WAITING_LONG_TERM: "Carregando... Isso irá demorar um pouco. Por favor, espere um momento.",
-  SUCCESSFULLY_IMPORTED: "%alter_count% Integrante(s) importados com sucesso para o sistema: %system_name%.",
-  CREATING_NEW_PT_FORM_TITLE: "Nova tag de proxy",
-  CREATING_NEW_PT_FORM_DESC: `PluralBuddy has similar proxy tag formatting in regards that it is similar to how other plurality bots format their proxy tags.
-> - **For example:** \`text :bob\` would be valid, and proxy messages ending with \`:bob\`.
-> - You can optionally show these tags with the "Show Proxy Tags" system setting on the second page!`,
-  CREATING_NEW_PT_FORM_LABEL: "Tag do proxy",
-  CREATING_NEW_PT_ERROR: "2p – Isto não está formatado corretamente. Lembre-se, você precisa ter um prefixo e um sufixo separado por `text`.",
-  CREATING_NEW_PT_TOO_MANY_CHARS: "2y – Há muitos caracteres no prefixo ou no lado do sufixo. Lembre-se, você pode ter apenas 20 caracteres para o prefixo e 20 para o sufixo.",
-  SUCCESSFULLY_NEW_PT: "Nova tag de proxy criada com sucesso!",
-  PLURALBUDDY_IMPORT_DESC: "Copie e cole os dados exportados do arquivo JSON abaixo",
-  PLURALBUDDY_IMPORT_ERROR: "2q – Houve alguns erro(s) enquanto isso era analizado:\n\n```\n%zod_errors%\n```",
-  PLURALBUDDY_OPTIONS_ERROR: "2r – Houve algum erro(s) ao avaliar os argumentos para esse comando:\n\n```\n%options_errors%\n```",
-  CREATE_NEW_ALTER_DONE: "Criado com sucesso um novo integrante no seu sistema. Use o comando `%prefix%alter %alter_id% para mais detalhes.",
-  CREATE_NEW_ALTER_ADD: "Performed the following additional operations on this alter:",
-  CREATE_NEW_ALTER_DESC: "Assigned description: {{ description }}",
-  CREATE_NEW_ALTER_PRONOUNS: "Assigned pronouns: **{{ pronouns }}**",
-  CREATE_NEW_ALTER_NOW: "Autoproxying this alter **now**.",
-  CREATE_NEW_ALTER_ASSIGN: "Assigned this alter to **{{ tag }}**.",
-  NO_SUCH_TAG_CANT_ASSIGN: "Cannot assign this alter to the specified tag as it does not exist.",
-  CREATE_NEW_ALTER_DISPLAY_NAME: "Assigned display name: **{{ dn }}**",
-  CREATE_NEW_TAG_DONE: "Criado com sucesso  %color_emoji% **%tag_name%** em seu sistema. Use %command% para mais detalhes.",
-  TAG_SPACE_WARNING: "Como essa tag tem **espaços** nela, alguns comandos podem exigir que você coloque o nome de exibição entre aspas para ser analisado corretamente. Além disso, você pode também usar comandos na aba apps.",
-  TAG_ALREADY_EXISTS: "Você já tem uma tag chamada **%display%** no seu sistema.",
-  CONFIRMATION_SYSTEM_DELETION: "# :warning: __VOCÊ ESTÁ EXCLUINDO O SEU SISTEM__ :warning:\n**Esta ação __NAO PODERÁ__ ser desfeita pelo suporte PluralBuddy **, ou por você, em qualquer circunstância, ou em QUALQUER data no futuro. __Isso excluirá TODOS os dados do sistema, incluindo tags, alteradores e outros conteúdos do seu sistema__.\n\n> **dica Pro:** Se você precisa simplesmente desativar o proxying para todos os integrantes, pode ser melhor **desativar** o sistema inteiro.",
-  CONFIRMATION_SYSTEM_DELETION_PRIVACY: "-# Como por meio da [Política de Privacidade do PluralBuddy](https://gftl.fyi/privacy), esta ação apagará todos os dados relacionados ao seu sistema, **exceto** para banners do sistema e fotos de perfil. Esses podem ser excluídos usando o comando de %command%`media-included`.",
-  CONFIRMATION_SYSTEM_DELETION_BTN: "Reconheço que isso se trata de uma ação permanente, continuar",
-  BACK_TO_SAFETY_BTN: "Não, voltar à segurança",
-  CONFIRMATION_ALTER_DELETION: "Tem certeza que deseja apagar @%alter%? **Essa ação não pode ser desfeita.**",
-  SYSTEM_DELETION_FINISHED: "Sistema deletado com sucesso.\n-# abaixo você verá uma cópia do seu sistema exportado.",
-  OPTED_OUT_OF_DMS: "Você foi excluído com sucesso de mensagens diretas. Você não receberá mais DMs por operações relacionadas ao sistema.\n\n> **Por que isso não é recomendado:** Desativar a operação de DMs é uma salvaguarda contra aplicações OAuth potencialmente perigosas que fazem pequenas mudanças no seu sistema. Desabilitar DMs do sistema removerá completamente essa salvaguarda, o que pode não ser o desejado. O suporte PluralBuddy pode não ser capaz de recuperar dados destruídos pelos aplicativos OAuth.",
-  OPTED_IN_OF_DMS: "Você optou para receber mensagens diretas com sucesso.",
+  CREATE_NEW_ALTER_DESCRIPTION: "Create New Alter",
+  CREATE_NEW_TAG_DESCRIPTION: "Create New Tag",
+  PLURALBUDDY_IMPORT_ERROR_INVALID_JSON: "2k – The file you imported is not valid JSON.",
+  ERROR_INTERACTION_TOO_OLD: "2l – This interaction has no longer been kept track of. (have you waited too long?)",
+  ERROR_SYSTEM_DOESNT_EXIST: "2m – This operation cannot be concluded because there is no system to operate on.",
+  ERROR_ALTER_DOESNT_EXIST: "2n – This operation cannot be concluded because either, there is no alter to operate on, or there is no system associated to the user who created the request.",
+  ERROR_ALTER_DOESNT_EXIST_SUGGESTION: "2n – That alter could not be found. Did you mean \`%suggestion%\`?",
+  ERROR_TAG_DOESNT_EXIST: "2o – This operation cannot be concluded because either, there is no tag to operate on, or there is no system associated to the user who created the request.",
+  CREATING_NEW_SYSTEM_FORM_TITLE: "Set System Details",
+  EDIT_SYSTEM_FORM_TITLE: "Editing System",
+  SYSTEM_PRONOUNS_FORM_LABEL: "Pronouns",
+  SYSTEM_DESCRIPTION_FORM_LABEL: "Description",
+  SYSTEM_SYSTEM_TAG_FORM_LABEL: "System Tag",
+  ALTER_SUCCESS_PRONOUNS: "Successfully set pronouns for @%alter% to %new%",
+  ALTER_SUCCESS_PRIVACY: "Successfully set the public privacy values for @%alter% to %new% (%number% total values)",
+  ALTER_SUCCESS_DESC: "Successfully set description for @%alter%.",
+  PAGINATION_TITLE: "Page",
+  WAITING: "Loading...",
+  WAITING_LONG_TERM: "Loading... This will take a while. Please wait a moment.",
+  SUCCESSFULLY_IMPORTED: "Successfully imported %alter_count% alter(s) for %system_name%.",
+  CREATING_NEW_PT_FORM_TITLE: "New proxy tag",
+  CREATING_NEW_PT_FORM_DESC: "Input the proxy tag where `text` is the text in the message. For example: `text -bob`",
+  CREATING_NEW_PT_FORM_LABEL: "Proxy Tag",
+  CREATING_NEW_PT_ERROR: "2p – This is not formatted correctly. Remember, you need to have a prefix and a suffix separated by `text`.",
+  CREATING_NEW_PT_TOO_MANY_CHARS: "2y – There is too many characters on either the prefix or suffix side. Remember, you can only have 20 characters for the prefix & 20 characters for the suffix.",
+  SUCCESSFULLY_NEW_PT: "Successfully created a new proxy tag!",
+  PLURALBUDDY_IMPORT_DESC: "Copy and paste the exported JSON data below",
+  PLURALBUDDY_IMPORT_ERROR: "2q – There was some error(s) while parsing that:\n\n\`\`\`\n%zod_errors%\n\`\`\`",
+  PLURALBUDDY_OPTIONS_ERROR: "2r – There was some error(s) while evaluating the arguments to that command:\n\n\`\`\`\n%options_errors%\n\`\`\`",
+  CREATE_NEW_ALTER_DONE: "Successfully created a new alter in your system. Use `%prefix%alter %alter_id%` for more details.",
+  CREATE_NEW_TAG_DONE: "Successfully created  %color_emoji% **%tag_name%**  in your system. Use %command% for more details.",
+  TAG_SPACE_WARNING: "Since this tag has **spaces** in it, some commands may require you put the display name in quotes to be parsed correctly. Additionally, you can just use application commands instead.",
+  TAG_ALREADY_EXISTS: "You already have a tag named **%display%** in your system.",
+  CONFIRMATION_SYSTEM_DELETION: "# :warning: __YOU ARE ABOUT TO DELETE YOUR SYSTEM__ :warning:\n**This action __CANNOT__ be undone by PluralBuddy Support**, or by yourself in any capacity at ANY date in the future. __This will delete ALL system data, including tags, alters, and other assets from your system__.\n\n> **Pro tip:** If you need to simply disable proxying for all alters, it may be better to **disable** the system intead.",
+  CONFIRMATION_SYSTEM_DELETION_PRIVACY: "-# As per [PluralBuddy's Privacy Policy](https://gftl.fyi/privacy), this action will delete all data related to your system, **except** for system banners and profile pictures. Those can be deleted by using %command%'s `media-included` flag.",
+  CONFIRMATION_SYSTEM_DELETION_BTN: "I acknowledge this is a permanent action, continue",
+  BACK_TO_SAFETY_BTN: "No, go back to safety",
+  CONFIRMATION_ALTER_DELETION: "Are you sure you'd like to delete @%alter%? **This action cannot be undone.**",
+  SYSTEM_DELETION_FINISHED: "Successfully deleted your system. \n-# Below there is also a followup copy of your system export.",
+  OPTED_OUT_OF_DMS: "You have successfully been opted out of DMs. You will no longer recieve DMs for system related operations.\n\n> **Why this isn't recommended:** Disabling operation DMs is a safe-guard against potentially dangerous OAuth applications making small, yet significant changes to your system. Disabling system DMs will completely remove this safe-guard, which may not be intended. PluralBuddy Support may not be able to recover data destroyed by OAuth applications.",
+  OPTED_IN_OF_DMS: "You have successfully opted back into DMs.",
   SYSTEM_DELETION_MEDIA_FINISHED: "Successfully deleted your system **and your system's media**. \n-# If your DM's are open, you have also been direct messaged a copy of your system export.",
   SYSTEM_DELETION_DM: "Estes são os dados da exportação devido à exclusão em %time%:",
   ALTER_DELETION_FINISHED: "Integrante apagado com sucesso.",
@@ -272,10 +261,6 @@ PluralBuddy uses a **username/display name** system.
 -# **CREDITS**
 **Programmed w/ :heart_hands: by @giftedly**
 -# Developed all major parts of PluralBuddy
-
-**OSS Contributions** - [PluralBuddy is MIT licensed](https://github.com/giftedl/PluralBuddy/blob/main/LICENSE)
--# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco)
--# Docs: [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.), [@Stjernesys](https://github.com/Stjernesys) (@thatskymaridelrosynthia)
 
 **Translated on Crowdin**
 -# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
@@ -642,36 +627,5 @@ PluralBuddy Express is a way that alters can gain the ability to proxy in DMs, o
  - PluralBuddy gathers the token, encrypts it, and hosts a singular-command bot associated to your alter
  - $0, forever
 
-Hit the button to the right to open this alter in the dashboard.`,
-  STATUS_AP: `### Auto-Proxy Status
-Your system is currently auto proxying in **{{ mode }}**.`,
-  INTEGRATION_AP: `### Auto-Proxy Status
-Your system is using the front state of **{{ mode }}**.`,
-  NO_STATUS_AP: `You are not currently auto proxying on that scope.`,
-  NO_ALTER_AP: `Your auto proxy is not currently attached to an alter.`,
-  DISABLED_SERVER: `This server is disabled from proxying.`,
-  AP_AS: "-# **AUTO-PROXYING AS:**",
-  AP_INTEGRATION_AS: "-# **{{ provider }} FRONTING AS:**",
-  PROVIDER_NOT_FOUND: `That auto-proxy provider was not found, or you didn't authorize with the [\`system:ai-ap\`](https://pb.giftedly.dev/docs/pluralbuddy/ai-ap) scope. Contact the developer of this integration if you believe this is incorrect.
-	
--# Integration: \`{{ id }}\``,
-  AP_INVALID_SYNTAX: `Invalid autoproxy mode or provider \`{{ mode }}\`.
-
-**Auto-proxy Usage:**
-\`pb;autoproxy [off|latch|alter|status|{{ aiap }}]\``,
-  AP_ALTER_INVALID_SYNTAX: `You must add an alter for the \`alter\` proxy mode.
-
-**Auto-proxy Usage:**
-\`pb;autoproxy [off|latch|alter|status|{{ aiap }}]\``,
-  AP_SYNTAX: `**Auto-proxy Usage:**
-\`pb;autoproxy [off|latch|alter|status|{{ aiap }}]\``,
-  SUCCESS_DISABLE_GUILD: "Successfully disabled proxying in **{{ guild }}**.",
-  SUCCESS_ENABLE_GUILD: "Successfully enabled proxying in **{{ guild }}**.",
-  PROXYING_ALREADY_ENABLED: "Proxying was already enabled in this server.",
-  PROXYING_ALREADY_DISABLED: "Proxying was already disabled in this server.",
-  TOGGLED_INCLUDING_PROXY_TAGS_E: "Successfully toggled including proxy tags. (enabled)",
-  TOGGLED_INCLUDING_PROXY_TAGS_D: "Successfully toggled including proxy tags. (disabled)",
-  TOGGLED_INCLUDING_PRONOUNS_E: "Successfully toggled including pronouns. (enabled)",
-  TOGGLED_INCLUDING_PRONOUNS_D: "Successfully toggled including pronouns. (disabled)",
-  NOT_FRIDAY: "Flatworm Friday is only on Friday in New York, come back next Friday to Wall Street or use `--time-machine`."
+Hit the button to the right to open this alter in the dashboard.`
 };

@@ -10,6 +10,17 @@ export const register = (registry: OpenAPIRegistry) =>
 		summary: "Get PluralBuddy message",
 		description: "Get a PluralBuddy message by Message ID",
 		security: [{ oAuth2: [] }],
+		parameters: [
+			{
+				name: "id",
+				in: "path",
+				required: true,
+				description: "`{id}` is the Discord Message ID.",
+				schema: {
+					type: "string",
+				},
+			},
+		],
 		responses: {
 			"200": {
 				description: "Success response. Response with the message.",

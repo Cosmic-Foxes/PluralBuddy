@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { buildNumber, client } from ".";
+import { build, client } from ".";
 import { trimTrailingSlash } from "hono/trailing-slash";
 import { zValidator } from "@hono/zod-validator";
 import z from "zod";
@@ -18,6 +18,7 @@ import { MessageFlags } from "seyfert/lib/types";
 import type { StatisticResource } from "./cache/statistics";
 import { createSystemOperation } from "./lib/system-operation";
 import { getLanguageByUserId } from "./lib/lang";
+import { ImportStagingValidation } from "./api-types";
 
 const SystemEditInput = PSystemObject.omit({
 	alterIds: true,
@@ -25,7 +26,12 @@ const SystemEditInput = PSystemObject.omit({
 	systemAutoproxy: true,
 	createdAt: true,
 	associatedUserId: true,
-}).partial();
+	systemOperationDM: true,
+	subAccounts: true,
+})
+	.strict()
+	.partial()
+	.default({});
 const app = new Hono();
 
 app.use("/api/*", async (ctx, next) => {
@@ -55,7 +61,6 @@ export const clientRoutes = app
 			const importStageCollection =
 				appDb.collection<ImportStage>("import-staging");
 			const importStage = await importStageCollection.findOne({
-				// @ts-ignore
 				"webhook.id": importStageId,
 			});
 
@@ -70,7 +75,17 @@ export const clientRoutes = app
 					{ status: 400 },
 				);
 
-				const translations = await getLanguageByUserId(importStage.originatingSystemId)
+			const input = ImportStagingValidation(
+				importStage.response.dataType,
+			).safeParse(importStage.response.data);
+
+			if (input.error) {
+				return Response.json({ errors: input.error }, { status: 400 });
+			}
+
+			const translations = await getLanguageByUserId(
+				importStage.originatingSystemId,
+			);
 
 			client.interactions
 				.editOriginal(importStage.webhook.token, {
@@ -78,6 +93,7 @@ export const clientRoutes = app
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 				})
 				.then(async (message) => {
+					console.log(message)
 					if (importStage.response === null) return;
 
 					const system = await userCollection.findOne({
@@ -106,7 +122,7 @@ export const clientRoutes = app
 							userId: importStage.originatingSystemId,
 						},
 						import: JSON.parse(importStage.response?.data ?? ""),
-					});
+					}).catch(e => console.error(e));
 
 					client.interactions.editOriginal(importStage.webhook.token, {
 						components: new AlertView(translations).successViewCustom(
@@ -122,6 +138,9 @@ export const clientRoutes = app
 					});
 				});
 
+			await importStageCollection.deleteOne({
+				"webhook.id": importStageId,
+			});
 			return json({ done: "Handed back off to the user." });
 		},
 	)
@@ -132,15 +151,22 @@ export const clientRoutes = app
 			z.object({
 				method: z.enum(["exchange", "next"]),
 				changedOperation: SystemEditInput,
-				oldSystem: PSystemObject,
+				oldSystem: PSystemObject.omit({
+					subAccounts: true,
+					systemAutoproxy: true
+				}),
 			}),
 		),
 		async ({ req, json }) => {
 			const { method, changedOperation, oldSystem } = req.valid("json");
-			const translations = await getLanguageByUserId(oldSystem.associatedUserId)
+			const translations = await getLanguageByUserId(
+				oldSystem.associatedUserId ?? "",
+			);
+
+			console.log("notfying.?")
 
 			createSystemOperation(
-				oldSystem,
+				{...oldSystem, subAccounts: [], systemAutoproxy: []},
 				changedOperation,
 				translations,
 				method === "exchange" ? "api-exchange" : "api-web",
@@ -151,7 +177,7 @@ export const clientRoutes = app
 	)
 	.get("/api/health", (c) =>
 		c.json({
-			about: `PluralBuddy b${buildNumber}`,
+			about: `PluralBuddy ${build}`,
 			routes: app.routes
 				.filter((v) => !v.path.endsWith("*"))
 				.map((v) => v.path),

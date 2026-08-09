@@ -1,13 +1,17 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { type Collection, type Db, MongoClient } from "mongodb"
+import { type Collection, type Db, MongoClient } from "mongodb";
 import type { PGuild } from "./types/guild";
 import type { PUser } from "./types/user";
 import type { PAlter } from "./types/alter";
 import type { POperation } from "./types/operation";
 import type { PMessage } from "./types/message";
 import type { PTag } from "./types/tag";
-import type { PExpressApplication, PGuildError } from "plurography";
+import type {
+	PExpressApplication,
+	PGuildError,
+	PIntegrationFront,
+} from "plurography";
 import type { PAlterOperation } from "plurography";
 import { connectMongo } from "./lib/libby";
 import type { PAnalytics } from "./types/analytics";
@@ -21,39 +25,66 @@ export let tagCollection: Collection<PTag>;
 export let operationCollection: Collection<POperation>;
 export let alterOperationCollection: Collection<PAlterOperation>;
 export let errorCollection: Collection<PGuildError>;
+export let frontsCollection: Collection<PIntegrationFront>;
 export let messagesCollection: Collection<PMessage>;
 export let applicationsCollection: Collection<PExpressApplication>;
 export let analyticsCollection: Collection<PAnalytics>;
 
 export async function setupMongoDB() {
-    mongoClient = new MongoClient(process.env.MONGO ?? "")
+	mongoClient = new MongoClient(process.env.MONGO ?? "");
 
-    await mongoClient.connect()
-    await connectMongo();
+	await mongoClient.connect();
+	await connectMongo();
 }
 
 export async function createPeriodicExpirationDates() {
+	await operationCollection.createIndex(
+		{ createdAt: 1 },
+		{ expireAfterSeconds: 1800 },
+	);
+	await alterOperationCollection.createIndex(
+		{ createdAt: 1 },
+		{ expireAfterSeconds: 1800 },
+	);
+	await errorCollection.createIndex(
+		{ createdAt: 1 },
+		{ expireAfterSeconds: 21600 },
+	);
 
-    await operationCollection.createIndex({ createdAt: 1 }, { expireAfterSeconds: 1800 });
-    await alterOperationCollection.createIndex({ createdAt: 1 }, { expireAfterSeconds: 1800 });
-    await errorCollection.createIndex({ createdAt: 1 }, { expireAfterSeconds: 21600 });
-
-
+	await tagCollection.createIndex(
+		{ tagFriendlyName: 1 },
+		{
+			collation: {
+				locale: "en",
+				strength: 2,
+			},
+		},
+	);
+	await alterCollection.createIndex(
+		{ displayName: 1 },
+		{
+			collation: {
+				locale: "en",
+				strength: 2,
+			},
+		},
+	);
 }
 
 export async function setupDatabases() {
-    mainDb = mongoClient.db(process.env.MONGO_DB)
+	mainDb = mongoClient.db(process.env.MONGO_DB);
 
-    guildCollection = mainDb.collection("guilds")
-    userCollection = mainDb.collection("users")
-    alterCollection = mainDb.collection("alters")
-    operationCollection = mainDb.collection("system-operations")
-    messagesCollection = mainDb.collection("messages")
-    tagCollection = mainDb.collection("tags")
-    errorCollection = mainDb.collection("errors")
-    applicationsCollection = mainDb.collection("applications")
-    analyticsCollection = mainDb.collection("analytics")
-    alterOperationCollection = mainDb.collection("alter-operations");
+	guildCollection = mainDb.collection("guilds");
+	userCollection = mainDb.collection("users");
+	alterCollection = mainDb.collection("alters");
+	operationCollection = mainDb.collection("system-operations");
+	messagesCollection = mainDb.collection("messages");
+	tagCollection = mainDb.collection("tags");
+	errorCollection = mainDb.collection("errors");
+	applicationsCollection = mainDb.collection("applications");
+	analyticsCollection = mainDb.collection("analytics");
+	alterOperationCollection = mainDb.collection("alter-operations");
+	frontsCollection = mainDb.collection("fronts");
 
-    await createPeriodicExpirationDates()
+	await createPeriodicExpirationDates();
 }

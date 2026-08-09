@@ -1,104 +1,124 @@
-import { authenticateOAuth } from "@/lib/oauth";
-import { api } from "@/lib/rpc";
-import { waitUntil } from "@vercel/functions";
-import { NextRequest } from "next/server";
-import { PAlter, PAlterObject, PSystemObject, PUser } from "plurography";
-import z from "zod";
+import { createOAuthFunction } from "@/server/wrapper";
+import { PAlterObject } from "plurography";
 
 const AlterEditInput = PAlterObject.omit({
-	tagIds: true,
 	alterId: true,
 	systemId: true,
 	created: true,
 	lastMessageTimestamp: true,
-	messageCount: true
+	messageCount: true,
 })
+	.strict()
 	.partial()
 	.default({});
 
-export async function POST(
-	request: NextRequest,
-	{ params }: { params: Promise<{ user: string; alter: string }> },
-) {
-	const { user, alter } = await params;
+export const POST = createOAuthFunction<
+	{ user: string; alter: string },
+	typeof AlterEditInput
+>(
+	{
+		mustMatchOAuth: true,
+		expectSystem: true,
+		scopes: ["alters:write", "system:admin"],
+		bodyResolver: AlterEditInput,
+	},
+	async (ctx) => {
+		const { alter } = ctx.urlData.params;
+		const alterObj = await ctx.fetchAlter({
+			systemId: ctx.auth.accountId,
+			alterId: ctx.urlData.params.alter,
+		});
+		if (!alterObj) {
+			return ctx.error(
+				{
+					type: "unknown-alter",
+					friendly: "Couldn't find this alter.",
+				},
+				404,
+			);
+		}
 
-	const oauthResponse = await authenticateOAuth(request, [
-		"alters:write",
-		"system:admin",
-	]);
+		const { fields, tagIds, ...omittedData } = await ctx.body();
 
-	if ("response" in oauthResponse) return oauthResponse.response;
+		const successfulTags =
+			tagIds === undefined
+				? []
+				: await ctx.tagCollection
+						.find({ systemId: ctx.auth.accountId, tagId: { $in: tagIds } })
+						.toArray();
 
-	if (user !== oauthResponse.accountId && user !== "@me") {
-		return Response.json(
-			{
-				errors: [
+		if (tagIds) {
+			const missingTags = alterObj.tagIds.filter(
+				(v) => !(tagIds ?? []).includes(v),
+			);
+
+			for (const missingTag of missingTags) {
+				ctx.tagCollection.updateOne(
+					{ tagId: missingTag, systemId: ctx.auth.accountId },
 					{
-						type: "not-matching-oauth",
-						friendly:
-							"This endpoint requires the user currently logged in via OAuth.",
+						$pull: { associatedAlters: alter },
 					},
-				],
-			},
-			{ status: 400 },
-		);
-	}
+				);
+			}
+		}
 
-	const input = AlterEditInput.safeParse(await request.json());
+		for (const tag of successfulTags) {
+			if (!tag.associatedAlters.includes(alter))
+				ctx.tagCollection.updateOne(
+					{ tagId: tag.tagId, systemId: tag.systemId },
+					{
+						$push: { associatedAlters: alter },
+					},
+				);
+		}
 
-	if (input.error) {
-		return Response.json(
-			{ errors: [{ type: "zod", friendly: input.error }] },
-			{ status: 400 },
-		);
-	}
+		await Promise.allSettled([
+			ctx.alterCollection.updateOne(
+				{
+					$and: [{ systemId: ctx.auth.accountId }, { alterId: Number(alter) }],
+				},
+				{
+					$set: Object.assign(
+						{},
+						...Object.entries({
+							...omittedData,
+							tagIds: successfulTags.map((v) => v.tagId),
+						}).map(([v, c]) => ({
+							// @ts-ignore
+							[v]: c ?? alterObj?.[v],
+						})),
+					),
+				},
+			),
+			...(fields !== undefined && fields[ctx.auth.clientId ?? ""] !== undefined
+				? [
+						ctx.alterCollection.updateOne(
+							{
+								$and: [
+									{ systemId: ctx.auth.accountId },
+									{ alterId: Number(alter) },
+								],
+							},
+							{
+								$set: {
+									[`fields.${ctx.auth.clientId}`]:
+										fields[ctx.auth.clientId ?? ""],
+								},
+							},
+						),
+					]
+				: []),
+		]);
 
-	const { data } = input;
-	const db = oauthResponse.mongo.db(
-		`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
-	);
-	const alterCollection = db.collection<PAlter>("alters");
-	const alterObj = await alterCollection.findOne({
-		$and: [{ systemId: oauthResponse.accountId }, { alterId: Number(alter) }],
-	});
-
-	if (!alterObj) {
-		return Response.json(
-			{
-				errors: [
-					{ type: "unknown-alter", friendly: "Couldn't find this alter." },
-				],
-			},
-			{ status: 404 },
-		);
-	}
-
-	await alterCollection.updateOne(
-		{
-			$and: [{ systemId: oauthResponse.accountId }, { alterId: Number(alter) }],
-		},
-		{
-			$set: Object.assign(
+		return ctx.respond({
+			...alterObj,
+			...Object.assign(
 				{},
-				...Object.entries(data).map(([v, c]) => ({
+				...Object.entries(await ctx.body()).map(([v, c]) => ({
 					// @ts-ignore
 					[v]: c ?? alterObj?.[v],
 				})),
 			),
-		},
-	);
-
-	waitUntil(oauthResponse.mongo.close());
-
-	return Response.json({
-		...alterObj,
-
-		...Object.assign(
-			{},
-			...Object.entries(data).map(([v, c]) => ({
-				// @ts-ignore
-				[v]: c ?? alterObj?.[v],
-			})),
-		),
-	});
-}
+		});
+	},
+);

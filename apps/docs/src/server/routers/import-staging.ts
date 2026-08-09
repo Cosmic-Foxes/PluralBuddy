@@ -69,7 +69,7 @@ export const ImportStagingRouter = router({
 					{ error: "Configuration is not consistent with import type." },
 				),
 		)
-		.query(async ({ ctx, input }) => {
+		.mutation(async ({ ctx, input }) => {
 			const session = await auth.api.getSession({
 				headers: await headers(),
 			});
@@ -117,12 +117,24 @@ export const ImportStagingRouter = router({
 	getImportData: baseProcedure
 		.input(z.object({ id: z.string() }))
 		.query(async ({ ctx, input }) => {
+			const session = await auth.api.getSession({
+				headers: await headers(),
+			});
+
+			if (!session) throw new Error("Session error.");
+
 			const mongoClient = new MongoClient(process.env.MONGO ?? "");
 			const mongoDb = mongoClient.db(`${process.env.ENV}-pluralbuddy-app`);
 
 			let result = (await mongoDb
 				.collection<ImportStage>("import-staging")
-				.findOne({ "webhook.id": input.id })) as ImportStage;
+				.findOne({ "webhook.id": input.id })) as ImportStage | null;
+			if (result === null) {
+				throw new Error("Unauthorized.")
+			}
+			if (result.originatingSystemId !== await getDiscordIdBySessionId(session.user.id)) {
+				throw new Error("Unauthorized.")
+			}
 
 			if (result) {
 				result = {

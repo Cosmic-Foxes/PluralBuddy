@@ -1,92 +1,24 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import { runOffCommand } from "@/lib/ap-cmds/off";
 import { sendAutoproxyOperationDM } from "@/lib/autoproxy-operation";
 import { userCollection } from "@/mongodb";
 import type { PAutoProxy } from "@/types/auto-proxy";
 import { AlertView } from "@/views/alert";
-import { CommandContext, Declare, SubCommand } from "seyfert";
+import { CommandContext, Declare, IgnoreCommand, SubCommand } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { Shortcut } from "yunaforseyfert";
 
 @Declare({
-    name: "off",
-    description: "Disable auto-proxy",
-    contexts: ["Guild", "BotDM"],
-	aliases: ["shutup"]
+	name: "off",
+	description: "Disable auto-proxy",
+	contexts: ["Guild", "BotDM"],
+	aliases: ["shutup"],
+	ignore: IgnoreCommand.Message
 })
 @Shortcut()
 export default class OffAutoProxy extends SubCommand {
-    override async run(ctx: CommandContext) {
-		await ctx.deferReply(true);
-        
-		const { system } = await ctx.retrievePUser();
-
-		if (system === undefined) {
-			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
-					"ERROR_SYSTEM_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
-
-		const guild = await ctx.guild();
-
-		if (guild === undefined) {
-			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
-					"DN_ERROR_SE",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
-
-		const existingGuildPolicies = system.systemAutoproxy.some(
-			(ap) => ap.serverId === guild.id,
-		);
-
-		if (existingGuildPolicies) {
-			await userCollection.updateOne(
-				{ userId: system.associatedUserId },
-				{
-					$set: {
-						"system.systemAutoproxy.$[serverEntry].autoproxyMode": "off",
-					},
-				},
-				{
-					arrayFilters: [{ "serverEntry.serverId": ctx.guildId }],
-				},
-			);
-		} else {
-			// Append a new mapping to the nameMap array
-			await userCollection.updateOne(
-				{ userId: system.associatedUserId },
-				{
-					$push: {
-						"system.systemAutoproxy": {
-							autoproxyMode: "off",
-                            serverId: ctx.guildId
-						} satisfies Partial<PAutoProxy>,
-					},
-				},
-			);
-		}
-
-		await sendAutoproxyOperationDM(
-			system,
-			guild,
-			(await ctx.userTranslations()),
-			"discord",
-			"off",
-		);
-
-		return await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).successViewCustom(
-				((await ctx.userTranslations()))
-					.SET_AUTO_PROXY.replaceAll("%server_name%", guild.name)
-					.replaceAll("%mode%", "off"),
-			),
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-		});
-    }
+	override async run(ctx: CommandContext) {
+		return await runOffCommand(ctx);
+	}
 }

@@ -1,11 +1,11 @@
 import z from "zod";
-import { PSystemObject } from "./system";
 import { PAlterObject } from "./alter";
+import { PSystemObject } from "./system";
 import { PTagObject } from "./tag";
 
 export const ImportNotation = z
 	.object({
-		system: PSystemObject,
+		system: PSystemObject.nullable(),
 		alters: PAlterObject.array(),
 		tags: PTagObject.array(),
 	})

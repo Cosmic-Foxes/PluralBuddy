@@ -4,8 +4,15 @@ import { createI18nMiddleware } from 'fumadocs-core/i18n/middleware';
 import { i18n } from '@/lib/i18n';
 
 export default function proxy(request: NextRequest, event: NextFetchEvent) {
-  if (request.url === "/oauth2/authorize")
+  if (request.url.includes("/oauth2/authorize") && !request.url.includes("/docs"))
   return NextResponse.redirect(new URL(`/api/auth/oauth2/authorize?${request.nextUrl.searchParams.toString()}`, request.url))
+  if (request.url.endsWith("/developers/applications") )
+    return NextResponse.redirect(new URL(`/app/settings/developers-v2`, request.url))
+  if (request.url.includes("/docs")) {
+    if (request.url.includes("/en/docs"))
+      return NextResponse.redirect(new URL(`/docs/${request.url.split("/docs")[1]}`, request.url))
+    return;
+  }
 
   return createI18nMiddleware(i18n)(request, event);
 }

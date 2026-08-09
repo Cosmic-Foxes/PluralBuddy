@@ -13,11 +13,21 @@ export const register = (registry: OpenAPIRegistry) =>
 		security: [{ oAuth2: ["alters:read"] }],
 		parameters: [
 			{
+				name: "user",
+				in: "path",
+				required: true,
 				description:
-					"How many entries to show at most if in a pagination. Can only be at most 30 alters.",
+					"`{user}` is a Discord user Snowflake, or `@me`, referencing the current OAuth user.",
+				schema: {
+					type: "string",
+				},
+			},
+			{
+				description:
+					"How many entries to show at most if in a pagination. Can only be at most 250 tags.",
 				name: "max",
 				in: "query",
-                schema: { type: "number", maximum: 30 }
+                schema: { type: "number", maximum: 250 }
 			},
 			{
 				description: "How many entries to skip if in a pagination.",
@@ -37,7 +47,7 @@ export const register = (registry: OpenAPIRegistry) =>
 			},
 			"400": {
 				description:
-					"You can only show at most 30 alters in a current pagination or you aren't using the current OAuth user.",
+					"You can only show at most 250 tags in a current pagination or you aren't using the current OAuth user.",
 				content: {
 					"application/json": {
 						schema: z.object({

@@ -11,6 +11,18 @@ export const register = (registry: OpenAPIRegistry) =>
 		description:
 			"Edit system data. `{user}` can be `@me` to target the current OAuth user.",
 		security: [{ oAuth2: ["system:write"] }],
+		parameters: [
+			{
+				name: "user",
+				in: "path",
+				required: true,
+				description:
+					"`{user}` is a Discord user Snowflake, or `@me`, referencing the current OAuth user.",
+				schema: {
+					type: "string",
+				},
+			},
+		],
 		request: {
 			body: {
 				content: {

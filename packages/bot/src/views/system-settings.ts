@@ -10,6 +10,7 @@ import {
 	StringSelectMenu,
 	StringSelectOption,
 	TextDisplay,
+	type DefaultLocale,
 } from "seyfert";
 import { TranslatedView } from "./translated-view";
 import { ButtonStyle, Spacing } from "seyfert/lib/types";
@@ -27,6 +28,8 @@ import { AlterProtectionFlags, type PAlter } from "@/types/alter";
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import { AlertView } from "./alert";
 import { mentionCommand } from "@/lib/mention-command";
+import paginateComponents from "@/lib/views/paginate";
+import { SystemFlags } from "plurography";
 
 export const alterPagination: {
 	id: string;
@@ -122,12 +125,20 @@ export class SystemSettingsView extends TranslatedView {
 		];
 	}
 
-	generalSettings(system: PSystem, guildId: string | undefined) {
+	async generalSettingsPageOne({
+		system,
+		guildId,
+		$translations,
+	}: {
+		system: PSystem;
+		guildId: string | undefined;
+		$translations: DefaultLocale;
+	}) {
 		return [
 			new Container()
 				.setComponents(
 					new TextDisplay().setContent(
-						this.translations.GENERAL_SYSTEM_TITLE.replace(
+						$translations.GENERAL_SYSTEM_TITLE.replace(
 							"{{ emoji }}",
 							emojis.settings,
 						).replace("{{ systemName }}", system.systemName),
@@ -136,26 +147,26 @@ export class SystemSettingsView extends TranslatedView {
 						.setAccessory(
 							new Button()
 								.setStyle(ButtonStyle.Secondary)
-								.setLabel(this.translations.SYSTEM_NAME_BTN)
+								.setLabel($translations.SYSTEM_NAME_BTN)
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.GeneralTab.SetName.create(),
 								),
 						)
 						.setComponents(
-							new TextDisplay().setContent(this.translations.SYSTEM_NAME_DESC),
+							new TextDisplay().setContent($translations.SYSTEM_NAME_DESC),
 						),
 					new Section()
 						.setAccessory(
 							new Button()
 								.setStyle(ButtonStyle.Secondary)
-								.setLabel(this.translations.SYSTEM_NICKNAME_FORMAT_BTN)
+								.setLabel($translations.SYSTEM_NICKNAME_FORMAT_BTN)
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.GeneralTab.SetNicknameFormat.create(),
 								),
 						)
 						.setComponents(
 							new TextDisplay().setContent(
-								this.translations.SYSTEM_NICKNAME_FORMAT_DESC,
+								$translations.SYSTEM_NICKNAME_FORMAT_DESC,
 							),
 						),
 					new Separator(),
@@ -163,7 +174,7 @@ export class SystemSettingsView extends TranslatedView {
 						.setAccessory(
 							new Button()
 								.setStyle(ButtonStyle.Secondary)
-								.setLabel(this.translations.SYSTEM_PRIVACY_BTN)
+								.setLabel($translations.SYSTEM_PRIVACY_BTN)
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.GeneralTab.SetPrivacy.create(),
 								),
@@ -171,21 +182,21 @@ export class SystemSettingsView extends TranslatedView {
 						.setComponents(
 							new TextDisplay().setContent(
 								// biome-ignore lint/style/useTemplate: a
-								this.translations.SYSTEM_PRIVACY_DESC +
+								$translations.SYSTEM_PRIVACY_DESC +
 									((system.public ?? 0) > 0
-										? `\n-# ${this.translations.CREATING_NEW_SYSTEM_PRIVACY_SET} \`${friendlyProtectionSystem(this.translations, listFromMaskSystems(system.public ?? 0)).join("`, `")}\``
+										? `\n-# ${$translations.CREATING_NEW_SYSTEM_PRIVACY_SET} \`${friendlyProtectionSystem($translations, listFromMaskSystems(system.public ?? 0)).join("`, `")}\``
 										: ""),
 							),
 						),
 
-					new TextDisplay().setContent(this.translations.SYSTEM_AP_DESC),
+					new TextDisplay().setContent($translations.SYSTEM_AP_DESC),
 
 					new ActionRow().setComponents(
 						new StringSelectMenu()
 							.setPlaceholder(
 								guildId === undefined
-									? this.translations.REQUIRED_SERVER_PROXY
-									: this.translations.SELECT_DEFAULT_PROXY,
+									? $translations.REQUIRED_SERVER_PROXY
+									: $translations.SELECT_DEFAULT_PROXY,
 							)
 							.setCustomId(InteractionIdentifier.AutoProxy.AlterMenu.create())
 							.setDisabled(guildId === undefined)
@@ -194,8 +205,8 @@ export class SystemSettingsView extends TranslatedView {
 									.setValue(
 										InteractionIdentifier.Selection.AutoProxyModes.Latch.create(),
 									)
-									.setLabel(this.translations.LATCH_NAME)
-									.setDescription(this.translations.LATCH_DESC)
+									.setLabel($translations.LATCH_NAME)
+									.setDescription($translations.LATCH_DESC)
 									.setDefault(
 										system.systemAutoproxy.some(
 											(a) =>
@@ -204,8 +215,8 @@ export class SystemSettingsView extends TranslatedView {
 									),
 								new StringSelectOption()
 									.setValue("--")
-									.setLabel(this.translations.ALTER_NAME)
-									.setDescription(this.translations.ALTER_DESC_DISABLED)
+									.setLabel($translations.ALTER_NAME)
+									.setDescription($translations.ALTER_DESC_DISABLED)
 									.setDefault(
 										system.systemAutoproxy.some(
 											(a) =>
@@ -216,8 +227,8 @@ export class SystemSettingsView extends TranslatedView {
 									.setValue(
 										InteractionIdentifier.Selection.AutoProxyModes.Off.create(),
 									)
-									.setLabel(this.translations.OFF_NAME)
-									.setDescription(this.translations.OFF_DESC)
+									.setLabel($translations.OFF_NAME)
+									.setDescription($translations.OFF_DESC)
 									.setDefault(
 										system.systemAutoproxy.some(
 											(a) =>
@@ -226,38 +237,111 @@ export class SystemSettingsView extends TranslatedView {
 									),
 							]),
 					),
-					new Separator(),
-					new Section()
-						.setAccessory(
-							new Button()
-								.setStyle(ButtonStyle.Secondary)
-								.setLabel(this.translations.EXPORT_SYS_BTN)
-								.setCustomId(
-									InteractionIdentifier.Systems.Configuration.GeneralTab.ExportSystem.create(),
-								),
-						)
-						.setComponents(
-							new TextDisplay().setContent(this.translations.EXPORT_SYS_DESC),
-						),
-					new Section()
-						.setAccessory(
-							new Button()
-								.setStyle(ButtonStyle.Secondary)
-								.setLabel(this.translations.IMPORT_SYS_BTN)
-								.setCustomId(
-									InteractionIdentifier.Systems.Configuration.GeneralTab.ImportSystem.create(),
-								),
-						)
-						.setComponents(
-							new TextDisplay().setContent(this.translations.IMPORT_SYS_DESC),
-						),
 				)
 				.setColor("#1190FF"),
+		];
+	}
+
+	async generalSettingsPageTwo({
+		system,
+		guildId,
+		$translations,
+	}: {
+		system: PSystem;
+		guildId: string | undefined;
+		$translations: DefaultLocale;
+	}) {
+		const keepProxyTags =
+			((system.flags ?? 0) & SystemFlags.KEEP_PROXY_TAGS) === 0;
+		const includePronouns = ((system.flags ?? 0) & SystemFlags.INCLUDE_PRONOUNS) === 0;
+
+		return [
+			new Container().setColor("#1190FF").setComponents(
+				new TextDisplay().setContent(
+					$translations.GENERAL_SYSTEM_TITLE.replace(
+						"{{ emoji }}",
+						emojis.settings,
+					).replace("{{ systemName }}", system.systemName),
+				),
+
+				new Section()
+					.setAccessory(
+						new Button()
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel(
+								keepProxyTags
+									? $translations.INCLUDE_PROXY_TAGS_BTN
+									: $translations.INCLUDE_PROXY_TAGS_OFF_BTN,
+							)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.GeneralTab.ToggleIncludeProxyTags.create(),
+							),
+					)
+					.setComponents(
+						new TextDisplay().setContent($translations.INCLUDE_PROXY_TAGS_DESC),
+					),
+				new Section()
+					.setAccessory(
+						new Button()
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel(
+								includePronouns
+									? $translations.INCLUDE_PRONOUNS_BTN
+									: $translations.INCLUDE_PRONOUNS_OFF_BTN,
+							)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.GeneralTab.ToggleIncludePronouns.create(),
+							),
+					)
+					.setComponents(
+						new TextDisplay().setContent($translations.INCLUDE_PRONOUNS_DESC),
+					),
+				new Separator(),
+				new Section()
+					.setAccessory(
+						new Button()
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel($translations.EXPORT_SYS_BTN)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.GeneralTab.ExportSystem.create(),
+							),
+					)
+					.setComponents(
+						new TextDisplay().setContent($translations.EXPORT_SYS_DESC),
+					),
+				new Section()
+					.setAccessory(
+						new Button()
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel($translations.IMPORT_SYS_BTN)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.GeneralTab.ImportSystem.create(),
+							),
+					)
+					.setComponents(
+						new TextDisplay().setContent($translations.IMPORT_SYS_DESC),
+					),
+				new Separator(),
+				new TextDisplay().setContent($translations.EXTERNAL_EXPORT_SYS_DESC),
+				new ActionRow().setComponents(
+					new StringSelectMenu()
+						.setCustomId(
+							InteractionIdentifier.Systems.ExternalExporting.Selector.create(),
+						)
+						.setOptions([
+							new StringSelectOption()
+								.setLabel("PluralKit")
+								.setValue(
+									InteractionIdentifier.Systems.ExternalExporting.PluralKit.create(),
+								),
+						]),
+				),
+			),
 			new Container()
 				.setColor("#FF1717")
 				.setSpoiler(true)
 				.setComponents(
-					new TextDisplay().setContent(this.translations.DANGER_ZONE_TITLE),
+					new TextDisplay().setContent($translations.DANGER_ZONE_TITLE),
 					new Section()
 						.setAccessory(
 							new Button()
@@ -266,32 +350,49 @@ export class SystemSettingsView extends TranslatedView {
 								)
 								.setLabel(
 									system.disabled
-										? this.translations.SYSTEM_E
-										: this.translations.SYSTEM_D,
+										? $translations.SYSTEM_E
+										: $translations.SYSTEM_D,
 								)
 								.setCustomId(
 									InteractionIdentifier.Systems.ToggleDisableSystem.create(),
 								),
 						)
 						.setComponents(
-							new TextDisplay().setContent(this.translations.SYSTEM_D_DESC),
+							new TextDisplay().setContent($translations.SYSTEM_D_DESC),
 						),
 					new Separator(),
 					new Section()
 						.setAccessory(
 							new Button()
 								.setStyle(ButtonStyle.Danger)
-								.setLabel(this.translations.DELETE_SYS_BTN)
+								.setLabel($translations.DELETE_SYS_BTN)
 								.setCustomId(
 									InteractionIdentifier.Setup.RemoveOldSystem.create(),
 								),
 						)
 						.setComponents(
-							new TextDisplay().setContent(this.translations.DELETE_SYS_DESC),
+							new TextDisplay().setContent($translations.DELETE_SYS_DESC),
 						),
 				),
 		];
 	}
+
+	async generalSettings(
+		system: PSystem,
+		guildId: string | undefined,
+		page: number,
+	) {
+		return await paginateComponents(
+			{
+				"Systems.Configuration.Pagination.PageOne": this.generalSettingsPageOne,
+				"Systems.Configuration.Pagination.PageTwo": this.generalSettingsPageTwo,
+			},
+			{ system, guildId },
+			page,
+			this.translations,
+		);
+	}
+
 	async otherAltersSettings(
 		system: PSystem,
 		pgObj?: (typeof alterPagination)[0],
@@ -783,9 +884,14 @@ export class SystemSettingsView extends TranslatedView {
 				new Section()
 					.addComponents(
 						new TextDisplay().setContent(
-							this.translations.PUBLIC_PROFILE_SYSTEM_TAG_DESC
-								.replace("{{ systemName }}", system.systemName)
-								.replace("{{ displayTag }}", system.systemDisplayTag ?? this.translations.PUBLIC_PROFILE_UNSET_PN)
+							this.translations.PUBLIC_PROFILE_SYSTEM_TAG_DESC.replace(
+								"{{ systemName }}",
+								system.systemName,
+							).replace(
+								"{{ displayTag }}",
+								system.systemDisplayTag ??
+									this.translations.PUBLIC_PROFILE_UNSET_PN,
+							),
 						),
 					)
 					.setAccessory(
@@ -805,37 +911,26 @@ export class SystemSettingsView extends TranslatedView {
 			new Container().setComponents(
 				new TextDisplay().setContent(this.translations.IMPORT_SETTINGS_TITLE),
 				new Separator().setSpacing(Spacing.Large),
-				new TextDisplay().setContent(
-					
-					this.translations.IMPORT_SETTINGS_DESC
-				),
+				new TextDisplay().setContent(this.translations.IMPORT_SETTINGS_DESC),
 				new Separator().setSpacing(Spacing.Small).setDivider(false),
 				new ActionRow().setComponents(
 					new StringSelectMenu()
 						.setCustomId(InteractionIdentifier.Systems.ImportMode.create())
 						.setOptions([
 							new StringSelectOption()
-								.setDescription(
-									this.translations.REPLACE_DESC
-								)
+								.setDescription(this.translations.REPLACE_DESC)
 								.setLabel(this.translations.REPLACE_NAME)
 								.setValue("replace"),
 							new StringSelectOption()
-								.setDescription(
-									this.translations.ADD_DESC
-								)
+								.setDescription(this.translations.ADD_DESC)
 								.setLabel(this.translations.ADD_NAME)
 								.setValue("add"),
 							new StringSelectOption()
-								.setDescription(
-									this.translations.FULL_IMPORT_DESC
-								)
+								.setDescription(this.translations.FULL_IMPORT_DESC)
 								.setLabel(this.translations.FULL_IMPORT_NAME)
 								.setValue("full-mode"),
 							new StringSelectOption()
-								.setDescription(
-									this.translations.DELETE_IMPORT_DESC
-								)
+								.setDescription(this.translations.DELETE_IMPORT_DESC)
 								.setLabel(this.translations.DELETE_NAME)
 								.setValue("delete"),
 						]),

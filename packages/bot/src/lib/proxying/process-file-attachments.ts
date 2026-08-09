@@ -11,10 +11,10 @@ export async function processFileAttachments(
 	sendingUserId?: string,
 	realGuildId?: string,
 ): Promise<{
-	fileAttachments: Array<{ buff: Buffer; name: string }>;
+	fileAttachments: Array<{ buff: Buffer; spoilered: boolean; name: string }>;
 	hasTextContent: boolean;
 }> {
-	const fileAttachments: Array<{ buff: Buffer; name: string }> = [];
+	const fileAttachments: Array<{ buff: Buffer; spoilered: boolean; name: string }> = [];
 	const userPerms = await client.channels.memberPermissions(
 		message.channelId,
 		await client.members.fetch(
@@ -38,7 +38,8 @@ export async function processFileAttachments(
 					});
 				}),
 		]) {
-			if (!attachment.url.startsWith("https://media.tenor.com")) {
+			console.log(attachment)
+			if (attachment.url.startsWith("https://cdn.discordapp.com")) {
 				const arrBuff = await (await fetch(attachment.url)).arrayBuffer();
 				fileAttachments.push({
 					buff: Buffer.from(arrBuff),
@@ -46,6 +47,7 @@ export async function processFileAttachments(
 						"filename" in attachment
 							? attachment.filename
 							: `attachment-${assetStringGeneration(16)}.${attachment.content_type?.split("/")[1]}`,
+					spoilered: ("flags" in attachment) ? (((attachment.flags ?? 0) & (1 << 3)) === (1 << 3)) : false
 				});
 			}
 		}

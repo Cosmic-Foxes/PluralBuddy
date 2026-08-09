@@ -1,6 +1,14 @@
+import { policyModal } from "@/index";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { AlertView } from "@/views/alert";
 import { ServerConfigView } from "@/views/server-cfg";
-import { CommandContext, Declare, Middlewares, SubCommand } from "seyfert";
+import {
+	CommandContext,
+	Declare,
+	Interaction,
+	Middlewares,
+	SubCommand,
+} from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
 @Declare({
@@ -10,23 +18,42 @@ import { MessageFlags } from "seyfert/lib/types";
 @Middlewares(["ensureGuildPermissions"])
 export default class ViewServerConfig extends SubCommand {
 	override async run(ctx: CommandContext) {
-		await ctx.deferReply(true)
+		const user = await ctx.retrievePUser();
+
+		if (user.policyStatus !== 1 && ctx.interaction) {
+			return ctx.interaction.modal(
+				await policyModal(
+					ctx,
+					InteractionIdentifier.Guilds.GeneralTab.Index.create(),
+				),
+			);
+		}
+
+		await ctx.deferReply(true);
+		
 		const pluralGuild = await ctx.retrievePGuild();
 
-		return await ctx.ephemeral({
-			components: [
-				...new ServerConfigView((await ctx.userTranslations())).topView(
-					"general",
-					pluralGuild.guildId,
-				),
-				...await new ServerConfigView((await ctx.userTranslations())).generalSettings(
-					pluralGuild,
-					(await ctx.getDefaultPrefix()) ?? "",
-					ctx.interaction?.message?.messageReference === undefined,
-				),
-			],
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			allowed_mentions: { parse: [] },
-		}, undefined, undefined, ctx);
+		return await ctx.ephemeral(
+			{
+				components: [
+					...new ServerConfigView(await ctx.userTranslations()).topView(
+						"general",
+						pluralGuild.guildId,
+					),
+					...(await new ServerConfigView(
+						await ctx.userTranslations(),
+					).generalSettings(
+						pluralGuild,
+						(await ctx.getDefaultPrefix()) ?? "",
+						ctx.interaction?.message?.messageReference === undefined,
+					)),
+				],
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				allowed_mentions: { parse: [] },
+			},
+			undefined,
+			undefined,
+			ctx,
+		);
 	}
 }

@@ -90,6 +90,7 @@ export async function replace(
 						tagIds: pluralbuddy.tagIds,
 						public: pluralbuddy.public,
 						avatarUrlMap: {},
+						fields: {}
 					} satisfies PAlter),
 					originalPkId: member.id,
 				}
@@ -127,6 +128,7 @@ export async function replace(
 					associatedAlters: pluralbuddy.associatedAlters,
 
 					public: pluralbuddy.public,
+					fields: {}
 				} satisfies PTag),
 		)
 		.filter((res) => res !== false);
@@ -213,6 +215,7 @@ export async function add(
 						// TupperBox has no permission values... lol
 						public: 0,
 						avatarUrlMap: {},
+						fields: {}
 					} satisfies PAlter),
 					originalPkId: member.id,
 				}
@@ -243,6 +246,7 @@ export async function add(
 				associatedAlters: [],
 
 				public: 0,
+				fields: {}
 			} satisfies PTag),
 		)
 		.filter((v) => v.data !== undefined)
@@ -261,8 +265,8 @@ export async function add(
 		},
 		{
 			$push: {
-				"system.alterIds": newAlters.map((c) => c.alterId),
-				"system.tagIds": newTags.map((c) => c.tagId),
+				"system.alterIds": { $each: newAlters.map((c) => c.alterId) },
+				"system.tagIds": { $each: newTags.map((c) => c.tagId) },
 			},
 		},
 	);
@@ -322,8 +326,8 @@ export async function deleteM(
 		},
 		{
 			$pull: {
-				"system.alterIds": { $in: pendingDeletedAlters.map((v) => v.alterId) },
-				"system.tagIds": { $in: pendingDeletedTags.map((v) => v.tagId) },
+				"system.alterIds": { $each: pendingDeletedAlters.map((v) => v.alterId) },
+				"system.tagIds": { $each: pendingDeletedTags.map((v) => v.tagId) },
 			},
 		},
 	);

@@ -3,6 +3,7 @@ import { getSimilarWebhooks, setLastLatchAlter } from "@/lib/proxying/util";
 import { alterCollection, messagesCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import {
+	ApplicationEmoji,
 	Message,
 	Section,
 	Separator,
@@ -35,6 +36,7 @@ import { emojis } from "@/lib/emojis";
 import { createError } from "@/lib/create-error";
 import { pendingIgnoreDeletion } from "@/events/on-message-delete";
 import { w } from "@/webhooks";
+import { processEmojis } from "@/lib/proxying/process-emojis";
 
 const options = {
 	alter: createStringOption({
@@ -48,6 +50,7 @@ const options = {
 	name: "reproxy",
 	description: "Reproxy as an alter",
 	contexts: ["Guild"],
+	aliases: ["rp"],
 })
 @Options(options)
 export default class ReproxyCommand extends Command {
@@ -70,7 +73,7 @@ export default class ReproxyCommand extends Command {
 		if (system === undefined) {
 			return await ctx.ephemeral(
 				{
-					components: new AlertView((await ctx.userTranslations())).errorView(
+					components: new AlertView(await ctx.userTranslations()).errorView(
 						"ERROR_SYSTEM_DOESNT_EXIST",
 					),
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -83,7 +86,7 @@ export default class ReproxyCommand extends Command {
 		if (alter === null) {
 			return await ctx.ephemeral(
 				{
-					components: new AlertView((await ctx.userTranslations())).errorView(
+					components: new AlertView(await ctx.userTranslations()).errorView(
 						"ERROR_ALTER_DOESNT_EXIST",
 					),
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -107,10 +110,9 @@ export default class ReproxyCommand extends Command {
 
 		if (!ctx.guildId) return;
 
-
 		if (message === null) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"NOT_RECENT_ENOUGH",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -124,7 +126,7 @@ export default class ReproxyCommand extends Command {
 			message.guildId !== ctx.guildId
 		) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_OWN_MESSAGE",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -143,7 +145,7 @@ export default class ReproxyCommand extends Command {
 
 		if (similarWebhooks[0] === undefined || originalMessage === null) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_MANUAL_PROXY",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -156,12 +158,23 @@ export default class ReproxyCommand extends Command {
 
 		pendingIgnoreDeletion.push(message.messageId);
 
+		const processedEmojis: ApplicationEmoji[] = [];
+
 		webhook.messages
 			.write({
 				body: {
-					components: originalMessage.components
+					components: await Promise.all(originalMessage.components
 						.map((v) => v.toBuilder())
-						.filter((v) => v !== undefined) as TopLevelBuilders[],
+						.filter((v) => v !== undefined)
+						.map(async (v) => {
+							if (v.data.type === ComponentType.TextDisplay && v.data.content) {
+								const processEmoji = await processEmojis(v.data.content);
+								processedEmojis.push(...processEmoji.emojis);
+								
+								(v as TextDisplay).setContent(processEmoji.newMessage)
+							}
+							return v;
+						})) as TopLevelBuilders[],
 					flags: MessageFlags.IsComponentsV2,
 					username: username.substring(0, 80),
 					allowed_mentions: { parse: [] },
@@ -186,20 +199,21 @@ export default class ReproxyCommand extends Command {
 				)
 					setLastLatchAlter(ctx.guildId ?? "", system, alter);
 
-				messagesCollection
-					.replaceOne(
-						{ messageId: message.messageId },
-						{
-							messageId: sentMessage?.id ?? "0",
-							alterId: alter.alterId,
-							systemId,
-							createdAt: new Date(),
-							channelId: sentMessage?.channelId ?? "0",
-							guildId: message.guildId,
-						},
-					);
+				messagesCollection.replaceOne(
+					{ messageId: message.messageId },
+					{
+						messageId: sentMessage?.id ?? "0",
+						alterId: alter.alterId,
+						systemId,
+						createdAt: new Date(),
+						channelId: sentMessage?.channelId ?? "0",
+						guildId: message.guildId,
+					},
+				);
 
 				(async () => {
+					await Promise.all(processedEmojis.map(async c => await c.delete()))
+
 					const guild = await getGuildFromId(ctx.guildId ?? "");
 					const user = await client.users.fetch(ctx.author.id);
 					const message = originalMessage.components
@@ -282,7 +296,7 @@ export default class ReproxyCommand extends Command {
 
 		return await ctx
 			.editResponse({
-				components: new AlertView((await ctx.userTranslations())).successView(
+				components: new AlertView(await ctx.userTranslations()).successView(
 					"REPROXIED_MESSAGE",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

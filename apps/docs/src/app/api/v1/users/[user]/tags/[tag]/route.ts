@@ -1,36 +1,71 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { auth } from "@/lib/auth";
-import { authenticateOAuth } from "@/lib/oauth";
-import { redactAlter, redactTag } from "@/lib/redact";
-import { MongoClient } from "mongodb";
-import { NextRequest } from "next/server";
-import { PAlter, PTag } from "plurography";
+import { redactTag } from "@/lib/redact";
+import { createOAuthFunction } from "@/server/wrapper";
 
-export async function GET(
-	request: NextRequest,
-	{ params }: { params: Promise<{ user: string; tag: string }> },
-) {
-	const { user, tag } = await params;
+export const GET = createOAuthFunction<{ user: string; tag: string }>(
+	{ scopes: ["tags:read", "system:admin"] },
+	async (ctx) => {
+		const { user, tag } = ctx.urlData.params;
 
-	const oauthResponse = await authenticateOAuth(request, [
-		"tags:read",
-		"system:admin",
-	]);
+		const parsedUserId = user === "@me" ? ctx.auth.accountId : user;
+		const isSelf = user === "@me" || user === ctx.auth.accountId;
 
-	if ("response" in oauthResponse) return oauthResponse.response;
+		const response = await ctx.fetchTag({
+			tagId: tag,
+			systemId: parsedUserId,
+		});
 
-	auth.api.oauth2Token()
+		if (!response) {
+			return ctx.error(
+				{
+					type: "no-tag",
+					friendly: "No such tag.",
+				},
+				404,
+			);
+		}
 
-	const parsedUserId = user === "@me" ? oauthResponse.accountId : user;
-	const db = oauthResponse.mongo.db(`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`);
-	const tagCollection = db.collection<PTag>("tags");
-	const isSelf = user === "@me" || user === oauthResponse.accountId;
-	const response = await tagCollection.findOne({
-		tagId: tag,
-		systemId: parsedUserId,
-	});
+		return ctx.respond({
+			isSelf,
+			data: redactTag(isSelf, response, ctx.auth.clientId),
+		});
+	},
+);
 
-	await oauthResponse.mongo.close();
-	return Response.json({ isSelf, data: redactTag(isSelf, response) });
-}
+export const DELETE = createOAuthFunction<{ user: string; tag: string }>(
+	{
+		scopes: ["tags:write", "system:admin"],
+		mustMatchOAuth: true,
+		expectSystem: true,
+	},
+	async (ctx) => {
+		const tag = await ctx.fetchTag({
+			tagId: ctx.urlData.params.tag,
+			systemId: ctx.auth.accountId,
+		});
+
+		if (!tag) {
+			return ctx.error({
+				type: "no-tag",
+				friendly: "This tag doesn't exist.",
+			});
+		}
+
+		await Promise.allSettled([
+			ctx.tagCollection.deleteOne({
+				tagId: tag.tagId,
+				systemId: ctx.auth.accountId,
+			}),
+
+			ctx.userCollection.updateOne(
+				{
+					userId: ctx.auth.accountId,
+				},
+				{ $pull: { "system.tagIds": tag.tagId } },
+			),
+		]);
+		
+		return ctx.respond();
+	},
+);

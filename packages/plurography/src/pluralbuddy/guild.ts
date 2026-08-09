@@ -1,7 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
-import z, { date } from "zod";
+import z from "zod";
 
 export const defaultPrefixes = {
 	canary: ["pbc;", "pbc!"],

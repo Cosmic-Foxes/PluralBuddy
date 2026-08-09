@@ -56,7 +56,7 @@ ${this.translations.OWNED_BY_PROFILE}<@${system.associatedUserId}> (${system.ass
 								new Thumbnail()
 									.setMedia(
 										system.systemAvatar === ""
-											? "https://pb.giftedly.dev/image/solar-centered.png"
+											? "https://pb.giftedly.dev/image/pfp.png"
 											: system.systemAvatar,
 									)
 									.setDescription(this.translations.ALT_AVATAR.replace("{{ alter }}", system.associatedUserId)),

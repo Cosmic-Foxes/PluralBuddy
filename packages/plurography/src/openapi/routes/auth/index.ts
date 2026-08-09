@@ -34,6 +34,7 @@ export const register = (registry: OpenAPIRegistry) => {
 					"system:read": "Read system data",
 					"system:write": "Write to system data",
 					"system:admin": "Read/write to alter, tags & system data.",
+					"system:ai-ap": "Create custom auto proxy modes as if this integration was a front tracker."
 				},
 			},
 			clientCredentials: {

@@ -19,8 +19,47 @@ const config = {
 			bodySizeLimit: "5mb"
 		}
 	},
-	serverExternalPackages: ["node:fs/promises"],
-	allowedDevOrigins: ['192.168.0.234']
+	serverExternalPackages: ["node:fs"],
+	allowedDevOrigins: ['192.168.0.234'],
+	headers() {
+		return [
+			{
+				source: '/api/v1/:path*',
+				headers: [
+					{
+						key: 'Access-Control-Allow-Origin',
+						value: '*',
+					},
+					{
+						key: 'Access-Control-Allow-Methods',
+						value: 'GET,DELETE,PATCH,POST,PUT,OPTIONS',
+					},
+					{
+						key: "Access-Control-Allow-Headers",
+						value: "X-CSRF-Token, X-Requested-With, Authorization, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
+					}
+				],
+			},
+			{
+				source: '/api/auth/:path*',
+				headers: [
+					{
+						key: 'Access-Control-Allow-Origin',
+						value: '*',
+					},
+					{
+						key: 'Access-Control-Allow-Methods',
+						value: 'GET,DELETE,PATCH,POST,PUT,OPTIONS',
+					},
+					{
+						key: "Access-Control-Allow-Headers",
+						value: "X-CSRF-Token, X-Requested-With, Authorization, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
+					}
+				],
+			},
+		]
+	},
+
 };
 
 const withNextIntl = createNextIntlPlugin();

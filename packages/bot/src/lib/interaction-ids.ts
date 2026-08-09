@@ -1,7 +1,7 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 // biome-ignore lint/suspicious/noExplicitAny: buh?
-class InteractionObj<K extends (...args: any[]) => string> {
+export class InteractionObj<K extends (...args: any[]) => string> {
 	matcher: string;
 	func: K;
 	create: K;
@@ -91,6 +91,8 @@ export const InteractionIdentifier = {
 		Page: createFromAdditionalArg("help/page"),
 		Menu: createStatic("help/menu"),
 	},
+	PolicyForm: createFromAdditionalArg("policy-form_"),
+	PolicyFormAcceptance: createStatic("policy-form-acceptance"),
 	AutoProxy: {
 		AlterMenu: createStatic("selection/ap/alter-menu"),
 	},
@@ -247,9 +249,18 @@ export const InteractionIdentifier = {
 		ConfigurePublicProfile: createFromAdditionalArg(
 			"systems/configure-public-profile",
 		),
+		ExternalExporting: {
+			Selector: createStatic("systems/external-export/selector"),
+			PluralKit: createStatic("systems/external-export/pluralkit")
+		},
 		Configuration: {
 			ConfigureAlter: createFromAdditionalArg("systems/config/config-alter"),
 			ConfigureTag: createFromAdditionalArg("systems/config/config-tag"),
+
+			Pagination: {
+				PageOne: createStatic("systems/config/page-1"),
+				PageTwo: createStatic("systems/config/page-2"),
+			},
 
 			GeneralTab: {
 				Index: createStatic("systems/config/general"),
@@ -260,6 +271,8 @@ export const InteractionIdentifier = {
 				SetPrivacy: createStatic("systems/config/general/set-privacy"),
 				ExportSystem: createStatic("systems/config/general/export"),
 				ImportSystem: createStatic("systems/config/general/import"),
+				ToggleIncludeProxyTags: createStatic("systems/config/general/include-proxy-tags"),
+				ToggleIncludePronouns: createStatic("systems/config/general/include-pronouns")
 			},
 			OtherAlterPagination: {
 				PreviousPage: createFromAdditionalArg("systems/config/oapg/previous"),

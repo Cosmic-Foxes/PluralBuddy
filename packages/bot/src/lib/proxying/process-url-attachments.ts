@@ -79,9 +79,11 @@ export async function processUrlIntegrations(
 			} else {
 				// biome-ignore lint/suspicious/noExplicitAny: any required.
 				const result = (await url.json()) as any;
+				console.log(result);
 
 				if (
-					result.message.includes("Is it a valid image?") &&
+					(result.message.includes("Is it a valid image?") ||
+						result.message.includes("The requested URL returned error:")) &&
 					!/^https:\/\/([a-zA-Z0-9-]+\.)?discord\.com/.test(regex)
 				) {
 					const meta = await fetch(
@@ -91,6 +93,10 @@ export async function processUrlIntegrations(
 
 					if (meta.ok) {
 						const json = (await meta.json()) as Record<string, unknown>;
+						if (regex.startsWith("https://klipy.com/gifs/")) {
+							urlAttachments.push({ link: json?.["og:image"] as string });
+							continue;
+						}
 
 						containerAttachments.push(
 							new Container()
@@ -130,12 +136,13 @@ ${json?.description ?? json?.["og:description"] ?? json?.["twitter:description"]
 	// Only edit if we have URL-based attachments to add
 	if (urlAttachments.length > 0 || containerAttachments.length > 0) {
 		const hasFileAttachmentsFromMessage = fileAttachments.length > 0;
-		const isOnlyTenorUrl =
-			stringContents.startsWith("https://tenor.com") &&
+		const isOnlyGifUrl =
+			(stringContents.startsWith("https://tenor.com") ||
+			stringContents.startsWith("https://klipy.com/gifs/")) &&
 			stringContents.split(/\s+/).length === 1;
 		const hasTextContent =
 			stringContents.length > 0 &&
-			!(isOnlyTenorUrl && !hasFileAttachmentsFromMessage);
+			!(isOnlyGifUrl && !hasFileAttachmentsFromMessage);
 
 		// Combine file attachments and URL attachments
 		const allAttachments: Array<
@@ -150,7 +157,11 @@ ${json?.description ?? json?.["og:description"] ?? json?.["twitter:description"]
 			body: {
 				components: [
 					...reply,
-					...(hasTextContent ? mainContents : mainContents[0]?.data.type === ComponentType.Container ? [mainContents[0]] : []),
+					...(hasTextContent
+						? mainContents
+						: mainContents[0]?.data.type === ComponentType.Container
+							? [mainContents[0]]
+							: []),
 					...(urlAttachments.length > 0
 						? [
 								new MediaGallery().addItems(

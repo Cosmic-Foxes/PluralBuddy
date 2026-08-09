@@ -1,26 +1,27 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { ActionRow, Button, Container, Section, TextDisplay, type DefaultLocale } from "seyfert";
+import { ActionRow, Button, Container, type DefaultLocale, Section, TextDisplay } from "seyfert";
+import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { client } from "..";
+import type { TranslationString } from "../lang";
 import { operationCollection } from "../mongodb";
 import { operationStringGeneration, type POperation } from "../types/operation";
 import type { PSystem } from "../types/system";
-import type { TranslationString } from "../lang";
-import { InteractionIdentifier } from "./interaction-ids";
-import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { getUserById, writeUserById } from "../types/user";
+import convert from "./delay-converter";
 import { emojis } from "./emojis";
+import { InteractionIdentifier } from "./interaction-ids";
 import {
 	friendlyProtectionSystem,
 	listFromMaskSystems,
 } from "./privacy-bitmask";
-import convert from "./delay-converter";
 
 export async function createSystemOperation(
 	system: PSystem,
 	operation: Partial<PSystem>,
 	translations: DefaultLocale,
 	environment: "discord" | "api-exchange" | "api-web",
+	flagDescription?: { flippedProxyTags?: boolean, flippedIncludePronouns?: boolean }
 ) {
 	let oldSystem: Partial<PSystem> = {};
 
@@ -138,6 +139,13 @@ export async function createSystemOperation(
 					).replace("%value%", "?");
 				}
 
+				if (flagDescription?.flippedProxyTags === true) {
+					return translations.OPERATION_SYSTEM_TOGGLE_PROXY_TAGS;
+				}
+				if (flagDescription?.flippedIncludePronouns === true) {
+					return translations.OPERATION_SYSTEM_TOGGLE_PRONOUNS;
+				}
+
 				return translations.OPERATION_FALLBACK.replace("%property%", c).replace(
 					"%value%",
 					operation[c]?.toString() ?? "?",
@@ -157,13 +165,11 @@ export async function createSystemOperation(
 				...operation,
 			},
 		});
-
 	if (!system.systemOperationDM)
 		try {
 			const dmChannel = await client.users
 				.createDM(system.associatedUserId, true)
 				.catch(() => null);
-
 			if (dmChannel)
 				client.messages
 					.write(dmChannel.id, {
@@ -229,7 +235,9 @@ export async function createSystemOperation(
 						flags: MessageFlags.IsComponentsV2,
 					})
 					.catch(() => null);
-		} catch (_) {}
+		} catch (e) {
+			console.log(e)
+		}
 
 	return {
 		...system,

@@ -24,7 +24,7 @@ import {
 	type RESTPostAPIWebhookWithTokenQuery,
 } from "seyfert/lib/types";
 import { getUserById } from "../types/user";
-import { alterCollection, errorCollection } from "../mongodb";
+import { alterCollection, errorCollection, frontsCollection } from "../mongodb";
 import { AlertView } from "@/views/alert";
 import {
 	performTagProxy,
@@ -45,13 +45,14 @@ import { emojis } from "@/lib/emojis";
 import { createProxyError } from "@/lib/proxying/error";
 import { helpPages } from "@/commands/help";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { buildNumber, client } from "..";
+import { build, client } from "..";
 import type { ResolverProps, SendResolverProps } from "seyfert/lib/common";
 import { blockedChannel, blockedRole } from "@/lib/blocked";
 import { latencyDataPoints } from "@/analytics";
 import { handleDMReply } from "@/lib/proxying/dm-replying";
 import { getLanguageByUserId } from "@/lib/lang";
 import { endTimer, startTimer } from "@/lib/timings";
+import { getWiderAutoProxy } from "@/lib/autoproxy-util";
 
 export const indexingMap: Record<string, NodeJS.Timeout> = {};
 export const indexingMessageMap: Record<string, Message> = {};
@@ -126,7 +127,7 @@ export default createEvent({
 			return await message.reply({
 				components: [
 					new TextDisplay().setContent(
-						locale.AWAKE.replace("{{ buildNumber }}", String(buildNumber)).replace("{{ branch }}", process.env.BRANCH ?? "unknown")
+						locale.AWAKE.replace("{{ buildNumber }}", String(build)).replace("{{ branch }}", process.env.BRANCH ?? "unknown")
 					),
 					new ActionRow().setComponents(
 						[
@@ -195,8 +196,6 @@ export default createEvent({
 
 		if (await notValidPermissions(message)) return;
 
-		startTimer(`proxy: data-gathering (${message.id})`)
-
 		const channel = await message.channel();
 		const parent =
 			"parentId" in channel && channel.isThread() ? channel.parentId : null;
@@ -216,19 +215,29 @@ export default createEvent({
 		if (user.system === undefined) return;
 		if (user.blocked) { client.logger.info(`${message.id} ended because user was blocked`); return };
 		if (user.system.disabled) return;
+		if ((user.system.disabledGuilds ?? []).includes(message.guildId ?? ""))
+			return;
+		if (!message.guildId)
+			return;
 
-		endTimer(`proxy: data-gathering (${message.id})`)
+		const apMode = getWiderAutoProxy(user.system, message.guildId, message.channelId)
 
-		if (
-			user.system.systemAutoproxy.some(
-				(ap) => ap.autoproxyMode === "alter" && ap.serverId === message.guildId,
-			)
+		if (apMode.autoproxyMode !== "latch" && apMode.autoproxyMode !== "off"
 		) {
 			startTimer(`proxy: pre-system autoproxy (${message.id})`)
 
-			const alter = user.system.systemAutoproxy.find(
-				(ap) => ap.autoproxyMode === "alter" && ap.serverId === message.guildId,
-			)?.autoproxyAlter;
+			let alter = apMode.autoproxyAlter;
+
+			if (apMode.autoproxyMode !== "alter" && !alter) {
+				// Check for AI/AP
+
+				const fronts = await frontsCollection.findOne({ aiapId: apMode?.autoproxyMode, systemId: message.author.id })
+
+				if (fronts?.alterId) {
+					alter = fronts.alterId
+				}
+
+			}
 
 			if (message.content.startsWith("\\")) {
 				return;
@@ -409,7 +418,7 @@ export default createEvent({
 								((user.system?.displayTagMap ?? {})[message.guildId] ??
 									user.system.systemDisplayTag) === null)
 						) {
-			endTimer(`proxy: bruteforce proxy (${message.id})`)
+							endTimer(`proxy: bruteforce proxy (${message.id})`)
 							createProxyError(user, message, {
 								title: locale.DISPLAY_TAG_ENFORCE,
 								description: locale.DISPLAY_TAG_ENFORCE_DESC,
@@ -430,12 +439,12 @@ export default createEvent({
 
 
 						if (!(await blockedRole(guild, locale, message))) {
-			endTimer(`proxy: bruteforce proxy (${message.id})`)
+							endTimer(`proxy: bruteforce proxy (${message.id})`)
 							removeFromMap();
 							return;
 						}
 						if (!(await blockedChannel(guild, locale, message))) {
-			endTimer(`proxy: bruteforce proxy (${message.id})`)
+							endTimer(`proxy: bruteforce proxy (${message.id})`)
 							removeFromMap();
 							return;
 						}
@@ -460,26 +469,22 @@ export default createEvent({
 		}
 
 		if (
-			user.system.systemAutoproxy.some(
-				(ap) => ap.autoproxyMode === "latch" && ap.serverId === message.guildId,
-			)
+			apMode.autoproxyMode === "latch"
 		) {
 			startTimer(`proxy: latch proxy (${message.id})`)
 
-			if (message.content.startsWith("\\")) {
+			if (message.content.startsWith("\\\\")) {
 				setLastLatchAlter(guild.guildId, user.system);
 				return;
 			}
-
-			const currentAutoProxyPolicy = user.system.systemAutoproxy.find(
-				(ap) => ap.autoproxyMode === "latch" && ap.serverId === message.guildId,
-			);
+			if (message.content.startsWith("\\"))
+				return;
 
 			const HOUR = 3_600_000;
 
 			if (user.system.latchExpiration)
 				if (
-					(currentAutoProxyPolicy?.lastLatchTimestamp?.getTime() ??
+					(apMode?.lastLatchTimestamp?.getTime() ??
 						Date.now()) +
 					user.system.latchExpiration <
 					Date.now()
@@ -488,7 +493,7 @@ export default createEvent({
 					return;
 				}
 
-			const alter = currentAutoProxyPolicy?.autoproxyAlter;
+			const alter = apMode?.autoproxyAlter;
 
 			if (alter) {
 				const fetchedAlter = await alterCollection.findOne({
@@ -503,7 +508,7 @@ export default createEvent({
 					if (!(await blockedRole(guild, locale, message, true))) return;
 					if (!(await blockedChannel(guild, locale, message, true))) return;
 
-			endTimer(`proxy: latch proxy (${message.id})`)
+					endTimer(`proxy: latch proxy (${message.id})`)
 					performAlterAutoProxy(
 						message,
 						similarWebhooks,

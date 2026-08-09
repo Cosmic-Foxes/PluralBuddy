@@ -34,6 +34,7 @@ import type { PSystem } from "@/types/system";
 import { getUserById } from "@/types/user";
 import type { PGuild } from "plurography";
 import { sanitizeEmojis } from "@/lib/sanitize-emojis";
+import paginateComponents from "@/lib/views/paginate";
 
 export class AlterView extends TranslatedView {
 	private async getTags(alter: PAlter) {
@@ -97,7 +98,7 @@ ${this.translations.ID_SMALL_PROFILE}\`${alter.alterId.toString()}\``);
 							new Thumbnail()
 								.setMedia(
 									alter.avatarUrl === ""
-										? "https://pb.giftedly.dev/image/solar-centered.png"
+										? "https://pb.giftedly.dev/image/pfp.png"
 										: alter.avatarUrl,
 								)
 								.setDescription(
@@ -114,7 +115,7 @@ ${this.translations.ID_SMALL_PROFILE}\`${alter.alterId.toString()}\``);
 							new MediaGalleryItem()
 								.setMedia(
 									alter.banner === ""
-										? "https://pb.giftedly.dev/image/solar-centered.png"
+										? "https://pb.giftedly.dev/image/pfp.png"
 										: alter.banner,
 								)
 								.setDescription(

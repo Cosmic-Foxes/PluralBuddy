@@ -132,22 +132,21 @@ export async function createPartialAlterOperation(
 												listItems.map((c) => `- ${c}`).join("\n"),
 											),
 										),
-									new TextDisplay().setContent(`-# ${
-										environment === "discord"
+									new TextDisplay().setContent(`-# ${environment === "discord"
 											? translations.OPERATION_DISCORD.replace(
-													"%clock%",
-													emojis.clock,
-												).replace("%discord%", emojis.discord)
+												"%clock%",
+												emojis.clock,
+											).replace("%discord%", emojis.discord)
 											: environment === "api-exchange"
 												? translations.OPERATION_WEB.replace(
-														"%clock%",
-														emojis.clock,
-													).replace("%web%", emojis.web)
+													"%clock%",
+													emojis.clock,
+												).replace("%web%", emojis.web)
 												: translations.OPERATION_WEB_NEXT.replace(
-														"%clock%",
-														emojis.clock,
-													).replace("%web%", emojis.web)
-									}
+													"%clock%",
+													emojis.clock,
+												).replace("%web%", emojis.web)
+										}
 -# ${translations.OPERATION_ID.replace("%id%", `\`${operationDb.id}\``)}`),
 								)
 								.setColor("#F9DC00"),
@@ -167,7 +166,7 @@ export async function createPartialAlterOperation(
 						flags: MessageFlags.IsComponentsV2,
 					})
 					.catch(() => null);
-		} catch (_) {}
+		} catch (_) { }
 
 	return {
 		...PartialAlter,

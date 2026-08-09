@@ -47,8 +47,9 @@ const options = {
 					apiGuild.ownerId === member.id ||
 					managerRolesIntersect ||
 					// this is NOT used in production. this is NOT a backdoor.
-					(process.env.SRV_CFG_TEST_USER_ID &&
-						process.env.SRV_CFG_TEST_USER_ID === member.id)
+					(process.env.BRANCH !== "production" &&
+						process.env.SRV_CFG_TEST_USER_ID &&
+							process.env.SRV_CFG_TEST_USER_ID === member.id)
 				)
 			) {
 				return await ctx.respond([

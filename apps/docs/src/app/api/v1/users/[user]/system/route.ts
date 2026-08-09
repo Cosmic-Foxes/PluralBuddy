@@ -1,37 +1,15 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { authenticateOAuth } from "@/lib/oauth";
-import type { NextRequest } from "next/server";
-import type { PAlter, PUser } from "plurography";
+import { createOAuthFunction } from "@/server/wrapper";
 
-export async function GET(
-	request: NextRequest,
-	{ params }: { params: Promise<{ user: string }> },
-) {
-	const { user } = await params;
+export const GET = createOAuthFunction<{ user: string }>(
+	{
+		scopes: ["system:read", "system:admin"],
+		mustMatchOAuth: true,
+	},
+	async (ctx) => {
+		const system = await ctx.fetchUser();
 
-	const oauthResponse = await authenticateOAuth(request, [
-		"system:read",
-		"system:admin",
-	]);
-
-
-	if ("response" in oauthResponse) return oauthResponse.response;
-
-	const parsedUserId = user === "@me" ? oauthResponse.accountId : user;
-	const db = oauthResponse.mongo.db(`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`);
-	const userCollection = db.collection<PUser>("users");
-
-    if (parsedUserId !== oauthResponse.accountId) {
-		return Response.json({
-            errors: [ 
-                { type: "not-matching-oauth", friendly: "This endpoint requires the user currently logged in via OAuth." } 
-            ], 
-		}, { status: 400 });
-    }
-
-    const systemData = await userCollection.findOne({ userId: parsedUserId })
-
-	await oauthResponse.mongo.close();
-	return Response.json({ data: systemData?.system ?? null });
-}
+		return ctx.respond({ data: system?.system ?? null });
+	},
+);

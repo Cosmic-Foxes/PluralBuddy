@@ -42,7 +42,7 @@ export default class ConfigureSystem extends ComponentCommand {
         return await ctx.editResponse({
             components: [
                 ...new SystemSettingsView((await ctx.userTranslations())).topView("general", user.system.associatedUserId),
-                ...new SystemSettingsView((await ctx.userTranslations())).generalSettings(user.system, ctx.guildId)
+                ...(await new SystemSettingsView((await ctx.userTranslations())).generalSettings(user.system, ctx.guildId, 1))
 
             ],
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral

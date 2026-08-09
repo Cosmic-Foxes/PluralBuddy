@@ -1,4 +1,5 @@
 import { createOpenAPI } from "fumadocs-openapi/server";
+import path from "node:path";
 
 const baseUrl =
 	process.env.NEXT_PUBLIC_VERCEL_ENV !== undefined
@@ -6,16 +7,12 @@ const baseUrl =
 		: process.env.NODE_ENV === "development"
 			? "http://localhost:3000"
 			: undefined;
-
-const schemaPath = baseUrl
-	? `${baseUrl}/openapi.yml`
-	: process.cwd().includes("/apps/docs")
-		? "./public/openapi.yml"
-		: "./apps/docs/public/openapi.yml";
+console.log();
+const schemaPath = process.cwd().includes("/apps/docs")
+	? path.join(process.cwd(), `./public/openapi.yml`)
+	: path.join(process.cwd(), `./apps/docs/public/openapi.yml`);
 
 export const openapi = createOpenAPI({
 	// the OpenAPI schema, you can also give it an external URL.
-	input: async () => ({
-		"./public/openapi.yml": schemaPath,
-	}),
+	input: ["https://pb.giftedly.dev/openapi.yml"],
 });

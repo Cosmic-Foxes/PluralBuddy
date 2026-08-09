@@ -109,7 +109,7 @@ export async function deleteAttachment(
 								matchesPrefix: [prefix],
 							},
 						},
-						...(existingResponse as any).lifecycle.rule,
+						...(existingResponse as any)?.lifecycle?.rule ?? [],
 					],
 				},
 			}),

@@ -63,13 +63,13 @@ SimplyPlural has been discontinued.`,
   IMPORT_SIMPLYPLURAL_DESCRIPTION: "Von SimplyPlural importieren",
   IMPORT_SOURCE_DESCRIPTION: "Quelle importieren",
   IMPORT_TOKEN_DESCRIPTION: "SimplyPlural Token",
-  CREATE_NEW_SYS_DESCRIPTION: "Neues System erstellen",
-  PLURALBUDDY_IMPORT_ERROR_TOO_LARGE: "2j – Importing files cannot be larger than 2MB. Please contact support if you are genuinely trying to import a system larger than 1MB.",
+  CREATE_NEW_SYS_DESCRIPTION: "Create New System",
+  PLURALBUDDY_IMPORT_ERROR_TOO_LARGE: "2j – Importing files cannot be larger than 2MB. Please contact support if you are genuinely trying to import a system larger than 2MB.",
   ERROR_ATTACHMENT_TOO_LARGE: "2j – Attachments for banners or profile pictures cannot be larger than 2MB.",
-  CREATE_NEW_ALTER_DESCRIPTION: "Neues System erstellen",
-  CREATE_NEW_TAG_DESCRIPTION: "Neues Tag erstellen",
-  PLURALBUDDY_IMPORT_ERROR_INVALID_JSON: "2k – Die importierte Datei ist kein gültiges JSON.",
-  ERROR_INTERACTION_TOO_OLD: "2l – Diese Interaktion wird nicht mehr protokolliert. (Haben Sie zu lange gewartet?)",
+  CREATE_NEW_ALTER_DESCRIPTION: "Create New Alter",
+  CREATE_NEW_TAG_DESCRIPTION: "Create New Tag",
+  PLURALBUDDY_IMPORT_ERROR_INVALID_JSON: "2k – The file you imported is not valid JSON.",
+  ERROR_INTERACTION_TOO_OLD: "2l – This interaction has no longer been kept track of. (have you waited too long?)",
   ERROR_SYSTEM_DOESNT_EXIST: "2m – This operation cannot be concluded because there is no system to operate on.",
   ERROR_ALTER_DOESNT_EXIST: "2n – This operation cannot be concluded because either, there is no alter to operate on, or there is no system associated to the user who created the request.",
   ERROR_ALTER_DOESNT_EXIST_SUGGESTION: "2n – That alter could not be found. Did you mean \`%suggestion%\`?",
@@ -273,9 +273,10 @@ PluralBuddy uses a **username/display name** system.
 > This bot was made as a faster, more controllable alternative to other plural bots.
 > To get started with using PluralBuddy, use %command%.
 
--# **CREDITS**
-**Programmed w/ :heart_hands: by @giftedly**
--# Developed all major parts of PluralBuddy
+> **Credits:**
+> %linein% Programmed w/ :heart_hands: by @giftedly 
+> **Translations:**
+> %linein% 🇩🇪 German translations by @mira.mizuki (thank you, fren)
 
 **OSS Contributions** - [PluralBuddy is MIT licensed](https://github.com/giftedl/PluralBuddy/blob/main/LICENSE)
 -# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco)
@@ -646,36 +647,5 @@ PluralBuddy Express is a way that alters can gain the ability to proxy in DMs, o
  - PluralBuddy gathers the token, encrypts it, and hosts a singular-command bot associated to your alter
  - $0, forever
 
-Hit the button to the right to open this alter in the dashboard.`,
-  STATUS_AP: `### Auto-Proxy Status
-Your system is currently auto proxying in **{{ mode }}**.`,
-  INTEGRATION_AP: `### Auto-Proxy Status
-Your system is using the front state of **{{ mode }}**.`,
-  NO_STATUS_AP: `You are not currently auto proxying on that scope.`,
-  NO_ALTER_AP: `Your auto proxy is not currently attached to an alter.`,
-  DISABLED_SERVER: `This server is disabled from proxying.`,
-  AP_AS: "-# **AUTO-PROXYING AS:**",
-  AP_INTEGRATION_AS: "-# **{{ provider }} FRONTING AS:**",
-  PROVIDER_NOT_FOUND: `That auto-proxy provider was not found, or you didn't authorize with the [\`system:ai-ap\`](https://pb.giftedly.dev/docs/pluralbuddy/ai-ap) scope. Contact the developer of this integration if you believe this is incorrect.
-	
--# Integration: \`{{ id }}\``,
-  AP_INVALID_SYNTAX: `Invalid autoproxy mode or provider \`{{ mode }}\`.
-
-**Auto-proxy Usage:**
-\`pb;autoproxy [off|latch|alter|status|{{ aiap }}]\``,
-  AP_ALTER_INVALID_SYNTAX: `You must add an alter for the \`alter\` proxy mode.
-
-**Auto-proxy Usage:**
-\`pb;autoproxy [off|latch|alter|status|{{ aiap }}]\``,
-  AP_SYNTAX: `**Auto-proxy Usage:**
-\`pb;autoproxy [off|latch|alter|status|{{ aiap }}]\``,
-  SUCCESS_DISABLE_GUILD: "Successfully disabled proxying in **{{ guild }}**.",
-  SUCCESS_ENABLE_GUILD: "Successfully enabled proxying in **{{ guild }}**.",
-  PROXYING_ALREADY_ENABLED: "Proxying was already enabled in this server.",
-  PROXYING_ALREADY_DISABLED: "Proxying was already disabled in this server.",
-  TOGGLED_INCLUDING_PROXY_TAGS_E: "Successfully toggled including proxy tags. (enabled)",
-  TOGGLED_INCLUDING_PROXY_TAGS_D: "Successfully toggled including proxy tags. (disabled)",
-  TOGGLED_INCLUDING_PRONOUNS_E: "Successfully toggled including pronouns. (enabled)",
-  TOGGLED_INCLUDING_PRONOUNS_D: "Successfully toggled including pronouns. (disabled)",
-  NOT_FRIDAY: "Flatworm Friday is only on Friday in New York, come back next Friday to Wall Street or use `--time-machine`."
+Hit the button to the right to open this alter in the dashboard.`
 };

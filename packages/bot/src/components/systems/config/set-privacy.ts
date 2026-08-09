@@ -1,6 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { ComponentCommand, Label, Modal, StringSelectMenu, TextInput, type ComponentContext } from "seyfert";
+import { ComponentCommand, Label, Modal, StringSelectMenu, TextDisplay, TextInput, type ComponentContext } from "seyfert";
 import { InteractionIdentifier } from "../../../lib/interaction-ids";
 import { MessageFlags, TextInputStyle } from "seyfert/lib/types";
 import { privacySelection } from "../../../lib/selection-options";
@@ -30,6 +30,7 @@ export default class SetName extends ComponentCommand {
             .setTitle((await ctx.userTranslations()).EDIT_SYSTEM_FORM_TITLE)
             .addComponents(
                 [
+                    new TextDisplay().setContent((await ctx.userTranslations()).SYSTEM_PRIVACY_INFO),
                     new Label()
                         .setLabel((await ctx.userTranslations()).SYSTEM_PRIVACY_FORM_LABEL)
                         .setDescription((await ctx.userTranslations()).CREATING_NEW_SYSTEM_PRIVACY_FORM_DESC)

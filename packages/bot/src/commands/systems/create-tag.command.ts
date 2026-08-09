@@ -73,7 +73,7 @@ export default class CreateTagCommand extends SubCommand {
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
-		if (user.system.tagIds.length >= 500) {
+		if (user.system.tagIds.length >= 1000) {
 			return await ctx.editResponse({
 				components: new AlertView((await ctx.userTranslations())).errorView(
 					"TOO_MANY_TAGS",

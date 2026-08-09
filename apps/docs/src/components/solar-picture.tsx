@@ -13,22 +13,10 @@ export function SolarPicture() {
 		<HoverCard>
 			<HoverCardTrigger asChild>
 				<Avatar>
-					<AvatarImage src="/image/solar-centered.png" />
-					<AvatarFallback>Solar</AvatarFallback>
+					<AvatarImage src="/image/pfp.png" />
+					<AvatarFallback>pfp</AvatarFallback>
 				</Avatar>
 			</HoverCardTrigger>
-			<HoverCardContent className="text-center space-y-2 bg-card!">
-				<Image
-					src="/image/solar.png"
-					width={256}
-					height={256}
-					alt="Solar"
-					className="rounded-lg"
-				/>
-				<Link href="https://toyhou.se/21588437.solar#111133901" className="text-accent-foreground underline">
-					Solar drawing by @raincloudzy
-				</Link>
-			</HoverCardContent>
 		</HoverCard>
 	);
 }

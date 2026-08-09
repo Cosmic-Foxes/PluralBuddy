@@ -1,0 +1,108 @@
+'use client';
+
+import { SearchClient, useDocsSearch } from 'fumadocs-core/search/client';
+import { fetchClient } from 'fumadocs-core/search/client/fetch';
+import { type ReactNode, use, useMemo, useState } from 'react';
+import { useOnChange } from 'fumadocs-core/utils/use-on-change';
+import {
+  SearchDialog,
+  SearchDialogClose,
+  SearchDialogContent,
+  SearchDialogFooter,
+  SearchDialogHeader,
+  SearchDialogIcon,
+  SearchDialogInput,
+  SearchDialogList,
+  SearchDialogOverlay,
+  type SharedProps,
+  TagsList,
+  TagsListItem,
+} from '@fumadocs/base-ui/components/dialog/search';
+import type { SortedResult } from 'fumadocs-core/search';
+import type { SearchLink, TagItem } from '@fumadocs/base-ui/contexts/search';
+
+export interface DefaultSearchDialogProps extends SharedProps {
+  /** @deprecated re-create the dialog instead for other clients, see https://fumadocs.dev/docs/search/orama */
+  type?: 'static';
+
+  links?: SearchLink[];
+
+  defaultTag?: string;
+  tags?: TagItem[];
+
+  /**
+   * Search API URL
+   */
+  api?: string;
+
+  /**
+   * The debounced delay for performing a search.
+   */
+  delayMs?: number;
+
+  footer?: ReactNode;
+
+  /**
+   * Allow to clear tag filters
+   *
+   * @defaultValue false
+   */
+  allowClear?: boolean;
+}
+
+
+export default function DefaultSearchDialog({
+  type,
+  defaultTag,
+  tags = [],
+  api,
+  delayMs,
+  allowClear = false,
+  links = [],
+  footer,
+  ...props
+}: DefaultSearchDialogProps) {
+  const [tag, setTag] = useState(defaultTag);
+  let client: SearchClient;
+
+  const { search, setSearch, query } = useDocsSearch({ client, delayMs });
+  const defaultItems = useMemo<SortedResult[] | null>(() => {
+    if (links.length === 0) return null;
+    return links.map(([name, link]) => ({
+      type: 'page',
+      id: name,
+      content: name,
+      url: link,
+    }));
+  }, [links]);
+
+  useOnChange(defaultTag, (v) => {
+    setTag(v);
+  });
+
+  return (
+    <SearchDialog search={search} onSearchChange={setSearch} isLoading={query.isLoading} {...props}>
+      <SearchDialogOverlay />
+      <SearchDialogContent>
+        <SearchDialogHeader>
+          <SearchDialogIcon />
+          <SearchDialogInput />
+          <SearchDialogClose />
+        </SearchDialogHeader>
+        <SearchDialogList items={query.data !== 'empty' ? query.data : defaultItems} />
+      </SearchDialogContent>
+      <SearchDialogFooter>
+        {tags.length > 0 && (
+          <TagsList tag={tag} onTagChange={setTag} allowClear={allowClear}>
+            {tags.map((tag) => (
+              <TagsListItem key={tag.value} value={tag.value}>
+                {tag.name}
+              </TagsListItem>
+            ))}
+          </TagsList>
+        )}
+        {footer}
+      </SearchDialogFooter>
+    </SearchDialog>
+  );
+}

@@ -1,9 +1,7 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import z from "zod";
-import { PAutoProxyObj, type PAutoProxy } from "./auto-proxy";
-
-type Protected = { protected: true };
+import { PAutoProxyObj } from "./auto-proxy";
 
 const publicDescription = `This is a bitwise operation-based number which determines the protection flags that are public. By default, everything on PluralBuddy is private.
 
@@ -17,6 +15,13 @@ const publicDescription = `This is a bitwise operation-based number which determ
 | PRONOUNS        | \`32\` \`(1 << 5)\`     | Allows external users to see system pronouns. |
 | ALTERS          | \`64\` \`(1 << 6)\`     | Allows external users to see alters inside of the system. |
 | TAGS            | \`128\` \`(1 << 7)\`    | Allows external users to see tags inside of the system. |`;
+
+const flagDescription = `This is a bitwise operation-based number which determines certain system settings.
+
+| Public Flag     | Value                   | Description |
+|-----------------|-------------------------|-------------|
+| KEEP_PROXY_TAGS | \`1\` \`(1 << 0)\`      | All messages sent in the system will maintain their proxy tags. |
+| KEEP_PRONOUNS   | \`2\` \`(1 << 1)\`      | Pronouns will be shown in the webhook name of the proxying. |`;
 
 const tagMapDescription = `This is a map that shows the association between a Discord server ID and a custom display tag.
 
@@ -35,6 +40,11 @@ export enum SystemProtectionFlags {
 	PRONOUNS = 1 << 5,
 	ALTERS = 1 << 6,
 	TAGS = 1 << 7,
+}
+
+export enum SystemFlags {
+	KEEP_PROXY_TAGS = 1 << 0,
+	INCLUDE_PRONOUNS = 1 << 1
 }
 
 export const PSystemObject = z.object({
@@ -68,9 +78,12 @@ export const PSystemObject = z.object({
 	latchExpiration: z.number().min(0).max(36000000).optional(),
 
 	public: z.number().nonnegative().meta({ description: publicDescription }),
+	flags: z.number().nonnegative().meta({ description: flagDescription }).default(0),
+	disabledGuilds: z.string().array().optional().default([]),
+
 	/** WIP */
 	subAccounts: z.array(z.string()),
 	disabled: z.boolean().default(false),
-}).meta({ id: "PSystem" });
+}).meta({ id: "PSystem" })
 
 export type PSystem = z.infer<typeof PSystemObject>;
