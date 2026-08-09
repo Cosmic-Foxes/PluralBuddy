@@ -19,9 +19,6 @@ export {
 export { Tupper, TupperBoxGroup, TupperBoxSystem };
 export { SimplyPluralSystem, SimplyPluralMember, SimplyPluralGroup }
 
-export * from "./converters"
-export * from "./converters/pluralkit"
-export * from "./converters/tupperbox"
 export * from "./pluralbuddy/alter";
 export * from "./pluralbuddy/auto-proxy";
 export * from "./pluralbuddy/express-application";
