@@ -1,5 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import type { PGuild } from "plurography";
 import {
 	ActionRow,
 	Button,
@@ -13,12 +14,9 @@ import {
 	TextDisplay,
 	Thumbnail,
 } from "seyfert";
-import { AlterProtectionFlags, type PAlter } from "../types/alter";
-import { TranslatedView } from "./translated-view";
 import type { ColorResolvable } from "seyfert/lib/common";
-import { InteractionIdentifier } from "../lib/interaction-ids";
 import { ButtonStyle, Spacing } from "seyfert/lib/types";
-import { emojis, getEmojiFromTagColor } from "../lib/emojis";
+import { mentionCommand } from "@/lib/mention-command";
 import {
 	friendlyProtectionAlters,
 	friendlyProtectionSystem,
@@ -26,15 +24,17 @@ import {
 	listFromMaskAlters,
 	listFromMaskSystems,
 } from "@/lib/privacy-bitmask";
-import { AlertView } from "./alert";
-import { mentionCommand } from "@/lib/mention-command";
-import { tagCollection } from "@/mongodb";
-import type { PTag } from "@/types/tag";
-import type { PSystem } from "@/types/system";
-import { getUserById } from "@/types/user";
-import type { PGuild } from "plurography";
 import { sanitizeEmojis } from "@/lib/sanitize-emojis";
 import paginateComponents from "@/lib/views/paginate";
+import { tagCollection } from "@/mongodb";
+import type { PSystem } from "@/types/system";
+import type { PTag } from "@/types/tag";
+import { getUserById } from "@/types/user";
+import { emojis, getEmojiFromTagColor } from "../lib/emojis";
+import { InteractionIdentifier } from "../lib/interaction-ids";
+import { AlterProtectionFlags, type PAlter } from "../types/alter";
+import { AlertView } from "./alert";
+import { TranslatedView } from "./translated-view";
 
 export class AlterView extends TranslatedView {
 	private async getTags(alter: PAlter) {
@@ -42,6 +42,7 @@ export class AlterView extends TranslatedView {
 			data: await tagCollection
 				.find({ associatedAlters: alter.alterId.toString().toString() })
 				.limit(5)
+				.sort({ tagFriendlyName: 1 })
 				.toArray(),
 			count: alter.tagIds.length,
 		};
