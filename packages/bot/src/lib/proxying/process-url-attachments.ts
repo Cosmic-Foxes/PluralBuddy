@@ -13,9 +13,9 @@
 } from "seyfert";
 import type { ColorResolvable } from "seyfert/lib/common";
 import type { Message, WebhookMessage } from "seyfert/lib/structures";
-import { getGifLink } from "./tenor";
-import { ComponentType, type APITextDisplayComponent } from "seyfert/lib/types";
+import { type APITextDisplayComponent, ComponentType } from "seyfert/lib/types";
 import type { PWebhook } from "@/events/on-message-create";
+import { getGifLink } from "./tenor";
 
 export async function processUrlIntegrations(
 	webhook: PWebhook,
@@ -74,7 +74,7 @@ export async function processUrlIntegrations(
 				`https://wsrv.nl/?url=${encodeURIComponent(regex)}`,
 			);
 
-			if (url.ok) {
+			if (url.ok || regex.startsWith("https://i.imgur.com")) {
 				urlAttachments.push({ link: regex });
 			} else {
 				// biome-ignore lint/suspicious/noExplicitAny: any required.
