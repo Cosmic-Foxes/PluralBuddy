@@ -1,36 +1,36 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import { assetStringGeneration, type PAlter } from "plurography";
 import {
 	ActionRow,
 	Button,
 	CacheFrom,
 	CommandContext,
 	Container,
+	type DefaultLocale,
 	extendContext,
 	Interaction,
 	Message,
 	TextDisplay,
 	WebhookMessage,
-	type DefaultLocale,
 } from "seyfert";
 import type {
 	InteractionCreateBodyRequest,
 	InteractionMessageUpdateBodyRequest,
 } from "seyfert/lib/common";
-import { emojis } from "./lib/emojis";
 import {
+	type APIInteraction,
 	ButtonStyle,
 	MessageFlags,
-	type APIInteraction,
 } from "seyfert/lib/types";
-import { getUserById } from "./types/user";
-import { defaultPrefixes, getGuildFromId, PGuildObject } from "./types/guild";
-import { LoadingView } from "./views/loading";
-import { assetStringGeneration, type PAlter } from "plurography";
 import { client, policyModal } from ".";
-import { getLanguageByUserId, langMemoryCache } from "./lib/lang";
+import { emojis } from "./lib/emojis";
 import { InteractionIdentifier } from "./lib/interaction-ids";
+import { getLanguageByUserId, langMemoryCache } from "./lib/lang";
 import { userCollection } from "./mongodb";
+import { defaultPrefixes, getGuildFromId, PGuildObject } from "./types/guild";
+import { getUserById } from "./types/user";
+import { LoadingView } from "./views/loading";
 
 export const extendedContext = extendContext((interaction) => {
 	let contextAlter: PAlter | null = null;

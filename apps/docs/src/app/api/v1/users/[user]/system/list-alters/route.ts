@@ -1,5 +1,5 @@
-import { createOAuthFunction } from "@/server/wrapper";
 import type { ZodType } from "zod";
+import { createOAuthFunction } from "@/server/wrapper";
 
 export const GET = createOAuthFunction<
 	{ user: string },

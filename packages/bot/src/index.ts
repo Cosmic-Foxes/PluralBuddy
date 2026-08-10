@@ -3,8 +3,12 @@
  *  - is licensed under MIT License.
  */
 
+import { SeqTransport } from "@datalust/winston-seq";
+import { RedisAdapter } from "@slipher/redis-adapter";
+import { PostHog } from "posthog-node";
 import {
 	ActionRow,
+	type AnyContext,
 	Button,
 	CacheFrom,
 	CheckboxGroup,
@@ -15,10 +19,10 @@ import {
 	MemoryAdapter,
 	Modal,
 	TextDisplay,
-	type AnyContext,
 } from "seyfert";
-import { mongoClient, setupDatabases, setupMongoDB } from "./mongodb";
-import { defaultPrefixes, getGuildFromId } from "./types/guild";
+import type { ContainerComponent } from "seyfert/lib/components/Container";
+import type { CollectorInteraction } from "seyfert/lib/components/handler";
+import type { TextDisplayComponent } from "seyfert/lib/components/TextDisplay";
 import {
 	ActivityType,
 	ButtonStyle,
@@ -26,34 +30,29 @@ import {
 	MessageFlags,
 	PresenceUpdateStatus,
 } from "seyfert/lib/types";
-import { middlewares } from "./middleware";
-import PluralBuddyHandleCommand from "./handle-command";
-import { PostHog } from "posthog-node";
+import winston from "winston";
+import { startStatisticalTimer } from "./analytics";
+import api from "./api";
+import { Pi18nCache } from "./cache/i18n";
+import { PGuildCache } from "./cache/plural-guild";
+import { SimilarWebhookResource } from "./cache/similar-webhooks";
 import { StatisticResource } from "./cache/statistics";
-import { RedisAdapter } from "@slipher/redis-adapter";
+import { ProxyResource } from "./cache/system-proxy-tags";
 import {
 	PluralBuddyComponentErrorCommand,
 	PluralBuddyErrorCommand,
 	PluralBuddyModalErrorCommand,
 } from "./error-command";
-import { extendedContext } from "./extended-context";
-import { ProxyResource } from "./cache/system-proxy-tags";
-import { PGuildCache } from "./cache/plural-guild";
-import { SimilarWebhookResource } from "./cache/similar-webhooks";
-import api from "./api";
 import { indexingMessageMap } from "./events/on-message-create";
-import type { ContainerComponent } from "seyfert/lib/components/Container";
-import type { TextDisplayComponent } from "seyfert/lib/components/TextDisplay";
-import { startStatisticalTimer } from "./analytics";
+import { extendedContext } from "./extended-context";
+import PluralBuddyHandleCommand from "./handle-command";
+import { startEmojiCleanupTimer } from "./lib/clean-up-emojis";
 import { startIndexingCleanupTimer } from "./lib/cleanup-indexing";
 import { emojis } from "./lib/emojis";
-import { Pi18nCache } from "./cache/i18n";
-import { startEmojiCleanupTimer } from "./lib/clean-up-emojis";
-
-import winston from "winston";
-import { SeqTransport } from "@datalust/winston-seq";
 import { InteractionIdentifier } from "./lib/interaction-ids";
-import type { CollectorInteraction } from "seyfert/lib/components/handler";
+import { middlewares } from "./middleware";
+import { mongoClient, setupDatabases, setupMongoDB } from "./mongodb";
+import { defaultPrefixes, getGuildFromId } from "./types/guild";
 
 export const logger = null;
 

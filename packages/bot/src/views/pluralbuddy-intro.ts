@@ -14,16 +14,16 @@ import {
 	TextDisplay,
 } from "seyfert";
 import { ButtonStyle, Spacing } from "seyfert/lib/types";
-import type { PGuild } from "../types/guild";
+import { emojis } from "@/lib/emojis";
+import { createdSystems } from "../components/pluralbuddy-intro/create-new-system";
 import type { TranslationString } from "../lang";
 import { InteractionIdentifier } from "../lib/interaction-ids";
-import { createdSystems } from "../components/pluralbuddy-intro/create-new-system";
 import {
 	friendlyProtectionSystem,
 	listFromMaskSystems,
 } from "../lib/privacy-bitmask";
+import type { PGuild } from "../types/guild";
 import { TranslatedView } from "./translated-view";
-import { emojis } from "@/lib/emojis";
 
 export class PluralBuddyIntro extends TranslatedView {
 	pageOne() {
