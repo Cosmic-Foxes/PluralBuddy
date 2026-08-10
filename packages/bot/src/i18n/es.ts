@@ -61,12 +61,12 @@ SimplyPlural ha sido descontinuado.`,
   IMPORT_SOURCE_DESCRIPTION: "Fuente de importación",
   IMPORT_TOKEN_DESCRIPTION: "Token de SimplyPlural",
   CREATE_NEW_SYS_DESCRIPTION: "Crear nuevo sistema",
-  PLURALBUDDY_IMPORT_ERROR_TOO_LARGE: "2j – Importing files cannot be larger than 2MB. Please contact support if you are genuinely trying to import a system larger than 2MB.",
-  ERROR_ATTACHMENT_TOO_LARGE: "2j – Attachments for banners or profile pictures cannot be larger than 1MB.",
+  PLURALBUDDY_IMPORT_ERROR_TOO_LARGE: "2j – Los archivos a importar no pueden superar los 2MB. Por favor, contacta con soporte si realmente estás intentando importar un sistema superior a 2MB.",
+  ERROR_ATTACHMENT_TOO_LARGE: "2j – Los archivos adjuntos para banners o imágenes de perfil no pueden superar los 2MB.",
   CREATE_NEW_ALTER_DESCRIPTION: "Crear nuevo alter",
   CREATE_NEW_TAG_DESCRIPTION: "Crear nueva etiqueta",
   PLURALBUDDY_IMPORT_ERROR_INVALID_JSON: "2k – El archivo que importaste no es un JSON válido.",
-  ERROR_INTERACTION_TOO_OLD: "2l – This interaction has no longer been kept track of. (Have you waited too long?)",
+  ERROR_INTERACTION_TOO_OLD: "2l – Ya no se realiza el seguimiento de esta interacción. (¿has esperado demasiado?)",
   ERROR_SYSTEM_DOESNT_EXIST: "2m – No se puede concluir esta operación porque no existe ningún sistema sobre el que operar.",
   ERROR_ALTER_DOESNT_EXIST: "2n – No se puede concluir esta operación porque no existe el alter o no hay ningún sistema asociado al usuario que realizó la solicitud.",
   ERROR_ALTER_DOESNT_EXIST_SUGGESTION: "2n – No se pudo encontrar ese alter. ¿Quisiste decir `%suggestion%`?",
@@ -76,8 +76,8 @@ SimplyPlural ha sido descontinuado.`,
   SYSTEM_PRONOUNS_FORM_LABEL: "Pronombres",
   SYSTEM_DESCRIPTION_FORM_LABEL: "Descripción",
   SYSTEM_SYSTEM_TAG_FORM_LABEL: "Etiqueta del sistema",
-  ALTER_SUCCESS_PRONOUNS: "Successfully set pronouns for @%alter% to %new%.",
-  ALTER_SUCCESS_PRIVACY: "Successfully set the public privacy values for @%alter% to %new% (%number% total values).",
+  ALTER_SUCCESS_PRONOUNS: "Se han establecido con éxito los pronombres de @%alter% a %new%",
+  ALTER_SUCCESS_PRIVACY: "Se han establecido con éxito los valores de privacidad pública de @%alter% a %new% (%number% valores en total)",
   ALTER_SUCCESS_DESC: "Se ha establecido con éxito la descripción de @%alter%.",
   PAGINATION_TITLE: "Página",
   WAITING: "Cargando...",
@@ -91,7 +91,7 @@ SimplyPlural ha sido descontinuado.`,
   CREATING_NEW_PT_ERROR: "2p – El formato no es correcto. Recuerda que debes tener un prefijo y un sufijo separados por `texto`.",
   CREATING_NEW_PT_TOO_MANY_CHARS: "2y – Hay demasiados caracteres en el prefijo o en el sufijo. Recuerda que solo puedes tener hasta 20 caracteres para el prefijo y 20 para el sufijo.",
   SUCCESSFULLY_NEW_PT: "¡Se ha creado con éxito una nueva etiqueta proxy!",
-  PLURALBUDDY_IMPORT_DESC: "Copy and paste the exported JSON data below:",
+  PLURALBUDDY_IMPORT_DESC: "Copia y pega los datos JSON exportados a continuación",
   PLURALBUDDY_IMPORT_ERROR: "2q – Ocurrió un error al procesar los datos:\n\n```\n%zod_errors%\n```",
   PLURALBUDDY_OPTIONS_ERROR: "2r – Ocurrió un error al evaluar los argumentos de ese comando:\n\n\\`\\`\\`\n%options_errors%\n\\`\\`\\`",
   CREATE_NEW_ALTER_DONE: "Se ha creado con éxito un nuevo alter en tu sistema. Usa `%prefix%alter %alter_id%` para más detalles.",
@@ -308,8 +308,8 @@ PluralBuddy usa un sistema de **nombre de usuario/nombre para mostrar**.
   OPERATION_PRONOUNS: "Pronombres del sistema cambiados a %pronouns%.",
   OPERATION_LATCH_DELAY: "Tiempo de retención del modo fijado cambiado a %delay%.",
   OPERATION_FALLBACK: "Se cambió `%property%` a `%value%`",
-  OPERATION_SYSTEM_TOGGLE_PROXY_TAGS: "Toggled proxy tags on the system.",
-  OPERATION_SYSTEM_TOGGLE_PRONOUNS: "Toggled displaying pronouns on the system.",
+  OPERATION_SYSTEM_TOGGLE_PROXY_TAGS: "Se alternó la visibilidad de etiquetas proxy en el sistema",
+  OPERATION_SYSTEM_TOGGLE_PRONOUNS: "Se alternó la visibilidad de pronombres en el sistema",
   EDIT_MESSAGE: "Editando mensaje",
   MESSAGE_CONTENTS: "Nuevo contenido del mensaje",
   BLOCKLIST_USER: "ID de usuario a bloquear",
@@ -377,7 +377,7 @@ PluralBuddy usa un sistema de **nombre de usuario/nombre para mostrar**.
   UNASSIGN_TAG: "Desasignar etiqueta",
   PAGINATION_BOTTOM_AAT: `-# Página {{ page }}/{{ maxPage }} · Encontradas {{ alters }}/{{ maxAlters }} etiqueta(s) en {{ time }}ms {{ possibleSearchQuery }}`,
   PAGINATION_SEARCH_QUERY: `· Buscando {{ query }}`,
-  AKA_PROFILE: "-# También conocido/a como @{{ username }}",
+  AKA_PROFILE: "-# @{{ username }}",
   MESSAGE_COUNT_LABEL_PROFILE: "**Recuento de mensajes:** ",
   LAST_SENT_TIME_PROFILE: "(último enviado {{ timestamp }})",
   OWNED_BY_PROFILE: "**Asociado a:** ",
@@ -410,7 +410,7 @@ ${emojis.reply} Esta no es una lista completa de las políticas de PluralBuddy. 
   POLICY_MODAL_CONFIRMATION: "Confirmación",
   POLICY_MODAL_DETAIL: "Acepto la Política de privacidad y los Términos de servicio de PluralBuddy.",
   POLICY_MODAL_BLOCK_DETAIL: "Entiendo que puedo ser bloqueado/a si rompo estas reglas.",
-  POLICY_MODAL_BLOCK_DESC: "You have 30 days to appeal being blocked before all data is gone–violating data is removed instantly.",
+  POLICY_MODAL_BLOCK_DESC: "You have 30 days to appeal being blocked before all data is gone–violating data is removed instantly",
   LATCH_NAME: "Modo Fijado (Latch)",
   LATCH_DESC: "Establecer este alter como el alter inicial en el modo fijado.",
   ALTER_NAME: "Modo Alter",
@@ -647,13 +647,13 @@ Puedes establecer el idioma que usa PluralBuddy en sus comandos. Si no se encuen
   SET_LANGUAGE_TO: "Se cambió con éxito el idioma a **{{ language }}**.",
   ALTER_AP_NAME: "Modo Alter",
   ALTER_AP_DESC: "Usar solo este alter hasta que se desactive el proxy automático.",
-  EXPRESS_HERO: `### Introducing PluralBuddy Express
-PluralBuddy Express is a way that alters can gain the ability to proxy in DMs, or in other environments where PluralBuddy isn't directly available.
- - You create an application in Discord's Developer Portal.
- - PluralBuddy gathers the token, encrypts it, and hosts a singular-command bot associated to your alter.
- - $0, forever.
+  EXPRESS_HERO: `### Presentamos PluralBuddy Express
+PluralBuddy Express permite a los alters enviar mensajes proxy en DMs o en otros entornos donde PluralBuddy no está presente de forma directa.
+ - Creas una aplicación en el Portal de Desarrolladores de Discord
+ - PluralBuddy obtiene el token, lo encripta y aloja un bot de comando único asociado a tu alter
+ - $0, para siempre
 
-Hit the button to the right to open this alter in the dashboard.`,
+Haz clic en el botón de la derecha para abrir este alter en el panel de control.`,
   STATUS_AP: `### Estado del proxy automático
 Tu sistema actualmente tiene activado el proxy automático en **{{ mode }}**.`,
   INTEGRATION_AP: `### Estado del proxy automático
@@ -680,9 +680,9 @@ Tu sistema está utilizando el estado al frente de **{{ mode }}**.`,
   SUCCESS_ENABLE_GUILD: "Se activó con éxito el proxy en **{{ guild }}**.",
   PROXYING_ALREADY_ENABLED: "El proxy ya estaba activado en este servidor.",
   PROXYING_ALREADY_DISABLED: "El proxy ya estaba desactivado en este servidor.",
-  TOGGLED_INCLUDING_PROXY_TAGS_E: "Successfully toggled including proxy tags. (Enabled)",
-  TOGGLED_INCLUDING_PROXY_TAGS_D: "Successfully toggled including proxy tags. (Disabled)",
-  TOGGLED_INCLUDING_PRONOUNS_E: "Successfully toggled including pronouns. (Enabled)",
-  TOGGLED_INCLUDING_PRONOUNS_D: "Successfully toggled including pronouns. (Disabled)",
+  TOGGLED_INCLUDING_PROXY_TAGS_E: "Se cambió la opción de incluir etiquetas proxy. (activado)",
+  TOGGLED_INCLUDING_PROXY_TAGS_D: "Se cambió la opción de incluir etiquetas proxy. (desactivado)",
+  TOGGLED_INCLUDING_PRONOUNS_E: "Se cambió la opción de incluir pronombres. (activado)",
+  TOGGLED_INCLUDING_PRONOUNS_D: "Se cambió la opción de incluir pronombres. (desactivado)",
   NOT_FRIDAY: "Flatworm Friday solo se celebra los viernes en Nueva York, vuelve el próximo viernes a Wall Street o usa `--time-machine`."
 };
