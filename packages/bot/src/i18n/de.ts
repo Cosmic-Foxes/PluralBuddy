@@ -22,7 +22,7 @@ Zusätzlich können Sie auch Daten von einem anderen Bot wie PluralKit importier
   CREATING_NEW_SYSTEM_HEADER: "## Ein neues System schaffen",
   ERROR_DISABLED_SYSTEM: "2f – Ihr System ist deaktiviert. Sie können keinen Proxy verwenden.",
   OPTION_DISABLED: "Diese Option kann nicht gewählt werden. Diese Option ist deaktiviert.",
-  TOO_MANY_BLOCKED_ITEMS: "There are too many blocked items. You can only have 25 blocked roles, and 25 blocked channels at one time due to Discord modal limitations.",
+  TOO_MANY_BLOCKED_ITEMS: "Es gibt zu viele blocks Artikel. Du kannst nur 25 blocks Rollen und 25 blocks Kanäle gleichzeitig haben, aufgrund von Discord modale Einschränkungen.",
   TOO_MANY_MANAGER_ITEMS: "Es gibt zu viele Manager Artikel. Aufgrund von Beschränkungen des Discord modal können Sie maximal 25 Manager Artikel gleichzeitig haben.",
   CREATING_NEW_SYSTEM_NAME_MESSAGE: `
 Systeme auf PluralBuddy benötigen einen **System Name**. Dieser muss mindestens 3 und darf maximal 20 Zeichen lang sein. Systemnamen werden angezeigt, wenn jemand eine Nachricht von Ihrem System identifiziert.`,
@@ -65,11 +65,11 @@ SimplyPlural has been discontinued.`,
   IMPORT_TOKEN_DESCRIPTION: "SimplyPlural Token",
   CREATE_NEW_SYS_DESCRIPTION: "Neues System erstellen",
   PLURALBUDDY_IMPORT_ERROR_TOO_LARGE: "2j – Importing files cannot be larger than 2MB. Please contact support if you are genuinely trying to import a system larger than 2MB.",
-  ERROR_ATTACHMENT_TOO_LARGE: "2j – Attachments for banners or profile pictures cannot be larger than 1MB.",
+  ERROR_ATTACHMENT_TOO_LARGE: "2j – Attachments for banners or profile pictures cannot be larger than 2MB.",
   CREATE_NEW_ALTER_DESCRIPTION: "Neues System erstellen",
   CREATE_NEW_TAG_DESCRIPTION: "Neues Tag erstellen",
   PLURALBUDDY_IMPORT_ERROR_INVALID_JSON: "2k – Die importierte Datei ist kein gültiges JSON.",
-  ERROR_INTERACTION_TOO_OLD: "2l – This interaction has no longer been kept track of. (Have you waited too long?)",
+  ERROR_INTERACTION_TOO_OLD: "2l – This interaction has no longer been kept track of. (have you waited too long?)",
   ERROR_SYSTEM_DOESNT_EXIST: "2m – This operation cannot be concluded because there is no system to operate on.",
   ERROR_ALTER_DOESNT_EXIST: "2n – This operation cannot be concluded because either, there is no alter to operate on, or there is no system associated to the user who created the request.",
   ERROR_ALTER_DOESNT_EXIST_SUGGESTION: "2n – That alter could not be found. Did you mean \`%suggestion%\`?",
@@ -79,8 +79,8 @@ SimplyPlural has been discontinued.`,
   SYSTEM_PRONOUNS_FORM_LABEL: "Pronouns",
   SYSTEM_DESCRIPTION_FORM_LABEL: "Description",
   SYSTEM_SYSTEM_TAG_FORM_LABEL: "System Tag",
-  ALTER_SUCCESS_PRONOUNS: "Successfully set pronouns for @%alter% to %new%.",
-  ALTER_SUCCESS_PRIVACY: "Successfully set the public privacy values for @%alter% to %new% (%number% total values).",
+  ALTER_SUCCESS_PRONOUNS: "Successfully set pronouns for @%alter% to %new%",
+  ALTER_SUCCESS_PRIVACY: "Successfully set the public privacy values for @%alter% to %new% (%number% total values)",
   ALTER_SUCCESS_DESC: "Successfully set description for @%alter%.",
   PAGINATION_TITLE: "Page",
   WAITING: "Loading...",
@@ -94,7 +94,7 @@ SimplyPlural has been discontinued.`,
   CREATING_NEW_PT_ERROR: "2p – This is not formatted correctly. Remember, you need to have a prefix and a suffix separated by `text`.",
   CREATING_NEW_PT_TOO_MANY_CHARS: "2y – There is too many characters on either the prefix or suffix side. Remember, you can only have 20 characters for the prefix & 20 characters for the suffix.",
   SUCCESSFULLY_NEW_PT: "Successfully created a new proxy tag!",
-  PLURALBUDDY_IMPORT_DESC: "Copy and paste the exported JSON data below:",
+  PLURALBUDDY_IMPORT_DESC: "Copy and paste the exported JSON data below",
   PLURALBUDDY_IMPORT_ERROR: "2q – There was some error(s) while parsing that:\n\n\`\`\`\n%zod_errors%\n\`\`\`",
   PLURALBUDDY_OPTIONS_ERROR: "2r – There was some error(s) while evaluating the arguments to that command:\n\n\`\`\`\n%options_errors%\n\`\`\`",
   CREATE_NEW_ALTER_DONE: "Successfully created a new alter in your system. Use `%prefix%alter %alter_id%` for more details.",
@@ -265,28 +265,19 @@ PluralBuddy uses a **username/display name** system.
   ROLE_USAGE: "Role",
   UNABLE_TO_BE_FUNNY: "You are not permitted to use the funny commands.",
   DISABLED_DM_REPLIES: "Successfully toggled DM replies off. Use `pb;nudge-preferences` to re-enable them.",
-  ABOUT_PB: `-# **DEVELOPMENT INFO**
-> PluralBuddy Build %version% · \`%branch%\`
+  ABOUT_PB: `### PluralBuddy Build #%version% · \`%branch%\`
+%github% [GitHub](https://github.com) · %docs% [Docs](https://pb.giftedly.dev)
 
--# **ABOUT PLURALBUDDY**
-> PluralBuddy is an accessibility tool for those who are systems, allowing system *alters* to make pseudo-accounts as webhooks to represent a certain alter.
+> PluralBuddy is an accessibility tool for those who are DID/OSDD systems, allowing system *alters* to make pseudo-accounts as webhooks to represent a certain alter.
 > This bot was made as a faster, more controllable alternative to other plural bots.
 > To get started with using PluralBuddy, use %command%.
 
--# **CREDITS**
-**Programmed w/ :heart_hands: by @giftedly**
--# Developed all major parts of PluralBuddy
+> **Credits:**
+> %linein% Programmed w/ :heart_hands: by @giftedly 
+> **Translations:**
+> %linein% 🇩🇪 German translations by @mira.mizuki (thank you, fren)
 
-**OSS Contributions** - [PluralBuddy is MIT licensed](https://github.com/giftedl/PluralBuddy/blob/main/LICENSE)
--# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco)
--# Docs: [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.), [@Stjernesys](https://github.com/Stjernesys) (@thatskymaridelrosynthia)
-
-**Translated on Crowdin**
--# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
-
--# **LINKS**
-> -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pb.giftedly.dev)
-> -# [Terms of Service](<https://pb.giftedly.dev/docs/policies/terms>) · [Privacy Policy](<https://pb.giftedly.dev/docs/policies/privacy>)`,
+-# [Terms of Service](<https://pb.giftedly.dev/docs/policies/terms>) · [Privacy Policy](<https://pb.giftedly.dev/docs/policies/privacy>)`,
   TAG_ASSIGN_ALTER: "Assign Tag",
   SET_AUTO_PROXY_SRV: "Successfully set proxy mode to **%mode%** for your system in **%server_name%**.",
   SET_AUTO_PROXY_GLOBAL: "Successfully set proxy mode to **%mode%** for your system everywhere.",
@@ -380,7 +371,7 @@ PluralBuddy uses a **username/display name** system.
   UNASSIGN_TAG: "Unassign Tag",
   PAGINATION_BOTTOM_AAT: `-# Page {{ page }}/{{ maxPage }} · Found {{ alters }}/{{ maxAlters }} tag(s) in {{ time }}ms {{ possibleSearchQuery }}`,
   PAGINATION_SEARCH_QUERY: `· Querying for {{ query }}`,
-  AKA_PROFILE: "-# Also known as @{{ username }}",
+  AKA_PROFILE: "-# @{{ username }}",
   MESSAGE_COUNT_LABEL_PROFILE: "**Message Count:** ",
   LAST_SENT_TIME_PROFILE: "(last sent {{ timestamp }})",
   OWNED_BY_PROFILE: "**Associated to:** ",
@@ -413,7 +404,7 @@ ${emojis.reply} This is not a full list of information in PluralBuddy's policies
   POLICY_MODAL_CONFIRMATION: "Confirmation",
   POLICY_MODAL_DETAIL: "I agree to PluralBuddy's Privacy Policy and Terms of Service.",
   POLICY_MODAL_BLOCK_DETAIL: "I agree I may be blocked if I break these rules.",
-  POLICY_MODAL_BLOCK_DESC: "You have 30 days to appeal being blocked before all data is gone–violating data is removed instantly.",
+  POLICY_MODAL_BLOCK_DESC: "You have 30 days to appeal being blocked before all data is gone–violating data is removed instantly",
   LATCH_NAME: "Latch Mode",
   LATCH_DESC: "Set this alter as the first alter in latch mode.",
   ALTER_NAME: "Alter Mode",
@@ -608,7 +599,7 @@ There is an example below of what an example proxy with this role would look lik
   SELF_REACTION_DESC: "PluralBuddy was unable to remove the loading emoji when attempting to perform a [Context Menu Action](<https://pb.giftedly.dev/docs/pluralbuddy/context-actions>).",
   REACTION_ERR: "Unable to remove user reaction",
   REPLY_IN_RESPONSE: "-# {{ reply }} In response to: {{ link }}",
-  AWAKE: "Hi! I'm awake, running PluralBuddy \`{{ buildNumber }}/{{ branch }}\`.",
+  AWAKE: "Hi! I'm awake, running PluralBuddy `#{{ buildNumber }}/{{ branch }}`.",
   LINK_INVITE: "Invite",
   LINK_SUPPORT: "Support",
   LINK_DOCS: "Docs",
@@ -642,9 +633,9 @@ You can set the language that PluralBuddy uses while using commands. If a string
   ALTER_AP_DESC: "Only proxy this alter until auto-proxy is disabled.",
   EXPRESS_HERO: `### Introducing PluralBuddy Express
 PluralBuddy Express is a way that alters can gain the ability to proxy in DMs, or in other environments where PluralBuddy isn't directly available.
- - You create an application in Discord's Developer Portal.
- - PluralBuddy gathers the token, encrypts it, and hosts a singular-command bot associated to your alter.
- - $0, forever.
+ - You create an application in Discord's Developer Portal
+ - PluralBuddy gathers the token, encrypts it, and hosts a singular-command bot associated to your alter
+ - $0, forever
 
 Hit the button to the right to open this alter in the dashboard.`,
   STATUS_AP: `### Auto-Proxy Status
