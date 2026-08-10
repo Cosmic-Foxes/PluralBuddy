@@ -20,6 +20,15 @@ export async function gatherStatisticalData(): Promise<PAnalytics> {
 	const messages = await messagesCollection.countDocuments();
 
 	const guilds = (await client.guilds.list({with_counts: true}, true)) ?? [];
+ 
+	if (guilds.length === 200 && guilds[199]) {
+		guilds.push(
+			...((await client.guilds.list(
+				{ with_counts: true, after: guilds[199]?.id },
+				true,
+			)) ?? []),
+		);
+	}
 
 	if (latencyDataPoints.length === 0)
 		// No applicable data
