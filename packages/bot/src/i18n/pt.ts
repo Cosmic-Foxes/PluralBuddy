@@ -62,11 +62,11 @@ SimplyPlural has been discontinued.`,
   IMPORT_TOKEN_DESCRIPTION: "Token do bot SimplyPlural",
   CREATE_NEW_SYS_DESCRIPTION: "Criar novo sistema",
   PLURALBUDDY_IMPORT_ERROR_TOO_LARGE: "2j – Importing files cannot be larger than 2MB. Please contact support if you are genuinely trying to import a system larger than 2MB.",
-  ERROR_ATTACHMENT_TOO_LARGE: "2j – Attachments for banners or profile pictures cannot be larger than 1MB.",
+  ERROR_ATTACHMENT_TOO_LARGE: "2j – Attachments for banners or profile pictures cannot be larger than 2MB.",
   CREATE_NEW_ALTER_DESCRIPTION: "Criar Novo Integrante",
   CREATE_NEW_TAG_DESCRIPTION: "Criar Tag Nova",
   PLURALBUDDY_IMPORT_ERROR_INVALID_JSON: "2k – O arquivo que você importou não é um JSON válido.",
-  ERROR_INTERACTION_TOO_OLD: "2l – This interaction has no longer been kept track of. (Have you waited too long?)",
+  ERROR_INTERACTION_TOO_OLD: "2l – This interaction has no longer been kept track of. (have you waited too long?)",
   ERROR_SYSTEM_DOESNT_EXIST: "2m – Esta operação não pode ser concluída porque não existe um sistema no qual operar.",
   ERROR_ALTER_DOESNT_EXIST: "2n – Esta operação não pode ser concluída por conta de não haver integrante para operar ou não há nenhum sistema associado ao usuário que criou a solicitação.",
   ERROR_ALTER_DOESNT_EXIST_SUGGESTION: "2n – Este integrante não pôde ser encontrada. Você quis dizer `%suggestion%`?",
@@ -76,8 +76,8 @@ SimplyPlural has been discontinued.`,
   SYSTEM_PRONOUNS_FORM_LABEL: "Pronomes",
   SYSTEM_DESCRIPTION_FORM_LABEL: "Descrição",
   SYSTEM_SYSTEM_TAG_FORM_LABEL: "Tag do Sistema",
-  ALTER_SUCCESS_PRONOUNS: "Successfully set pronouns for @%alter% to %new%.",
-  ALTER_SUCCESS_PRIVACY: "Successfully set the public privacy values for @%alter% to %new% (%number% total values).",
+  ALTER_SUCCESS_PRONOUNS: "Successfully set pronouns for @%alter% to %new%",
+  ALTER_SUCCESS_PRIVACY: "Successfully set the public privacy values for @%alter% to %new% (%number% total values)",
   ALTER_SUCCESS_DESC: "Descrição definida com sucesso para @%alter%.",
   PAGINATION_TITLE: "Página",
   WAITING: "Carregando...",
@@ -91,7 +91,7 @@ SimplyPlural has been discontinued.`,
   CREATING_NEW_PT_ERROR: "2p – Isto não está formatado corretamente. Lembre-se, você precisa ter um prefixo e um sufixo separado por `text`.",
   CREATING_NEW_PT_TOO_MANY_CHARS: "2y – Há muitos caracteres no prefixo ou no lado do sufixo. Lembre-se, você pode ter apenas 20 caracteres para o prefixo e 20 para o sufixo.",
   SUCCESSFULLY_NEW_PT: "Nova tag de proxy criada com sucesso!",
-  PLURALBUDDY_IMPORT_DESC: "Copy and paste the exported JSON data below:",
+  PLURALBUDDY_IMPORT_DESC: "Copy and paste the exported JSON data below",
   PLURALBUDDY_IMPORT_ERROR: "2q – Houve alguns erro(s) enquanto isso era analizado:\n\n```\n%zod_errors%\n```",
   PLURALBUDDY_OPTIONS_ERROR: "2r – Houve algum erro(s) ao avaliar os argumentos para esse comando:\n\n```\n%options_errors%\n```",
   CREATE_NEW_ALTER_DONE: "Criado com sucesso um novo integrante no seu sistema. Use o comando `%prefix%alter %alter_id% para mais detalhes.",
@@ -262,7 +262,7 @@ PluralBuddy uses a **username/display name** system.
   UNABLE_TO_BE_FUNNY: "Você não tem permissão para usar os comandos engraçados.",
   DISABLED_DM_REPLIES: "Resposta de mensagem direta desabilitada com sucesso. Use `pb;nudge-preferences` para reativá-las.",
   ABOUT_PB: `-# **DEVELOPMENT INFO**
-> PluralBuddy Build %version% · \`%branch%\`
+> PluralBuddy Build #%version% · \`%branch%\`
 
 -# **ABOUT PLURALBUDDY**
 > PluralBuddy is an accessibility tool for those who are systems, allowing system *alters* to make pseudo-accounts as webhooks to represent a certain alter.
@@ -272,10 +272,6 @@ PluralBuddy uses a **username/display name** system.
 -# **CREDITS**
 **Programmed w/ :heart_hands: by @giftedly**
 -# Developed all major parts of PluralBuddy
-
-**OSS Contributions** - [PluralBuddy is MIT licensed](https://github.com/giftedl/PluralBuddy/blob/main/LICENSE)
--# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco)
--# Docs: [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.), [@Stjernesys](https://github.com/Stjernesys) (@thatskymaridelrosynthia)
 
 **Translated on Crowdin**
 -# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
@@ -376,7 +372,7 @@ PluralBuddy uses a **username/display name** system.
   UNASSIGN_TAG: "Desatribuir Tag",
   PAGINATION_BOTTOM_AAT: `-# Pagina {{ page }}/{{ maxPage }} · encontrado {{ alters }}/{{ maxAlters }} tag(s) em {{ time }}ms {{ possibleSearchQuery }}`,
   PAGINATION_SEARCH_QUERY: `· Buscando por {{ query }}`,
-  AKA_PROFILE: "-# Também conhecido como @{{ username }}",
+  AKA_PROFILE: "-#  @{{ username }}",
   MESSAGE_COUNT_LABEL_PROFILE: "**Número de Mensagens:** ",
   LAST_SENT_TIME_PROFILE: "(última mensagem {{ timestamp }})",
   OWNED_BY_PROFILE: "**Associado a:** ",
@@ -409,7 +405,7 @@ ${emojis.reply} This is not a full list of information in PluralBuddy's policies
   POLICY_MODAL_CONFIRMATION: "Confirmation",
   POLICY_MODAL_DETAIL: "I agree to PluralBuddy's Privacy Policy and Terms of Service.",
   POLICY_MODAL_BLOCK_DETAIL: "I agree I may be blocked if I break these rules.",
-  POLICY_MODAL_BLOCK_DESC: "You have 30 days to appeal being blocked before all data is gone–violating data is removed instantly.",
+  POLICY_MODAL_BLOCK_DESC: "You have 30 days to appeal being blocked before all data is gone–violating data is removed instantly",
   LATCH_NAME: "Modo de Trava",
   LATCH_DESC: "Definir este Integrante como o primeiro integrante no modo de trava.",
   ALTER_NAME: "Modo de Integrante",
@@ -638,9 +634,9 @@ Você pode definir a linguagem que PluralBuddy usa enquanto usa comandos. Se uma
   ALTER_AP_DESC: "Faz proxy somente desse integrante até que o auto-proxy seja desativado.",
   EXPRESS_HERO: `### Introducing PluralBuddy Express
 PluralBuddy Express is a way that alters can gain the ability to proxy in DMs, or in other environments where PluralBuddy isn't directly available.
- - You create an application in Discord's Developer Portal.
- - PluralBuddy gathers the token, encrypts it, and hosts a singular-command bot associated to your alter.
- - $0, forever.
+ - You create an application in Discord's Developer Portal
+ - PluralBuddy gathers the token, encrypts it, and hosts a singular-command bot associated to your alter
+ - $0, forever
 
 Hit the button to the right to open this alter in the dashboard.`,
   STATUS_AP: `### Auto-Proxy Status
