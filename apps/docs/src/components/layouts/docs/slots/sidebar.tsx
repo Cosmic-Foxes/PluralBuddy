@@ -1,25 +1,24 @@
 'use client';
 import * as Base from '@fumadocs/base-ui/components/sidebar/base';
-import { cn } from '@/lib/cn';
-import { type ComponentProps, CSSProperties, type ReactNode, useMemo, useRef, useState } from 'react';
-import { cva } from 'class-variance-authority';
+import { createLinkItemRenderer } from '@fumadocs/base-ui/components/sidebar/link-item';
 import {
   createPageTreeRenderer,
   type SidebarPageTreeComponents,
 } from '@fumadocs/base-ui/components/sidebar/page-tree';
-import { createLinkItemRenderer } from '@fumadocs/base-ui/components/sidebar/link-item';
-import { buttonVariants } from '@/components/ui/button';
-import { SearchTrigger } from '@/components/layouts/shared/slots/search-trigger';
-import { Check, ChevronDown, ChevronsUpDown, Languages, SidebarIcon } from 'lucide-react';
-import { mergeRefs } from '@/lib/merge-refs';
-import { useDocsLayout } from '../client';
-import { LinkItem } from '@fumadocs/base-ui/layouts/shared';
-import { isLayoutTabActive, type LayoutTab } from '@fumadocs/base-ui/layouts/shared';
-import { usePathname } from 'fumadocs-core/framework';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import Link from 'fumadocs-core/link';
 import { useTreePath } from '@fumadocs/base-ui/contexts/tree';
+import { isLayoutTabActive, type LayoutTab, LinkItem } from '@fumadocs/base-ui/layouts/shared';
+import { cva } from 'class-variance-authority';
+import { usePathname } from 'fumadocs-core/framework';
+import Link from 'fumadocs-core/link';
+import { Check, ChevronDown, ChevronsUpDown, Languages, SidebarIcon } from 'lucide-react';
+import { type ComponentProps, CSSProperties, type ReactNode, useMemo, useRef, useState } from 'react';
+import { SearchTrigger } from '@/components/layouts/shared/slots/search-trigger';
+import { buttonVariants } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '@/lib/cn';
+import { mergeRefs } from '@/lib/merge-refs';
 import { AuthComponents } from '../auth-components';
+import { useDocsLayout } from '../client';
 
 const itemVariants = cva(
   'relative flex flex-row items-center gap-2 rounded-lg p-2 text-start text-fd-muted-foreground wrap-anywhere [&_svg]:size-4 [&_svg]:shrink-0',
@@ -218,7 +217,7 @@ function SidebarContent({ ref: refProp, className, children, ...props }: Compone
               data-collapsed={collapsed}
               data-hovered={collapsed && hovered}
               className={cn(
-                'absolute flex flex-col w-full inset-s-0 inset-y-0 items-end bg-fd-card text-sm border-e duration-250 *:w-(--fd-sidebar-width)',
+                'absolute flex flex-col w-full max-w-[350px] inset-s-0 inset-y-0 items-end bg-fd-background/10! backdrop-blur-lg text-sm border-e duration-250 *:w-(--fd-sidebar-width)',
                 collapsed && [
                   'inset-y-2 rounded-xl transition-transform border w-(--fd-sidebar-width)',
                   hovered

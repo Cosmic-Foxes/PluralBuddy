@@ -104,7 +104,7 @@ SimplyPlural has been discontinued.`,
 	SYSTEM_PRONOUNS_FORM_LABEL: "Pronouns",
 	SYSTEM_DESCRIPTION_FORM_LABEL: "Description",
 	SYSTEM_SYSTEM_TAG_FORM_LABEL: "System Tag",
-	ALTER_SUCCESS_PRONOUNS: "Successfully set pronouns for @%alter% to %new%".,
+	ALTER_SUCCESS_PRONOUNS: "Successfully set pronouns for @%alter% to %new%.",
 	ALTER_SUCCESS_PRIVACY:
 		"Successfully set the public privacy values for @%alter% to %new% (%number% total values).",
 	ALTER_SUCCESS_DESC: "Successfully set description for @%alter%.",
