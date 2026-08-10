@@ -423,7 +423,8 @@ PluralBuddy uses a **username/display name** system.
 	OPERATION_LATCH_DELAY: "Set latch delay to %delay%.",
 	OPERATION_FALLBACK: "Set \`%property%\` to \`%value%\`",
 	OPERATION_SYSTEM_TOGGLE_PROXY_TAGS: "Toggled proxy tags on the system.",
-	OPERATION_SYSTEM_TOGGLE_PRONOUNS: "Toggled displaying pronouns on the system.",
+	OPERATION_SYSTEM_TOGGLE_PRONOUNS:
+		"Toggled displaying pronouns on the system.",
 
 	EDIT_MESSAGE: "Editing message",
 	MESSAGE_CONTENTS: "New Message Contents",
@@ -562,7 +563,7 @@ ${emojis.reply} This is not a full list of information in PluralBuddy's policies
 		"I agree to PluralBuddy's Privacy Policy and Terms of Service.",
 	POLICY_MODAL_BLOCK_DETAIL: "I agree I may be blocked if I break these rules.",
 	POLICY_MODAL_BLOCK_DESC:
-		"You have 30 days to appeal being blocked before all data is gone–violating data is removed instantly.",
+		"You have 30 days to appeal being blocked before all data is gone–violating data is removed instantly",
 
 	LATCH_NAME: "Latch Mode",
 	LATCH_DESC: "Set this alter as the first alter in latch mode.",
