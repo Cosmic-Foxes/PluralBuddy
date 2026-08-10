@@ -18,7 +18,7 @@ export const GET = createOAuthFunction<
 		const maxAlters = Number((ctx.urlData.searchParams ?? {}).max ?? 250);
 		const skipAlters = Number((ctx.urlData.searchParams ?? {}).skip ?? 0);
 
-		if (maxAlters > 30)
+		if (maxAlters > 250)
 			return ctx.error({
 				type: "max-too-high",
 				friendly: "At most, you can only get 250 alters.",
