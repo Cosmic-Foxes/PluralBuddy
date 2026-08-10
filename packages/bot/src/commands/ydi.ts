@@ -31,7 +31,7 @@ export default class WhoAskedCommand extends Command {
 					new MediaGallery().setItems(
 						new MediaGalleryItem()
 							.setMedia("attachment://ydi.mov")
-							.setDescription("NO U!"),
+							.setDescription("Conargtulations!"),
 					),
 				),
 			],
