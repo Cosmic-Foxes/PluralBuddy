@@ -341,7 +341,7 @@ Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer wel
   UNASSIGN_TAG: "Unassign Tag",
   PAGINATION_BOTTOM_AAT: `-# Page {{ page }}/{{ maxPage }} · Found {{ alters }}/{{ maxAlters }} tag(s) in {{ time }}ms {{ possibleSearchQuery }}`,
   PAGINATION_SEARCH_QUERY: `· Querying for {{ query }}`,
-  AKA_PROFILE: "-# Also known as @{{ username }}",
+  AKA_PROFILE: "-# @{{ username }}",
   MESSAGE_COUNT_LABEL_PROFILE: "**Message Count:** ",
   LAST_SENT_TIME_PROFILE: "(last sent {{ timestamp }})",
   OWNED_BY_PROFILE: "**Associated to:** ",

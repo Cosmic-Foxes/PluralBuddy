@@ -546,7 +546,7 @@ Las etiquetas son grupos específicos de los que tu alter puede formar parte. Ci
 	PAGINATION_BOTTOM_AAT: `-# Página {{ page }}/{{ maxPage }} · Encontradas {{ alters }}/{{ maxAlters }} etiqueta(s) en {{ time }}ms {{ possibleSearchQuery }}`,
 	PAGINATION_SEARCH_QUERY: `· Buscando {{ query }}`,
 
-	AKA_PROFILE: "-# También conocido/a como @{{ username }}",
+	AKA_PROFILE: "-# @{{ username }}",
 	MESSAGE_COUNT_LABEL_PROFILE: "**Recuento de mensajes:** ",
 	LAST_SENT_TIME_PROFILE: "(último enviado {{ timestamp }})",
 	OWNED_BY_PROFILE: "**Asociado a:** ",

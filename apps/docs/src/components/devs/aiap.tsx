@@ -1,6 +1,12 @@
 "use client";
 
+import { useForm } from "@tanstack/react-form";
+import { useMutation } from "@tanstack/react-query";
+import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
+import z from "zod";
+import { useTRPCClient } from "@/server/client";
 import {
 	Card,
 	CardContent,
@@ -15,13 +21,7 @@ import {
 	InputGroupAddon,
 	InputGroupInput,
 } from "../ui/input-group";
-import { ArrowUpRight } from "lucide-react";
 import { Button } from "../ui/shadcn-button";
-import { useForm } from "@tanstack/react-form";
-import z from "zod";
-import { toast } from "sonner";
-import { useTRPCClient } from "@/server/client";
-import { useMutation } from "@tanstack/react-query";
 
 const parkedIds = [
 	"status",
@@ -85,7 +85,7 @@ export function AIAPCard({ integrationId, existingId }: { integrationId: string,
 				<CardHeader>
 					<CardTitle>Automatic Integrational Auto-Proxy (AI/AP)</CardTitle>
 					<CardDescription>
-						Automatic Integrational Auto-Proxy, also known as AI/AP, is an API
+						Automatic Integrational Auto-Proxy,  AI/AP, is an API
 						endpoint which allows users to use your integration as a front
 						tracker.
 						<br />
