@@ -79,6 +79,7 @@ SimplyPlural has been discontinued.`,
   ALTER_SUCCESS_PRONOUNS: "Successfully set pronouns for @%alter% to %new%",
   ALTER_SUCCESS_PRIVACY: "Successfully set the public privacy values for @%alter% to %new% (%number% total values)",
   ALTER_SUCCESS_DESC: "Descrição definida com sucesso para @%alter%.",
+  TAG_SUCCESS_ORDER: "Successfully set order string for @%tag%.",
   PAGINATION_TITLE: "Página",
   WAITING: "Carregando...",
   WAITING_LONG_TERM: "Carregando... Isso irá demorar um pouco. Por favor, espere um momento.",
@@ -162,8 +163,10 @@ PluralBuddy uses a **username/display name** system.
 -# Scroll down to see the rest of this modal.`,
   ALTER_AFTER: `-# 🎀 Good job! Your alter is awesome!`,
   ALTER_DISPLAY_NAME_FORM_LABEL: "Nome de Exibição",
+  ALTER_SEARCH_STRING_FORM_LABEL: "Search String (max 4 chars.)",
   ALTER_SET_PRONOUNS: "Definir Pronomes",
   ALTER_SET_DESCRIPTION: "Definir Descrição",
+  ALTER_SET_ORDER_STRING: "Set Order String",
   ALTER_SET_PFP: "Definir Foto de Perfil",
   ALTER_SET_PFP_SE: "Is server-specific",
   ALTER_SET_PFP_SE_DESC: "Esta foto de perfil será específica para este servidor.",
@@ -435,6 +438,8 @@ ${emojis.reply} This is not a full list of information in PluralBuddy's policies
 -# To view your description in full, run: {{ commandMention }}`,
   T_PUBLIC_PROFILE_DESC_DESC: `You can set a description for your tag. Tag descriptions can be at maximum 2,000 characters long.
 -# To view your description in full, run: {{ command }}`,
+  T_ORDER_STRING_DESC: `Order strings evaluate the order that this tag is displayed. The more alphabetically favored this string is, the higher up the tag appears. Tags with no order string are sorted last. Order strings are not shown, and can only be at most 4 characters.
+-# This tags order string is: {{ order }}`,
   S_PUBLIC_PROFILE_DESC_DESC: `You can set a description for your system. System descriptions can be at maximum 2,000 characters long.
 -# To view your description in full, run: {{ mention }}`,
   PUBLIC_PROFILE_COLOR_DESC: "Setting a color for an alter shows that color for their rank container along with their public profile.",
