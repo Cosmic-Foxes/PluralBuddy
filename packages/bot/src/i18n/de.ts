@@ -64,12 +64,12 @@ SimplyPlural has been discontinued.`,
   IMPORT_SOURCE_DESCRIPTION: "Quelle importieren",
   IMPORT_TOKEN_DESCRIPTION: "SimplyPlural Token",
   CREATE_NEW_SYS_DESCRIPTION: "Neues System erstellen",
-  PLURALBUDDY_IMPORT_ERROR_TOO_LARGE: "2j – Importing files cannot be larger than 2MB. Please contact support if you are genuinely trying to import a system larger than 2MB.",
-  ERROR_ATTACHMENT_TOO_LARGE: "2j – Attachments for banners or profile pictures cannot be larger than 2MB.",
+  PLURALBUDDY_IMPORT_ERROR_TOO_LARGE: "2j – Importing files cannot be larger than 2MB. Please contact support if you are genuinely trying to import a system larger than 1MB.",
+  ERROR_ATTACHMENT_TOO_LARGE: "2j – Anhänge für Banner oder Profilbilder dürfen 2 MB nicht überschreiten.",
   CREATE_NEW_ALTER_DESCRIPTION: "Neues System erstellen",
   CREATE_NEW_TAG_DESCRIPTION: "Neues Tag erstellen",
   PLURALBUDDY_IMPORT_ERROR_INVALID_JSON: "2k – Die importierte Datei ist kein gültiges JSON.",
-  ERROR_INTERACTION_TOO_OLD: "2l – This interaction has no longer been kept track of. (have you waited too long?)",
+  ERROR_INTERACTION_TOO_OLD: "2l – Diese Interaktion wird nicht mehr protokolliert. (Haben Sie zu lange gewartet?)",
   ERROR_SYSTEM_DOESNT_EXIST: "2m – This operation cannot be concluded because there is no system to operate on.",
   ERROR_ALTER_DOESNT_EXIST: "2n – This operation cannot be concluded because either, there is no alter to operate on, or there is no system associated to the user who created the request.",
   ERROR_ALTER_DOESNT_EXIST_SUGGESTION: "2n – That alter could not be found. Did you mean \`%suggestion%\`?",
@@ -268,10 +268,11 @@ PluralBuddy uses a **username/display name** system.
   ROLE_USAGE: "Role",
   UNABLE_TO_BE_FUNNY: "You are not permitted to use the funny commands.",
   DISABLED_DM_REPLIES: "Successfully toggled DM replies off. Use `pb;nudge-preferences` to re-enable them.",
-  ABOUT_PB: `### PluralBuddy Build #%version% · \`%branch%\`
-%github% [GitHub](https://github.com) · %docs% [Docs](https://pb.giftedly.dev)
+  ABOUT_PB: `-# **DEVELOPMENT INFO**
+> PluralBuddy Build %version% · \`%branch%\`
 
-> PluralBuddy is an accessibility tool for those who are DID/OSDD systems, allowing system *alters* to make pseudo-accounts as webhooks to represent a certain alter.
+-# **ABOUT PLURALBUDDY**
+> PluralBuddy is an accessibility tool for those who are systems, allowing system *alters* to make pseudo-accounts as webhooks to represent a certain alter.
 > This bot was made as a faster, more controllable alternative to other plural bots.
 > To get started with using PluralBuddy, use %command%.
 
@@ -280,7 +281,16 @@ PluralBuddy uses a **username/display name** system.
 > **Translations:**
 > %linein% 🇩🇪 German translations by @mira.mizuki (thank you, fren)
 
--# [Terms of Service](<https://pb.giftedly.dev/docs/policies/terms>) · [Privacy Policy](<https://pb.giftedly.dev/docs/policies/privacy>)`,
+**OSS Contributions** - [PluralBuddy is MIT licensed](https://github.com/giftedl/PluralBuddy/blob/main/LICENSE)
+-# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco)
+-# Docs: [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.), [@Stjernesys](https://github.com/Stjernesys) (@thatskymaridelrosynthia)
+
+**Translated on Crowdin**
+-# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
+
+-# **LINKS**
+> -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pb.giftedly.dev)
+> -# [Terms of Service](<https://pb.giftedly.dev/docs/policies/terms>) · [Privacy Policy](<https://pb.giftedly.dev/docs/policies/privacy>)`,
   TAG_ASSIGN_ALTER: "Assign Tag",
   SET_AUTO_PROXY_SRV: "Successfully set proxy mode to **%mode%** for your system in **%server_name%**.",
   SET_AUTO_PROXY_GLOBAL: "Successfully set proxy mode to **%mode%** for your system everywhere.",
@@ -305,8 +315,8 @@ PluralBuddy uses a **username/display name** system.
   OPERATION_PRONOUNS: "Set system pronouns to %pronouns%.",
   OPERATION_LATCH_DELAY: "Set latch delay to %delay%.",
   OPERATION_FALLBACK: "Set \`%property%\` to \`%value%\`",
-  OPERATION_SYSTEM_TOGGLE_PROXY_TAGS: "Toggled proxy tags on the system.",
-  OPERATION_SYSTEM_TOGGLE_PRONOUNS: "Toggled displaying pronouns on the system.",
+  OPERATION_SYSTEM_TOGGLE_PROXY_TAGS: "Toggled proxy tags on the system",
+  OPERATION_SYSTEM_TOGGLE_PRONOUNS: "Toggled displaying pronouns on the system",
   EDIT_MESSAGE: "Editing message",
   MESSAGE_CONTENTS: "New Message Contents",
   BLOCKLIST_USER: "Blocklist User ID",
@@ -374,7 +384,7 @@ PluralBuddy uses a **username/display name** system.
   UNASSIGN_TAG: "Unassign Tag",
   PAGINATION_BOTTOM_AAT: `-# Page {{ page }}/{{ maxPage }} · Found {{ alters }}/{{ maxAlters }} tag(s) in {{ time }}ms {{ possibleSearchQuery }}`,
   PAGINATION_SEARCH_QUERY: `· Querying for {{ query }}`,
-  AKA_PROFILE: "-# @{{ username }}",
+  AKA_PROFILE: "-# Also known as @{{ username }}",
   MESSAGE_COUNT_LABEL_PROFILE: "**Message Count:** ",
   LAST_SENT_TIME_PROFILE: "(last sent {{ timestamp }})",
   OWNED_BY_PROFILE: "**Associated to:** ",
@@ -402,12 +412,12 @@ PluralBuddy uses a **username/display name** system.
 ${emojis.reply} This is not a full list of information in PluralBuddy's policies. If you are confused, please open a ticket in the [PluralBuddy Discord Server](https://discord.gg/BF5bJfZY3s).
 ❤️ Thanks for checking out our bot! It means a lot to us! 
 
--# |˶˙ᵕ˙ )ﾉﾞ PluralBuddy was made exclusively by humans, and in no capacity was developed by artificial intelligence. 
+-# |˶˙ᵕ˙ )ﾉﾞ PluralBuddy was made exclusively by humans, and in no capacity was developed by artifical intelligence. 
 -# (๑˃ᴗ˂)ﻭ  Made with **love.**`,
   POLICY_MODAL_CONFIRMATION: "Confirmation",
   POLICY_MODAL_DETAIL: "I agree to PluralBuddy's Privacy Policy and Terms of Service.",
   POLICY_MODAL_BLOCK_DETAIL: "I agree I may be blocked if I break these rules.",
-  POLICY_MODAL_BLOCK_DESC: "You have 30 days to appeal being blocked before all data is gone–violating data is removed instantly",
+  POLICY_MODAL_BLOCK_DESC: "You have 30 days to appeal being blocked before all data is gone–violating data is removed instantly.",
   LATCH_NAME: "Latch Mode",
   LATCH_DESC: "Set this alter as the first alter in latch mode.",
   ALTER_NAME: "Alter Mode",
@@ -669,9 +679,9 @@ Your system is using the front state of **{{ mode }}**.`,
   SUCCESS_ENABLE_GUILD: "Successfully enabled proxying in **{{ guild }}**.",
   PROXYING_ALREADY_ENABLED: "Proxying was already enabled in this server.",
   PROXYING_ALREADY_DISABLED: "Proxying was already disabled in this server.",
-  TOGGLED_INCLUDING_PROXY_TAGS_E: "Successfully toggled including proxy tags. (Enabled)",
-  TOGGLED_INCLUDING_PROXY_TAGS_D: "Successfully toggled including proxy tags. (Disabled)",
-  TOGGLED_INCLUDING_PRONOUNS_E: "Successfully toggled including pronouns. (Enabled)",
-  TOGGLED_INCLUDING_PRONOUNS_D: "Successfully toggled including pronouns. (Disabled)",
+  TOGGLED_INCLUDING_PROXY_TAGS_E: "Successfully toggled including proxy tags. (enabled)",
+  TOGGLED_INCLUDING_PROXY_TAGS_D: "Successfully toggled including proxy tags. (disabled)",
+  TOGGLED_INCLUDING_PRONOUNS_E: "Successfully toggled including pronouns. (enabled)",
+  TOGGLED_INCLUDING_PRONOUNS_D: "Successfully toggled including pronouns. (disabled)",
   NOT_FRIDAY: "Flatworm Friday is only on Friday in New York, come back next Friday to Wall Street or use `--time-machine`."
 };
