@@ -371,33 +371,27 @@ PluralBuddy usa un sistema de **nombre de usuario/nombre para mostrar**.
 
 **%name%**
 > %description%`,
-
-	AFFECTED_USER: "Consulta de usuario afectado",
-	AFFECTED_CHANNEL: "Consulta de canal afectado",
-	AFFECTED_ERROR_TYPE: "Consulta por tipo de error",
-
-	NEW_TAG: "Crear nueva etiqueta",
-	ASSIGN_TAG_HEADER: `## Asignar etiqueta a @{{ alterUsername }}`,
-
-	ASSIGN_TAG: "Asignar etiqueta",
-	UNASSIGN_TAG: "Desasignar etiqueta",
-	PAGINATION_BOTTOM_AAT: `-# Página {{ page }}/{{ maxPage }} · Encontradas {{ alters }}/{{ maxAlters }} etiqueta(s) en {{ time }}ms {{ possibleSearchQuery }}`,
-	PAGINATION_SEARCH_QUERY: `· Buscando {{ query }}`,
-
-	AKA_PROFILE: "-# @{{ username }}",
-	MESSAGE_COUNT_LABEL_PROFILE: "**Recuento de mensajes:** ",
-	LAST_SENT_TIME_PROFILE: "(último enviado {{ timestamp }})",
-	OWNED_BY_PROFILE: "**Asociado a:** ",
-	TAGS_PROFILE: "**Etiquetas asignadas**: ",
-	ID_SMALL_PROFILE: "-# ID: ",
-	LIST_MORE_PROFILE: ", y {{ length }} más...",
-	ALT_AVATAR: "Avatar de @{{ alter }}",
-	ALT_BANNER: "Banner de @{{ alter }}",
-
-	CURRENT_PROXY_MODE: "-# Modo actual para @{{ username }} es {{ proxyMode }}",
-	UNLIMITED_ASSIGN:
-		"Puedes asignar una cantidad ilimitada de etiquetas a un alter y una cantidad ilimitada de alters a una etiqueta.",
-	AP_EXPLANATION: `Puedes configurar el modo de proxy automático. Hay tres tipos de modos de proxy automático que son **globales para todo el sistema**:
+  AFFECTED_USER: "Consulta de usuario afectado",
+  AFFECTED_CHANNEL: "Consulta de canal afectado",
+  AFFECTED_ERROR_TYPE: "Consulta por tipo de error",
+  NEW_TAG: "Crear nueva etiqueta",
+  ASSIGN_TAG_HEADER: `## Asignar etiqueta a @{{ alterUsername }}`,
+  ASSIGN_TAG: "Asignar etiqueta",
+  UNASSIGN_TAG: "Desasignar etiqueta",
+  PAGINATION_BOTTOM_AAT: `-# Página {{ page }}/{{ maxPage }} · Encontradas {{ alters }}/{{ maxAlters }} etiqueta(s) en {{ time }}ms {{ possibleSearchQuery }}`,
+  PAGINATION_SEARCH_QUERY: `· Buscando {{ query }}`,
+  AKA_PROFILE: "-# También conocido/a como @{{ username }}",
+  MESSAGE_COUNT_LABEL_PROFILE: "**Recuento de mensajes:** ",
+  LAST_SENT_TIME_PROFILE: "(último enviado {{ timestamp }})",
+  OWNED_BY_PROFILE: "**Asociado a:** ",
+  TAGS_PROFILE: "**Etiquetas asignadas**: ",
+  ID_SMALL_PROFILE: "-# ID: ",
+  LIST_MORE_PROFILE: ", y {{ length }} más...",
+  ALT_AVATAR: "Avatar de @{{ alter }}",
+  ALT_BANNER: "Banner de @{{ alter }}",
+  CURRENT_PROXY_MODE: "-# Modo actual para @{{ username }} es {{ proxyMode }}",
+  UNLIMITED_ASSIGN: "Puedes asignar una cantidad ilimitada de etiquetas a un alter y una cantidad ilimitada de alters a una etiqueta.",
+  AP_EXPLANATION: `Puedes configurar el modo de proxy automático. Hay tres tipos de modos de proxy automático que son **globales para todo el sistema**:
 > - *Modo Alter*: Todos los mensajes enviados desde este sistema usarán proxy con este alter. Las etiquetas proxy al final de tu mensaje serán ignoradas, ya que todos los mensajes saldrán con este alter.
 > - *Modo Fijado (Latch)*: El alter del último mensaje enviado con etiquetas proxy será seleccionado para los siguientes mensajes. No requiere un alter inicial, pero se puede definir uno.
 > - *Desactivado*: Usar etiquetas proxy enviará un mensaje proxy con un alter, de lo contrario se enviará un mensaje normal.`,
@@ -419,7 +413,7 @@ ${emojis.reply} Esta no es una lista completa de las políticas de PluralBuddy. 
   POLICY_MODAL_CONFIRMATION: "Confirmación",
   POLICY_MODAL_DETAIL: "Acepto la Política de privacidad y los Términos de servicio de PluralBuddy.",
   POLICY_MODAL_BLOCK_DETAIL: "Entiendo que puedo ser bloqueado/a si rompo estas reglas.",
-  POLICY_MODAL_BLOCK_DESC: "You have 30 days to appeal being blocked before all data is gone–violating data is removed instantly",
+  POLICY_MODAL_BLOCK_DESC: "Tienes 30 días para apelar un bloqueo antes de que se eliminen todos tus datos (los datos en infracción se eliminan al instante)",
   LATCH_NAME: "Modo Fijado (Latch)",
   LATCH_DESC: "Establecer este alter como el alter inicial en el modo fijado.",
   ALTER_NAME: "Modo Alter",
@@ -459,7 +453,7 @@ Tu perfil público es cómo se ve tu alter para otros usuarios cuando identifica
   PUBLIC_PROFILE_COLOR_DESC: "Establecer un color para un alter muestra ese color en su contenedor de rango y en su perfil público.",
   PUBLIC_PROFILE_SYSTEM_TAG_DESC: `Puedes establecer una etiqueta de sistema para tu sistema. Las descripciones de sistema pueden tener un máximo de 75 caracteres.
 -# La etiqueta del sistema {{ systemName }} es: {{ displayTag }}`,
-  ALTER_TOP_VIEW: `-# @{{ alterUsername }}> • ID: \`{{ alterId }}\``,
+  ALTER_TOP_VIEW: `-# @{{ alterUsername }}> • ID: `{{ alterId }}\``,
   GENERAL_LABEL: "General",
   TOP_BACK_LABEL: "Volver",
   ALTER_PROXY_TAGS_LABEL: "Etiquetas proxy",
