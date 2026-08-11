@@ -1,5 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import type { PGuild } from "plurography";
 import {
 	ActionRow,
 	Button,
@@ -13,12 +14,9 @@ import {
 	TextDisplay,
 	Thumbnail,
 } from "seyfert";
-import { AlterProtectionFlags, type PAlter } from "../types/alter";
-import { TranslatedView } from "./translated-view";
 import type { ColorResolvable } from "seyfert/lib/common";
-import { InteractionIdentifier } from "../lib/interaction-ids";
 import { ButtonStyle, Spacing } from "seyfert/lib/types";
-import { emojis, getEmojiFromTagColor } from "../lib/emojis";
+import { mentionCommand } from "@/lib/mention-command";
 import {
 	friendlyProtectionAlters,
 	friendlyProtectionSystem,
@@ -26,22 +24,25 @@ import {
 	listFromMaskAlters,
 	listFromMaskSystems,
 } from "@/lib/privacy-bitmask";
-import { AlertView } from "./alert";
-import { mentionCommand } from "@/lib/mention-command";
-import { tagCollection } from "@/mongodb";
-import type { PTag } from "@/types/tag";
-import type { PSystem } from "@/types/system";
-import { getUserById } from "@/types/user";
-import type { PGuild } from "plurography";
 import { sanitizeEmojis } from "@/lib/sanitize-emojis";
 import paginateComponents from "@/lib/views/paginate";
+import { tagCollection } from "@/mongodb";
+import type { PSystem } from "@/types/system";
+import type { PTag } from "@/types/tag";
+import { getUserById } from "@/types/user";
+import { emojis, getEmojiFromTagColor } from "../lib/emojis";
+import { InteractionIdentifier } from "../lib/interaction-ids";
+import { AlterProtectionFlags, type PAlter } from "../types/alter";
+import { AlertView } from "./alert";
+import { TranslatedView } from "./translated-view";
+
 
 export class AlterView extends TranslatedView {
 	private async getTags(alter: PAlter) {
 		return {
 			data: await tagCollection
 				.find({ associatedAlters: alter.alterId.toString().toString() })
-				.limit(5)
+				.sort({ orderString: 1, tagFriendlyName: 1 })
 				.toArray(),
 			count: alter.tagIds.length,
 		};
@@ -77,7 +78,13 @@ export class AlterView extends TranslatedView {
 		if (tagsDisplayable) {
 			const { data, count } = await this.getTags(alter);
 
-			tags = data;
+			tags = data
+				.sort((a, b) => {
+					const k1 = a.orderString === undefined ? 0 : 1;
+					const k2 = b.orderString === undefined ? 0 : 2;
+					return k2 - k1;
+				})
+				.slice(0, 5);
 			tagCount = count;
 		}
 

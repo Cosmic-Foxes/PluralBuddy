@@ -1,6 +1,7 @@
-import { source } from "@/lib/source";
 import { DocsLayout } from "@/components/layouts/docs";
+import { HeroPattern } from "@/components/layouts/docs/hero-pattern";
 import { baseOptions } from "@/lib/layout.shared";
+import { source } from "@/lib/source";
 
 export default async function Layout({
 	params,
@@ -53,6 +54,7 @@ export default async function Layout({
 				},
 			}}
 		>
+			<HeroPattern />
 			{children}
 		</DocsLayout>
 	);

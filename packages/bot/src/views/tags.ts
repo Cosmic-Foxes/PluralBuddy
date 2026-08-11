@@ -1,13 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import {
-	tagColors,
-	tagHexColors,
-	TagProtectionFlags,
-	type PTag,
-} from "@/types/tag";
-import { TranslatedView } from "./translated-view";
-import {
 	ActionRow,
 	Button,
 	Container,
@@ -15,17 +8,24 @@ import {
 	Separator,
 	TextDisplay,
 } from "seyfert";
+import { ButtonStyle, Spacing } from "seyfert/lib/types";
 import { emojis, getEmojiFromTagColor } from "@/lib/emojis";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { ButtonStyle, Spacing } from "seyfert/lib/types";
+import { mentionCommand } from "@/lib/mention-command";
+import { AlterProtectionFlags } from "@/types/alter";
+import {
+	type PTag,
+	TagProtectionFlags,
+	tagColors,
+	tagHexColors,
+} from "@/types/tag";
 import {
 	friendlyProtectionTags,
 	has,
 	listFromMaskTags,
 } from "../lib/privacy-bitmask";
-import { mentionCommand } from "@/lib/mention-command";
-import { AlterProtectionFlags } from "@/types/alter";
 import { AlertView } from "./alert";
+import { TranslatedView } from "./translated-view";
 
 export class TagView extends TranslatedView {
 	tagProfileView(tag: PTag, external = false) {
@@ -173,6 +173,26 @@ ${
 								.setLabel(this.translations.TAG_SET_PRIVACY)
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.Tags.SetPrivacy.create(
+										tag.tagId,
+									),
+								),
+						),
+					new Separator().setSpacing(Spacing.Small),
+					new Section()
+						.addComponents(
+							new TextDisplay().setContent(
+								this.translations.T_ORDER_STRING_DESC.replace(
+									"{{ order }}",
+									tag.orderString ?? "unset"
+								),
+							),
+						)
+						.setAccessory(
+							new Button()
+								.setStyle(ButtonStyle.Secondary)
+								.setLabel(this.translations.ALTER_SET_ORDER_STRING)
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.Tags.SetOrderString.create(
 										tag.tagId,
 									),
 								),

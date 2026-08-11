@@ -128,7 +128,7 @@ export default class TupperBoxConverter
 				"@/converter/tupper": String(tag.id),
 				...(tag.tag !== null ? { "@/tag": tag.tag } : {}),
 				...(tag.avatar !== null ? { "@/icon": tag.avatar } : {}),
-			},
+			}
 		} satisfies PTag);
 	}
 	from(): null {

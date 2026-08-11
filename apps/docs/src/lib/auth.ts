@@ -1,15 +1,11 @@
-import { betterAuth } from "better-auth";
-import { jwt } from "better-auth/plugins";
-import { mongodbAdapter } from "better-auth/adapters/mongodb";
-import { MongoClient } from "mongodb";
-import { oidcProvider } from "better-auth/plugins";
-import { RESTGetAPICurrentUserResult } from "discord-api-types/v10"
-
+import { dash } from "@better-auth/infra";
 import { oauthProvider } from "@better-auth/oauth-provider";
 import { DiscordSnowflake } from "@sapphire/snowflake";
-import { dash } from "@better-auth/infra";
-
-import { openAPI } from "better-auth/plugins"
+import { betterAuth } from "better-auth";
+import { mongodbAdapter } from "better-auth/adapters/mongodb";
+import { jwt, oidcProvider, openAPI } from "better-auth/plugins"
+import { RESTGetAPICurrentUserResult } from "discord-api-types/v10"
+import { MongoClient } from "mongodb";
 
 const client = new MongoClient(process.env.MONGO ?? "");
 
@@ -88,8 +84,8 @@ export const auth = betterAuth({
 				"openid",
 				"email",
 				"offline_access",
-				"alter:read",
-				"alter:write",
+				"alters:read",
+				"alters:write",
 				"tags:read",
 				"tags:write",
 				"tags:alters",
