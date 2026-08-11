@@ -1,20 +1,20 @@
-import { source } from "@/lib/source";
+import { createRelativeLink } from "fumadocs-ui/mdx";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { after } from "next/server";
+import { PostHog } from "posthog-node";
+import { OpenAPIPage } from "@/components/api-page";
+import { Feedback } from "@/components/feedback/client";
 import {
 	DocsBody,
 	DocsDescription,
 	DocsPage,
 	DocsTitle,
 } from "@/components/layouts/docs/page";
-import { notFound } from "next/navigation";
-import { getMDXComponents } from "@/mdx-components";
-import type { Metadata } from "next";
-import { createRelativeLink } from "fumadocs-ui/mdx";
 import { Separator } from "@/components/ui/separator";
-import { Feedback } from "@/components/feedback/client";
-import { PostHog } from "posthog-node";
-import { after } from "next/server";
-import { OpenAPIPage } from "@/components/api-page";
 import { openapi } from '@/lib/openapi';
+import { source } from "@/lib/source";
+import { getMDXComponents } from "@/mdx-components";
 
 export default async function Page(props: PageProps<"/[lang]/docs/[[...slug]]">) {
 	const params = await props.params;
@@ -80,7 +80,7 @@ export async function generateMetadata(props: {
 	const params = await props.params;
 	const page = source.getPage(params.slug);
 	if (!page) notFound();
-	const image = ['/docs-og', ...(params.slug ?? []), 'image.png'].join('/');
+	const image = ['/og/docs', ...(params.slug ?? []), 'image.png'].join('/');
 
 	return {
 		title: page.data.title,
