@@ -1,9 +1,9 @@
 {
     "HomePage": {
-        "title": "The <headline>faster</headline> age of plurality bots",
-        "desc": "PluralBuddy is the <highlight>next generation plurality bot</highlight> for Discord – built on<br></br>principals of <accent>speed</accent>, <accent>accessibility</accent> & <accent>data convenience.</accent>",
+        "title": "La era <headline>más rápida</headline> de los bots de pluralidad",
+        "desc": "PluralBuddy is the <highlight>next generation plurality bot</highlight> for Discord – built on <br></br>principals of <accent>speed</accent>, <accent>accessibility</accent> & <accent>data convenience.</accent>",
         "proxy_time_headline": "<600ms proxy time",
-        "blocks_headline": "Blocks, manager roles, proxy delays",
+        "blocks_headline": "Bloqueos, roles de administrador, retrasos de propia",
         "developer_headline": "Built with developers in mind",
         "add_discord_btn": "Add to Discord",
         "docs_btn": "Documentation",
@@ -27,8 +27,8 @@
         "administrate_title": "<highlighter>Administrate</highlighter> with ease",
         "administrate_desc": "PluralBuddy has numerous administrator related features – designed to keep a balance between admin and user control.",
         "change_bot_headline": "Change the bot",
-        "change_bot_title": "Disable or enable different features of the bot",
-        "change_bot_desc": "PluralBuddy is split into feature flags, dynamically changing the features allowed on PluralBuddy based on your server's guidelines or needs",
+        "change_bot_title": "Disable or enable different features of the bot.",
+        "change_bot_desc": "PluralBuddy is split into feature flags, dynamically changing the features allowed on PluralBuddy based on your server's guidelines or needs.",
         "alter_containers_headline": "Alter containers",
         "alter_containers_title": "Emphasize your staff members.",
         "alter_containers_desc": "Add Discord containers to messages to show members that your staff members are chatting – even if they are currently proxying.",

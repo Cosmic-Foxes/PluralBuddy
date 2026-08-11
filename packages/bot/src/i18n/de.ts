@@ -1,3 +1,4 @@
+import { emojis } from "@/lib/emojis";
 export default {
   INTRODUCTION_MESSAGE: `## Willkommen bei PluralBuddy
 PluralBuddy ist ein Bot, der entwickelt wurde, um die Lücke zwischen Qualität und Anpassbarkeit im Plural Austausch für Discord Server und Benutzer zu schließen.
@@ -10,13 +11,13 @@ Zusätzlich können Sie auch Daten von einem anderen Bot wie PluralKit importier
   PAGINATION_NEXT_PAGE: "Nächste Seite",
   PAGINATION_FINISH: "Ende",
   NO_SERVER_DELETION: "PluralBuddy Express Änderungen müssen tatsächlich auf einen Server eingeladen werden, damit Nachrichten aufgrund von Discord-Einschränkungen gelöscht werden können. Du solltest jedoch in der Lage sein ihn mit der rechten Maustaste zu löschen!",
-  BLOCKED: "Du wurdest von {{ guild }} in die blocks gesetzt. Die Nutzung von PluralBuddy ist in dieser Gilde nun nicht mehr möglich.",
+  BLOCKED: "Du wurdest von {{ guild }} gesperrt. Die Nutzung von PluralBuddy ist in dieser Gilde nicht mehr möglich.",
   // Does not need to be translated
-  BLOCK_PC: `You have been blocked from **Pridecord**. You cannot use PluralBuddy in this guild.
+  BLOCK_PC: `Du wurdest von **Pridecord** gesperrt. Die Nutzung von PluralBuddy ist in dieser Gilde nicht möglich.
 
-> **Reason:** {{ libbyReasoning }}
-> **Expires:** {{ libbyExpirationDate }}
-> -# {{ reply }} Please view the DM from <@1455014942888693792> regarding case \`{{ libbyCaseId }}\`.`,
+> **Grund:** {{ libbyReasoning }}
+> **Ablaufdatum:** {{ libbyExpirationDate }}
+> -# {{ reply }} Bitte beachte die Direktnachricht von <@1455014942888693792> bezüglich des Falls \`{{ libbyCaseId }} \`.`,
   PAGINATION_PREVIOUS_PAGE: "Vorherige Seite",
   CREATING_NEW_SYSTEM_HEADER: "## Ein neues System schaffen",
   ERROR_DISABLED_SYSTEM: "2f – Ihr System ist deaktiviert. Sie können keinen Proxy verwenden.",
@@ -47,25 +48,27 @@ Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer wel
   SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN: "System & Setup erneut entfernen",
   ERROR_PAGINATION_TOO_OLD: "2g – Die Alter Paginierungs Komponente ist veraltet. Sie können nicht fortfahren. Klicken Sie bitte oben in der Meldung auf den Tab \"Alter\", um die Seiteneinstellungen zurückzusetzen.",
   ERROR_TAG_PAGINATION_TOO_OLD: "2h – Diese Tag Pagination Komponente ist zu alt, Sie können nicht fortfahren. Bitte klicken Sie auf die Registerkarte \"Tags\" oben in der Nachricht, um die Pagination zurückzusetzen.",
-  ERROR_ASSIGN_PAGINATION_TOO_OLD: "2i – That pagination component is too old, you cannot proceed. Please go back and hit the Assign button again to make the pagination component work again.",
-  ERROR_NO_ALTERS: "2w – You have no alters! Create one below!",
-  ERROR_NO_TAGS: "2x – You have no tags! Create one below!",
-  PK_IMPORT_START: "## PluralKit Importing",
-  SP_IMPORT_START: "## Simply Plural Importing",
-  PAGE_NEW_SYS_TEXT: "-# Page 3/3 · Some fields haven't been filled out. · * Required",
-  PAGE_NEW_SYS_TEXT_FILLED: "-# Page 3/3 · * Required",
-  IMPORT_PLURALKIT_DESCRIPTION: "Import from PluralKit",
-  IMPORT_TUPPERBOX_DESCRIPTION: "Import from TupperBox",
-  IMPORT_PLURALBUDDY_DESCRIPTION: "Import from PluralBuddy",
-  IMPORT_SIMPLYPLURAL_DESCRIPTION: "Import from SimplyPlural",
-  IMPORT_SOURCE_DESCRIPTION: "Import Source",
+  ERROR_ASSIGN_PAGINATION_TOO_OLD: "2i – Diese Paginations komponente ist zu alt, Sie können nicht fortfahren. Bitte gehen Sie zurück und klicken Sie erneut auf den Knopf Zuordnen, damit die Paginations komponente wieder funktioniert.",
+  ERROR_NO_ALTERS: "2w – Sie haben keine Änderungen! Erstellen Sie unten eine!",
+  ERROR_NO_TAGS: "2w – Sie haben keine Änderungen! Erstellen Sie unten eine!",
+  PK_IMPORT_START: "## PluralKit importieren",
+  SP_IMPORT_START: `## Simply Plural Importing
+	
+SimplyPlural has been discontinued.`,
+  PAGE_NEW_SYS_TEXT: "-# Seite 3/3 · Einige Felder bleiben leer. · * erforderlich",
+  PAGE_NEW_SYS_TEXT_FILLED: "-# Seite 3/3 · * erforderlich",
+  IMPORT_PLURALKIT_DESCRIPTION: "Von PluralKit importieren",
+  IMPORT_TUPPERBOX_DESCRIPTION: "Aus TupperBox importieren",
+  IMPORT_PLURALBUDDY_DESCRIPTION: "Von PluralBuddy importieren",
+  IMPORT_SIMPLYPLURAL_DESCRIPTION: "Von SimplyPlural importieren",
+  IMPORT_SOURCE_DESCRIPTION: "Quelle importieren",
   IMPORT_TOKEN_DESCRIPTION: "SimplyPlural Token",
-  CREATE_NEW_SYS_DESCRIPTION: "Create New System",
+  CREATE_NEW_SYS_DESCRIPTION: "Neues System erstellen",
   PLURALBUDDY_IMPORT_ERROR_TOO_LARGE: "2j – Importing files cannot be larger than 2MB. Please contact support if you are genuinely trying to import a system larger than 2MB.",
   ERROR_ATTACHMENT_TOO_LARGE: "2j – Attachments for banners or profile pictures cannot be larger than 2MB.",
-  CREATE_NEW_ALTER_DESCRIPTION: "Create New Alter",
-  CREATE_NEW_TAG_DESCRIPTION: "Create New Tag",
-  PLURALBUDDY_IMPORT_ERROR_INVALID_JSON: "2k – The file you imported is not valid JSON.",
+  CREATE_NEW_ALTER_DESCRIPTION: "Neues System erstellen",
+  CREATE_NEW_TAG_DESCRIPTION: "Neues Tag erstellen",
+  PLURALBUDDY_IMPORT_ERROR_INVALID_JSON: "2k – Die importierte Datei ist kein gültiges JSON.",
   ERROR_INTERACTION_TOO_OLD: "2l – This interaction has no longer been kept track of. (have you waited too long?)",
   ERROR_SYSTEM_DOESNT_EXIST: "2m – This operation cannot be concluded because there is no system to operate on.",
   ERROR_ALTER_DOESNT_EXIST: "2n – This operation cannot be concluded because either, there is no alter to operate on, or there is no system associated to the user who created the request.",
@@ -79,12 +82,15 @@ Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer wel
   ALTER_SUCCESS_PRONOUNS: "Successfully set pronouns for @%alter% to %new%",
   ALTER_SUCCESS_PRIVACY: "Successfully set the public privacy values for @%alter% to %new% (%number% total values)",
   ALTER_SUCCESS_DESC: "Successfully set description for @%alter%.",
+  TAG_SUCCESS_ORDER: "Successfully set order string for @%tag%.",
   PAGINATION_TITLE: "Page",
   WAITING: "Loading...",
   WAITING_LONG_TERM: "Loading... This will take a while. Please wait a moment.",
   SUCCESSFULLY_IMPORTED: "Successfully imported %alter_count% alter(s) for %system_name%.",
   CREATING_NEW_PT_FORM_TITLE: "New proxy tag",
-  CREATING_NEW_PT_FORM_DESC: "Input the proxy tag where `text` is the text in the message. For example: `text -bob`",
+  CREATING_NEW_PT_FORM_DESC: `PluralBuddy has similar proxy tag formatting in regards that it is similar to how other plurality bots format their proxy tags.
+> - **For example:** \`text :bob\` would be valid, and proxy messages ending with \`:bob\`.
+> - You can optionally show these tags with the "Show Proxy Tags" system setting on the second page!`,
   CREATING_NEW_PT_FORM_LABEL: "Proxy Tag",
   CREATING_NEW_PT_ERROR: "2p – This is not formatted correctly. Remember, you need to have a prefix and a suffix separated by `text`.",
   CREATING_NEW_PT_TOO_MANY_CHARS: "2y – There is too many characters on either the prefix or suffix side. Remember, you can only have 20 characters for the prefix & 20 characters for the suffix.",
@@ -93,6 +99,13 @@ Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer wel
   PLURALBUDDY_IMPORT_ERROR: "2q – There was some error(s) while parsing that:\n\n\`\`\`\n%zod_errors%\n\`\`\`",
   PLURALBUDDY_OPTIONS_ERROR: "2r – There was some error(s) while evaluating the arguments to that command:\n\n\`\`\`\n%options_errors%\n\`\`\`",
   CREATE_NEW_ALTER_DONE: "Successfully created a new alter in your system. Use `%prefix%alter %alter_id%` for more details.",
+  CREATE_NEW_ALTER_ADD: "Performed the following additional operations on this alter:",
+  CREATE_NEW_ALTER_DESC: "Assigned description: {{ description }}",
+  CREATE_NEW_ALTER_PRONOUNS: "Assigned pronouns: **{{ pronouns }}**",
+  CREATE_NEW_ALTER_NOW: "Autoproxying this alter **now**.",
+  CREATE_NEW_ALTER_ASSIGN: "Assigned this alter to **{{ tag }}**.",
+  NO_SUCH_TAG_CANT_ASSIGN: "Cannot assign this alter to the specified tag as it does not exist.",
+  CREATE_NEW_ALTER_DISPLAY_NAME: "Assigned display name: **{{ dn }}**",
   CREATE_NEW_TAG_DONE: "Successfully created  %color_emoji% **%tag_name%**  in your system. Use %command% for more details.",
   TAG_SPACE_WARNING: "Since this tag has **spaces** in it, some commands may require you put the display name in quotes to be parsed correctly. Additionally, you can just use application commands instead.",
   TAG_ALREADY_EXISTS: "You already have a tag named **%display%** in your system.",
@@ -129,6 +142,8 @@ Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer wel
   SYSTEM_TAG_FORM_LABEL: "System Tag",
   SYSTEM_NICKNAME_FORM_LABEL: "System Nickname Format",
   SYSTEM_NICKNAME_FORM_DESC: 'Where "%username%" is your alter username, "%display%" is your alter display name',
+  SYSTEM_PRIVACY_INFO: `-# By default, your entire PluralBuddy system is entirely private. This means nobody can see information about your system besides if you proxy or if a developer looks into it (unlikely).
+-# - **What are privacy flags:** Privacy flags are things you can _opt into_ being public on your system. This means you have granular control over what is public and private on your own system.`,
   ALTER_PROXY_TAGS: "## Proxy Tags - @%alter%\nProxy tags are the way your alter *fronts* depending on the contents of your message. You can create multiple of these, with 20 characters as the prefix/suffix of each descriptor for proxy tags.",
   ALTER_FORM_TITLE: "Editing Alter",
   ALTER_GENERAL: "## %general% General Settings - @%alter%\nAlter's are parts of your system. Certain values of your alter can be configured here.",
@@ -139,9 +154,22 @@ Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer wel
 -# Your name in %server% is: %name%`,
   ALTER_SET_USERNAME_DESC: "Alter usernames cannot have any spaces and can only be less than 20 characters. They are used to identify your system in commands.",
   ALTER_SET_USERNAME_SPACES: "There cannot be spaces, `@`, `\\` or `/` in usernames.",
+  ALTER_INFORMATION: `Represent yourself wisely! PluralBuddy uses an _alter_ system, which are the basis of every single member you could possibly be.
+PluralBuddy uses a **username/display name** system.
+
+## Username/display name system:
+> **Your username:** is how you represent your alter in commands, and the _only_ way to. Make sure you remember this! (Similar to alter IDs from other bots)
+> **Your display name:** is how your alter is represented in webhooks and publicly. You ideally can put whatever special symbols or characters you'd like here!
+ 
+-# Both values can be changed at any time! Just come back to this with \`pb;edit-alter config <username>\`.
+-# Usernames can **not** have @'s or any slashes.
+-# Scroll down to see the rest of this modal.`,
+  ALTER_AFTER: `-# 🎀 Good job! Your alter is awesome!`,
   ALTER_DISPLAY_NAME_FORM_LABEL: "Display Name",
+  ALTER_SEARCH_STRING_FORM_LABEL: "Search String (max 4 chars.)",
   ALTER_SET_PRONOUNS: "Set Pronouns",
   ALTER_SET_DESCRIPTION: "Set Description",
+  ALTER_SET_ORDER_STRING: "Set Order String",
   ALTER_SET_PFP: "Set Profile Picture",
   ALTER_SET_PFP_SE: "Is server-specific",
   ALTER_SET_PFP_SE_DESC: "This profile picture will only be specific to this server.",
@@ -254,7 +282,10 @@ Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer wel
 
 -# [Terms of Service](<https://pb.giftedly.dev/docs/policies/terms>) · [Privacy Policy](<https://pb.giftedly.dev/docs/policies/privacy>)`,
   TAG_ASSIGN_ALTER: "Assign Tag",
-  SET_AUTO_PROXY: "Successfully set proxy mode to **%mode%** for your system in **%server_name%**.",
+  SET_AUTO_PROXY_SRV: "Successfully set proxy mode to **%mode%** for your system in **%server_name%**.",
+  SET_AUTO_PROXY_GLOBAL: "Successfully set proxy mode to **%mode%** for your system everywhere.",
+  SET_AUTO_PROXY_CUSTOM: "Successfully changed control of your proxy mode to **%app%** in **%server_name%**. **%app%** will be able to control your front state until you disable this auto proxy mode.",
+  SET_AUTO_PROXY_CUSTOM_GLOBAL: "Successfully changed control of your proxy mode to **%app%** everywhere. **%app%** will be able to control your front state until you disable this auto proxy mode.",
   SET_AUTO_PROXY_DMS: "Successfully set proxy mode to **%mode%** for your system in that server.",
   TAG_ALREADY_ASSIGNED: "**%tag%** has already been assigned to **@%alter%.",
   ASSIGNED_TAG: "**%tag%** has been successfully assigned to **@%alter%**.",
@@ -274,6 +305,8 @@ Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer wel
   OPERATION_PRONOUNS: "Set system pronouns to %pronouns%.",
   OPERATION_LATCH_DELAY: "Set latch delay to %delay%.",
   OPERATION_FALLBACK: "Set \`%property%\` to \`%value%\`",
+  OPERATION_SYSTEM_TOGGLE_PROXY_TAGS: "Toggled proxy tags on the system.",
+  OPERATION_SYSTEM_TOGGLE_PRONOUNS: "Toggled displaying pronouns on the system.",
   EDIT_MESSAGE: "Editing message",
   MESSAGE_CONTENTS: "New Message Contents",
   BLOCKLIST_USER: "Blocklist User ID",
@@ -294,13 +327,13 @@ Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer wel
   INSUFFICIENT_DATA_SIZE: "2ad – There is not a sufficient amount of resources under your user context to continue with this operation.",
   INSUFFICIENT_USER_PERMISSIONS: "2ag – You do not have permission to edit this information.",
   SUCCESS_CHANGED_SERVER_PREFIXES: "This server now has the following prefixes: \n%prefixes%",
-  SUCCESS_ADD_ITEM_blocks: "%item% has been added to the blocks successfully.",
-  SUCCESS_REMOVE_ITEM_blocks: "%item% has been removed from the blocks successfully.",
-  SUCCESS_CHANGED_SERVER_blocks: "This server now has the following blocks configuration: \n%blocks_items%",
+  SUCCESS_ADD_ITEM_BLOCKED: "%item% has been blocked successfully.",
+  SUCCESS_REMOVE_ITEM_BLOCKED: "%item% has been unblocked successfully.",
+  SUCCESS_CHANGED_SERVER_BLOCKS: "This server now has the following block configuration: \n%block_items%",
   PREFIX_ALREADY_EXISTS: "That prefix already exists or there is a duplicate in the array.",
   BLOCK_ALREADY_EXISTS: "That role or channel is already blocked.",
   SUCCESS_ADD_MANAGER_ROLE: "%item% has been added to the manager role list successfully.",
-  SUCCESS_CHANGED_MANAGER_blocks: "This server now has the following manager role configuration: \n%manager_roles%",
+  SUCCESS_CHANGED_MANAGER_BLOCKS: "This server now has the following manager role configuration: \n%manager_roles%",
   LATCH_DELAY_INVALID: "Latch delays cannot be longer than 10 hours, or be an invalid input. ",
   MANAGER_ALREADY_EXISTS: "That manager role is already on the manager role list.",
   SUCCESS_REMOVE_MANAGER_ROLE: "%item% has been removed from the manager role list successfully.",
@@ -358,6 +391,23 @@ Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer wel
 > - *Off*: Using proxy tags will proxy an alter, otherwise a normal message is sent.`,
   REQUIRED_SERVER_PROXY: "You must be in a server to proxy",
   SELECT_DEFAULT_PROXY: "Select a proxy mode",
+  POLICY_MODAL_TITLE: "Welcome to PluralBuddy!",
+  POLICY_MODAL_DESCRIPTION: `${emojis.clockCheck} Hello, welcome to PluralBuddy for Discord! In order for us to keep PluralBuddy a safe bot, we require that you agree to our [Privacy Policy](https://pb.giftedly.dev/en/docs/policies/privacy) & [Terms of Service](https://pb.giftedly.dev/en/docs/policies/terms) to use PluralBuddy.
+
+-# - NSFW content is not tolerated on PluralBuddy. NSFW will result in an instant block. Be careful with the content you upload.
+-# - While PluralBuddy is a **private-first** bot from a user perspective, however due to the nature of centralized Discord bots, all system-related data you provide PluralBuddy is able to be seen by developers.
+-# - Developers do not look at data in your system often in exception to if there is suspicion of a Terms of Service violation.
+-# - Your message & server contents are **not** stored on PluralBuddy's infrastructure. Only resulting message IDs, and server IDs are stored.
+
+${emojis.reply} This is not a full list of information in PluralBuddy's policies. If you are confused, please open a ticket in the [PluralBuddy Discord Server](https://discord.gg/BF5bJfZY3s).
+❤️ Thanks for checking out our bot! It means a lot to us! 
+
+-# |˶˙ᵕ˙ )ﾉﾞ PluralBuddy was made exclusively by humans, and in no capacity was developed by artificial intelligence. 
+-# (๑˃ᴗ˂)ﻭ  Made with **love.**`,
+  POLICY_MODAL_CONFIRMATION: "Confirmation",
+  POLICY_MODAL_DETAIL: "I agree to PluralBuddy's Privacy Policy and Terms of Service.",
+  POLICY_MODAL_BLOCK_DETAIL: "I agree I may be blocked if I break these rules.",
+  POLICY_MODAL_BLOCK_DESC: "You have 30 days to appeal being blocked before all data is gone–violating data is removed instantly",
   LATCH_NAME: "Latch Mode",
   LATCH_DESC: "Set this alter as the first alter in latch mode.",
   ALTER_NAME: "Alter Mode",
@@ -387,6 +437,8 @@ Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer wel
 -# To view your description in full, run: {{ commandMention }}`,
   T_PUBLIC_PROFILE_DESC_DESC: `You can set a description for your tag. Tag descriptions can be at maximum 2,000 characters long.
 -# To view your description in full, run: {{ command }}`,
+  T_ORDER_STRING_DESC: `Order strings evaluate the order that this tag is displayed. The more alphabetically favored this string is, the higher up the tag appears. Tags with no order string are sorted last. Order strings are not shown, and can only be at most 4 characters.
+-# This tags order string is: {{ order }}`,
   S_PUBLIC_PROFILE_DESC_DESC: `You can set a description for your system. System descriptions can be at maximum 2,000 characters long.
 -# To view your description in full, run: {{ mention }}`,
   PUBLIC_PROFILE_COLOR_DESC: "Setting a color for an alter shows that color for their rank container along with their public profile.",
@@ -448,9 +500,9 @@ Please download the JSON file sent to you and use the button to upload the attac
   SRV_CFG_PREFIXES_BTN: "Set Prefixes",
   SRV_CFG_BLOCKS_DESC: `**Configure Block**
 > Roles and channels can be blocked from proxying or using commands from PluralBuddy.`,
-  SRV_CFG_blocksS_ITEMS: `> Currently, the guild's blocks items are: {{ list }}`,
-  SRV_CFG_blocksS_ITEMS_EMPTY: "> - _There are no blocks items._",
-  SRV_CFG_blocksS_ITEMS_MORE: `\n> - ... and {{ count }} extra item(s). Use {{ commandMention }} to see the rest of the blocks items.`,
+  SRV_CFG_BLOCKS_ITEMS: `> Currently, the guild's blocked items are: {{ list }}`,
+  SRV_CFG_BLOCKS_ITEMS_EMPTY: "> - _There are no blocked items._",
+  SRV_CFG_BLOCKS_ITEMS_MORE: `\n> - ... and {{ count }} extra item(s). Use {{ commandMention }} to see the rest of the blocked items.`,
   SRV_CFG_ADD_CHANNELS: "Add Channels",
   SRV_CFG_ADD_CATEGORIES: "Add Category",
   SRV_CFG_ADD_ROLES: "Add Roles",
@@ -517,6 +569,7 @@ There is an example below of what an example proxy with this role would look lik
 > - *Off*: Using proxy tags will proxy an alter, otherwise a normal message is sent.`,
   EXPORT_SYS_BTN: "Export System",
   EXPORT_SYS_DESC: "Exporting the system will simply export all data from the system and send it to your DM's. Ensure your DM's are open to PluralBuddy before exporting.",
+  EXTERNAL_EXPORT_SYS_DESC: "You can externally export to another service by hitting the service you'd like to export to below:",
   IMPORT_SYS_BTN: "Import System",
   IMPORT_SYS_DESC: "Importing your system will allow you to take data from other bots in various import modes.",
   DANGER_ZONE_TITLE: "## Danger Zone",
@@ -545,17 +598,18 @@ There is an example below of what an example proxy with this role would look lik
   FULL_IMPORT_NAME: "Full Import",
   DELETE_IMPORT_DESC: "Delete import mode will remove existing alters/tags missing from the import.",
   DELETE_NAME: "Delete",
+  EXISTING_ALTER: "An alter with that username already exists. Pick another.",
   ALTER_COUNT_LABEL: "**Alter Count:** ",
   SELF_REACTION_ERR: "Unable to remove self-reaction",
   SELF_REACTION_DESC: "PluralBuddy was unable to remove the loading emoji when attempting to perform a [Context Menu Action](<https://pb.giftedly.dev/docs/pluralbuddy/context-actions>).",
   REACTION_ERR: "Unable to remove user reaction",
   REPLY_IN_RESPONSE: "-# {{ reply }} In response to: {{ link }}",
-  AWAKE: "Hi! I'm awake, running PluralBuddy \`#{{ buildNumber }}/{{ branch }}\`.",
+  AWAKE: "Hi! I'm awake, running PluralBuddy `#{{ buildNumber }}/{{ branch }}`.",
   LINK_INVITE: "Invite",
   LINK_SUPPORT: "Support",
   LINK_DOCS: "Docs",
   DISPLAY_TAG_ENFORCE: "Display Tag Enforcement Policy",
-  DISPLAY_TAG_ENFORCE_DESC: "This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by going into `pb;system config` -> \"Public Profile\".",
+  DISPLAY_TAG_ENFORCE_DESC: 'This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by going into `pb;system config` -> "Public Profile".',
   NO_DM_CHANNELS: "You cannot proxy inside of DM channels. Sorry!",
   NOTIFIED_1: "-# You were notified of this action due to your association with your PluralBuddy alter.",
   NOTIFIED_2: "-# Developed as open-source software @ [pb.giftedly.dev](<https://pb.giftedly.dev>)",
@@ -566,6 +620,12 @@ There is an example below of what an example proxy with this role would look lik
   IMPORT_REQ_DESC: "In order to submit your import data from another bot, you must put it into the PluralBuddy dashboard.",
   IMPORT_REQ_WAITING: "-# Waiting for response...\n-# This expires in 15 minutes.",
   VIEW_DASH: "View on Dashboard",
+  INCLUDE_PROXY_TAGS_DESC: "Include proxy tags will remove the automatic omitting of proxy tags from the result message sent by PluralBuddy.",
+  INCLUDE_PROXY_TAGS_BTN: "Include Proxy Tags",
+  INCLUDE_PROXY_TAGS_OFF_BTN: "Disable Including Proxy Tags",
+  INCLUDE_PRONOUNS_DESC: "Including pronouns will add pronouns to the webhook name every time you proxy in parentheses.",
+  INCLUDE_PRONOUNS_BTN: "Include Pronouns",
+  INCLUDE_PRONOUNS_OFF_BTN: "Disable Including Pronouns",
   VALIDATION_TAG_ERROR: "There was an error while creating that tag:",
   ERROR_CREATING_WEBHOOK_TITLE: "Error while creating webhook for <#{{ channelId }}>",
   ERROR_CREATING_WEBHOOK_DESC: "There was an error while creating the corresponding webhook for <#{{ channelId }}>. Check if PluralBuddy has the correct permissions in that channel.",
@@ -582,5 +642,36 @@ PluralBuddy Express is a way that alters can gain the ability to proxy in DMs, o
  - PluralBuddy gathers the token, encrypts it, and hosts a singular-command bot associated to your alter
  - $0, forever
 
-Hit the button to the right to open this alter in the dashboard.`
+Hit the button to the right to open this alter in the dashboard.`,
+  STATUS_AP: `### Auto-Proxy Status
+Your system is currently auto proxying in **{{ mode }}**.`,
+  INTEGRATION_AP: `### Auto-Proxy Status
+Your system is using the front state of **{{ mode }}**.`,
+  NO_STATUS_AP: `You are not currently auto proxying on that scope.`,
+  NO_ALTER_AP: `Your auto proxy is not currently attached to an alter.`,
+  DISABLED_SERVER: `This server is disabled from proxying.`,
+  AP_AS: "-# **AUTO-PROXYING AS:**",
+  AP_INTEGRATION_AS: "-# **{{ provider }} FRONTING AS:**",
+  PROVIDER_NOT_FOUND: `That auto-proxy provider was not found, or you didn't authorize with the [\`system:ai-ap\`](https://pb.giftedly.dev/docs/pluralbuddy/ai-ap) scope. Contact the developer of this integration if you believe this is incorrect.
+	
+-# Integration: \`{{ id }}\``,
+  AP_INVALID_SYNTAX: `Invalid autoproxy mode or provider \`{{ mode }}\`.
+
+**Auto-proxy Usage:**
+\`pb;autoproxy [off|latch|alter|status|{{ aiap }}]\``,
+  AP_ALTER_INVALID_SYNTAX: `You must add an alter for the \`alter\` proxy mode.
+
+**Auto-proxy Usage:**
+\`pb;autoproxy [off|latch|alter|status|{{ aiap }}]\``,
+  AP_SYNTAX: `**Auto-proxy Usage:**
+\`pb;autoproxy [off|latch|alter|status|{{ aiap }}]\``,
+  SUCCESS_DISABLE_GUILD: "Successfully disabled proxying in **{{ guild }}**.",
+  SUCCESS_ENABLE_GUILD: "Successfully enabled proxying in **{{ guild }}**.",
+  PROXYING_ALREADY_ENABLED: "Proxying was already enabled in this server.",
+  PROXYING_ALREADY_DISABLED: "Proxying was already disabled in this server.",
+  TOGGLED_INCLUDING_PROXY_TAGS_E: "Successfully toggled including proxy tags. (Enabled)",
+  TOGGLED_INCLUDING_PROXY_TAGS_D: "Successfully toggled including proxy tags. (Disabled)",
+  TOGGLED_INCLUDING_PRONOUNS_E: "Successfully toggled including pronouns. (Enabled)",
+  TOGGLED_INCLUDING_PRONOUNS_D: "Successfully toggled including pronouns. (Disabled)",
+  NOT_FRIDAY: "Flatworm Friday is only on Friday in New York, come back next Friday to Wall Street or use `--time-machine`."
 };
