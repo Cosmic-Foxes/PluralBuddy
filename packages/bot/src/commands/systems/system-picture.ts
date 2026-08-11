@@ -35,7 +35,7 @@ const options = {
 			if (!data.value.contentType?.startsWith("image"))
 				fail("This attachment is not an image.");
 			if (data.value.size > 2_500_000)
-				fail("This attachment is too big. Attachments at most can be 1mb.");
+				fail("This attachment is too big. Attachments at most can be 2.5MB.");
 			ok(data);
 		},
 	}),
