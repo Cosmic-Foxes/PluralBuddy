@@ -67,6 +67,7 @@ export const PTagObject = z
 		tagColor: z.enum(tagColors),
 
 		associatedAlters: z.string().array(),
+		orderString: z.string().max(4).min(1).optional(),
 
 		/** @see {@link TagProtectionFlags} */
 		public: z

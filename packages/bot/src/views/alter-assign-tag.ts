@@ -1,3 +1,4 @@
+import { DiscordSnowflake } from "@sapphire/snowflake";
 import {
 	ActionRow,
 	Button,
@@ -6,15 +7,14 @@ import {
 	Separator,
 	TextDisplay,
 } from "seyfert";
+import { ButtonStyle, Spacing } from "seyfert/lib/types";
+import { emojis, getEmojiFromTagColor } from "@/lib/emojis";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { tagCollection } from "@/mongodb";
+import type { PAlter } from "@/types/alter";
+import type { PSystem } from "@/types/system";
 import { AlertView } from "./alert";
 import { TranslatedView } from "./translated-view";
-import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { ButtonStyle, Spacing } from "seyfert/lib/types";
-import { tagCollection } from "@/mongodb";
-import { DiscordSnowflake } from "@sapphire/snowflake";
-import type { PSystem } from "@/types/system";
-import { emojis, getEmojiFromTagColor } from "@/lib/emojis";
-import type { PAlter } from "@/types/alter";
 
 export const assignTagPagination: {
 	id: string;
@@ -100,7 +100,7 @@ export class AlertAssignTagView extends TranslatedView {
 									.setLabel(
 										pgObj.alter.tagIds.includes(tag.tagId)
 											? this.translations.UNASSIGN_TAG
-											: this.translations.ASSIGNED_TAG,
+											: this.translations.ASSIGN_TAG,
 									)
 									.setCustomId(
 										InteractionIdentifier.Systems.Configuration.AlterAssignPagination.ToggleAssign.create(

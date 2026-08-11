@@ -41,8 +41,7 @@ export class AlterView extends TranslatedView {
 		return {
 			data: await tagCollection
 				.find({ associatedAlters: alter.alterId.toString().toString() })
-				.limit(5)
-				.sort({ tagFriendlyName: 1 })
+				.sort({ orderString: 1, tagFriendlyName: 1 })
 				.toArray(),
 			count: alter.tagIds.length,
 		};
@@ -78,7 +77,13 @@ export class AlterView extends TranslatedView {
 		if (tagsDisplayable) {
 			const { data, count } = await this.getTags(alter);
 
-			tags = data;
+			tags = data
+				.sort((a, b) => {
+					const k1 = a.orderString === undefined ? 0 : 1;
+					const k2 = b.orderString === undefined ? 0 : 2;
+					return k2 - k1;
+				})
+				.slice(0, 5);
 			tagCount = count;
 		}
 

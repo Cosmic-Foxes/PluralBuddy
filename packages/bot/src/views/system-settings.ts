@@ -1,35 +1,35 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import { DiscordSnowflake } from "@sapphire/snowflake";
+import type { FindCursor, WithId } from "mongodb";
+import { SystemFlags } from "plurography";
 import {
 	ActionRow,
 	Button,
 	Container,
+	type DefaultLocale,
 	Section,
 	SelectMenu,
 	Separator,
 	StringSelectMenu,
 	StringSelectOption,
 	TextDisplay,
-	type DefaultLocale,
 } from "seyfert";
-import { TranslatedView } from "./translated-view";
 import { ButtonStyle, Spacing } from "seyfert/lib/types";
-import { InteractionIdentifier } from "../lib/interaction-ids";
-import type { PSystem } from "../types/system";
+import { mentionCommand } from "@/lib/mention-command";
+import paginateComponents from "@/lib/views/paginate";
+import { alterCollection, tagCollection } from "@/mongodb";
+import { AlterProtectionFlags, type PAlter } from "@/types/alter";
 import { emojis, getEmojiFromTagColor } from "../lib/emojis";
+import { InteractionIdentifier } from "../lib/interaction-ids";
 import {
 	friendlyProtectionSystem,
 	has,
 	listFromMaskSystems,
 } from "../lib/privacy-bitmask";
-import { alterCollection, tagCollection } from "@/mongodb";
-import type { FindCursor, WithId } from "mongodb";
-import { AlterProtectionFlags, type PAlter } from "@/types/alter";
-import { DiscordSnowflake } from "@sapphire/snowflake";
+import type { PSystem } from "../types/system";
 import { AlertView } from "./alert";
-import { mentionCommand } from "@/lib/mention-command";
-import paginateComponents from "@/lib/views/paginate";
-import { SystemFlags } from "plurography";
+import { TranslatedView } from "./translated-view";
 
 export const alterPagination: {
 	id: string;
@@ -253,7 +253,8 @@ export class SystemSettingsView extends TranslatedView {
 	}) {
 		const keepProxyTags =
 			((system.flags ?? 0) & SystemFlags.KEEP_PROXY_TAGS) === 0;
-		const includePronouns = ((system.flags ?? 0) & SystemFlags.INCLUDE_PRONOUNS) === 0;
+		const includePronouns =
+			((system.flags ?? 0) & SystemFlags.INCLUDE_PRONOUNS) === 0;
 
 		return [
 			new Container().setColor("#1190FF").setComponents(
@@ -684,11 +685,15 @@ export class SystemSettingsView extends TranslatedView {
 				systemId: system.associatedUserId,
 				tagFriendlyName: { $regex: pgObj?.searchQuery ?? "" },
 			})
-			.sort({ tagFriendlyName: 1 })
+			.sort({ orderString: 1, tagFriendlyName: 1 })
 			.limit(tagsPerPage)
 			.skip(((pgObj?.memoryPage ?? 1) - 1) * tagsPerPage);
 
-		const alters = await tagsCursor.toArray();
+		const alters = (await tagsCursor.toArray()).sort((a, b) => {
+			const k1 = a.orderString === undefined ? 0 : 1;
+			const k2 = b.orderString === undefined ? 0 : 2;
+			return k2 - k1;
+		});
 		const pgId = pgObj === undefined ? DiscordSnowflake.generate() : pgObj.id;
 
 		if (pgObj === undefined) {
