@@ -141,14 +141,17 @@ SimplyPlural ha sido descontinuado.`,
   SYSTEM_NICKNAME_FORM_DESC: "Donde \"%username%\" es el nombre de usuario de tu alter, y \"%display%\" es el nombre para mostrar de tu alter",
   SYSTEM_PRIVACY_INFO: `-# Por defecto, todo tu sistema de PluralBuddy es completamente privado. Esto significa que nadie puede ver información sobre tu sistema salvo que uses proxy o un desarrollador lo revise (muy poco probable).
 -# - **Qué son las opciones de privacidad:** Las opciones de privacidad son elementos que puedes elegir hacer públicos en tu sistema. Esto te otorga un control detallado sobre qué es público y qué es privado.`,
-  ALTER_PROXY_TAGS: "`## Etiquetas Proxy - @%alter%\nLas etiquetas proxy son la forma en que tu alter *se presenta* según el contenido de tu mensaje. Puedes crear varias de estas, con un máximo de 20 caracteres para el prefijo/sufijo de cada descriptor.",
+  ALTER_PROXY_TAGS: "## Etiquetas Proxy - @%alter%\nLas etiquetas proxy son la forma en que tu alter *se presenta* según el contenido de tu mensaje. Puedes crear varias de estas, con un máximo de 20 caracteres para el prefijo/sufijo de cada descriptor.",
   ALTER_FORM_TITLE: "Editando alter",
   ALTER_GENERAL: "## %general% Configuración general - @%alter%\nLos alters son partes de tu sistema. Aquí puedes configurar ciertos valores de tu alter.",
   ALTER_SET_USERNAME: "Establecer nombre de usuario del alter",
   ALTER_SET_DISPLAY: "Establecer nombre para mostrar",
   ALTER_SET_SERVER_NAME: "Establecer nombre para mostrar en el servidor",
   ALTER_SET_SERVER_NAME_DESC: `Establecer este valor cambiará el nombre para mostrar de este alter cuando esté al frente en %server%.
--# Tu nombre en %server% es: %name%`,
+-# Tu nombre en %server% es:git checkout main
+Switched to branch 'main'
+Your branch is up to date with 'origin/main'.
+ %name%`,
   ALTER_SET_USERNAME_DESC: "Los nombres de usuario de los alters no pueden contener espacios y deben tener menos de 20 caracteres. Se utilizan para identificar a tu sistema en los comandos.",
   ALTER_SET_USERNAME_SPACES: "No se permiten espacios, `@`, `` ni `/` en los nombres de usuario.",
   ALTER_INFORMATION: `¡Represéntate sabiamente! PluralBuddy utiliza un sistema de _alters_, que son la base de cada miembro individual que puedas ser.
