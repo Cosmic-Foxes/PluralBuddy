@@ -36,6 +36,7 @@ import { AlterProtectionFlags, type PAlter } from "../types/alter";
 import { AlertView } from "./alert";
 import { TranslatedView } from "./translated-view";
 
+
 export class AlterView extends TranslatedView {
 	private async getTags(alter: PAlter) {
 		return {
