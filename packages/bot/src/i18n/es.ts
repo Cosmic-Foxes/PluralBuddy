@@ -148,10 +148,7 @@ SimplyPlural ha sido descontinuado.`,
   ALTER_SET_DISPLAY: "Establecer nombre para mostrar",
   ALTER_SET_SERVER_NAME: "Establecer nombre para mostrar en el servidor",
   ALTER_SET_SERVER_NAME_DESC: `Establecer este valor cambiará el nombre para mostrar de este alter cuando esté al frente en %server%.
--# Tu nombre en %server% es:git checkout main
-Switched to branch 'main'
-Your branch is up to date with 'origin/main'.
- %name%`,
+-# Tu nombre en %server% es: %name%`,
   ALTER_SET_USERNAME_DESC: "Los nombres de usuario de los alters no pueden contener espacios y deben tener menos de 20 caracteres. Se utilizan para identificar a tu sistema en los comandos.",
   ALTER_SET_USERNAME_SPACES: "No se permiten espacios, `@`, `` ni `/` en los nombres de usuario.",
   ALTER_INFORMATION: `¡Represéntate sabiamente! PluralBuddy utiliza un sistema de _alters_, que son la base de cada miembro individual que puedas ser.
