@@ -79,6 +79,7 @@ SimplyPlural ha sido descontinuado.`,
   ALTER_SUCCESS_PRONOUNS: "Se han establecido con éxito los pronombres de @%alter% a %new%",
   ALTER_SUCCESS_PRIVACY: "Se han establecido con éxito los valores de privacidad pública de @%alter% a %new% (%number% valores en total)",
   ALTER_SUCCESS_DESC: "Se ha establecido con éxito la descripción de @%alter%.",
+  TAG_SUCCESS_ORDER: "Successfully set order string for @%tag%.",
   PAGINATION_TITLE: "Página",
   WAITING: "Cargando...",
   WAITING_LONG_TERM: "Cargando... Esto tomará un momento. Por favor, espera.",
@@ -162,8 +163,10 @@ PluralBuddy usa un sistema de **nombre de usuario/nombre para mostrar**.
 -# Desplázate hacia abajo para ver el resto de este modal.`,
   ALTER_AFTER: `-# 🎀 ¡Buen trabajo! ¡Tu alter es impresionante!`,
   ALTER_DISPLAY_NAME_FORM_LABEL: "Nombre para mostrar",
+  ALTER_SEARCH_STRING_FORM_LABEL: "Search String (max 4 chars.)",
   ALTER_SET_PRONOUNS: "Establecer pronombres",
   ALTER_SET_DESCRIPTION: "Establecer descripción",
+  ALTER_SET_ORDER_STRING: "Set Order String",
   ALTER_SET_PFP: "Establecer foto de perfil",
   ALTER_SET_PFP_SE: "Es específico de un servidor",
   ALTER_SET_PFP_SE_DESC: "Esta foto de perfil solo se utilizará específicamente en este servidor.",
@@ -443,6 +446,8 @@ Tu perfil público es cómo se ve tu alter para otros usuarios cuando identifica
 -# Para ver tu descripción completa, ejecuta: {{ commandMention }}`,
   T_PUBLIC_PROFILE_DESC_DESC: `Puedes establecer una descripción para tu etiqueta. Tienen un máximo de 2000 caracteres.
 -# Para ver tu descripción completa, ejecuta: {{ command }}`,
+  T_ORDER_STRING_DESC: `Order strings evaluate the order that this tag is displayed. The more alphabetically favored this string is, the higher up the tag appears. Tags with no order string are sorted last. Order strings are not shown, and can only be at most 4 characters.
+-# This tags order string is: {{ order }}`,
   S_PUBLIC_PROFILE_DESC_DESC: `Puedes establecer una descripción para tu sistema. Tienen un máximo de 2000 caracteres.
 -# Para ver tu descripción completa, ejecuta: {{ mention }}`,
   PUBLIC_PROFILE_COLOR_DESC: "Establecer un color para un alter muestra ese color en su contenedor de rango y en su perfil público.",
