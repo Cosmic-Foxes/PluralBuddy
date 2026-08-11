@@ -13,17 +13,17 @@ import {
 	Options,
 	SubCommand,
 } from "seyfert";
-import { alterCollection } from "../../mongodb";
 import { MessageFlags } from "seyfert/lib/types";
-import { AlertView } from "../../views/alert";
+import { getGcpAccessToken, uploadDiscordAttachmentToGcp } from "@/gcp";
+import { w } from "@/webhooks";
 import { autocompleteAlters } from "../../lib/autocomplete-alters";
+import { alterCollection } from "../../mongodb";
 import {
 	assetStringGeneration,
 	operationStringGeneration,
 } from "../../types/operation";
+import { AlertView } from "../../views/alert";
 import { LoadingView } from "../../views/loading";
-import { getGcpAccessToken, uploadDiscordAttachmentToGcp } from "@/gcp";
-import { w } from "@/webhooks";
 
 const options = {
 	"alter-name": createStringOption({
@@ -39,7 +39,7 @@ const options = {
 		value(data, ok, fail) {
 			if (!data.value.contentType?.startsWith("image"))
 				fail("This attachment is not an image.");
-			if (data.value.size > 1_000_000)
+			if (data.value.size > 2_500_000)
 				fail("This attachment is too big. Attachments at most can be 1mb.");
 			ok(data);
 		},
