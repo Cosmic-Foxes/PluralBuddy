@@ -674,5 +674,6 @@ Your system is using the front state of **{{ mode }}**.`,
   TOGGLED_INCLUDING_PROXY_TAGS_D: "Successfully toggled including proxy tags. (disabled)",
   TOGGLED_INCLUDING_PRONOUNS_E: "Successfully toggled including pronouns. (enabled)",
   TOGGLED_INCLUDING_PRONOUNS_D: "Successfully toggled including pronouns. (disabled)",
-  NOT_FRIDAY: "Flatworm Friday is only on Friday in New York, come back next Friday to Wall Street or use `--time-machine`."
+  NOT_FRIDAY: "Flatworm Friday is only on Friday in New York, come back next Friday to Wall Street or use `--time-machine`.",
+  EXPRESS_DISCONTINUED: "Sorry, PluralBuddy Express has been discontinued as of 08/11/26. Please use an alternative like [/plu/ral](https://plural.gg) instead! Express applications will still continue to send messages!"
 };
