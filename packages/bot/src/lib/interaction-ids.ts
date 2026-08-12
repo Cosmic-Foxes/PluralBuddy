@@ -274,6 +274,7 @@ export const InteractionIdentifier = {
 				ToggleIncludePronouns: createStatic(
 					"systems/config/general/include-pronouns",
 				),
+				ToggleTypingStatus: createStatic("systems/config/general/toggle-typing-status"),
 			},
 			OtherAlterPagination: {
 				PreviousPage: createFromAdditionalArg("systems/config/oapg/previous"),
