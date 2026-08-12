@@ -22,7 +22,7 @@ export default function proxy(request: NextRequest, event: NextFetchEvent) {
 			return NextResponse.redirect(
 				new URL(`/docs/${request.url.split("/docs")[1]}`, request.url),
 			);
-		return;
+		// return;
 	}
 
 	return paraglideMiddleware(request, ({ request, locale }) => {
