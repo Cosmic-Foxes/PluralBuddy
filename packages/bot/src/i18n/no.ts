@@ -1,41 +1,41 @@
 import { emojis } from "@/lib/emojis";
 export default {
-  INTRODUCTION_MESSAGE: `## Welcome to PluralBuddy
-PluralBuddy is a bot designed to fill the gap for quality customizable plurality exchanges for Discord servers and users.
+  INTRODUCTION_MESSAGE: `## Velkommen til PluralBuddy
+PluralBuddy er en bot designet for å fylle hullet av kvalitet konfigurerbar flertall samtaler for Discord servere og brukere.
 
-:track_next: To get started, click the Next Page button below to setup your system.`,
-  IMPORT_MESSAGE: `## Setting up your system
-You can create a new system which will allow you to create your alters and tags by yourself.
-Additionally, you can also import data from another bot like PluralKit.
--# To import from Tupperbox, due to the lack of data Tupperbox export data provides, you must create the system and then run \`{{ prefix }}system import\`.`,
-  PAGINATION_NEXT_PAGE: "Next Page",
-  PAGINATION_FINISH: "Finish",
-  NO_SERVER_DELETION: "PluralBuddy Express alters must be actually invited to a server for messages to be eligible to be deleted due to Discord restrictions. You should be able to right click delete it yourself though!",
-  BLOCKED: "You have been blocked from **{{ guild }}**. You cannot use PluralBuddy in this guild.",
+:track_next: For å komme i gang, trykk Neste Siden knappen under for å sette opp ditt system.`,
+  IMPORT_MESSAGE: `## Å konfigurere system
+Du kan lage et nytt system som gjør det mulig å lage dine altere og tagger ved å selv.
+i tillegg kan du importere data fra en annen bot som PluralKit.
+-# Hvis du vil importere fra Tupperbox, på grunn av manglende data som Tupperbox eksport data gir, du må opprette systemet og deretter kjøre \`{{ prefix }}systemet importen \`.`,
+  PAGINATION_NEXT_PAGE: "Neste Side",
+  PAGINATION_FINISH: "Fullføre",
+  NO_SERVER_DELETION: "PluralBuddy Uttryk altere må være lagt til i en server for at meldingene skal være kvalifisert for å bli slettet pga Discord restriksjoner. Men du burde ha muligheten til å høyreklikke slett det selv!",
+  BLOCKED: "Du har blitt blokkert fra **{{ guild }}**. Du kan ikke bruke PluralBuddy i denne serveren.",
   // Does not need to be translated
   BLOCK_PC: `You have been blocked from **Pridecord**. You cannot use PluralBuddy in this guild.
 
 > **Reason:** {{ libbyReasoning }}
 > **Expires:** {{ libbyExpirationDate }}
 > -# {{ reply }} Please view the DM from <@1455014942888693792> regarding case \`{{ libbyCaseId }}\`.`,
-  PAGINATION_PREVIOUS_PAGE: "Previous Page",
-  CREATING_NEW_SYSTEM_HEADER: "## Creating a new system",
-  ERROR_DISABLED_SYSTEM: "2f – Your system is disabled. You cannot proxy.",
-  OPTION_DISABLED: "This option cannot be selected. This option is disabled.",
-  TOO_MANY_BLOCKED_ITEMS: "There are too many blocked items. You can only have 25 blocked roles, and 25 blocked channels at one time due to Discord modal limitations.",
-  TOO_MANY_MANAGER_ITEMS: "There are too many manager items. You can only have 25 manager roles at one time due to Discord modal limitations.",
+  PAGINATION_PREVIOUS_PAGE: "Forrige Side",
+  CREATING_NEW_SYSTEM_HEADER: "## Lage et nytt system",
+  ERROR_DISABLED_SYSTEM: "2f - Systemet ditt er deaktivert. Du kan ikke proxye det.",
+  OPTION_DISABLED: "Dette alternativet kan ikke bli valgt. Dette alternativet er deaktivert.",
+  TOO_MANY_BLOCKED_ITEMS: "Det er for mange blokkerte elementer. Du kan bare ha 25 blokkerte roller, og 25 blokkerte kanaler på en gang pga Discord sine modal-restriksjoner.",
+  TOO_MANY_MANAGER_ITEMS: "Det er for mange lederolle elementer. Du kan bare ha 25 lederroller på en gang pga Discord sine modal-restriksjoner.",
   CREATING_NEW_SYSTEM_NAME_MESSAGE: `
-Systems on PluralBuddy require a **system name**. They must be at least 3 characters long and shorter than 20 characters long. System names will be shown when somebody identifies a message from your system.`,
-  CREATING_NEW_SYSTEM_NAME_BUTTON: "Set name*",
-  CREATING_NEW_SYSTEM_NAME_SET: "Name is:",
-  CREATING_NEW_SYSTEM_TAG_BUTTON: "Set system tag*",
-  CREATING_NEW_SYSTEM_TAG_SET: "System tag is:",
+Systemer på PluralBuddy krever et **systemnavn**. De må være minst 3 karakterer lang og kortere en 20 karakterer. Systemnavn vil bli vist når noen identifiserer en melding som kommer fra ditt system.`,
+  CREATING_NEW_SYSTEM_NAME_BUTTON: "Sett navn*",
+  CREATING_NEW_SYSTEM_NAME_SET: "Navnet er:",
+  CREATING_NEW_SYSTEM_TAG_BUTTON: "Sett systemtagg*",
+  CREATING_NEW_SYSTEM_TAG_SET: "Systemtagg er:",
   CREATING_NEW_SYSTEM_TAG_MESSAGE: `
-This server requires a **system tag** for systems who are proxying here. In order to create a system here, you must have a system tag.`,
-  CREATING_NEW_SYSTEM_PRIVACY_BUTTON: "Set privacy values",
+Denne serveren krever en **systemtagg** for systemer som proxyer here. For å lage et system her, må du en systemtagg.`,
+  CREATING_NEW_SYSTEM_PRIVACY_BUTTON: "Sett personvernverdier",
   CREATING_NEW_SYSTEM_PRIVACY_MESSAGE: `
-Systems can have **privacy values** which are values that describe who can see what part of your system. By default, your system is completely private besides server automatic moderation and the message that your system sends. However, changing them will change those values.`,
-  CREATING_NEW_SYSTEM_PRIVACY_SET: "Public Privacy values are:",
+Systemer kan ha **personvernverider** som er verdier som beskriver hvem som kan se hvilke del av ditt system. Standard så er systemet ditt helt privat unntatt for server automatisk moderering, og meldingen som systemet ditt sender.`,
+  CREATING_NEW_SYSTEM_PRIVACY_SET: "Offtenlige personvernverider er:",
   CREATING_NEW_SYSTEM_PRIVACY_FORM_DESC: "Select the privacy values you want open to the public.",
   CREATING_NEW_SYSTEM_SUCCESS: `Successfully created new system!
 ### Next Steps
