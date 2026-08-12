@@ -41,6 +41,7 @@ import { DynamicPageTitle, DynamicPageTitleRouterLess } from "@/components/app/d
 import SocialPage from "@/components/app/pages/social/page";
 import { AboutPage } from "@/components/app/pages/about/page";
 import ProfilePage from "@/components/app/pages/profile/page";
+import { usePathname, useRouter } from "next/navigation";
 
 declare global {
 	var trpcClient: ReturnType<typeof trpc.createClient>
@@ -88,6 +89,7 @@ export default function PluralBuddyApp() {
 	if ("virtualKeyboard" in navigator) {
 		(navigator.virtualKeyboard as any).overlaysContent = false;
 	}
+	
 
 	return (
 		<main className="router-boundrary overflow-hidden">

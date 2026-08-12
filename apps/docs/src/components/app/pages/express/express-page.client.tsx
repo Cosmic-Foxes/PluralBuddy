@@ -111,7 +111,7 @@ export function ExpressList() {
 				<div className="gap-3 grid">
 					{data?.map((v) => (
 						<Card
-							className={cn("min-h-[92px] min-w-[267px] cursor-pointer")}
+							className={cn("min-h-[92px] min-w-[267px] cursor-not-allowed")}
 							onClick={() => haptic()}
 							aria-disabled={true}
 							key={v.alterId}
