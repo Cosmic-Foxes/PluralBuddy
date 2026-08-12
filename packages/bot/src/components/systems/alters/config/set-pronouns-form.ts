@@ -49,7 +49,7 @@ export default class SetPronounsButton extends ModalCommand {
 					pronouns: newAlterUsername as string,
 				},
 			},
-		);
+		).catch(v => console.log(JSON.stringify(v)));
 
 		w(ctx.author.id, "alter.update", {
 			type: "alter.update",
