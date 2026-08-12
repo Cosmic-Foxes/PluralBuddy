@@ -683,5 +683,7 @@ Your system is using the front state of **{{ mode }}**.`,
   TOGGLED_INCLUDING_PROXY_TAGS_D: "Successfully toggled including proxy tags. (disabled)",
   TOGGLED_INCLUDING_PRONOUNS_E: "Successfully toggled including pronouns. (enabled)",
   TOGGLED_INCLUDING_PRONOUNS_D: "Successfully toggled including pronouns. (disabled)",
+  TOGGLED_TYPING_STATUS_E: "Successfully toggled typing status. (enabled)",
+  TOGGLED_TYPING_STATUS_D: "Successfully toggled typing status. (disabled)",
   NOT_FRIDAY: "Flatworm Friday is only on Friday in New York, come back next Friday to Wall Street or use `--time-machine`."
 };

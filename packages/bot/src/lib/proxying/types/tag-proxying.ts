@@ -55,7 +55,7 @@ export async function performTagProxy(
 	(async () => {
 		const channel = await message.channel();
 
-		if (channel.isTextable() && !guild.getFeatures().disabledProxyTyping)
+		if (channel.isTextable() && !guild.getFeatures().disabledProxyTyping && (user.system !== undefined && !getSystemFeatures(user.system).noTypingStatus))
 			channel.typing().catch(() => null);
 	})();
 
