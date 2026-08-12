@@ -1,7 +1,23 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Spinner } from "../../../ui/spinner";
+import { ArrowUpRight } from "lucide-react";
+import NextLink from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "react-router";
+import { Callout } from "@/components/callout";
+import {
+	Breadcrumb,
+	BreadcrumbItem,
+	BreadcrumbLink,
+	BreadcrumbList,
+	BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { cn } from "@/lib/cn";
+import { haptic } from "@/lib/haptic/haptic";
+import { useTRPCClient } from "@/server/client";
+import { SettingsSidebar } from "../../../settings-sidebar";
+import { Avatar, AvatarFallback, AvatarImage } from "../../../ui/avatar";
 import {
 	Card,
 	CardContent,
@@ -10,27 +26,12 @@ import {
 	CardHeader,
 	CardTitle,
 } from "../../../ui/card";
-import { Button } from "../../../ui/shadcn-button";
 import { Separator } from "../../../ui/separator";
-import { SettingsSidebar } from "../../../settings-sidebar";
-import { CreateExpressModal } from "../../create-express-modal";
-import { cn } from "@/lib/cn";
-import { Avatar, AvatarFallback, AvatarImage } from "../../../ui/avatar";
-import { Link } from "react-router";
-import NextLink from "next/link";
+import { Button } from "../../../ui/shadcn-button";
+import { Spinner } from "../../../ui/spinner";
 import { AlterView } from "../../alter-view";
-import { useTranslations } from "next-intl";
+import { CreateExpressModal } from "../../create-express-modal";
 import { DynamicPageTitle } from "../../dynamic-title";
-import { useTRPCClient } from "@/server/client";
-import { haptic } from "@/lib/haptic/haptic";
-import {
-	Breadcrumb,
-	BreadcrumbItem,
-	BreadcrumbLink,
-	BreadcrumbList,
-	BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { ArrowUpRight } from "lucide-react";
 
 export function ExpressList() {
 	const trpc = useTRPCClient();
@@ -96,45 +97,43 @@ export function ExpressList() {
 						</CreateExpressModal>
 					</CardFooter>
 				</Card>
+				<Callout type="warning">Sorry, PluralBuddy Express has been discontinued as of 08/11/26. Please use an alternative like <Link to="https://plural.gg">/plu/ral</Link> instead! Express applications will still continue to send messages</Callout>
 				<Separator orientation="horizontal" className="h-px mb-3" />
 				<div className="gap-3 grid">
 					{data?.map((v) => (
-						<Link
-							to={{ pathname: `/app/settings/express/alter/${v.alterId}` }}
+						<Card
+							className={cn("min-h-[92px] min-w-[267px] cursor-pointer")}
+							onClick={() => haptic()}
+							aria-disabled={true}
 							key={v.alterId}
 						>
-							<Card
-								className={cn("min-h-[92px] min-w-[267px] cursor-pointer")}
-								onClick={() => haptic()}
-							>
-								<CardContent className="gap-4 flex items-center">
-									<div
-										style={{
-											backgroundColor:
-												(v.alter?.color as `#${string}`) ?? `#808080`,
-										}}
-										className=" h-[60px] w-[5px] rounded-xl"
-									/>
-									<Avatar>
-										<AvatarImage src={v.alter?.avatarUrl ?? ""} />
-										<AvatarFallback>
-											{v.alter?.displayName[0].toLocaleUpperCase()}
-										</AvatarFallback>
-									</Avatar>
-									<div>
-										<CardTitle className="text-sm">
-											@{v.alter?.username}{" "}
-											<span className="text-muted-foreground">
-												{v.alter?.displayName}
-											</span>
-										</CardTitle>
-										<CardDescription className="pt-1">
-											{v.alter?.description?.substring(0, 60)}
-										</CardDescription>
-									</div>
-								</CardContent>
-							</Card>
-						</Link>
+							<CardContent className="gap-4 flex items-center">
+								<div
+									style={{
+										backgroundColor:
+											(v.alter?.color as `#${string}`) ?? `#808080`,
+									}}
+									className=" h-[60px] w-[5px] rounded-xl"
+								/>
+								<Avatar>
+									<AvatarImage src={v.alter?.avatarUrl ?? ""} />
+									<AvatarFallback>
+										{v.alter?.displayName[0].toLocaleUpperCase()}
+									</AvatarFallback>
+								</Avatar>
+								<div>
+									<CardTitle className="text-sm">
+										@{v.alter?.username}{" "}
+										<span className="text-muted-foreground">
+											{v.alter?.displayName}
+										</span>
+									</CardTitle>
+									<CardDescription className="pt-1">
+										{v.alter?.description?.substring(0, 60)}
+									</CardDescription>
+								</div>
+							</CardContent>
+						</Card>
 					))}
 				</div>
 			</div>

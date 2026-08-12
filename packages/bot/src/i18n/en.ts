@@ -918,4 +918,6 @@ Your system is using the front state of **{{ mode }}**.`,
 
 	NOT_FRIDAY:
 		"Flatworm Friday is only on Friday in New York, come back next Friday to Wall Street or use `--time-machine`.",
+	
+	EXPRESS_DISCONTINUED: "Sorry, PluralBuddy Express has been discontinued as of 08/11/26. Please use an alternative like [/plu/ral](https://plural.gg) instead! Express applications will still continue to send messages!"
 };

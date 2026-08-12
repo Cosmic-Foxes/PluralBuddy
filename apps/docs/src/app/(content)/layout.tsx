@@ -4,13 +4,16 @@ import { TreeContextProvider } from "@fumadocs/base-ui/contexts/tree";
 import { NextProvider } from "fumadocs-core/framework/next";
 import { Viewport } from "next";
 import { Inter } from "next/font/google";
-import { NextIntlClientProvider } from "next-intl";
+import { notFound } from "next/navigation";
+import { hasLocale, NextIntlClientProvider } from "next-intl";
+import { setRequestLocale } from "next-intl/server";
 import { AdjustableBanner } from "@/components/adjustable-banner";
 import { Body } from "@/components/body";
 import { Html } from "@/components/html";
 import OramaSearchDialog from "@/components/search-orama";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { routing } from "@/i18n/routing";
 import { source } from "@/lib/source";
 
 
@@ -25,8 +28,7 @@ export const viewport: Viewport = {
 export default async function Layout({
 	children,
 	params,
-}: LayoutProps<"/[lang]">) {
-	const lang = (await params).lang;
+}: LayoutProps<"/[locale]">) {
 
 	return (
 		<Html>
@@ -42,11 +44,9 @@ export default async function Layout({
 							}}
 						>
 							<TooltipProvider>
-								<NextIntlClientProvider>
-									{children}
+								{children}
 
-									<Toaster position="bottom-right" />
-								</NextIntlClientProvider>
+								<Toaster position="bottom-right" />
 							</TooltipProvider>
 						</RootProvider>
 					</TreeContextProvider>

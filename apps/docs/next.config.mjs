@@ -1,7 +1,6 @@
-import { createMDX } from "fumadocs-mdx/next";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import createNextIntlPlugin from 'next-intl/plugin';
+import { createMDX } from "fumadocs-mdx/next";
 
 const withMDX = createMDX();
 
@@ -62,6 +61,4 @@ const config = {
 
 };
 
-const withNextIntl = createNextIntlPlugin();
-
-export default withMDX(withNextIntl(config));
+export default withMDX(config);
