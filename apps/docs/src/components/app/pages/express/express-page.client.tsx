@@ -90,11 +90,9 @@ export function ExpressList() {
 								PluralBuddy Express <ArrowUpRight className="size-4" />
 							</NextLink>
 						</span>
-						<CreateExpressModal>
-							<Button className="max-md:mt-3" onClick={() => haptic()}>
+							<Button className="max-md:mt-3" disabled>
 								{m["ExpressList.btn"]()}
 							</Button>
-						</CreateExpressModal>
 					</CardFooter>
 				</Card>
 				<Callout type="warning">
