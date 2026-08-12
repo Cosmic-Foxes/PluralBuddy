@@ -1,30 +1,30 @@
 {
     "HomePage": {
-        "title": "La era <headline>más rápida</headline> de los bots de pluralidad",
-        "desc": "PluralBuddy es el bot <highlight>de pluralidad de próxima generación</highlight> para Discord – construido en <br></br>directores de <accent>velocidad</accent>, <accent>accesibilidad</accent> y <accent>conveniencia de datos.</accent>",
+        "title": "La era {#headline}más rápida{/headline} de los bots de pluralidad",
+        "desc": "PluralBuddy is the <highlight>next generation plurality bot</highlight> for Discord – built on <br></br>principals of <accent>speed</accent>, <accent>accessibility</accent> & <accent>data convenience.</accent>",
         "proxy_time_headline": "Tiempo de proxy <600ms",
         "blocks_headline": "Bloqueos, roles de administrador, retrasos de propia",
         "developer_headline": "Construido con desarrolladores en mente",
         "add_discord_btn": "Añadir a Discord",
         "docs_btn": "Documentación",
         "oss_headline": "Código abierto",
-        "oss_desc": "Encuentra a PluralBuddy en <github>GitHub</github>",
+        "oss_desc": "Find PluralBuddy on <github>GitHub</github>",
         "oss_about": "PluralBuddy es de código abierto y seguirá siendo así. Todo el código que se ejecuta en su servidor o sistema es supervisado por otras personas.",
-        "optimized_headline": "Optimizado para <highlighter>sistemas</highlighter>",
+        "optimized_headline": "Optimized for <highlighter>systems</highlighter>",
         "optimized_desc": "En nuestra vanguardia – PluralBuddy está construido para sistemas y diseñado por sistemas.",
         "instant_headline": "Proxy ahora",
         "instant_title": "Proxy siempre que esté listo.",
         "instant_desc": "Los ajustes automáticos del proxy le permiten proxy, cuando quiera, ya sea cuando use una etiqueta de proxy, o cuando envíe un mensaje, PluralBuddy está listo cuando lo esté.",
         "identity_headline": "Alter pasaportes",
         "identity_title": "Solidifique su identidad.",
-        "identity_desc": "Envía un webhook o cambia tu sobrenombre: depende de ti.<sup>2</sup> Cambiar tu sobrenombre puede ser formateado como quieras.",
+        "identity_desc": "Send a webhook or change your nickname – its up to you.<sup>2</sup> Changing your nickname can be formatted however you please.",
         "quick_headline": "Rápido locamente",
         "quick_title": "¡Listo, preparado, terminado!",
-        "quick_desc": "Proxy rápidamente, ¡tan rápido como 600ms<sup>1</sup>! PluralBuddy fue construido desde el principio por ser el robot que no se desordena con proxying.",
+        "quick_desc": "Proxy quickly, as fast as 600ms<sup>1</sup>! PluralBuddy was built from the ground up on being the bot that doesn't mess around with proxying.",
         "components_headline": "Baterías incluidas",
         "components_title": "Comandos no requeridos.",
         "components_desc": "Con el poder de Componentes v2, la mayoría de las características de PluralBuddy se pueden hacer usando botones viejos y llanos en lugar de comandos. ¡Sin embargo, usted puede escoger y elegir el que le gustaría usar!",
-        "administrate_title": "<highlighter>Administra</highlighter> con facilidad",
+        "administrate_title": "<highlighter>Administrate</highlighter> with ease",
         "administrate_desc": "PluralBuddy tiene numerosas funciones relacionadas con el administrador, diseñadas para mantener un equilibrio entre el control del administrador y el usuario.",
         "change_bot_headline": "Cambiar el bot",
         "change_bot_title": "Desactivar o habilitar diferentes características del bot.",
@@ -36,7 +36,7 @@
         "permissions_title": "Los permisos funcionan como funcionan los mensajes normales.",
         "permissions_desc": "PluralBuddy comprueba los permisos de los usuarios cuando envían un mensaje para asegurarse de que están enviando mensajes y sólo usando características específicas cuando están permitidas por sus roles.",
         "get_started_title": "Comienza con PluralBuddy hoy.",
-        "get_started_desc": "PluralBuddy fue construido con amor y orgullo como una alternativa a los robots de pluralidad que se ven en todas partes. La Migración de otros bots como PluralKit o TupperBox se puede hacer simplemente usando la <mono>pb;setup</mono> comando al añadirlo a un servidor y seleccionar la opción Importar al pasar por el asistente de configuración.",
+        "get_started_desc": "PluralBuddy was built with love and pride as an alternative to the plurality bots you see everywhere. Migration from other bots like PluralKit or TupperBox can be done simply by using the <mono>pb;setup</mono> command when adding it to a server and selecting the Import option when going through the setup wizard.",
         "sup_1": "Después de que PluralBuddy obtenga información acerca de un mensaje de la Puerta de Discord, generalmente toma menos de 600 m en condiciones óptimas para proxir un mensaje.",
         "sup_2": "Los modos proxy Webhook o los modos proxy de apodo pueden ser forzados por un administrador del servidor, tomado por decisiones que no sean inherentemente aprobadas por PluralBuddy o sus desarrolladores."
     },
@@ -68,7 +68,9 @@
             "system:write": "Acceso para cambiar la configuración del sistema",
             "system:admin": "Acceso a leer y escribir en sistemas y alters.",
             "system:ai-ap": "Crear modos automáticos personalizados de proxy como si esta integración fuera un rastreador frontal."
-        }
+        },
+        "error_denying_code": "Error while denying consent code",
+        "done": "Okay, done!"
     },
     "DeleteComponent": {
         "placeholder": "Escribe \"{requiredDeletionText}\" para eliminar este objeto",
@@ -91,7 +93,8 @@
     },
     "ExpressList": {
         "desc": "Crea proxies de usuario con PluralBuddy Express: asigna tus propios alters a aplicaciones de Discord y utiliza los comandos de barra nativos de Discord para actuar como un alter. Funciona en mensajes directos o en cualquier servidor que tenga habilitado el permiso para usar aplicaciones externas.",
-        "btn": "Crear aplicación Express"
+        "btn": "Crear aplicación Express",
+        "express_discontinued": "Sorry, PluralBuddy Express has been discontinued as of 08/11/26. Please use an alternative like {#plural-link}/plu/ral{/plural-link} instead! Express applications will still continue to send messages"
     },
     "ExpressPage": {
         "nav_menu_pref": "Preferencias",
@@ -116,7 +119,7 @@
         "profile_resync_prfs": "Resincronizar Perfil de Usuario",
         "profile_desc": "Tu perfil de aplicación se muestra a la izquierda (o arriba en móvil). PluralBuddy puede sincronizar su perfil entre lo que se muestra en su sistema y los datos de usuario de su aplicación Express, sin embargo no es automática.",
         "delete_title": "Eliminar solicitud Express de {alter}",
-        "delete_desc": "Al eliminar esta aplicación Express, ya no estará asociada con una aplicación nativa de Discord. Esto no eliminará el alter, sólo la asociación a una aplicación nativa de Discord. Usar los comandos de estas aplicaciones después de la eliminación dará como resultado un error de Discord. <b>Esta acción no se puede deshacer.</b><br></br><br></br>Para eliminar este objeto, escribe {alter} en la entrada de abajo para permanentemente:"
+        "delete_desc": "By deleting this Express application, it will no longer be associated with a native Discord application. This will not delete the alter, just the association to a native Discord application. Using this applications commands after deletion will result in an error from Discord. <b>This action cannot be undone.</b><br></br><br></br>To delete this object, type {alter} in the input below to permanently:"
     },
     "RawJSONModal": {
         "title": "Raw JSON",
