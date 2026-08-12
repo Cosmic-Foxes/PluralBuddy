@@ -313,6 +313,7 @@ PluralBuddy usa un sistema de **nombre de usuario/nombre para mostrar**.
   OPERATION_FALLBACK: "Se cambió `%property%` a `%value%`",
   OPERATION_SYSTEM_TOGGLE_PROXY_TAGS: "Se alternó la visibilidad de etiquetas proxy en el sistema.",
   OPERATION_SYSTEM_TOGGLE_PRONOUNS: "Se alternó la visibilidad de pronombres en el sistema.",
+  OPERATION_SYSTEM_TOGGLE_TYPING_STATUS: "Toggled typing status on the system.",
   EDIT_MESSAGE: "Editando mensaje",
   MESSAGE_CONTENTS: "Nuevo contenido del mensaje",
   BLOCKLIST_USER: "ID de usuario a bloquear",
@@ -690,5 +691,10 @@ Tu sistema está utilizando el estado al frente de **{{ mode }}**.`,
   TOGGLED_INCLUDING_PRONOUNS_E: "Se cambió la opción de incluir pronombres. (activado)",
   TOGGLED_INCLUDING_PRONOUNS_D: "Se cambió la opción de incluir pronombres. (desactivado)",
   NOT_FRIDAY: "Flatworm Friday solo se celebra los viernes en Nueva York, vuelve el próximo viernes a Wall Street o usa `--time-machine`.",
-  EXPRESS_DISCONTINUED: "Sorry, PluralBuddy Express has been discontinued as of 08/11/26. Please use an alternative like [/plu/ral](https://plural.gg) instead! Express applications will still continue to send messages!"
+  EXPRESS_DISCONTINUED: "Sorry, PluralBuddy Express has been discontinued as of 08/11/26. Please use an alternative like [/plu/ral](https://plural.gg) instead! Express applications will still continue to send messages!",
+  NO_TYPING_STATUS: "Disabling the typing status will remove the typing status that appears when this system proxies. Typing statuses still may not appear if the server disabled it.",
+  NO_TYPING_STATUS_BTN: "Disable Typing Statuses",
+  NO_TYPING_STATUS_BTN_D: "Re-enable Typing Statuses",
+  TOGGLED_TYPING_STATUS_E: "Successfully toggled typing status. (enabled)",
+  TOGGLED_TYPING_STATUS_D: "Successfully toggled typing status. (disabled)"
 };
