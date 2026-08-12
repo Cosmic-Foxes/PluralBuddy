@@ -1,30 +1,29 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import { DiscordSnowflake } from "@sapphire/snowflake";
+import { assetStringGeneration, type PTag } from "plurography";
 import {
 	type CommandContext,
+	Container,
+	createBooleanOption,
 	createStringOption,
 	Declare,
-	Options,
-	type OKFunction,
 	IgnoreCommand,
+	type OKFunction,
 	type OnOptionsReturnObject,
-	createBooleanOption,
-	Container,
-	TextDisplay,
-	Separator,
+	Options,
+	Separator,SubCommand, 
+	TextDisplay
 } from "seyfert";
-import { AlertView } from "../../views/alert";
 import { MessageFlags, Spacing } from "seyfert/lib/types";
-import { PAlterObject } from "../../types/alter";
-import { DiscordSnowflake } from "@sapphire/snowflake";
-import { getUserById, writeUserById } from "../../types/user";
-import { alterCollection, tagCollection, userCollection } from "../../mongodb";
-import { SubCommand } from "seyfert";
-import z from "zod";
 import { Shortcut } from "yunaforseyfert";
-import { assetStringGeneration, type PTag } from "plurography";
-import { emojis } from "@/lib/emojis";
+import z from "zod";
 import { getSpecificAutoProxy, getWiderAutoProxy } from "@/lib/autoproxy-util";
+import { emojis } from "@/lib/emojis";
+import { alterCollection, tagCollection, userCollection } from "../../mongodb";
+import { PAlterObject } from "../../types/alter";
+import { getUserById, writeUserById } from "../../types/user";
+import { AlertView } from "../../views/alert";
 
 const options = {
 	username: createStringOption({
@@ -113,7 +112,7 @@ export default class CreateAlterCommand extends SubCommand {
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
-		if (existingAlter !== undefined) {
+		if (existingAlter !== null) {
 			displayName = displayName ?? username;
 			username = `${username}-${assetStringGeneration(5)}`;
 		}
