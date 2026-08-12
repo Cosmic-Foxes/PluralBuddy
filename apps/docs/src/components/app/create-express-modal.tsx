@@ -1,4 +1,12 @@
+import { useMediaQuery } from "fumadocs-core/utils/use-media-query";
+import { AnimatePresence, motion } from "motion/react";
+import { useQueryState } from "nuqs";
 import { ReactNode, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router";
+import { toast } from "sonner";
+import { m } from "@/paraglide/messages";
+import { useTRPCClient } from "@/server/client";
+import { Stepper, StepperItem } from "../stepper";
 import {
 	Dialog,
 	DialogContent,
@@ -7,27 +15,18 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "../ui/dialog";
-import { AlterInput } from "./alter-input";
-import { Button } from "../ui/shadcn-button";
-import { Separator } from "../ui/separator";
-import { AnimatePresence, motion } from "motion/react";
-import { Stepper, StepperItem } from "../stepper";
-import { Link } from "react-router";
-import { Input } from "../ui/input";
-import { AlterView } from "./alter-view";
-import { Spinner } from "../ui/spinner";
-import { toast } from "sonner";
-import { useNavigate } from "react-router";
-import { useTranslations } from "next-intl";
-import { useTRPCClient } from "@/server/client";
-import { useMediaQuery } from "fumadocs-core/utils/use-media-query";
 import {
 	Drawer,
 	DrawerContent,
 	DrawerFooter,
 	DrawerTrigger,
 } from "../ui/drawer";
-import { useQueryState } from "nuqs";
+import { Input } from "../ui/input";
+import { Separator } from "../ui/separator";
+import { Button } from "../ui/shadcn-button";
+import { Spinner } from "../ui/spinner";
+import { AlterInput } from "./alter-input";
+import { AlterView } from "./alter-view";
 
 export function CreateExpressModal({ children }: { children: ReactNode }) {
 	const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -104,7 +103,6 @@ function DialogContents({
 	setPage: (value: number) => void;
 	FooterComponent: ({ children }: { children: ReactNode }) => ReactNode;
 }) {
-	const t = useTranslations("ExpressModal");
 	const [token, setToken] = useState<string>("");
 	const [nextLoading, setNextLoading] = useState<boolean>(false);
 	const navigate = useNavigate();
@@ -127,8 +125,8 @@ function DialogContents({
 						exit={{ opacity: 0, x: 40, scale: 0.97 }}
 						transition={{ duration: 0.24, ease: [0.4, 0, 0.2, 1] }}
 					>
-						<DialogTitle className="pb-3">{t("page0_title")}</DialogTitle>
-						<DialogDescription>{t("page0_desc")}</DialogDescription>
+						<DialogTitle className="pb-3">{m["ExpressModal.page0_title"]()}</DialogTitle>
+						<DialogDescription>{m["ExpressModal.page0_desc"]()}</DialogDescription>
 						<Separator />
 						<AlterInput
 							selectedAlter={selectedAlter}
@@ -141,7 +139,7 @@ function DialogContents({
 								onClick={() => setPage(1)}
 								taptic
 							>
-								{t("pagination_next")}
+								{m["ExpressModal.pagination_next"]()}
 							</Button>
 						</FooterComponent>
 					</motion.div>
@@ -155,27 +153,27 @@ function DialogContents({
 						transition={{ duration: 0.24, ease: [0.4, 0, 0.2, 1] }}
 						className="max-md:overflow-y-auto"
 					>
-						<DialogTitle className="pb-3">{t("page1_title")}</DialogTitle>
-						<DialogDescription>{t("page1_desc")}</DialogDescription>
+						<DialogTitle className="pb-3">{m["ExpressModal.page1_title"]()}</DialogTitle>
+						<DialogDescription>{m["ExpressModal.page1_desc"]()}</DialogDescription>
 						<Separator />
 						<div className="p-4">
 							{selectedAlter && <AlterView selectedAlter={selectedAlter} />}
 						</div>
 						<Stepper className="p-4">
 							<StepperItem
-								title={t("stepper1_title")}
-								description={t("stepper1_desc")}
+								title={m["ExpressModal.stepper1_title"]()}
+								description={m["ExpressModal.stepper1_desc"]()}
 							>
 								<Link
 									to="https://discord.com/developers/applications"
 									target="_blank"
 								>
-									<Button>{t("stepper1_btn")}</Button>
+									<Button>{m["ExpressModal.stepper1_btn"]()}</Button>
 								</Link>
 							</StepperItem>
 							<StepperItem
-								title={t("stepper1_title")}
-								description={t("stepper1_desc")}
+								title={m["ExpressModal.stepper1_title"]()}
+								description={m["ExpressModal.stepper1_desc"]()}
 							>
 								<Input
 									placeholder="Bot Token"
@@ -191,7 +189,7 @@ function DialogContents({
 								disabled={nextLoading}
 								taptic
 							>
-								{t("pagination_back")}
+								{m["ExpressModal.pagination_back"]()}
 							</Button>
 							<Button
 								disabled={nextLoading || !token}
@@ -208,7 +206,7 @@ function DialogContents({
 										})
 										.catch((e) => {
 											toast.error(
-												t("error_creating", {
+												m["ExpressModal.error_creating"] ({
 													message: e.message,
 												}),
 											);
@@ -217,14 +215,14 @@ function DialogContents({
 										});
 
 									if (!err) {
-										toast.success(t("success"));
+										toast.success(m["ExpressModal.success"]());
 
 										setNextLoading(false);
 										navigate(`/app/settings/express/alter/${selectedAlter}`);
 									}
 								}}
 							>
-								{nextLoading && <Spinner />} {t("pagination_next")}
+								{nextLoading && <Spinner />} {m["ExpressModal.pagination_next"]()}
 							</Button>
 						</FooterComponent>
 					</motion.div>

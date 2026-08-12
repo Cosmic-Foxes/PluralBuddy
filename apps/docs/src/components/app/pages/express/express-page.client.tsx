@@ -1,9 +1,9 @@
 "use client";
 
+import { ParaglideMessage } from "@inlang/paraglide-js-react";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowUpRight } from "lucide-react";
 import NextLink from "next/link";
-import { useTranslations } from "next-intl";
 import { Link } from "react-router";
 import { Callout } from "@/components/callout";
 import {
@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { cn } from "@/lib/cn";
 import { haptic } from "@/lib/haptic/haptic";
+import { m } from "@/paraglide/messages";
 import { useTRPCClient } from "@/server/client";
 import { SettingsSidebar } from "../../../settings-sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "../../../ui/avatar";
@@ -39,7 +40,6 @@ export function ExpressList() {
 		queryKey: ["express/list"],
 		queryFn: async () => trpc.express.getAllExpressApplications.query({}),
 	});
-	const t = useTranslations("ExpressList");
 
 	if (isPending)
 		return (
@@ -76,7 +76,7 @@ export function ExpressList() {
 					<CardContent className="md:flex justify-between items-start gap-3">
 						<div>
 							<CardTitle>PluralBuddy Express</CardTitle>
-							<CardDescription>{t("desc")}</CardDescription>
+							<CardDescription>{m["ExpressList.desc"]()}</CardDescription>
 						</div>
 					</CardContent>
 					<CardFooter className="flex items-center justify-between">
@@ -92,12 +92,21 @@ export function ExpressList() {
 						</span>
 						<CreateExpressModal>
 							<Button className="max-md:mt-3" onClick={() => haptic()}>
-								{t("btn")}
+								{m["ExpressList.btn"]()}
 							</Button>
 						</CreateExpressModal>
 					</CardFooter>
 				</Card>
-				<Callout type="warning">Sorry, PluralBuddy Express has been discontinued as of 08/11/26. Please use an alternative like <Link to="https://plural.gg">/plu/ral</Link> instead! Express applications will still continue to send messages</Callout>
+				<Callout type="warning">
+					<ParaglideMessage
+						message={m["ExpressList.express_discontinued"]}
+						markup={{
+							"plural-link": ({ children }) => (
+								<Link to="https://plural.gg">{children}</Link>
+							),
+						}}
+					/>
+				</Callout>
 				<Separator orientation="horizontal" className="h-px mb-3" />
 				<div className="gap-3 grid">
 					{data?.map((v) => (

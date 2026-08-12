@@ -68,7 +68,8 @@
             "system:write": "Access to change system settings",
             "system:admin": "Access to read and write to systems AND alters.",
             "system:ai-ap": "Create custom auto proxy modes as if this integration was a front tracker."
-        }
+        },
+        "error_denying_code": "Error while denying consent code"
     },
     "DeleteComponent": {
         "placeholder": "Type \"{requiredDeletionText}\" to delete this object",
