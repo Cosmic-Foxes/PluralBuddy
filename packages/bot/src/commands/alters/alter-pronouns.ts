@@ -69,7 +69,7 @@ export default class EditAlterDisplayNameCommand extends SubCommand {
 					components: [
 						new Container().setComponents(
 							new TextDisplay().setContent(`\`\`\`
-${alter.pronouns ?? "⛔ Your alter has no description."}
+${alter.pronouns ?? "⛔ Your alter has no pronouns."}
 \`\`\``),
 						),
 					],
