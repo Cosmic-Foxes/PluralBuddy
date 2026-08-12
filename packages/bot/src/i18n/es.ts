@@ -689,5 +689,6 @@ Tu sistema está utilizando el estado al frente de **{{ mode }}**.`,
   TOGGLED_INCLUDING_PROXY_TAGS_D: "Se cambió la opción de incluir etiquetas proxy. (desactivado)",
   TOGGLED_INCLUDING_PRONOUNS_E: "Se cambió la opción de incluir pronombres. (activado)",
   TOGGLED_INCLUDING_PRONOUNS_D: "Se cambió la opción de incluir pronombres. (desactivado)",
-  NOT_FRIDAY: "Flatworm Friday solo se celebra los viernes en Nueva York, vuelve el próximo viernes a Wall Street o usa `--time-machine`."
+  NOT_FRIDAY: "Flatworm Friday solo se celebra los viernes en Nueva York, vuelve el próximo viernes a Wall Street o usa `--time-machine`.",
+  EXPRESS_DISCONTINUED: "Sorry, PluralBuddy Express has been discontinued as of 08/11/26. Please use an alternative like [/plu/ral](https://plural.gg) instead! Express applications will still continue to send messages!"
 };
