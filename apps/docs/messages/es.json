@@ -69,8 +69,8 @@
             "system:admin": "Acceso a leer y escribir en sistemas y alters.",
             "system:ai-ap": "Crear modos automáticos personalizados de proxy como si esta integración fuera un rastreador frontal."
         },
-        "error_denying_code": "Error while denying consent code",
-        "done": "Okay, done!"
+        "error_denying_code": "Error al denegar el código de consentimiento",
+        "done": "Vale, ¡listo!"
     },
     "DeleteComponent": {
         "placeholder": "Escribe \"{requiredDeletionText}\" para eliminar este objeto",
@@ -94,7 +94,7 @@
     "ExpressList": {
         "desc": "Crea proxies de usuario con PluralBuddy Express: asigna tus propios alters a aplicaciones de Discord y utiliza los comandos de barra nativos de Discord para actuar como un alter. Funciona en mensajes directos o en cualquier servidor que tenga habilitado el permiso para usar aplicaciones externas.",
         "btn": "Crear aplicación Express",
-        "express_discontinued": "Sorry, PluralBuddy Express has been discontinued as of 08/11/26. Please use an alternative like {#plural-link}/plu/ral{/plural-link} instead! Express applications will still continue to send messages"
+        "express_discontinued": "Lo sentimos, PluralBuddy Express ha sido interrumpido a partir del 08/11/26. ¡Por favor usa una alternativa como {#plural-link}/plu/ral{/plural-link} en su lugar! Las aplicaciones Express seguirán enviando mensajes"
     },
     "ExpressPage": {
         "nav_menu_pref": "Preferencias",
