@@ -1,10 +1,27 @@
 import {
+	ArrowUpRight,
+	BadgeCheckIcon,
+	Ban,
+	BookOpen,
+	ChevronRightIcon,
+	CircleUser,
+	Code,
+	Info,
+	Link2,
+	SquareArrowOutUpRight,
+	TrainFront,
+	Webhook,
+} from "lucide-react";
+import { motion } from "motion/react";
+import NextLink from "next/link";
+import { JSX, ReactElement } from "react";
+import { Link } from "react-router";
+import {
 	Breadcrumb,
 	BreadcrumbItem,
 	BreadcrumbLink,
 	BreadcrumbList,
 } from "@/components/ui/breadcrumb";
-import { DynamicPageTitle } from "../dynamic-title";
 import { Card, CardContent } from "@/components/ui/card";
 import {
 	Item,
@@ -13,25 +30,8 @@ import {
 	ItemMedia,
 	ItemTitle,
 } from "@/components/ui/item";
-import { Link } from "react-router";
-import NextLink from "next/link";
-import {
-	BadgeCheckIcon,
-	ChevronRightIcon,
-	Code,
-	TrainFront,
-	Webhook,
-	Link2,
-	CircleUser,
-	Ban,
-	Info,
-	BookOpen,
-	SquareArrowOutUpRight,
-	ArrowUpRight,
-} from "lucide-react";
 import { Marker, MarkerContent } from "@/components/ui/marker";
-import { motion } from "motion/react";
-import { JSX, ReactElement } from "react";
+import { DynamicPageTitle } from "../dynamic-title";
 
 const pages = [
 	{ separate: "Account" },
@@ -51,7 +51,7 @@ const pages = [
 	},
 	{
 		title: "API Documentation",
-		href: "/docs/pluralbuddy/api",
+		href: "/docs/pluralbuddy/oauth-apps",
 		icon: BookOpen,
 		external: true,
 	},

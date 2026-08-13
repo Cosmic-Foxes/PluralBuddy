@@ -1,14 +1,13 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import type { Guild } from "seyfert";
-import { client } from "..";
-import type { PSystem } from "@/types/system";
-import { ActionRow, Button, Container, Section } from "seyfert";
-import { TextDisplay } from "seyfert";
+import { ActionRow, Button, Container, Section, TextDisplay } from "seyfert";
+import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import type { TranslationString } from "@/lang";
+import type { PSystem } from "@/types/system";
+import { client } from "..";
 import { emojis } from "./emojis";
 import { InteractionIdentifier } from "./interaction-ids";
-import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
 export async function sendAutoproxyOperationDM(
 	system: PSystem,
@@ -17,7 +16,7 @@ export async function sendAutoproxyOperationDM(
 	environment: "discord" | "web",
 	mode: string,
 ) {
-	if (system.systemOperationDM)
+	if (!system.systemOperationDM)
 		try {
 			await client.users
 				.write(system.associatedUserId, {
@@ -59,22 +58,22 @@ export async function sendAutoproxyOperationDM(
 								),
 							)
 							.setColor("#F9DC00"),
-							new Section()
-								.setComponents(
-									new TextDisplay().setContent(
-										"-# You were notified of this action due to your association with your PluralBuddy system's auto-proxy settings.",
-									),
-									new TextDisplay().setContent(
-										"-# Developed as open-source software @ [pb.giftedly.dev](<https://pb.giftedly.dev>)",
-									),
-								)
-								.setAccessory(
-									new Button()
-										.setCustomId(InteractionIdentifier.SnoozeDMs.create())
-										.setStyle(ButtonStyle.Danger)
-										.setLabel("Opt-out of DMs")
-										.setEmoji(emojis.xWhite),
+						new Section()
+							.setComponents(
+								new TextDisplay().setContent(
+									"-# You were notified of this action due to your association with your PluralBuddy system's auto-proxy settings.",
 								),
+								new TextDisplay().setContent(
+									"-# Developed as open-source software @ [pb.giftedly.dev](<https://pb.giftedly.dev>)",
+								),
+							)
+							.setAccessory(
+								new Button()
+									.setCustomId(InteractionIdentifier.SnoozeDMs.create())
+									.setStyle(ButtonStyle.Danger)
+									.setLabel("Opt-out of DMs")
+									.setEmoji(emojis.xWhite),
+							),
 					],
 				})
 				.catch(() => null);

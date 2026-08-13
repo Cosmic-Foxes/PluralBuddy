@@ -8,10 +8,9 @@ import { FlickeringGrid } from "./ui/flickering-grid";
 import { Separator } from "./ui/separator";
 import { JSX } from "react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { m } from "@/paraglide/messages";
 
 export function Footer() {
-	const t = useTranslations("FooterComponent");
 
 	return (
 		<footer className="border-t">
@@ -26,41 +25,41 @@ export function Footer() {
 							</span>
 						</Link>
 						<span className="tracking-tight text-muted-foreground text-left">
-							{t("lgbt_lives_matter")}
+							{m["FooterComponent.lgbt_lives_matter"]()}
 						</span>
 					</div>
 					<div className="pt-5 md:w-1/2">
 						<div className="flex flex-col justify-start md:flex-row md:items-start md:justify-between gap-y-5 lg:pl-10">
 							<div className="flex flex-col gap-y-2 list-none">
 								<li className="inline-flex mb-2 text-sm font-semibold text-primary">
-									{t("heading_1")}
+									{m["FooterComponent.heading_1"]()}
 								</li>
 								<FooterItem link="https://github.com/giftedl/PluralBuddy">
 									GitHub
 								</FooterItem>
 								<FooterItem link="https://gftl.fyi/invite">
-									{t("invite")}
+									{m["FooterComponent.invite"]()}
 								</FooterItem>
 								<FooterItem link="https://gftl.fyi/discord">
-									{t("join_support_server")}
+									{m["FooterComponent.join_support_server"]()}
 								</FooterItem>
 								<FooterItem link="https://gftl.fyi/docs">
-									{t("docs")}
+									{m["FooterComponent.docs"]()}
 								</FooterItem>
 							</div>
 							<div className="flex flex-col gap-y-2 list-none">
 								<li className="inline-flex mb-2 text-sm font-semibold text-primary">
-									{t("docs")}
+									{m["FooterComponent.docs"]()}
 								</li>
 								<FooterItem link="/">
 									Home
 								</FooterItem>
 								<FooterItem link="/docs/pluralbuddy/get-started">
-									{t("getting_started")}
+									{m["FooterComponent.getting_started"]()}
 								</FooterItem>
-								<FooterItem link="/docs/pluralbuddy/">{t("intro")}</FooterItem>
+								<FooterItem link="/docs/pluralbuddy/">{m["FooterComponent.intro"]()}</FooterItem>
 								<FooterItem link="/docs/pluralbuddy/get-started">
-									{t("ctx_menu_actions")}
+									{m["FooterComponent.ctx_menu_actions"]()}
 								</FooterItem>
 							</div>
 						</div>

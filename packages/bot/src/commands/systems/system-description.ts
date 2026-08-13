@@ -19,7 +19,7 @@ import { createSystemOperation } from "@/lib/system-operation";
 const options = {
 	"system-description": createStringOption({
 		description: "The new description for the system.",
-		max_length: 2000,
+		max_length: 4000,
 	}),
 };
 

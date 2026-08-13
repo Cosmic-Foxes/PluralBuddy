@@ -1,5 +1,4 @@
 "use client";
-import { MDXFeedbackBlock } from "@/mdx-components";
 import {
 	DiscordBold,
 	DiscordContainer,
@@ -12,6 +11,7 @@ import {
 } from "@penwin/discord-components-react-render";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { MDXFeedbackBlock } from "@/mdx-components";
 import { CorrectHeaderFixer } from "../correct-header-fixer";
 
 export function RoleContainerExample() {

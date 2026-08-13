@@ -106,14 +106,15 @@ export function Sidebar({ footer, banner, collapsible = true, components, ...res
         </div>
         {viewport}
         {(slots.languageSelect || iconLinks.length > 0 || slots.themeSwitch || footer) && (
-          <div className="flex flex-col p-4 pt-2">
+          <div className="flex flex-col p-4 pt-2 grid gap-2">
             {slots.languageSelect && (
               <slots.languageSelect.root
                 variant="secondary"
                 className="text-fd-muted-foreground text-start justify-start bg-fd-secondary/50 mb-2"
               >
+                <div className='flex items-center gap-2'>
                 <Languages className="size-4.5" />
-                <slots.languageSelect.text />
+                  <slots.languageSelect.text /></div>
                 <ChevronDown className="ms-auto size-3.5" />
               </slots.languageSelect.root>
             )}
@@ -160,8 +161,10 @@ export function Sidebar({ footer, banner, collapsible = true, components, ...res
             </div>
             {slots.languageSelect && (
               <slots.languageSelect.root>
+                <div 
+                className='flex items-center gap-1'>
                 <Languages className="size-4.5" />
-                <slots.languageSelect.text />
+                  <slots.languageSelect.text /></div>
               </slots.languageSelect.root>
             )}
             {slots.themeSwitch && <slots.themeSwitch className="p-0" />}

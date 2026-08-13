@@ -1,11 +1,13 @@
 'use client';
-import type { ComponentProps } from 'react';
-import { useI18n } from '@fumadocs/base-ui/contexts/i18n';
 import { useTranslations } from '@fuma-translate/react';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { cn } from '@/lib/cn';
-import { buttonVariants } from '@/components/ui/button';
+import { useI18n } from '@fumadocs/base-ui/contexts/i18n';
 import type { VariantProps } from 'class-variance-authority';
+import type { ComponentProps } from 'react';
+import { buttonVariants } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Button } from '@/components/ui/shadcn-button';
+import { cn } from '@/lib/cn';
+import { setLocale } from '@/paraglide/runtime';
 
 export interface LanguageSelectProps extends ComponentProps<'button'> {
   variant?: VariantProps<typeof buttonVariants>['variant'];
@@ -27,9 +29,10 @@ export function LanguageSelect({
     <Popover>
       <PopoverTrigger
         aria-label={t('Choose a language', { note: 'aria-label' })}
-        className={(s) =>
-          cn(buttonVariants({ variant }), 'gap-1.5 p-1.5', s.open && 'bg-fd-accent', className)
-        }
+
+        className={cn(
+          buttonVariants({ size: "icon-sm", color: variant }),
+          "cursor-pointer")}
         {...rest}
       >
         {children}
@@ -47,7 +50,8 @@ export function LanguageSelect({
                 : 'text-fd-muted-foreground hover:bg-fd-accent hover:text-fd-accent-foreground',
             )}
             onClick={() => {
-              context.onChange?.(item.locale);
+              // context.onChange?.(item.locale);
+              setLocale(item.locale as "en")
             }}
           >
             {item.name}

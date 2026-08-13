@@ -1,6 +1,13 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 "use client";
 
+import { Dithering } from "@paper-design/shaders-react";
+import { useQuery } from "@tanstack/react-query";
+import { CircleAlert, FileExclamationPoint } from "lucide-react";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
+import { useTheme } from "next-themes";
+import React, { useState } from "react";
+import { toast } from "sonner";
 import { scopeList } from "@/components/devs/create-new-app-form";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardTitle } from "@/components/ui/card";
@@ -14,18 +21,10 @@ import {
 } from "@/components/ui/tooltip";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/cn";
-import { Dithering } from "@paper-design/shaders-react";
-import { useQuery } from "@tanstack/react-query";
-import { CircleAlert, FileExclamationPoint } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { useTheme } from "next-themes";
-import { redirect, useRouter, useSearchParams } from "next/navigation";
-import React, { useState } from "react";
-import { toast } from "sonner";
+import { m } from "@/paraglide/messages";
 
 export default function ConsentPage() {
 	const params = useSearchParams();
-	const t = useTranslations("ConsentPage");
 	const router = useRouter();
 	const session = authClient.useSession();
 
@@ -43,8 +42,8 @@ export default function ConsentPage() {
 	// Submit consent with the code in the request body
 	const scopes = params.get("scope")?.split(" ");
 
-	if (data !== undefined && "message" in data) return <>{t("invalid_app")}</>;
-	if (data !== undefined && !("data" in data)) return <>{t("invalid_app")}</>;
+	if (data !== undefined && "message" in data) return <>{m["ConsentPage.invalid_app"]()}</>;
+	if (data !== undefined && !("data" in data)) return <>{m["ConsentPage.invalid_app"]()}</>;
 
 	return (
 		<div className="grid w-full flex-grow relative items-center justify-center px-4">
@@ -62,19 +61,19 @@ export default function ConsentPage() {
 							</div>
 						</div>
 						<h1 className="mt-6 text-xl font-medium tracking-tight">
-							{t("title", {
+							{m["ConsentPage.title"]({
 								client_name: data.data?.client_name ?? "?",
 							})}
 						</h1>
 						<span className="text-sm text-muted-foreground">
-							{t("signed_in_as", {
+							{m["ConsentPage.signed_in_as"]({
 								username: `@${session.data?.user.name}`
 							})}
 						</span>
 					</header>
 					<div className="border rounded-lg">
 						<div className="w-full p-4 bg-fd-secondary rounded-t-lg text-center">
-							<span>{t("allowed_to", {
+							<span>{m["ConsentPage.allowed_to"]({
 								client_name: data.data?.client_name ?? "?"
 							})}</span>
 						</div>
@@ -108,7 +107,7 @@ export default function ConsentPage() {
 												</TooltipContent>
 											</Tooltip>
 										)}
-										{t(`scopes.${scopeList.find((v) => v.title === scope)?.title}`)}
+										{m[`ConsentPage.scopes.${(scopeList.find((v) => v.title === scope)?.title) ?? "profile"}`]()}
 									</div>
 									{i + 1 !== scopes.length && <Separator />}
 								</React.Fragment>
@@ -129,9 +128,9 @@ export default function ConsentPage() {
 									scope: (scopes ?? []).join(" "),
 								});
 
-								if (res.error) toast.error("Error while denying consent code");
+								if (res.error) toast.error(m["ConsentPage.error_denying_code"]());
 								else {
-									toast.success("Okay, done!");
+									toast.success(m["ConsentPage.done"]());
 									if (res.data.redirect)
 										router.push((res.data as unknown as { uri: string }).uri);
 								}
@@ -153,9 +152,9 @@ export default function ConsentPage() {
 								});
 
 								if (res.error)
-									toast.error("Error while accepting consent code");
+									toast.error(m["ConsentPage.error_denying_code"]());
 								else {
-									toast.success("Okay, done!");
+									toast.success(m["ConsentPage.done"]());
 									if (res.data.redirect)
 										router.push((res.data as unknown as { uri: string }).uri);
 								}

@@ -44,7 +44,8 @@ export enum SystemProtectionFlags {
 
 export enum SystemFlags {
 	KEEP_PROXY_TAGS = 1 << 0,
-	INCLUDE_PRONOUNS = 1 << 1
+	INCLUDE_PRONOUNS = 1 << 1,
+	NO_TYPING_STATUS = 1 << 2,
 }
 
 export const PSystemObject = z.object({
@@ -61,12 +62,12 @@ export const PSystemObject = z.object({
 				"1444187699924963350": "string",
 			},
 		}),
-	systemDescription: z.string().max(1000).optional(),
+	systemDescription: z.string().max(4000).optional(),
 	systemAvatar: z.string().optional().nullable(),
 	systemBanner: z.string().optional().nullable(),
 	systemPronouns: z.string().optional().nullable(),
 
-	nicknameFormat: z.string().optional(),
+	nicknameFormat: z.string().optional().nullable(),
 
 	alterIds: z.array(z.number()).max(2000).default([]),
 	tagIds: z.array(z.string()).max(500).default([]),

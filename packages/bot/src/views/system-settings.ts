@@ -255,6 +255,8 @@ export class SystemSettingsView extends TranslatedView {
 			((system.flags ?? 0) & SystemFlags.KEEP_PROXY_TAGS) === 0;
 		const includePronouns =
 			((system.flags ?? 0) & SystemFlags.INCLUDE_PRONOUNS) === 0;
+		const typingStatus =
+			((system.flags ?? 0) & SystemFlags.NO_TYPING_STATUS) === 0;
 
 		return [
 			new Container().setColor("#1190FF").setComponents(
@@ -286,6 +288,22 @@ export class SystemSettingsView extends TranslatedView {
 						new Button()
 							.setStyle(ButtonStyle.Secondary)
 							.setLabel(
+								typingStatus
+									? $translations.NO_TYPING_STATUS_BTN
+									: $translations.NO_TYPING_STATUS_BTN_D,
+							)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.GeneralTab.ToggleTypingStatus.create(),
+							),
+					)
+					.setComponents(
+						new TextDisplay().setContent($translations.NO_TYPING_STATUS),
+					),
+				new Section()
+					.setAccessory(
+						new Button()
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel(
 								includePronouns
 									? $translations.INCLUDE_PRONOUNS_BTN
 									: $translations.INCLUDE_PRONOUNS_OFF_BTN,
@@ -298,30 +316,21 @@ export class SystemSettingsView extends TranslatedView {
 						new TextDisplay().setContent($translations.INCLUDE_PRONOUNS_DESC),
 					),
 				new Separator(),
-				new Section()
-					.setAccessory(
+				new TextDisplay().setContent(`${$translations.EXPORT_SYS_DESC}\n\n${$translations.IMPORT_SYS_DESC}`),
+				new ActionRow().setComponents(
 						new Button()
 							.setStyle(ButtonStyle.Secondary)
 							.setLabel($translations.EXPORT_SYS_BTN)
 							.setCustomId(
 								InteractionIdentifier.Systems.Configuration.GeneralTab.ExportSystem.create(),
 							),
-					)
-					.setComponents(
-						new TextDisplay().setContent($translations.EXPORT_SYS_DESC),
-					),
-				new Section()
-					.setAccessory(
 						new Button()
 							.setStyle(ButtonStyle.Secondary)
 							.setLabel($translations.IMPORT_SYS_BTN)
 							.setCustomId(
 								InteractionIdentifier.Systems.Configuration.GeneralTab.ImportSystem.create(),
 							),
-					)
-					.setComponents(
-						new TextDisplay().setContent($translations.IMPORT_SYS_DESC),
-					),
+				),
 				new Separator(),
 				new TextDisplay().setContent($translations.EXTERNAL_EXPORT_SYS_DESC),
 				new ActionRow().setComponents(
