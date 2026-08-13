@@ -59,7 +59,6 @@ import { Button } from "../../../ui/shadcn-button";
 import { Spinner } from "../../../ui/spinner";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../../ui/tooltip";
 import { AlterView } from "../../alter-view";
-import { CreateExpressModal } from "../../create-express-modal";
 import { DeleteConfirmationModal } from "../../delete-confirmation-modal";
 import { JSONModal } from "../../json-modal";
 import { PreferencesModal } from "../../preferences-modal";
@@ -240,9 +239,7 @@ export function ExpressAlterPage({
 						<EmptyTitle>{m["ExpressPage.empty_title"]()}</EmptyTitle>
 						<EmptyDescription>{m["ExpressPage.empty_desc"]()}</EmptyDescription>
 						<EmptyContent className="flex-row justify-center gap-2">
-							<CreateExpressModal>
-								<Button>{m["ExpressPage.empty_btn"]()}</Button>
-							</CreateExpressModal>
+								<Button disabled>{m["ExpressPage.empty_btn"]()}</Button>
 						</EmptyContent>
 					</EmptyHeader>
 				</Empty>

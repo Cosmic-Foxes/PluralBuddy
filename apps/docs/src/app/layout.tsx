@@ -1,6 +1,7 @@
 import { RootProvider } from "@fumadocs/base-ui/provider/base";
 import "./global.css";
 import { TreeContextProvider } from "@fumadocs/base-ui/contexts/tree";
+import { i18nProvider } from '@fumadocs/base-ui/i18n';
 import { NextProvider } from "fumadocs-core/framework/next";
 import { Viewport } from "next";
 import { Inter } from "next/font/google";
@@ -15,12 +16,15 @@ import { source } from "@/lib/source";
 import {
 	assertIsLocale,
 	baseLocale,
+	getLocale,
 	Locale,
 	overwriteGetLocale,
 	overwriteGetUrlOrigin,
+	setLocale,
 } from "@/paraglide/runtime";
+import { translations } from "./layout.shared";
 
-const ssrLocale = cache(() => ({
+export const ssrLocale = cache(() => ({
 	locale: baseLocale,
 	origin: "http://localhost",
 }));
@@ -53,6 +57,7 @@ export default async function Layout({ children }: LayoutProps<"/">) {
 							search={{
 								SearchDialog: OramaSearchDialog,
 							}}
+							i18n={i18nProvider(translations, getLocale())}
 						>
 							<TooltipProvider>
 								{children}

@@ -1,5 +1,10 @@
 'use client';
 
+import { NavigationMenu as Primitive } from '@base-ui/react/navigation-menu';
+import { useTranslations } from '@fuma-translate/react';
+import { cva } from 'class-variance-authority';
+import Link from 'fumadocs-core/link';
+import { ChevronDown, Languages } from 'lucide-react';
 import {
   type ComponentProps,
   createContext,
@@ -11,19 +16,14 @@ import {
   useRef,
   useState,
 } from 'react';
-import { cva } from 'class-variance-authority';
-import Link from 'fumadocs-core/link';
-import { NavigationMenu as Primitive } from '@base-ui/react/navigation-menu';
-import { cn } from '@/lib/cn';
-import { type LinkItemType, LinkItem } from '@/components/layouts/shared';
+import { LinkItem, type LinkItemType } from '@/components/layouts/shared';
 import { buttonVariants } from '@/components/ui/button';
-import { ChevronDown, Languages } from 'lucide-react';
-import { useIsScrollTop } from '@/lib/use-is-scroll-top';
-import { useHomeLayout } from '..';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/fuma-collapsible';
+import { cn } from '@/lib/cn';
 import { mergeRefs } from '@/lib/merge-refs';
-import { useTranslations } from '@fuma-translate/react';
+import { useIsScrollTop } from '@/lib/use-is-scroll-top';
 import { AuthComponents } from '../../docs/auth-components';
+import { useHomeLayout } from '..';
 
 export const navItemVariants = cva('[&_svg]:size-4', {
   variants: {
@@ -107,8 +107,8 @@ export function Header(props: ComponentProps<'header'>) {
             className="w-full rounded-full ps-2.5 max-w-[240px]"
           />
         )}
-        {slots.themeSwitch && <slots.themeSwitch />} 
-        <AuthComponents style="main" />
+        {slots.themeSwitch && <slots.themeSwitch />}
+        <AuthComponents style="docs" />
         {slots.languageSelect && (
           <slots.languageSelect.root>
             <Languages className="size-5" />
@@ -194,7 +194,7 @@ export function Header(props: ComponentProps<'header'>) {
                       </slots.languageSelect.root>
                     )}
                     {slots.themeSwitch && <slots.themeSwitch />}
-                      <AuthComponents style="main" />
+                    <AuthComponents style="docs" />
                   </div>
                 </MobileNavigationMenuContext>
               </div>

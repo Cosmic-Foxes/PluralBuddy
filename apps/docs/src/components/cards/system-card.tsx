@@ -1,7 +1,34 @@
 "use client";
+
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import {
+	DiscordActionRow,
+	DiscordBold,
+	DiscordButton,
+	DiscordCommand,
+	DiscordContainer,
+	DiscordHeader,
+	DiscordImageAttachment,
+	DiscordMediaGallery,
+	DiscordMediaGalleryItem,
+	DiscordMention,
+	DiscordMessage,
+	DiscordMessages,
+	DiscordPre,
+	DiscordSection,
+	DiscordSectionComponents,
+	DiscordSubscript,
+	DiscordTextDisplay,
+	DiscordThumbnail,
+	setConfig,
+} from "@penwin/discord-components-react-render";
+import { Wrench } from "lucide-react";
 import Image from "next/image";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
+import { MDXFeedbackBlock } from "@/mdx-components";
+import { CorrectHeaderFixer } from "../correct-header-fixer";
 import {
 	Card,
 	CardContent,
@@ -10,32 +37,6 @@ import {
 	CardTitle,
 } from "../ui/card";
 import { Button } from "../ui/shadcn-button";
-import { Wrench } from "lucide-react";
-import {
-	DiscordMessage,
-	DiscordMessages,
-	DiscordContainer,
-	setConfig,
-	DiscordSection,
-	DiscordSectionComponents,
-	DiscordTextDisplay,
-	DiscordPre,
-	DiscordSubscript,
-	DiscordHeader,
-	DiscordImageAttachment,
-	DiscordMediaGallery,
-	DiscordMediaGalleryItem,
-	DiscordBold,
-	DiscordMention,
-	DiscordActionRow,
-	DiscordButton,
-	DiscordCommand,
-	DiscordThumbnail,
-} from "@penwin/discord-components-react-render";
-import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
-import { CorrectHeaderFixer } from "../correct-header-fixer";
-import { MDXFeedbackBlock } from "@/mdx-components";
 
 export function SystemCardExample() {
 	const { resolvedTheme } = useTheme();

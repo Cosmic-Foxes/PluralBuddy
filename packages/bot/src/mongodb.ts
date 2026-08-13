@@ -1,20 +1,19 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { type Collection, type Db, MongoClient } from "mongodb";
-import type { PGuild } from "./types/guild";
-import type { PUser } from "./types/user";
-import type { PAlter } from "./types/alter";
-import type { POperation } from "./types/operation";
-import type { PMessage } from "./types/message";
-import type { PTag } from "./types/tag";
-import type {
+import type {PAlterOperation, 
 	PExpressApplication,
 	PGuildError,
-	PIntegrationFront,
+	PIntegrationFront
 } from "plurography";
-import type { PAlterOperation } from "plurography";
 import { connectMongo } from "./lib/libby";
+import type { PAlter } from "./types/alter";
 import type { PAnalytics } from "./types/analytics";
+import type { PGuild } from "./types/guild";
+import type { PMessage } from "./types/message";
+import type { POperation } from "./types/operation";
+import type { PTag } from "./types/tag";
+import type { PUser } from "./types/user";
 
 export let mongoClient: MongoClient;
 export let mainDb: Db;
@@ -60,15 +59,8 @@ export async function createPeriodicExpirationDates() {
 			},
 		},
 	);
-	await alterCollection.createIndex(
-		{ displayName: 1 },
-		{
-			collation: {
-				locale: "en",
-				strength: 2,
-			},
-		},
-	);
+
+	await alterCollection.createIndex({ username: "text" });
 }
 
 export async function setupDatabases() {
