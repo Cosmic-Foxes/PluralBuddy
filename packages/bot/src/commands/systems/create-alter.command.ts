@@ -216,7 +216,7 @@ ${z.prettifyError(alter.error)}
 							),
 							new Separator().setSpacing(Spacing.Large),
 							new TextDisplay().setContent(
-								[
+								not_empty([
 									(displayName ?? username) !== username
 										? `> - ${(await ctx.userTranslations()).CREATE_NEW_ALTER_DISPLAY_NAME.replace("{{ dn }}", displayName ?? username)}`
 										: "",
@@ -237,7 +237,7 @@ ${z.prettifyError(alter.error)}
 										: "",
 								]
 									.filter((v) => v !== "")
-									.join("\n"),
+									.join("\n")),
 							),
 						),
 				],
@@ -282,4 +282,8 @@ ${z.prettifyError(alter.error)}
 			await successMessage(true)
 		}
 	}
+}
+
+function not_empty(string: string) {
+	return string === "" ? " -- " : ""
 }

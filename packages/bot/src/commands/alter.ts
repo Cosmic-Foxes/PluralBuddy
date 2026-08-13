@@ -1,24 +1,24 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import {
+	ActionRow,
 	AutoLoad,
+	Button,
 	Command,
-	Options,
 	type CommandContext,
+	createBooleanOption,
 	createStringOption,
 	Declare,
-	createBooleanOption,
-	ActionRow,
-	Button,
-	TextDisplay,
-	Message,
 	LocalesT,
+	Message,
+	Options,
+	TextDisplay,
 } from "seyfert";
-import { alterCollection } from "../mongodb";
-import { AlterView } from "../views/alters";
-import { AlertView } from "../views/alert";
 import { MessageFlags } from "seyfert/lib/types";
 import { emojis } from "@/lib/emojis";
+import { alterCollection } from "../mongodb";
+import { AlertView } from "../views/alert";
+import { AlterView } from "../views/alters";
 
 const options = {
 	alter: createStringOption({
@@ -76,16 +76,19 @@ export default class SystemCommand extends Command {
 						systemId,
 					})) ??
 					(await alterCollection.findOne({
-						username: { $regex: alterName },
+						username: { $regex: new RegExp(alterName, "i") },
 						systemId,
 					})))
 				: ((await alterCollection.findOne({
-						$or: [{ username: alterName }, { alterId: Number(alterName) }],
+						$or: [
+							{ username: { $regex: new RegExp(alterName, "i") } },
+							{ alterId: Number(alterName) },
+						],
 						systemId,
 					})) ??
 					(await alterCollection.findOne({
 						$or: [
-							{ username: { $regex: alterName } },
+							{ username: { $regex: new RegExp(alterName, "i") } },
 							{ alterId: Number(alterName) },
 						],
 						systemId,
