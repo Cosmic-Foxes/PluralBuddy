@@ -10,6 +10,7 @@ import {
 	ShieldX,
 } from "lucide-react";
 import { Metadata, Viewport } from "next";
+import { headers } from "next/headers";
 import Link from "next/link";
 import { JSX } from "react";
 import reactStringReplace from "react-string-replace";
@@ -21,14 +22,16 @@ import { Separator } from "@/components/ui/separator";
 import { GithubDark } from "@/components/ui/svgs/githubDark";
 import { GithubLight } from "@/components/ui/svgs/githubLight";
 import { cn } from "@/lib/cn";
+import { correctSSRLocale } from "@/lib/correct-locale";
 import { m } from "@/paraglide/messages.js";
+import { getLocale, setLocale } from "@/paraglide/runtime";
 import { DynamicHighligher, Hero } from "./page.client";
 
-export const metadata: Metadata = {
-	title: "PluralBuddy",
-	description: "The new age of plurality data storage for Discord and beyond. Create alters & tags to spice up your system for those who are plural.",
-	applicationName: "PluralBuddy",
-};
+// export const metadata: Metadata = {
+// 	title: "PluralBuddy",
+// 	description: "The new age of plurality data storage for Discord and beyond. Create alters & tags to spice up your system for those who are plural.",
+// 	applicationName: "PluralBuddy",
+// };
 
 export const viewport: Viewport = {
 	themeColor: "#fccee8",
@@ -50,7 +53,10 @@ const buttonVariants = cva(
 	},
 );
 
+
 export default async function HomePage() {
+	await correctSSRLocale();
+
 	return (
 		<div className="xl:pt-8 justify-center text-center flex-1 xl:mx-30 xl:border-x pb-[300px]">
 			<div className="xl:px-3">
@@ -98,7 +104,7 @@ export default async function HomePage() {
 							</span>
 							<span>
 								<ShieldX className="text-primary" />
-								{m["HomePage.blocks_headline"]()}
+								{m["HomePage.blocks_headline"]({}, {locale: getLocale()})}
 							</span>
 							<span>
 								<Ampersands className="text-primary" />

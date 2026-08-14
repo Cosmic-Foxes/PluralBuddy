@@ -13,9 +13,9 @@ import {
 } from "@penwin/discord-components-react-render";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { MDXFeedbackBlock } from "@/mdx-components";
 import { CorrectHeaderFixer } from "../correct-header-fixer";
 import { FeedbackBlock } from "../feedback/client";
-import { MDXFeedbackBlock } from "@/mdx-components";
 
 export function CheckPermsCardExample() {
 	const { resolvedTheme } = useTheme();

@@ -66,7 +66,7 @@ const config = {
 				outdir: "./src/paraglide",
 				project: "./project.inlang",
 				emitTsDeclarations: true,
-				strategy: ["url", "cookie", "baseLocale"],
+				strategy: ["cookie", "baseLocale"],
 			})
 		);
 		return config;

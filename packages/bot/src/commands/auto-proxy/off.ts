@@ -1,13 +1,24 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import { CommandContext, createStringOption, Declare, IgnoreCommand, Options, SubCommand } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
+import { Shortcut } from "yunaforseyfert";
 import { runOffCommand } from "@/lib/ap-cmds/off";
 import { sendAutoproxyOperationDM } from "@/lib/autoproxy-operation";
 import { userCollection } from "@/mongodb";
 import type { PAutoProxy } from "@/types/auto-proxy";
 import { AlertView } from "@/views/alert";
-import { CommandContext, Declare, IgnoreCommand, SubCommand } from "seyfert";
-import { MessageFlags } from "seyfert/lib/types";
-import { Shortcut } from "yunaforseyfert";
+
+const options = {
+	scope: createStringOption({
+		description: "Where to use this auto-proxy mode. Default server-wide.",
+		choices: [
+			{ name: "Globally", value: "global" },
+			{ name: "Server-wide", value: "server" },
+			{ name: "Channel-wide", value: "channels" }
+		]
+	})
+};
 
 @Declare({
 	name: "off",
@@ -16,9 +27,9 @@ import { Shortcut } from "yunaforseyfert";
 	aliases: ["shutup"],
 	ignore: IgnoreCommand.Message
 })
-@Shortcut()
+@Options(options)
 export default class OffAutoProxy extends SubCommand {
-	override async run(ctx: CommandContext) {
+	override async run(ctx: CommandContext<typeof options>) {
 		return await runOffCommand(ctx);
 	}
 }

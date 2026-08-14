@@ -3,10 +3,7 @@ import { NextResponse } from "next/server";
 import { paraglideMiddleware } from "./paraglide/server";
 
 export default function proxy(request: NextRequest, event: NextFetchEvent) {
-	if (
-		request.url.includes("/oauth2/authorize") &&
-		!request.url.includes("/docs")
-	)
+	if (request.nextUrl.pathname === "/oauth2/authorize")
 		return NextResponse.redirect(
 			new URL(
 				`/api/auth/oauth2/authorize?${request.nextUrl.searchParams.toString()}`,
@@ -22,7 +19,7 @@ export default function proxy(request: NextRequest, event: NextFetchEvent) {
 			return NextResponse.redirect(
 				new URL(`/docs/${request.url.split("/docs")[1]}`, request.url),
 			);
-		return;
+		// return;
 	}
 
 	return paraglideMiddleware(request, ({ request, locale }) => {

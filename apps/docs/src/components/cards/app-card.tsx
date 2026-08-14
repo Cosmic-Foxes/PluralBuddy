@@ -13,8 +13,8 @@ import {
 } from "@penwin/discord-components-react-render";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { CorrectHeaderFixer } from "../correct-header-fixer";
 import { MDXFeedbackBlock } from "@/mdx-components";
+import { CorrectHeaderFixer } from "../correct-header-fixer";
 
 export function AppCardExample() {
 	const { resolvedTheme } = useTheme();
