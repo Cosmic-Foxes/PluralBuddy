@@ -15,6 +15,7 @@ import {
 	type MessageStructure,
 	type WebhookMessageStructure,
 } from "seyfert";
+import type { ResolverProps, SendResolverProps } from "seyfert/lib/common";
 import {
 	ButtonStyle,
 	MessageFlags,
@@ -23,14 +24,21 @@ import {
 	type RESTPostAPIWebhookWithTokenJSONBody,
 	type RESTPostAPIWebhookWithTokenQuery,
 } from "seyfert/lib/types";
-import { getUserById } from "../types/user";
-import { alterCollection, errorCollection, frontsCollection } from "../mongodb";
-import { AlertView } from "@/views/alert";
+import { latencyDataPoints } from "@/analytics";
+import { helpPages } from "@/commands/help";
+import { getWiderAutoProxy } from "@/lib/autoproxy-util";
+import { blockedChannel, blockedRole } from "@/lib/blocked";
+import { createError } from "@/lib/create-error";
+import { emojis } from "@/lib/emojis";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { getLanguageByUserId } from "@/lib/lang";
+import { handleDMReply } from "@/lib/proxying/dm-replying";
+import { createProxyError } from "@/lib/proxying/error";
+import { performAlterAutoProxy } from "@/lib/proxying/types/alter-ap";
 import {
 	performTagProxy,
 	proxyTagValid,
 } from "@/lib/proxying/types/tag-proxying";
-import type { PAlter } from "@/types/alter";
 import {
 	getSimilarWebhooks,
 	isValidDm,
@@ -38,21 +46,13 @@ import {
 	setLastLatchAlter,
 	startsWithPrefix,
 } from "@/lib/proxying/util";
-import { performAlterAutoProxy } from "@/lib/proxying/types/alter-ap";
-import { getGuildFromId, PGuildObject } from "@/types/guild";
-import { createError } from "@/lib/create-error";
-import { emojis } from "@/lib/emojis";
-import { createProxyError } from "@/lib/proxying/error";
-import { helpPages } from "@/commands/help";
-import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { build, client } from "..";
-import type { ResolverProps, SendResolverProps } from "seyfert/lib/common";
-import { blockedChannel, blockedRole } from "@/lib/blocked";
-import { latencyDataPoints } from "@/analytics";
-import { handleDMReply } from "@/lib/proxying/dm-replying";
-import { getLanguageByUserId } from "@/lib/lang";
 import { endTimer, startTimer } from "@/lib/timings";
-import { getWiderAutoProxy } from "@/lib/autoproxy-util";
+import type { PAlter } from "@/types/alter";
+import { getGuildFromId, PGuildObject } from "@/types/guild";
+import { AlertView } from "@/views/alert";
+import { build, client } from "..";
+import { alterCollection, errorCollection, frontsCollection } from "../mongodb";
+import { getUserById } from "../types/user";
 
 export const indexingMap: Record<string, NodeJS.Timeout> = {};
 export const indexingMessageMap: Record<string, Message> = {};
@@ -474,7 +474,7 @@ export default createEvent({
 			startTimer(`proxy: latch proxy (${message.id})`)
 
 			if (message.content.startsWith("\\\\")) {
-				setLastLatchAlter(guild.guildId, user.system);
+				setLastLatchAlter(guild.guildId, message.channelId, user.system);
 				return;
 			}
 			if (message.content.startsWith("\\"))
