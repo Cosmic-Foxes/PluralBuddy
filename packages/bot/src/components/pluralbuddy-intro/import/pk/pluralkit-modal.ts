@@ -1,30 +1,30 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import { PluralKitSystem } from "plurography";
 import {
-	ComponentCommand,
-	ModalCommand,
-	type ModalContext,
-	type ComponentContext,
 	ActionRow,
 	Button,
+	ComponentCommand,
+	type ComponentContext,
 	Container,
+	ModalCommand,
+	type ModalContext,
 	TextDisplay,
 } from "seyfert";
-import { InteractionIdentifier } from "../../../../lib/interaction-ids";
-import { LoadingView } from "../../../../views/loading";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
-import { PSystemObject, type PSystem } from "../../../../types/system";
-import { AlertView } from "../../../../views/alert";
-import { PluralKitSystem } from "plurography";
-import { AlterProtectionFlags, PAlterObject, type PAlter } from "@/types/alter";
-import { alterCollection, tagCollection } from "@/mongodb";
-import { getUserById, writeUserById } from "@/types/user";
-import { combine } from "@/lib/privacy-bitmask";
 import z from "zod";
-import { PTagObject, TagProtectionFlags, type PTag } from "@/types/tag";
-import { mentionCommand } from "@/lib/mention-command";
 import { emojis } from "@/lib/emojis";
+import { mentionCommand } from "@/lib/mention-command";
+import { combine } from "@/lib/privacy-bitmask";
 import { createRandomId } from "@/lib/random-id";
+import { alterCollection, tagCollection } from "@/mongodb";
+import { AlterProtectionFlags, type PAlter, PAlterObject } from "@/types/alter";
+import { type PTag, PTagObject, TagProtectionFlags } from "@/types/tag";
+import { getUserById, writeUserById } from "@/types/user";
+import { InteractionIdentifier } from "../../../../lib/interaction-ids";
+import { type PSystem, PSystemObject } from "../../../../types/system";
+import { AlertView } from "../../../../views/alert";
+import { LoadingView } from "../../../../views/loading";
 
 export default class PluralBuddyImportModal extends ModalCommand {
 	override filter(ctx: ModalContext) {
@@ -318,47 +318,49 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		return await ctx.editResponse({
 			components: [
 				...new AlertView(
-					(await ctx.userTranslations()),
+					await ctx.userTranslations(),
 				).successViewCustom(`Successfully imported your PluralKit system!
 
 > **Disclaimer:** You may feel your system might not be completely identical to PluralKit. This is because the core data structure of some resources are different from PluralKit's and as a result may not be identical.
-${systemData.alterIds.length !== data.members.length
-						? `> - **Alters (members)**: ${parsedSafe
-							.filter((v) => v.zodData.error !== undefined)
-							.map((_, i) => `\`${data.members[i]?.id}\``)
-							.join(
-								", ",
-							)} were unable to be added to the system due to validation issues.`
-						: ""
-					}${systemData.tagIds.length !== data.groups.length
-						? `> - **Tags (groups)**: ${parsedGroupsSafe
-							.filter((v) => v.error !== undefined)
-							.map((_, i) => `\`${data.groups[i]?.id}\``)
-							.join(
-								", ",
-							)} were unable to be added to the system due to validation issues.`
-						: ""
-					}
+${
+	systemData.alterIds.length !== data.members.length
+		? `> - **Alters (members)**: ${parsedSafe
+				.filter((v) => v.zodData.error !== undefined)
+				.map((_, i) => `\`${data.members[i]?.id}\``)
+				.join(
+					", ",
+				)} were unable to be added to the system due to validation issues.`
+		: ""
+}${
+	systemData.tagIds.length !== data.groups.length
+		? `> - **Tags (groups)**: ${parsedGroupsSafe
+				.filter((v) => v.error !== undefined)
+				.map((_, i) => `\`${data.groups[i]?.id}\``)
+				.join(
+					", ",
+				)} were unable to be added to the system due to validation issues.`
+		: ""
+}
 ### Next Steps
 > - To create a new alter, try using ${mentionCommand(
-						(await ctx.getDefaultPrefix()) ?? "",
-						"system create-alter",
-						ctx.interaction?.message?.messageReference === undefined,
-						"%username% %display name%",
-					)}
+					(await ctx.getDefaultPrefix()) ?? "",
+					"system create-alter",
+					ctx.interaction?.message?.messageReference === undefined,
+					"%username% %display name%",
+				)}
 > - To create a new tag, try using ${mentionCommand(
-						(await ctx.getDefaultPrefix()) ?? "",
-						"system create-tag",
-						ctx.interaction?.message?.messageReference === undefined,
-						"%name%",
-					)}
+					(await ctx.getDefaultPrefix()) ?? "",
+					"system create-tag",
+					ctx.interaction?.message?.messageReference === undefined,
+					"%name%",
+				)}
 `),
 				new ActionRow().setComponents(
 					new Button()
 						.setCustomId(
 							InteractionIdentifier.Systems.Configuration.GeneralTab.Index.create(),
 						)
-						.setLabel("Configure System")
+						.setLabel((await ctx.userTranslations()).CONFIGURE_SYSTEM)
 						.setEmoji(emojis.wrenchWhite)
 						.setStyle(ButtonStyle.Primary),
 				),

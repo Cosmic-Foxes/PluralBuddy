@@ -1,24 +1,24 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import { DiscordSnowflake } from "@sapphire/snowflake";
 import {
-	ComponentCommand,
-	ModalCommand,
-	type ModalContext,
-	type ComponentContext,
 	ActionRow,
 	Button,
+	ComponentCommand,
+	type ComponentContext,
+	ModalCommand,
+	type ModalContext,
 } from "seyfert";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
-import { LoadingView } from "../../../views/loading";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
-import { PSystemObject } from "../../../types/system";
-import { ImportNotation } from "../../../lib/export";
-import { AlertView } from "../../../views/alert";
 import { z } from "zod";
-import { DiscordSnowflake } from "@sapphire/snowflake";
-import { alterCollection, tagCollection } from "../../../mongodb";
-import { getUserById, writeUserById } from "../../../types/user";
 import { createRandomId } from "@/lib/random-id";
+import { ImportNotation } from "../../../lib/export";
+import { InteractionIdentifier } from "../../../lib/interaction-ids";
+import { alterCollection, tagCollection } from "../../../mongodb";
+import { PSystemObject } from "../../../types/system";
+import { getUserById, writeUserById } from "../../../types/user";
+import { AlertView } from "../../../views/alert";
+import { LoadingView } from "../../../views/loading";
 
 export default class PluralBuddyImportModal extends ModalCommand {
 	override filter(ctx: ModalContext) {
@@ -87,8 +87,30 @@ export default class PluralBuddyImportModal extends ModalCommand {
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
-
 		const { data } = parsed;
+
+		if (data.system === null) {
+			return await ctx.editResponse({
+				components: [
+					...new AlertView(await ctx.userTranslations()).errorViewCustom(
+						(await ctx.userTranslations()).PLURALBUDDY_IMPORT_ERROR.replace(
+							"%zod_errors%",
+							"The system is `null`.",
+						),
+					),
+					new ActionRow().addComponents(
+						new Button()
+							.setLabel((await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE)
+							.setCustomId(
+								InteractionIdentifier.Setup.Pagination.Page2.create(),
+							)
+							.setStyle(ButtonStyle.Secondary),
+					),
+				],
+
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
+		}
 
 		data.system.associatedUserId = ctx.author.id;
 		data.system.alterIds = [];

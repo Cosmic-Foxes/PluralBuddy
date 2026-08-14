@@ -12,15 +12,15 @@ import {
 	TextInput,
 	type ComponentContext,
 } from "seyfert";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
 import { ButtonStyle, MessageFlags, TextInputStyle } from "seyfert/lib/types";
-import { PluralBuddyIntro } from "../../../views/pluralbuddy-intro";
-import { LoadingView } from "../../../views/loading";
-import { createdSystems } from "../create-new-system";
-import { writeUserById } from "../../../types/user";
-import { AlertView } from "../../../views/alert";
 import { emojis } from "@/lib/emojis";
 import { mentionCommand } from "@/lib/mention-command";
+import { InteractionIdentifier } from "../../../lib/interaction-ids";
+import { writeUserById } from "../../../types/user";
+import { AlertView } from "../../../views/alert";
+import { LoadingView } from "../../../views/loading";
+import { PluralBuddyIntro } from "../../../views/pluralbuddy-intro";
+import { createdSystems } from "../create-new-system";
 
 export default class NameCNS extends ComponentCommand {
 	componentType = "Button" as const;
@@ -63,32 +63,31 @@ export default class NameCNS extends ComponentCommand {
 
 		return await ctx.editResponse({
 			components: [
-				...new AlertView((await ctx.userTranslations())).successViewCustom(
-					(await ctx.userTranslations())
-						.CREATING_NEW_SYSTEM_SUCCESS.replaceAll(
-							"%command1%",
-							mentionCommand(
-								(await ctx.getDefaultPrefix()) ?? "",
-								"system create-alter",
-								ctx.interaction.message.messageReference === undefined,
-								"%username% %display name%",
-							),
-						).replaceAll(
-							"%command2%",
-							mentionCommand(
-								(await ctx.getDefaultPrefix()) ?? "",
-								"system create-tag",
-								ctx.interaction.message.messageReference === undefined,
-								"%name%",
-							),
+				...new AlertView(await ctx.userTranslations()).successViewCustom(
+					(await ctx.userTranslations()).CREATING_NEW_SYSTEM_SUCCESS.replaceAll(
+						"%command1%",
+						mentionCommand(
+							(await ctx.getDefaultPrefix()) ?? "",
+							"system create-alter",
+							ctx.interaction.message.messageReference === undefined,
+							"%username% %display name%",
 						),
+					).replaceAll(
+						"%command2%",
+						mentionCommand(
+							(await ctx.getDefaultPrefix()) ?? "",
+							"system create-tag",
+							ctx.interaction.message.messageReference === undefined,
+							"%name%",
+						),
+					),
 				),
 				new ActionRow().setComponents(
 					new Button()
 						.setCustomId(
 							InteractionIdentifier.Systems.Configuration.GeneralTab.Index.create(),
 						)
-						.setLabel("Configure System")
+						.setLabel((await ctx.userTranslations()).CONFIGURE_SYSTEM)
 						.setEmoji(emojis.wrenchWhite)
 						.setStyle(ButtonStyle.Primary),
 				),
