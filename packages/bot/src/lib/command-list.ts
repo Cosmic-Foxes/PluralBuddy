@@ -16,7 +16,7 @@ const contextDescriptions: Record<string, string> = {
 export function generateCommandList(page: number) {
 	return loadedApplicationCommands
 		.filter(v => !v.name.startsWith("debug"))
-		.slice((page - 1) * 65, page * 65)
+		.slice((page - 1) * 50, page * 50)
 		.map((c) => {
 			return `> - \`${c.type === ApplicationCommandType.ChatInput ? "/" : ""}${c.name}\` – ${c.type === ApplicationCommandType.ChatInput ? c.description : (contextDescriptions[c.name] ?? "")}`;
 		})
