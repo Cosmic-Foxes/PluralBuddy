@@ -1,6 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { z } from "zod/v4";
+import { z } from "zod";
 
 const publicDescription = `This is a bitwise operation-based number which determines the protection flags that are public. By default, everything on PluralBuddy is private.
 
