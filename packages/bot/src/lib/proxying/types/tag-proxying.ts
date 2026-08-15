@@ -32,9 +32,9 @@ export const proxyTagValid = (
 	message: Message,
 ) => {
 	const hasPrefix = proxyTag.prefix !== "";
-	const hasSuffix = proxyTag.suffix !== ""; 
+	const hasSuffix = proxyTag.suffix !== "";
 	if (!hasPrefix && !hasSuffix) return false;
-	
+
 	return (
 		(!hasPrefix || message.content.startsWith(proxyTag.prefix)) &&
 		(!hasSuffix || message.content.endsWith(proxyTag.suffix))
@@ -56,7 +56,12 @@ export async function performTagProxy(
 	(async () => {
 		const channel = await message.channel();
 
-		if (channel.isTextable() && !guild.getFeatures().disabledProxyTyping && (user.system !== undefined && !getSystemFeatures(user.system).noTypingStatus))
+		if (
+			channel.isTextable() &&
+			!guild.getFeatures().disabledProxyTyping &&
+			user.system !== undefined &&
+			!getSystemFeatures(user.system).noTypingStatus
+		)
 			channel.typing().catch(() => null);
 	})();
 
@@ -218,14 +223,15 @@ export async function performTagProxy(
 			});
 			return;
 		}
+		console.log(checkAlter.flags, getAlterFeatures(checkAlter).keepProxyTags);
 
 		let contents = message.content;
 		if (
 			proxyTag.prefix &&
 			contents.startsWith(proxyTag.prefix) &&
 			user.system &&
-			!getSystemFeatures(user.system).keepProxyTags &&
-			!getAlterFeatures(checkAlter).keepProxyTags
+			!(getSystemFeatures(user.system).keepProxyTags ||
+				getAlterFeatures(checkAlter).keepProxyTags)
 		) {
 			contents = contents.slice(proxyTag.prefix.length);
 		}
@@ -233,7 +239,8 @@ export async function performTagProxy(
 			proxyTag.suffix &&
 			contents.endsWith(proxyTag.suffix) &&
 			user.system &&
-			!getSystemFeatures(user.system).keepProxyTags
+			!(getSystemFeatures(user.system).keepProxyTags ||
+				getAlterFeatures(checkAlter).keepProxyTags)
 		) {
 			contents = contents.slice(0, contents.length - proxyTag.suffix.length);
 		}
