@@ -6,13 +6,13 @@ import {
 	CacheFrom,
 	Container,
 	createEvent,
+	type DefaultLocale,
 	Message,
+	type MessageStructure,
 	StringSelectMenu,
 	StringSelectOption,
 	TextDisplay,
 	WebhookMessage,
-	type DefaultLocale,
-	type MessageStructure,
 	type WebhookMessageStructure,
 } from "seyfert";
 import type { ResolverProps, SendResolverProps } from "seyfert/lib/common";
@@ -351,7 +351,7 @@ export default createEvent({
 								)
 								.setColor("#5450fe"),
 						],
-						flags: MessageFlags.IsComponentsV2,
+						flags: MessageFlags.IsComponentsV2,x
 					});
 				}
 
@@ -489,7 +489,7 @@ export default createEvent({
 					user.system.latchExpiration <
 					Date.now()
 				) {
-					setLastLatchAlter(guild.guildId, user.system);
+					setLastLatchAlter(guild.guildId, message.channelId, user.system);
 					return;
 				}
 

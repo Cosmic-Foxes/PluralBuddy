@@ -359,6 +359,6 @@ export async function performTagProxy(
 			);
 
 		if (message.guildId && user.system)
-			setLastLatchAlter(message.guildId, user.system, checkAlter);
+			setLastLatchAlter(message.guildId,message.channelId, user.system, checkAlter);
 	}
 }

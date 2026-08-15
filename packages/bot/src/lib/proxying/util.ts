@@ -74,6 +74,7 @@ export const setLastLatchAlter = async (
 	alter?: PAlter,
 ) => {
 	const existingGuildPolicies = getWiderAutoProxy(system, guildId, channelId);
+	
 	if (
 		existingGuildPolicies &&
 		existingGuildPolicies.autoproxyMode === "latch"
