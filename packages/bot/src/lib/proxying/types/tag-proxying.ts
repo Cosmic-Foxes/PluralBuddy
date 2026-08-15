@@ -223,7 +223,6 @@ export async function performTagProxy(
 			});
 			return;
 		}
-		console.log(checkAlter.flags, getAlterFeatures(checkAlter).keepProxyTags);
 
 		let contents = message.content;
 		if (
