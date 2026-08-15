@@ -1,8 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { client } from "@/index";
-import type { PAlter } from "@/types/alter";
-import type { PUser } from "@/types/user";
+import type { PGuild } from "plurography";
 import type {
 	GuildMember,
 	Message,
@@ -10,18 +8,21 @@ import type {
 	User,
 	Webhook,
 } from "seyfert";
-import { getReferencedMessageString } from "../referenced-message";
 import { CacheFrom, Container, TextDisplay } from "seyfert";
-import { processEmojis } from "../process-emojis";
-import { proxy } from "..";
-import { alterCollection, messagesCollection } from "@/mongodb";
-import { setLastLatchAlter } from "../util";
-import { createProxyError } from "../error";
-import type { PGuild } from "plurography";
 import type { PWebhook } from "@/events/on-message-create";
+import { client } from "@/index";
 import { createError } from "@/lib/create-error";
-import { w } from "@/webhooks";
+import { getAlterFeatures } from "@/lib/get-alter-flags";
 import { getSystemFeatures } from "@/lib/get-system-flags";
+import { alterCollection, messagesCollection } from "@/mongodb";
+import type { PAlter } from "@/types/alter";
+import type { PUser } from "@/types/user";
+import { w } from "@/webhooks";
+import { proxy } from "..";
+import { createProxyError } from "../error";
+import { processEmojis } from "../process-emojis";
+import { getReferencedMessageString } from "../referenced-message";
+import { setLastLatchAlter } from "../util";
 
 export const proxyTagValid = (
 	proxyTag: {
@@ -223,7 +224,8 @@ export async function performTagProxy(
 			proxyTag.prefix &&
 			contents.startsWith(proxyTag.prefix) &&
 			user.system &&
-			!getSystemFeatures(user.system).keepProxyTags
+			!getSystemFeatures(user.system).keepProxyTags &&
+			!getAlterFeatures(checkAlter).keepProxyTags
 		) {
 			contents = contents.slice(proxyTag.prefix.length);
 		}

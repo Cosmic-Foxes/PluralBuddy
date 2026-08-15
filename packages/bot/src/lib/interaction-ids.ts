@@ -354,6 +354,9 @@ export const InteractionIdentifier = {
 				DeleteAlter: createFromAdditionalArg(
 					"systems/config/alters/delete-alter",
 				),
+				ToggleKeepProxyTags: createFromAdditionalArg(
+					"systems/config/alters/keep-proxy-tags",
+				),
 
 				ProxyMode: {
 					GoBack: createFromAdditionalArg(

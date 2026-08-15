@@ -1,6 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import type { PGuild } from "plurography";
+import { AlterFlags, type PGuild } from "plurography";
 import {
 	ActionRow,
 	Button,
@@ -35,7 +35,6 @@ import { InteractionIdentifier } from "../lib/interaction-ids";
 import { AlterProtectionFlags, type PAlter } from "../types/alter";
 import { AlertView } from "./alert";
 import { TranslatedView } from "./translated-view";
-
 
 export class AlterView extends TranslatedView {
 	private async getTags(alter: PAlter) {
@@ -186,6 +185,8 @@ ${this.translations.ID_SMALL_PROFILE}\`${alter.alterId.toString()}\``);
 	async alterGeneralView(alter: PAlter, guildId: string | undefined) {
 		const user = await getUserById(alter.systemId);
 		const system = user.system;
+		const keepProxyTags =
+			((alter.flags ?? 0) & AlterFlags.PROXY_TAGS_KEPT) === 0;
 
 		return [
 			new Container()
@@ -302,9 +303,7 @@ ${system == null || system.systemAutoproxy.some((a) => a.serverId === guildId &&
 										),
 									)
 									.setLabel(this.translations.ALTER_AP_NAME)
-									.setDescription(
-										this.translations.ALTER_AP_DESC,
-									)
+									.setDescription(this.translations.ALTER_AP_DESC)
 									.setDefault(
 										system?.systemAutoproxy.some(
 											(a) =>
@@ -327,6 +326,27 @@ ${system == null || system.systemAutoproxy.some((a) => a.serverId === guildId &&
 									),
 							]),
 					),
+					new Separator(),
+					new Section()
+						.addComponents(
+							new TextDisplay().setContent(
+								this.translations.KEEP_PROXY_TAGS_ALTER_DESC,
+							),
+						)
+						.setAccessory(
+							new Button()
+								.setStyle(ButtonStyle.Secondary)
+								.setLabel(
+									keepProxyTags
+										? this.translations.KEEP_PROXY_TAGS_ALTER_BTN_E
+										: this.translations.KEEP_PROXY_TAGS_ALTER_BTN_D,
+								)
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.Alters.ToggleKeepProxyTags.create(
+										alter.alterId.toString(),
+									),
+								),
+						),
 					new Separator(),
 					new Section()
 						.addComponents(
@@ -701,9 +721,7 @@ ${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alterUsername).
 								),
 							)
 							.setLabel(this.translations.LATCH_NAME)
-							.setDescription(
-								this.translations.LATCH_DESC,
-							),
+							.setDescription(this.translations.LATCH_DESC),
 						new StringSelectOption()
 							.setValue(
 								InteractionIdentifier.Selection.AutoProxyModes.Alter.create(
@@ -711,9 +729,7 @@ ${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alterUsername).
 								),
 							)
 							.setLabel(this.translations.ALTER_NAME)
-							.setDescription(
-								this.translations.ALTER_DESC,
-							),
+							.setDescription(this.translations.ALTER_DESC),
 						new StringSelectOption()
 							.setValue(
 								InteractionIdentifier.Selection.AutoProxyModes.Off.create(),

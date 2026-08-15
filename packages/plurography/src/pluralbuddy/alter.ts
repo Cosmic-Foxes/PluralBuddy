@@ -16,6 +16,12 @@ const publicDescription = `This is a bitwise operation-based number which determ
 | MESSAGE_COUNT   | \`256\` \`(1 << 8)\`    | Allows external users to see the alter's message count. |
 | USERNAME        | \`512\` \`(1 << 9)\`    | Allows external users to see the alter's username. |`;
 
+const flagsDescription = `This is a bitwise operation-based number which determines which features are enabled.
+
+| Alter Flag              | Value                   | Description |
+|-------------------------|-------------------------|-------------|
+| PROXY_TAGS_KEPT         | \`1\` \`(1 << 0)\`      | Keeps proxy tags after proxying for this specific alter. |`;
+
 export enum AlterProtectionFlags {
 	VISIBILITY = 1 << 0,
 	NAME = 1 << 1,
@@ -26,6 +32,10 @@ export enum AlterProtectionFlags {
 	TAGS = 1 << 7,
 	MESSAGE_COUNT = 1 << 8,
 	USERNAME = 1 << 9,
+}
+
+export enum AlterFlags {
+	PROXY_TAGS_KEPT = 1 << 0,
 }
 
 export const PAlterObject = z
@@ -66,19 +76,21 @@ export const PAlterObject = z
 			.array()
 			.default([]),
 
-		tagIds: z
-			.string()
-			.array()
-			.default([])
-			.meta({
-				description:
-					"Edit the tags associated with this alter. This will **replace** the list of tags inheriting this alter when using the API.",
-			}),
+		tagIds: z.string().array().default([]).meta({
+			description:
+				"Edit the tags associated with this alter. This will **replace** the list of tags inheriting this alter when using the API.",
+		}),
 		public: z
 			.number()
 			.nonnegative()
 			.default(0)
 			.meta({ description: publicDescription }),
+		flags: z
+			.number()
+			.nonnegative()
+			.optional()
+			.default(0)
+			.meta({ description: flagsDescription }),
 		fields: z
 			.record(z.string().max(20), z.string().max(150))
 			.optional()
