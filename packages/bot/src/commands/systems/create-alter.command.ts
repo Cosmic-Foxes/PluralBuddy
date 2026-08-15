@@ -196,7 +196,7 @@ ${z.prettifyError(alter.error)}
 			},
 		});
 
-		alterCollection.insertOne(alter.data);
+		await alterCollection.insertOne(alter.data);
 
 		const successMessage = async (done: boolean) =>
 			await ctx.editResponse({
