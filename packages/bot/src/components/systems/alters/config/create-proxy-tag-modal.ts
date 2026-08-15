@@ -1,13 +1,13 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import { DiscordSnowflake } from "@sapphire/snowflake";
 import { ModalCommand, type ModalContext } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
+import { w } from "@/webhooks";
 import { InteractionIdentifier } from "../../../../lib/interaction-ids";
 import { alterCollection } from "../../../../mongodb";
 import { AlertView } from "../../../../views/alert";
-import { MessageFlags } from "seyfert/lib/types";
-import { DiscordSnowflake } from "@sapphire/snowflake";
 import { AlterView } from "../../../../views/alters";
-import { w } from "@/webhooks";
 
 export default class CreateProxyTagModal extends ModalCommand {
 	override filter(context: ModalContext) {
@@ -42,7 +42,7 @@ export default class CreateProxyTagModal extends ModalCommand {
 			});
 		}
 
-		if (!proxyTag.includes("text")) {
+		if (!(proxyTag.includes("text") || proxyTag.includes("Text"))) {
 			context.client.logger.info("Stage 1 (create-pt): {proxyTag}", { proxyTag });
 			return await context.write({
 				components: new AlertView(await context.userTranslations()).errorView(
@@ -53,7 +53,10 @@ export default class CreateProxyTagModal extends ModalCommand {
 		}
 
 		// Get the prefix and suffix based on "text" position
-		const textIndex = proxyTag.indexOf("text");
+		const textIndex =
+			proxyTag.indexOf("text") === -1
+				? proxyTag.indexOf("Text")
+				: proxyTag.indexOf("text");
 		const prefix = (proxyTag as string).substring(0, textIndex);
 		const suffix = (proxyTag as string).substring(textIndex + 4);
 

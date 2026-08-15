@@ -285,6 +285,5 @@ ${z.prettifyError(alter.error)}
 }
 
 function not_empty(string: string) {
-console.log("not-empty",string)
-	return string.trim().length === 0 ? " -- " : ""
+	return string.trim().length === 0 ? " -- " : string
 }
