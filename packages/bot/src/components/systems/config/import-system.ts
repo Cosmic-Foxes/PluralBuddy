@@ -1,8 +1,8 @@
+import { ComponentCommand, type ComponentContext } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { AlertView } from "@/views/alert";
 import { SystemSettingsView } from "@/views/system-settings";
-import { ComponentCommand, type ComponentContext } from "seyfert";
-import { MessageFlags } from "seyfert/lib/types";
 
 export default class PublicProfileBtn extends ComponentCommand {
 	componentType = "Button" as const;
@@ -26,7 +26,7 @@ export default class PublicProfileBtn extends ComponentCommand {
 		}
 
 		return await ctx.write({
-			components: new SystemSettingsView((await ctx.userTranslations())).importSettings(
+			components: new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(user.system)?.preferAccessiblity).importSettings(
 				user.system,
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,

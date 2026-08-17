@@ -1,11 +1,11 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { ComponentCommand, Container, TextDisplay, type ComponentContext } from "seyfert";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
 import { MessageFlags } from "seyfert/lib/types";
-import { SystemSettingsView } from "../../../views/system-settings";
+import { getSystemFeatures } from "@/lib/get-system-flags";
+import { InteractionIdentifier } from "../../../lib/interaction-ids";
 import { AlertView } from "../../../views/alert";
-
+import { SystemSettingsView } from "../../../views/system-settings";
 export default class ConfigureSystem extends ComponentCommand {
     componentType = 'Button' as const;
 
@@ -27,8 +27,8 @@ export default class ConfigureSystem extends ComponentCommand {
 
         return await ctx.editResponse({
             components: [
-                ...new SystemSettingsView((await ctx.userTranslations())).topView("general", user.system.associatedUserId),
-                ...(await new SystemSettingsView((await ctx.userTranslations())).generalSettings(user.system, ctx.guildId, 2))
+                ...new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(user.system)?.preferAccessiblity).topView("general", user.system.associatedUserId),
+                ...(await new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(user.system)?.preferAccessiblity).generalSettings(user.system, ctx.guildId, 2))
             ],
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
 

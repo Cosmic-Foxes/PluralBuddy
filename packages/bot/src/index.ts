@@ -49,6 +49,7 @@ import PluralBuddyHandleCommand from "./handle-command";
 import { startEmojiCleanupTimer } from "./lib/clean-up-emojis";
 import { startIndexingCleanupTimer } from "./lib/cleanup-indexing";
 import { emojis } from "./lib/emojis";
+import { getSystemFeatures } from "./lib/get-system-flags";
 import { InteractionIdentifier } from "./lib/interaction-ids";
 import { middlewares } from "./middleware";
 import { mongoClient, setupDatabases, setupMongoDB } from "./mongodb";
@@ -234,6 +235,8 @@ if (import.meta.main) {
 		since: Date.now(),
 		afk: false,
 	});
+
+	// globalThis.getSystemFeatures = getSystemFeatures
 
 	setInterval(async () => {
 		const data = await client.cache.statistic.get("latest");

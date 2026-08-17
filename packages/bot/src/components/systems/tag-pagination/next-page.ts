@@ -1,9 +1,9 @@
 import { ComponentCommand, type ComponentContext } from "seyfert";
-import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { SystemSettingsView, tagsPagination } from "@/views/system-settings";
-import { AlertView } from "@/views/alert";
 import { MessageFlags } from "seyfert/lib/types";
-
+import { getSystemFeatures } from "@/lib/get-system-flags";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { AlertView } from "@/views/alert";
+import { SystemSettingsView, tagsPagination } from "@/views/system-settings";
 export default class NextPageTagPagination extends ComponentCommand {
     componentType = 'Button' as const;
 
@@ -52,7 +52,7 @@ export default class NextPageTagPagination extends ComponentCommand {
 
         return await ctx.editResponse({
             components: [
-                ...await new SystemSettingsView((await ctx.userTranslations())).tagsSettings(user.system, corresponding)
+                ...await new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(user.system)?.preferAccessiblity).tagsSettings(user.system, corresponding)
             ]
         })
     }

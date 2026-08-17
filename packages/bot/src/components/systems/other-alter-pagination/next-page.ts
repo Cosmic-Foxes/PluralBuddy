@@ -1,13 +1,14 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
-import { ComponentCommand, type ComponentContext } from "seyfert";
-import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { otherAlterPagination, SystemSettingsView } from "@/views/system-settings";
-import { AlertView } from "@/views/alert";
-import { MessageFlags } from "seyfert/lib/types";
-import { userCollection } from "@/mongodb";
-import { has } from "@/lib/privacy-bitmask";
-import { SystemProtectionFlags } from "plurography";
 
+import { SystemProtectionFlags } from "plurography";
+import { ComponentCommand, type ComponentContext } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
+import { getSystemFeatures } from "@/lib/get-system-flags";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { has } from "@/lib/privacy-bitmask";
+import { userCollection } from "@/mongodb";
+import { AlertView } from "@/views/alert";
+import { otherAlterPagination, SystemSettingsView } from "@/views/system-settings";
 export default class NextPageAP extends ComponentCommand {
 	componentType = "Button" as const;
 
@@ -61,7 +62,7 @@ export default class NextPageAP extends ComponentCommand {
 
         return await ctx.editResponse({
             components: [
-                ...await new SystemSettingsView((await ctx.userTranslations())).otherAltersSettings(user.system, corresponding)
+                ...await new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(user.system)?.preferAccessiblity).otherAltersSettings(user.system, corresponding)
             ]
         })
 	}

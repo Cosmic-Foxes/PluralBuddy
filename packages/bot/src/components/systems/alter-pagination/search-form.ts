@@ -1,4 +1,7 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */import { InteractionIdentifier } from "@/lib/interaction-ids";
+/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+import { ModalCommand, type ModalContext } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";import { getSystemFeatures } from "@/lib/get-system-flags";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { alterCollection, tagCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import {
@@ -6,8 +9,6 @@ import {
 	assignTagPagination,
 } from "@/views/alter-assign-tag";
 import { alterPagination, SystemSettingsView } from "@/views/system-settings";
-import { ModalCommand, type ModalContext } from "seyfert";
-import { MessageFlags } from "seyfert/lib/types";
 
 export default class SearchFormModal extends ModalCommand {
 	override filter(context: ModalContext) {
@@ -82,7 +83,7 @@ export default class SearchFormModal extends ModalCommand {
 
 		return await ctx.interaction.update({
 			components: [
-				...(await new SystemSettingsView((await ctx.userTranslations())).altersSettings(
+				...(await new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(user.system)?.preferAccessiblity).altersSettings(
 					user.system,
 					corresponding,
 				)),

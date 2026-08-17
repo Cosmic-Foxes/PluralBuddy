@@ -60,7 +60,9 @@ export class SystemSettingsView extends TranslatedView {
 	) {
 		return [
 			new Container().setComponents(
-				new TextDisplay().setContent(`-# ID: \`${systemId}\``),
+				...(this.preferAccessiblity
+					? []
+					: [new TextDisplay().setContent(`-# ID: \`${systemId}\``)]),
 				new ActionRow().setComponents(
 					new Button()
 						.setLabel(this.translations.GENERAL_LABEL)
@@ -257,6 +259,7 @@ export class SystemSettingsView extends TranslatedView {
 			((system.flags ?? 0) & SystemFlags.INCLUDE_PRONOUNS) === 0;
 		const typingStatus =
 			((system.flags ?? 0) & SystemFlags.NO_TYPING_STATUS) === 0;
+		const preferAccessiblity = ((system.flags ?? 0) & SystemFlags.PREFER_ACCESSIBLITY) === 0;
 
 		return [
 			new Container().setColor("#1190FF").setComponents(
@@ -315,21 +318,41 @@ export class SystemSettingsView extends TranslatedView {
 					.setComponents(
 						new TextDisplay().setContent($translations.INCLUDE_PRONOUNS_DESC),
 					),
+				new Section()
+					.setAccessory(
+						new Button()
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel(
+								preferAccessiblity
+									? $translations.PREFER_ACCESSIBLITY_BTN
+									: $translations.PREFER_ACCESSIBLITY_OFF_BTN,
+							)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.GeneralTab.TogglePreferAccessiblity.create(),
+							),
+					)
+					.setComponents(
+						new TextDisplay().setContent(
+							$translations.PREFER_ACCESSIBLITY_DESC,
+						),
+					),
 				new Separator(),
-				new TextDisplay().setContent(`${$translations.EXPORT_SYS_DESC}\n\n${$translations.IMPORT_SYS_DESC}`),
+				new TextDisplay().setContent(
+					`${$translations.EXPORT_SYS_DESC}\n\n${$translations.IMPORT_SYS_DESC}`,
+				),
 				new ActionRow().setComponents(
-						new Button()
-							.setStyle(ButtonStyle.Secondary)
-							.setLabel($translations.EXPORT_SYS_BTN)
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.GeneralTab.ExportSystem.create(),
-							),
-						new Button()
-							.setStyle(ButtonStyle.Secondary)
-							.setLabel($translations.IMPORT_SYS_BTN)
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.GeneralTab.ImportSystem.create(),
-							),
+					new Button()
+						.setStyle(ButtonStyle.Secondary)
+						.setLabel($translations.EXPORT_SYS_BTN)
+						.setCustomId(
+							InteractionIdentifier.Systems.Configuration.GeneralTab.ExportSystem.create(),
+						),
+					new Button()
+						.setStyle(ButtonStyle.Secondary)
+						.setLabel($translations.IMPORT_SYS_BTN)
+						.setCustomId(
+							InteractionIdentifier.Systems.Configuration.GeneralTab.ImportSystem.create(),
+						),
 				),
 				new Separator(),
 				new TextDisplay().setContent($translations.EXTERNAL_EXPORT_SYS_DESC),
@@ -347,6 +370,38 @@ export class SystemSettingsView extends TranslatedView {
 						]),
 				),
 			),
+		];
+	}
+
+	async generalSettings(
+		system: PSystem,
+		guildId: string | undefined,
+		page: number,
+	) {
+		return await paginateComponents(
+			{
+				"Systems.Configuration.Pagination.PageOne": this.generalSettingsPageOne,
+				"Systems.Configuration.Pagination.PageTwo": this.generalSettingsPageTwo,
+				"Systems.Configuration.Pagination.PageThree":
+					this.generalSettingsPageThree,
+			},
+			{ system, guildId },
+			page,
+			this.translations,
+		);
+	}
+
+
+	async generalSettingsPageThree({
+		system,
+		guildId,
+		$translations,
+	}: {
+		system: PSystem;
+		guildId: string | undefined;
+		$translations: DefaultLocale;
+	}) {
+		return [
 			new Container()
 				.setColor("#FF1717")
 				.setSpoiler(true)
@@ -385,22 +440,6 @@ export class SystemSettingsView extends TranslatedView {
 						),
 				),
 		];
-	}
-
-	async generalSettings(
-		system: PSystem,
-		guildId: string | undefined,
-		page: number,
-	) {
-		return await paginateComponents(
-			{
-				"Systems.Configuration.Pagination.PageOne": this.generalSettingsPageOne,
-				"Systems.Configuration.Pagination.PageTwo": this.generalSettingsPageTwo,
-			},
-			{ system, guildId },
-			page,
-			this.translations,
-		);
 	}
 
 	async otherAltersSettings(

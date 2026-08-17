@@ -1,10 +1,11 @@
-import { SystemFlags, type PSystem } from "plurography";
+import { type PSystem, SystemFlags } from "plurography";
 
 export function getSystemFeatures(data: PSystem) {
 	return {
 		keepProxyTags: ((data.flags ?? 0) & SystemFlags.KEEP_PROXY_TAGS) !== 0,
 		includePronouns: ((data.flags ?? 0) & SystemFlags.INCLUDE_PRONOUNS) !== 0,
 		noTypingStatus: ((data.flags ?? 0) & SystemFlags.NO_TYPING_STATUS) !== 0,
+		preferAccessiblity: ((data.flags ?? 0) & SystemFlags.PREFER_ACCESSIBLITY) !== 0,
 
 		has: (flag: SystemFlags) => ((data.flags ?? 0) & flag) !== 0,
 		disable: (flag: SystemFlags) =>

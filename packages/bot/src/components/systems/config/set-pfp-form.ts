@@ -1,16 +1,17 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
-import { type Attachment, ModalCommand, type ModalContext } from "seyfert";
-import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { AlertView } from "@/views/alert";
-import { MessageFlags } from "seyfert/lib/types";
-import { alterCollection } from "@/mongodb";
-import { AlterView } from "@/views/alters";
-import { getGcpAccessToken, uploadDiscordAttachmentToGcp } from "@/gcp";
-import { assetStringGeneration } from "@/types/operation";
-import { createSystemOperation } from "@/lib/system-operation";
-import { SystemSettingsView } from "@/views/system-settings";
-import { fileTypeFromBuffer } from "file-type";
 
+import { fileTypeFromBuffer } from "file-type";
+import { type Attachment, ModalCommand, type ModalContext } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
+import { getGcpAccessToken, uploadDiscordAttachmentToGcp } from "@/gcp";
+import { getSystemFeatures } from "@/lib/get-system-flags";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { createSystemOperation } from "@/lib/system-operation";
+import { alterCollection } from "@/mongodb";
+import { assetStringGeneration } from "@/types/operation";
+import { AlertView } from "@/views/alert";
+import { AlterView } from "@/views/alters";
+import { SystemSettingsView } from "@/views/system-settings";
 export default class SetPFPForm extends ModalCommand {
 	override filter(context: ModalContext) {
 		return InteractionIdentifier.Systems.Configuration.FormSelection.SystemPFPForm.startsWith(
@@ -79,11 +80,11 @@ export default class SetPFPForm extends ModalCommand {
 
 		return await ctx.editResponse({
 			components: [
-				...new SystemSettingsView((await ctx.userTranslations())).topView(
+				...new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(system)?.preferAccessiblity).topView(
 					"public-settings",
 					system.associatedUserId,
 				),
-				...new SystemSettingsView((await ctx.userTranslations())).publicProfile(
+				...new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(system)?.preferAccessiblity).publicProfile(
 					system,
 					(await ctx.getDefaultPrefix()) ?? "",
 					ctx.interaction?.message?.messageReference === undefined,

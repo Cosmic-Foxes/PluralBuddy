@@ -257,6 +257,7 @@ export const InteractionIdentifier = {
 			Pagination: {
 				PageOne: createStatic("systems/config/page-1"),
 				PageTwo: createStatic("systems/config/page-2"),
+				PageThree: createStatic("systems/config/page-3"),
 			},
 
 			GeneralTab: {
@@ -274,7 +275,12 @@ export const InteractionIdentifier = {
 				ToggleIncludePronouns: createStatic(
 					"systems/config/general/include-pronouns",
 				),
-				ToggleTypingStatus: createStatic("systems/config/general/toggle-typing-status"),
+				ToggleTypingStatus: createStatic(
+					"systems/config/general/toggle-typing-status",
+				),
+				TogglePreferAccessiblity: createStatic(
+					"systems/config/general/prefer-accessiblity",
+				),
 			},
 			OtherAlterPagination: {
 				PreviousPage: createFromAdditionalArg("systems/config/oapg/previous"),

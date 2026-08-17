@@ -1,8 +1,9 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 import { ComponentCommand, type ComponentContext } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
+import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { AlertView } from "@/views/alert";
-import { MessageFlags } from "seyfert/lib/types";
 import { SystemSettingsView } from "@/views/system-settings";
 
 export default class AlterTab extends ComponentCommand {
@@ -25,7 +26,7 @@ export default class AlterTab extends ComponentCommand {
 
         return await ctx.editResponse({
             components: [
-                ...await new SystemSettingsView((await ctx.userTranslations())).altersSettings(user.system)
+                ...await new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(user.system)?.preferAccessiblity).altersSettings(user.system)
 
             ],
             flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2

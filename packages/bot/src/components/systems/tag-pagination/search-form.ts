@@ -1,10 +1,10 @@
+import { ModalCommand, type ModalContext } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
+import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { tagCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import { SystemSettingsView, tagsPagination } from "@/views/system-settings";
-import { ModalCommand, type ModalContext } from "seyfert";
-import { MessageFlags } from "seyfert/lib/types";
-
 export default class SearchFormModal extends ModalCommand {
 	override filter(context: ModalContext) {
 		return InteractionIdentifier.Systems.Configuration.FormSelection.TagPagination.SearchQueryForm.startsWith(
@@ -69,7 +69,7 @@ export default class SearchFormModal extends ModalCommand {
 
 		return await ctx.interaction.update({
 			components: [
-				...(await new SystemSettingsView((await ctx.userTranslations())).tagsSettings(
+				...(await new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(user.system)?.preferAccessiblity).tagsSettings(
 					user.system,
 					corresponding,
 				)),

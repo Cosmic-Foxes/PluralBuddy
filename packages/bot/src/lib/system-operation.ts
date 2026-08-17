@@ -21,7 +21,7 @@ export async function createSystemOperation(
 	operation: Partial<PSystem>,
 	translations: DefaultLocale,
 	environment: "discord" | "api-exchange" | "api-web",
-	flagDescription?: { flippedProxyTags?: boolean, flippedIncludePronouns?: boolean, flippedNoTypingStatus?: boolean }
+	flagDescription?: { flippedProxyTags?: boolean, flippedIncludePronouns?: boolean, flippedNoTypingStatus?: boolean; flippedPreferAccessiblity?: boolean }
 ) {
 	let oldSystem: Partial<PSystem> = {};
 
@@ -147,6 +147,9 @@ export async function createSystemOperation(
 				}
 				if (flagDescription?.flippedNoTypingStatus === true) {
 					return translations.OPERATION_SYSTEM_TOGGLE_TYPING_STATUS;
+				}
+				if (flagDescription?.flippedPreferAccessiblity === true) {
+					return translations.OPERATION_SYSTEM_PREFER_ACCESSIBLITY;
 				}
 
 				return translations.OPERATION_FALLBACK.replace("%property%", c).replace(

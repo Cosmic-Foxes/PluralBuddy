@@ -1,9 +1,9 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import { type CommandContext, Declare, SubCommand } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";import { getSystemFeatures } from "@/lib/get-system-flags";
 import { AlertView } from "@/views/alert";
 import { SystemSettingsView } from "@/views/system-settings";
-import { type CommandContext, Declare, SubCommand } from "seyfert";
-import { MessageFlags } from "seyfert/lib/types";
 
 @Declare({
 	name: "tags",
@@ -27,7 +27,7 @@ export default class AlterListCommand extends SubCommand {
 
 		return await ctx.ephemeral({
 			components: [
-				...(await new SystemSettingsView((await ctx.userTranslations())).tagsSettings(
+				...(await new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(user.system)?.preferAccessiblity).tagsSettings(
 					user.system,
 				)),
 			],

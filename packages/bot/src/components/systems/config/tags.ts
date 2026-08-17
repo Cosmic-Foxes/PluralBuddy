@@ -1,9 +1,9 @@
 import { ComponentCommand, type ComponentContext } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
+import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { AlertView } from "@/views/alert";
-import { MessageFlags } from "seyfert/lib/types";
 import { SystemSettingsView } from "@/views/system-settings";
-
 export default class TagButton extends ComponentCommand {
     componentType = 'Button' as const;
 
@@ -23,7 +23,7 @@ export default class TagButton extends ComponentCommand {
 
         return await ctx.update({
             components: [
-                ...await new SystemSettingsView((await ctx.userTranslations())).tagsSettings(user.system)
+                ...await new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(user.system)?.preferAccessiblity).tagsSettings(user.system)
 
             ],
             flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2

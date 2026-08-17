@@ -1,9 +1,3 @@
-import { emojis } from "@/lib/emojis";
-import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { AlertView } from "@/views/alert";
-import { LoadingView } from "@/views/loading";
-import { PluralBuddyIntro } from "@/views/pluralbuddy-intro";
-import { SystemSettingsView } from "@/views/system-settings";
 import {
 	ActionRow,
 	Button,
@@ -12,7 +6,13 @@ import {
 	SubCommand,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
-
+import { emojis } from "@/lib/emojis";
+import { getSystemFeatures } from "@/lib/get-system-flags";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { AlertView } from "@/views/alert";
+import { LoadingView } from "@/views/loading";
+import { PluralBuddyIntro } from "@/views/pluralbuddy-intro";
+import { SystemSettingsView } from "@/views/system-settings";
 @Declare({
 	name: "import",
 	description: "Import data from another source.",
@@ -30,7 +30,7 @@ export default class ImportCommand extends SubCommand {
 		}
 
 		return await ctx.ephemeral({
-			components: new SystemSettingsView((await ctx.userTranslations())).importSettings(
+			components: new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(user.system)?.preferAccessiblity).importSettings(
 				user.system,
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,

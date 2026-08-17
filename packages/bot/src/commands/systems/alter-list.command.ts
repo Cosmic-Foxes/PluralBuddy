@@ -1,9 +1,5 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { has } from "@/lib/privacy-bitmask";
-import { userCollection } from "@/mongodb";
-import { AlertView } from "@/views/alert";
-import { SystemSettingsView } from "@/views/system-settings";
 import { SystemProtectionFlags } from "plurography";
 import {
 	type CommandContext,
@@ -13,7 +9,12 @@ import {
 	SubCommand,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import { Shortcut } from "yunaforseyfert";
+import { Shortcut } from "yunaforseyfert";import { getSystemFeatures } from "@/lib/get-system-flags";
+import { has } from "@/lib/privacy-bitmask";
+import { userCollection } from "@/mongodb";
+import { AlertView } from "@/views/alert";
+import { SystemSettingsView } from "@/views/system-settings";
+
 
 const options = {
 	"other-user": createUserOption({
@@ -50,7 +51,7 @@ export default class AlterListCommand extends SubCommand {
 
 			return await ctx.ephemeral({
 				components: [
-					...(await new SystemSettingsView((await ctx.userTranslations())).otherAltersSettings(
+					...(await new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(user.system)?.preferAccessiblity).otherAltersSettings(
 						user.system,
 					)),
 				],
@@ -69,7 +70,7 @@ export default class AlterListCommand extends SubCommand {
 
 		return await ctx.ephemeral({
 			components: [
-				...(await new SystemSettingsView((await ctx.userTranslations())).altersSettings(
+				...(await new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(user.system)?.preferAccessiblity).altersSettings(
 					user.system,
 				)),
 			],

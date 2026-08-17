@@ -1,6 +1,10 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { getEmojiFromTagColor } from "@/lib/emojis";
+import { DiscordSnowflake } from "@sapphire/snowflake";
+import { ModalCommand, type ModalContext } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
+import z from "zod";
+import { getEmojiFromTagColor } from "@/lib/emojis";import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { alterCollection, tagCollection } from "@/mongodb";
 import { PAlterObject } from "@/types/alter";
@@ -8,10 +12,6 @@ import { PTagObject } from "@/types/tag";
 import { getUserById, writeUserById } from "@/types/user";
 import { AlertView } from "@/views/alert";
 import { SystemSettingsView } from "@/views/system-settings";
-import { DiscordSnowflake } from "@sapphire/snowflake";
-import { ModalCommand, type ModalContext } from "seyfert";
-import { MessageFlags } from "seyfert/lib/types";
-import z from "zod";
 
 export default class CreateNewAlterForm extends ModalCommand {
     override filter(context: ModalContext) {
@@ -60,7 +60,7 @@ export default class CreateNewAlterForm extends ModalCommand {
         if (tag.error) {
             return await ctx.editResponse({
                 components: [
-                    ...new SystemSettingsView((await ctx.userTranslations())).topView("tags", user.system.associatedUserId),
+                    ...new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(user.system)?.preferAccessiblity).topView("tags", user.system.associatedUserId),
                     ...new AlertView((await ctx.userTranslations())).errorViewCustom(`${(await (ctx.userTranslations())).VALIDATION_TAG_ERROR}
 
 \`\`\`
@@ -81,7 +81,7 @@ ${z.prettifyError(tag.error)}
 		await tagCollection.insertOne(tag.data);
         
         await ctx.editResponse({
-            components: await new SystemSettingsView((await ctx.userTranslations())).tagsSettings(user.system)
+            components: await new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(user.system)?.preferAccessiblity).tagsSettings(user.system)
         })
     }
 }

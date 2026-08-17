@@ -21,6 +21,7 @@
 		"skipLibCheck": true,
 		"noErrorTruncation": true,
 		"stripInternal": true,
+		"outDir": "dist",
 		"types": ["bun"],
 		"paths": {
 			"@/*": ["./src/*"]
@@ -34,4 +35,5 @@
 		"src/openapi/**/**"
 	],
 	"include": ["src"]
+	
 }
