@@ -272,25 +272,81 @@ export default createEvent({
 		}
 
 		if (user.system.alterIds.length === 0) return;
+		if (user.system.associatedUserId === "608331868466839574") {
+			console.log("RUNNING")
+		}
+			if (!indexingMap[message.author.id]) {
+				startTimer(`proxy: bruteforce proxy (${message.id})`);
 
-		if (!indexingMap[message.author.id]) {
-			startTimer(`proxy: bruteforce proxy (${message.id})`)
+				let indexingMessage: MessageStructure | null =
+					null as MessageStructure | null;
+				let eligibleToProcess = false;
+				let locale: DefaultLocale | null = null;
 
-			let indexingMessage: MessageStructure | null =
-				null as MessageStructure | null;
-			let eligibleToProcess = false;
-			let locale: DefaultLocale | null = null;
+				const indexingTimeout = setTimeout(async () => {
+					if (locale === null)
+						locale = await getLanguageByUserId(message.author.id);
+					const channel = message.channelId;
 
-			const indexingTimeout = setTimeout(async () => {
-				if (locale === null)
-					locale = await getLanguageByUserId(message.author.id);
-				const channel = message.channelId;
+					client.logger.warn(
+						"{message} is taking too long. shoved into the processing queue ({alterCount} alters)",
+						{ message: message.id, alterCount: user.system?.alterIds.length },
+					);
 
-				client.logger.warn("{message} is taking too long. shoved into the processing queue ({alterCount} alters)", { message: message.id, alterCount: user.system?.alterIds.length })
+					if (eligibleToProcess && process.env.REDIS)
+						try {
+							indexingMessage = await message.client.messages.write(channel, {
+								components: [
+									new Container()
+										.setComponents(
+											new TextDisplay().setContent(
+												`  ${emojis.loading}   ${locale.WAITING_INDEXING.replaceAll(
+													"{{ alterCount }}",
+													(user.system?.alterIds.length ?? 0).toString(),
+												)
+													.replace("{{ alters }}", "0")
+													.replace("{{ percentage }}", "0%")}`,
+											),
+										)
+										.setColor("#5450fe"),
+								],
+								flags: MessageFlags.IsComponentsV2,
+							});
 
-				if (eligibleToProcess && process.env.REDIS)
-					try {
-						indexingMessage = await message.client.messages.write(channel, {
+							indexingMessageMap[message.author.id] = indexingMessage;
+						} catch (_) {}
+				}, 2000);
+				indexingMap[message.author.id] = indexingTimeout;
+
+				const removeFromMap = () => {
+					delete indexingMap[message.author.id];
+					delete indexingMessageMap[message.author.id];
+
+					clearTimeout(indexingTimeout);
+					if (indexingMessage !== null) indexingMessage.delete();
+				};
+
+				// Only find the alters that we need
+				for (let i = 0; i < user.system.alterIds.length; i++) {
+					const alterIdStr = user.system.alterIds[i]?.toString() ?? "";
+					let proxyObject =
+						await message.client.cache.alterProxy.get(alterIdStr);
+
+					let reformedProxyTags: { prefix: string; suffix: string }[] = [];
+
+					if (i % 20 === 0 && indexingMessage) {
+						const locale = await getLanguageByUserId(message.author.id);
+
+						client.logger.debug(
+							"processing {message} ({alterCount} alters), {percentage}% done",
+							{
+								message: message.id,
+								alterCount: user.system?.alterIds.length,
+								percentage: `${Math.round((i / Math.round(user.system?.alterIds.length ?? 1)) * 1000) / 10}%`,
+							},
+						);
+
+						await indexingMessage?.edit({
 							components: [
 								new Container()
 									.setComponents(
@@ -299,174 +355,131 @@ export default createEvent({
 												"{{ alterCount }}",
 												(user.system?.alterIds.length ?? 0).toString(),
 											)
-												.replace("{{ alters }}", "0")
-												.replace("{{ percentage }}", "0%")}`,
+												.replace("{{ alters }}", i.toString())
+												.replace(
+													"{{ percentage }}",
+													`${Math.round((i / Math.round(user.system?.alterIds.length ?? 1)) * 1000) / 10}%`,
+												)}`,
 										),
 									)
 									.setColor("#5450fe"),
 							],
 							flags: MessageFlags.IsComponentsV2,
+							x,
+						});
+					}
+
+					// If cache miss or cache stale, fetch from DB and set cache
+					if (!proxyObject || !proxyObject.pt) {
+						const checkAlter = await alterCollection.findOne({
+							alterId: Number(user.system.alterIds[i]),
 						});
 
-						indexingMessageMap[message.author.id] = indexingMessage;
-					} catch (_) { }
-			}, 2000);
-			indexingMap[message.author.id] = indexingTimeout;
-
-			const removeFromMap = () => {
-				delete indexingMap[message.author.id];
-				delete indexingMessageMap[message.author.id];
-
-				clearTimeout(indexingTimeout);
-				if (indexingMessage !== null) indexingMessage.delete();
-			}
-
-			// Only find the alters that we need
-			for (let i = 0; i < user.system.alterIds.length; i++) {
-				const alterIdStr = user.system.alterIds[i]?.toString() ?? "";
-				let proxyObject = await message.client.cache.alterProxy.get(alterIdStr);
-
-				let reformedProxyTags: { prefix: string; suffix: string }[] = [];
-
-				if (i % 20 === 0 && indexingMessage) {
-					const locale = await getLanguageByUserId(message.author.id);
-
-					client.logger.debug("processing {message} ({alterCount} alters), {percentage}% done", { message: message.id, alterCount: user.system?.alterIds.length, percentage: `${Math.round((i / Math.round(user.system?.alterIds.length ?? 1)) * 1000) / 10}%` })
-
-					await indexingMessage?.edit({
-						components: [
-							new Container()
-								.setComponents(
-									new TextDisplay().setContent(
-										`  ${emojis.loading}   ${locale.WAITING_INDEXING.replaceAll(
-											"{{ alterCount }}",
-											(user.system?.alterIds.length ?? 0).toString(),
-										)
-											.replace("{{ alters }}", i.toString())
-											.replace(
-												"{{ percentage }}",
-												`${Math.round((i / Math.round(user.system?.alterIds.length ?? 1)) * 1000) / 10}%`,
-											)}`,
+						if (checkAlter && Array.isArray(checkAlter.proxyTags)) {
+							// Set in cache with correct structure
+							await message.client.cache.alterProxy.set(
+								CacheFrom.Rest,
+								alterIdStr,
+								{
+									pt: JSON.stringify(
+										checkAlter.proxyTags.map((c) => ({
+											p: c.prefix,
+											s: c.suffix,
+										})),
 									),
-								)
-								.setColor("#5450fe"),
-						],
-						flags: MessageFlags.IsComponentsV2,x
-					});
-				}
-
-
-				// If cache miss or cache stale, fetch from DB and set cache
-				if (!proxyObject || !proxyObject.pt) {
-					const checkAlter = await alterCollection.findOne({
-						alterId: Number(user.system.alterIds[i]),
-					});
-
-					if (checkAlter && Array.isArray(checkAlter.proxyTags)) {
-						// Set in cache with correct structure
-						await message.client.cache.alterProxy.set(
-							CacheFrom.Rest,
-							alterIdStr,
-							{
-								pt: JSON.stringify(
-									checkAlter.proxyTags.map((c) => ({
-										p: c.prefix,
-										s: c.suffix,
-									})),
-								),
-							},
-						);
-						// Now also prepare the tags for usage
-						reformedProxyTags = checkAlter.proxyTags.map((c) => ({
-							prefix: c.prefix,
-							suffix: c.suffix,
-						}));
+								},
+							);
+							// Now also prepare the tags for usage
+							reformedProxyTags = checkAlter.proxyTags.map((c) => ({
+								prefix: c.prefix,
+								suffix: c.suffix,
+							}));
+						}
+						eligibleToProcess = true;
+					} else {
+						// tag data is in cache, parse
+						try {
+							reformedProxyTags = JSON.parse(proxyObject.pt ?? "[]").map(
+								(c: any) => ({
+									prefix: c.p,
+									suffix: c.s,
+								}),
+							);
+						} catch {
+							reformedProxyTags = [];
+						}
 					}
-					eligibleToProcess = true;
-				} else {
-					// tag data is in cache, parse
-					try {
-						reformedProxyTags = JSON.parse(proxyObject.pt ?? "[]").map(
-							(c: any) => ({
-								prefix: c.p,
-								suffix: c.s,
-							}),
-						);
-					} catch {
-						reformedProxyTags = [];
-					}
-				}
 
-				for (const proxyTag of reformedProxyTags) {
-					// Ensure we have latest alter data for use deeper down the logic
-					let checkAlter =
-						proxyObject && proxyObject.pt
-							? null // Data came from cache so don't fetch here unless we need further fields
-							: await alterCollection.findOne({
-								alterId: Number(user.system.alterIds[i]),
-							});
+					for (const proxyTag of reformedProxyTags) {
+						// Ensure we have latest alter data for use deeper down the logic
+						let checkAlter =
+							proxyObject && proxyObject.pt
+								? null // Data came from cache so don't fetch here unless we need further fields
+								: await alterCollection.findOne({
+										alterId: Number(user.system.alterIds[i]),
+									});
 
-					if (proxyTagValid(proxyTag, message)) {
-						message.client.logger.info("Attempted to proxy: {proxyTag}", { proxyTag })
-						const locale = await getLanguageByUserId(message.author.id);
-						// Check for system tag policy
-						if (
-							message.guildId &&
-							guild.getFeatures().requiresGuildTag &&
-							(((user.system?.displayTagMap ?? {})[message.guildId] ??
-								user.system.systemDisplayTag) === undefined ||
-								((user.system?.displayTagMap ?? {})[message.guildId] ??
-									user.system.systemDisplayTag) === null)
-						) {
-							endTimer(`proxy: bruteforce proxy (${message.id})`)
-							createProxyError(user, message, {
-								title: locale.DISPLAY_TAG_ENFORCE,
-								description: locale.DISPLAY_TAG_ENFORCE_DESC,
-								type: "EnforcedGuildTagRegulation",
+						if (proxyTagValid(proxyTag, message)) {
+							message.client.logger.info("Attempted to proxy: {proxyTag}", {
+								proxyTag,
 							});
+							const locale = await getLanguageByUserId(message.author.id);
+							// Check for system tag policy
+							if (
+								message.guildId &&
+								guild.getFeatures().requiresGuildTag &&
+								(((user.system?.displayTagMap ?? {})[message.guildId] ??
+									user.system.systemDisplayTag) === undefined ||
+									((user.system?.displayTagMap ?? {})[message.guildId] ??
+										user.system.systemDisplayTag) === null)
+							) {
+								endTimer(`proxy: bruteforce proxy (${message.id})`);
+								createProxyError(user, message, {
+									title: locale.DISPLAY_TAG_ENFORCE,
+									description: locale.DISPLAY_TAG_ENFORCE_DESC,
+									type: "EnforcedGuildTagRegulation",
+								});
+
+								removeFromMap();
+								return;
+							}
+
+							// Only get more data about the alter after confirmation of proxy tag
+							if (!checkAlter) {
+								checkAlter = await alterCollection.findOne({
+									alterId: user.system.alterIds[i],
+								});
+							}
+
+							if (!(await blockedRole(guild, locale, message))) {
+								endTimer(`proxy: bruteforce proxy (${message.id})`);
+								removeFromMap();
+								return;
+							}
+							if (!(await blockedChannel(guild, locale, message))) {
+								endTimer(`proxy: bruteforce proxy (${message.id})`);
+								removeFromMap();
+								return;
+							}
 
 							removeFromMap();
+							performTagProxy(
+								checkAlter as PAlter,
+								user,
+								similarWebhooks,
+								proxyTag,
+								message,
+								guild,
+								message.member,
+							);
+
 							return;
 						}
-
-						// Only get more data about the alter after confirmation of proxy tag
-						if (!checkAlter) {
-							checkAlter = await alterCollection.findOne({
-								alterId: user.system.alterIds[i],
-							});
-						}
-
-
-
-						if (!(await blockedRole(guild, locale, message))) {
-							endTimer(`proxy: bruteforce proxy (${message.id})`)
-							removeFromMap();
-							return;
-						}
-						if (!(await blockedChannel(guild, locale, message))) {
-							endTimer(`proxy: bruteforce proxy (${message.id})`)
-							removeFromMap();
-							return;
-						}
-
-						removeFromMap();
-						performTagProxy(
-							checkAlter as PAlter,
-							user,
-							similarWebhooks,
-							proxyTag,
-							message,
-							guild,
-							message.member,
-						);
-
-						return;
 					}
 				}
+
+				removeFromMap();
 			}
-
-			removeFromMap();
-		}
 
 		if (
 			apMode.autoproxyMode === "latch"
