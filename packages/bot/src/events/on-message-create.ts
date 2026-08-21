@@ -272,9 +272,6 @@ export default createEvent({
 		}
 
 		if (user.system.alterIds.length === 0) return;
-		if (user.system.associatedUserId === "608331868466839574") {
-			console.log("RUNNING")
-		}
 			if (!indexingMap[message.author.id]) {
 				startTimer(`proxy: bruteforce proxy (${message.id})`);
 
