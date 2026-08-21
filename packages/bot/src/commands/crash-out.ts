@@ -12,7 +12,7 @@ import { MessageFlags } from "seyfert/lib/types";
 
 @Declare({
         name: "crash-out",
-        description: "I'M GONNA CRASH THE FORK OUT!!!",
+        description: "(VOLUME WARNING) I'M GONNA CRASH THE FORK OUT!!!",
 })
 export default class WhoAskedCommand extends Command {
         override async run(ctx: CommandContext) {
@@ -31,7 +31,7 @@ export default class WhoAskedCommand extends Command {
                                         new MediaGallery().setItems(
                                                 new MediaGalleryItem()
                                                         .setMedia("attachment://crash_out.mov")
-                                                        .setDescription("I'M GONNA CRASH THE FORK OUT!!!"),
+                                                        .setDescription("(VOLUME WARNING) I'M GONNA CRASH THE FORK OUT!!!"),
                                         ),
                                 ),
                         ],
