@@ -9,7 +9,7 @@ const s3 = new S3mini({
 	region: "auto",
 });
 
-export async function deleteAttachment(storagePrefix: string) {
+export async function deleteAssetPrefix(storagePrefix: string) {
 	const prefix = `${storagePrefix}`;
 
 	const objects = await s3.listObjects("/", prefix);

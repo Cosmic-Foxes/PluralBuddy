@@ -10,7 +10,7 @@ import {
 	File,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
-import { deleteAttachment } from "@/object-storage";
+import { deleteAssetPrefix } from "@/object-storage";
 import { assetStringGeneration } from "@/types/operation";
 import { buildExportPayload } from "../../lib/export";
 import { InteractionIdentifier } from "../../lib/interaction-ids";
@@ -55,7 +55,7 @@ export default class DeleteSystemButton extends ComponentCommand {
 			flags: MessageFlags.Ephemeral
 		});
 
-		await deleteAttachment(user.storagePrefix);
+		await deleteAssetPrefix(user.storagePrefix);
 
 		await userCollection.deleteOne({ userId: ctx.author.id });
 		await alterCollection.deleteMany({ systemId: ctx.author.id });
