@@ -156,7 +156,6 @@ export const AccountRouter = createTRPCRouter({
 			systemOperations.deleteMany({ "oldSystem.associatedUserId": discordId }),
 		]);
 
-		console.log(systemUser)
 		try {
 			if (systemUser?.storagePrefix)
 				await deleteS3AssetPrefix(systemUser?.storagePrefix);
