@@ -9,9 +9,7 @@ const s3 = new S3mini({
 	region: "auto",
 });
 
-export async function deleteAttachment(
-	storagePrefix: string,
-) {
+export async function deleteAttachment(storagePrefix: string) {
 	const prefix = `${storagePrefix}`;
 
 	const objects = await s3.listObjects("/", prefix);
@@ -50,21 +48,39 @@ export async function uploadAttachment(
 		buffer,
 		fileType?.mime,
 		undefined,
-		headeredMetadata
+		headeredMetadata,
 	);
 
 	if (oldObject) {
-		await s3.deleteObject(oldObject)
+		await s3.deleteObject(oldObject);
 	}
 
-	return `https://img.pb${process.env.BUCKET_NAME?.endsWith("-canary")?"c":""}.giftedly.dev/${objectName}.${fileType?.ext}`;
+	return `https://img.pb${process.env.BUCKET_NAME?.endsWith("-canary") ? "c" : ""}.giftedly.dev/${objectName}.${fileType?.ext}`;
 }
 
-export function getOldObject({imageProperty = "", storagePrefix}: {imageProperty?: string | null, storagePrefix: string }) {
+export function getOldObject({
+	imageProperty = "",
+	storagePrefix,
+}: {
+	imageProperty?: string | null;
+	storagePrefix: string;
+}) {
 	return (imageProperty ?? "").startsWith("https://pluralbuddy.giftedly.dev") ||
 		(imageProperty ?? "").startsWith(
 			`https://img.pb${process.env.BUCKET_NAME?.endsWith("-canary") ? "c" : ""}.giftedly.dev`,
 		)
 		? `${(process.env.BRANCH ?? "a")[0]}/${storagePrefix}${(imageProperty ?? "").split(storagePrefix)[1]}`
 		: undefined;
+}
+export async function deleteOldObject({
+	imageProperty = "",
+	storagePrefix,
+}: {
+	imageProperty?: string | null;
+	storagePrefix: string;
+}) {
+	const oldObject = getOldObject({ imageProperty, storagePrefix });
+	if (oldObject !== undefined) {
+		return await s3.deleteObject(oldObject);
+	}
 }

@@ -15,7 +15,7 @@ import {
 import { MessageFlags } from "seyfert/lib/types";
 import { object } from "zod";
 import { createSystemOperation } from "@/lib/system-operation";
-import {  getOldObject, uploadAttachment } from "@/object-storage";
+import {  deleteOldObject, getOldObject, uploadAttachment } from "@/object-storage";
 import { autocompleteAlters } from "../../lib/autocomplete-alters";
 import { alterCollection } from "../../mongodb";
 import {
@@ -69,6 +69,11 @@ export default class EditAlterPictureCommand extends SubCommand {
 		}
 
 		if (attachmentText === undefined && attachment === undefined) {
+			await deleteOldObject({
+				imageProperty: user.system.systemAvatar,
+				storagePrefix: user.storagePrefix,
+			});
+
 			await createSystemOperation(
 				user.system, { systemAvatar: null }, (await ctx.userTranslations()), "discord"
 			);
@@ -101,7 +106,11 @@ export default class EditAlterPictureCommand extends SubCommand {
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 				});
 			}
-		}
+		} else 
+			await deleteOldObject({
+				imageProperty: user.system.systemAvatar,
+				storagePrefix: user.storagePrefix,
+			});
 
 
 		await createSystemOperation(

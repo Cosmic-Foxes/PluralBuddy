@@ -13,7 +13,7 @@ import {
 	SubCommand,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import {  getOldObject, uploadAttachment } from "@/object-storage";
+import {  deleteOldObject, getOldObject, uploadAttachment } from "@/object-storage";
 import { w } from "@/webhooks";
 import { autocompleteAlters } from "../../lib/autocomplete-alters";
 import { alterCollection } from "../../mongodb";
@@ -86,6 +86,11 @@ export default class EditAlterPictureCommand extends SubCommand {
 		}
 
 		if (attachment === undefined && attachmentText === undefined) {
+			await deleteOldObject({
+				imageProperty: alter.banner,
+				storagePrefix: user.storagePrefix,
+			});
+			
 			await alterCollection.updateOne(
 				{ alterId: alter.alterId },
 				{ $set: { banner: null } },
@@ -122,7 +127,10 @@ export default class EditAlterPictureCommand extends SubCommand {
 						alterId: String(alter.alterId),
 						type: "banner",
 					},
-					getOldObject({ imageProperty: alter.banner, storagePrefix: user.storagePrefix }),
+					getOldObject({
+						imageProperty: alter.banner,
+						storagePrefix: user.storagePrefix,
+					}),
 				);
 
 				attachmentText = objectUrl;
@@ -134,7 +142,11 @@ export default class EditAlterPictureCommand extends SubCommand {
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 				});
 			}
-		}
+		} else
+			await deleteOldObject({
+				imageProperty: alter.banner,
+				storagePrefix: user.storagePrefix,
+			});
 
 		await alterCollection.updateOne(
 			{ alterId: alter.alterId },

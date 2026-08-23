@@ -14,7 +14,7 @@ import {
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { createSystemOperation } from "@/lib/system-operation";
-import {  getOldObject, uploadAttachment } from "@/object-storage";
+import {  deleteOldObject, getOldObject, uploadAttachment } from "@/object-storage";
 import { autocompleteAlters } from "../../lib/autocomplete-alters";
 import { alterCollection } from "../../mongodb";
 import {
@@ -68,6 +68,11 @@ export default class EditAlterPictureCommand extends SubCommand {
 		}
 
 		if (attachment === undefined && attachmentText === undefined) {
+			await deleteOldObject({
+				imageProperty: user.system.systemBanner,
+				storagePrefix: user.storagePrefix,
+			});
+
 			await createSystemOperation(
 				user.system,
 				{ systemBanner: null },
@@ -109,7 +114,11 @@ export default class EditAlterPictureCommand extends SubCommand {
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 				});
 			}
-		}
+		} else
+			await deleteOldObject({
+				imageProperty: user.system.systemBanner,
+				storagePrefix: user.storagePrefix,
+			});
 
 		await createSystemOperation(
 			user.system,
