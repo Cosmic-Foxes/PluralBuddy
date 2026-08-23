@@ -15,7 +15,6 @@ export async function deleteAttachment(
 	const prefix = `${(process.env.BRANCH ?? "c")[0]}/${storagePrefix}`;
 
 	const objects = await s3.listObjects("/", prefix);
-	console.log(objects)
 	if (objects === null) return null;
 
 	return await s3.deleteObjects(objects.map((c) => c.Key));
