@@ -14,7 +14,7 @@ import {
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { object } from "zod";
-import { getGcpAccessToken, uploadDiscordAttachmentToGcp } from "@/gcp";
+import { getGcpAccessToken, uploadAttachment } from "@/gcp";
 import { createSystemOperation } from "@/lib/system-operation";
 import { autocompleteAlters } from "../../lib/autocomplete-alters";
 import { alterCollection } from "../../mongodb";
@@ -91,7 +91,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 	
 			try {
 				const accessToken = await getGcpAccessToken();
-				const {newObject} = await uploadDiscordAttachmentToGcp(
+				const {newObject} = await uploadAttachment(
 					(attachment as { value: Attachment }).value,
 					accessToken,
 					bucketName,

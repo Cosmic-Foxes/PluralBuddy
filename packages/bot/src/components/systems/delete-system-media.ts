@@ -10,15 +10,15 @@ import {
 	type ComponentContext,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
-import { PluralBuddyIntro } from "../../views/pluralbuddy-intro";
-import { InteractionIdentifier } from "../../lib/interaction-ids";
-import { LoadingView } from "../../views/loading";
-import { writeUserById } from "../../types/user";
-import { AlertView } from "../../views/alert";
-import { buildExportPayload } from "../../lib/export";
-import { alterCollection, tagCollection, userCollection } from "../../mongodb";
 import { deleteAttachment, getGcpAccessToken } from "@/gcp";
 import { assetStringGeneration } from "@/types/operation";
+import { buildExportPayload } from "../../lib/export";
+import { InteractionIdentifier } from "../../lib/interaction-ids";
+import { alterCollection, tagCollection, userCollection } from "../../mongodb";
+import { writeUserById } from "../../types/user";
+import { AlertView } from "../../views/alert";
+import { LoadingView } from "../../views/loading";
+import { PluralBuddyIntro } from "../../views/pluralbuddy-intro";
 
 export default class DeleteSystemButton extends ComponentCommand {
 	componentType = "Button" as const;
@@ -58,7 +58,7 @@ export default class DeleteSystemButton extends ComponentCommand {
 		// Add lifecycle rule to delete prefixed storage prefixes
 		const gcpToken = await getGcpAccessToken();
 
-		await deleteAttachment(user.storagePrefix, gcpToken);
+		await deleteAttachment(user.storagePrefix);
 
 		await userCollection.deleteOne({ userId: ctx.author.id });
 		await alterCollection.deleteMany({ systemId: ctx.author.id });

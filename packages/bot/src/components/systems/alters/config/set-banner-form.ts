@@ -1,12 +1,12 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 import { type Attachment, ModalCommand, type ModalContext } from "seyfert";
-import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { AlertView } from "@/views/alert";
 import { MessageFlags } from "seyfert/lib/types";
+import { getGcpAccessToken, uploadAttachment } from "@/gcp";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { alterCollection } from "@/mongodb";
-import { AlterView } from "@/views/alters";
-import { getGcpAccessToken, uploadDiscordAttachmentToGcp } from "@/gcp";
 import { assetStringGeneration } from "@/types/operation";
+import { AlertView } from "@/views/alert";
+import { AlterView } from "@/views/alters";
 import { w } from "@/webhooks";
 
 export default class SetPFPForm extends ModalCommand {
@@ -60,7 +60,7 @@ export default class SetPFPForm extends ModalCommand {
 
 		try {
 			const accessToken = await getGcpAccessToken();
-			const {newObject} = await uploadDiscordAttachmentToGcp(
+			const {newObject} = await uploadAttachment(
 				(attachment as { value: Attachment }).value,
 				accessToken,
 				bucketName,

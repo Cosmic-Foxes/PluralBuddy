@@ -1,7 +1,7 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 import { type Attachment, ModalCommand, type ModalContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import { getGcpAccessToken, uploadDiscordAttachmentToGcp } from "@/gcp";
+import { getGcpAccessToken, uploadAttachment } from "@/gcp";
 import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { createSystemOperation } from "@/lib/system-operation";
@@ -52,7 +52,7 @@ export default class SetPFPForm extends ModalCommand {
 
 		try {
 			const accessToken = await getGcpAccessToken();
-			const { newObject } = await uploadDiscordAttachmentToGcp(
+			const { newObject } = await uploadAttachment(
 				(attachment as { value: Attachment }).value,
 				accessToken,
 				bucketName,

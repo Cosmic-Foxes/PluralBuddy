@@ -1,6 +1,16 @@
-import { fileTypeFromBuffer, fileTypeFromStream } from "file-type";
 import { Readable } from "node:stream";
+import { fileTypeFromBuffer, fileTypeFromStream } from "file-type";
+import { S3mini } from "s3mini";
 import type { Attachment } from "seyfert";
+import { object } from "zod";
+
+const s3 = new S3mini({
+	accessKeyId: process.env.R2_ACCESS_KEY_ID ?? "",
+	secretAccessKey: process.env.R2_SECRET_ACCESS_KEY ?? "",
+	// Bucket-scoped endpoint — include your bucket name in the path
+	endpoint: `https://${process.env.ACCOUNT_ID}.r2.cloudflarestorage.com/pluralbuddy-data`,
+	region: "auto",
+});
 
 export async function getGcpAccessToken() {
 	// GCP OAuth2 Service Account JWT authentication
@@ -76,53 +86,18 @@ export async function getGcpAccessToken() {
 
 export async function deleteAttachment(
 	storagePrefix: string,
-	accessToken: string,
 ) {
 	const prefix = `${(process.env.BRANCH ?? "c")[0]}/${storagePrefix}`;
 
-	const existingResponse = await (
-		await fetch(
-			`https://storage.googleapis.com/storage/v1/b/${process.env.GCP_BUCKET}?fields=lifecycle`,
-			{
-				headers: {
-					Authorization: `Bearer ${accessToken}`,
-					"Content-Type": "application/json",
-				},
-			},
-		)
-	).json();
+	const objects = await s3.listObjects("/", prefix);
+	console.log(objects)
+	if (objects === null) return null;
 
-	const deletionResponse = await fetch(
-		`https://storage.googleapis.com/storage/v1/b/${process.env.GCP_BUCKET}?fields=lifecycle`,
-		{
-			headers: {
-				Authorization: `Bearer ${accessToken}`,
-				"Content-Type": "application/json",
-			},
-			method: "PATCH",
-			body: JSON.stringify({
-				lifecycle: {
-					rule: [
-						{
-							action: { type: "Delete" },
-							condition: {
-								matchesPrefix: [prefix],
-							},
-						},
-						...(existingResponse as any)?.lifecycle?.rule ?? [],
-					],
-				},
-			}),
-		},
-	);
-
-	return deletionResponse;
+	return await s3.deleteObjects(objects.map((c) => c.Key));
 }
 
-export async function uploadDiscordAttachmentToGcp(
+export async function uploadAttachment(
 	attachment: Attachment,
-	accessToken: string,
-	bucketName: string,
 	objectName: string,
 	metadata: Record<string, string>,
 	oldObject?: string,
@@ -140,50 +115,29 @@ export async function uploadDiscordAttachmentToGcp(
 
 	const buffer = await Bun.readableStreamToArrayBuffer(discordResponse.body);
 	const fileType = await fileTypeFromBuffer(buffer);
-	const gcpUploadUrl = `https://storage.googleapis.com/upload/storage/v1/b/${encodeURIComponent(bucketName)}/o?uploadType=media&name=${encodeURIComponent(objectName + `.${fileType?.ext}`)}`;
-	const gcpMetadataUrl = `https://storage.googleapis.com/storage/v1/b/${encodeURIComponent(bucketName)}/o/${encodeURIComponent(objectName + `.${fileType?.ext}`)}`;
-	const gcpDeleteUrl = `https://storage.googleapis.com/storage/v1/b/${encodeURIComponent(bucketName)}/o/${encodeURIComponent(oldObject ?? "")}`;
+	const headeredMetadata: Record<string, string> = {};
 
-	const gcpResponse = await fetch(gcpUploadUrl, {
-		method: "POST",
-		headers: {
-			Authorization: `Bearer ${accessToken}`,
-			"Content-Type":
-				attachment.contentType ?? fileType?.mime ?? "application/octet-stream",
-		},
-		body: buffer,
+	Object.keys(metadata).forEach((c) => {
+		headeredMetadata[`x-amz-meta-${c}`] = metadata[c] ?? "";
 	});
 
-	const a = await fetch(gcpMetadataUrl, {
-		method: "PATCH",
-		headers: {
-			Authorization: `Bearer ${accessToken}`,
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify({
-			metadata,
-		}),
-	});
+	await s3.putObject(
+		`${objectName}.${fileType?.ext}`,
+		buffer,
+		fileType?.mime,
+		undefined,
+		headeredMetadata
+	);
 
 	if (oldObject) {
-		await fetch(gcpDeleteUrl, {
-			method: "DELETE",
-			headers: {
-				Authorization: `Bearer ${accessToken}`,
-				"Content-Type": "application/json",
-			},
-		}).then(v => console.log(v))
+		await s3.deleteObject(oldObject)
 	}
 
-	return {
-		gcpResponse,
-		newObject: objectName + `.${fileType?.ext}`,
-	};
+	return `https://img.pb.giftedly.dev/${objectName}.${fileType?.ext}`;
 }
 
-export async function deleteOneAttachment(
-	accessToken: string,
-	bucketName: string,
-	objectName: string,) {
-		
-	}
+export function getOldObject({imageProperty = "", storagePrefix}: {imageProperty?: string | null, storagePrefix: string }) {
+	return ((imageProperty ?? "").startsWith("https://pluralbuddy.giftedly.dev")) || (imageProperty ?? "").startsWith("https://img.pb.giftedly.dev")
+		? `${(process.env.BRANCH ?? "a")[0]}/${storagePrefix}${(imageProperty ?? "").split(storagePrefix)[1]}`
+		: undefined;
+}

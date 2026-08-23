@@ -2,7 +2,7 @@
 
 import { type Attachment, type CommandContext, Container, createAttachmentOption, createStringOption, Declare, MediaGallery, MediaGalleryItem, Options, SubCommand } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import { getGcpAccessToken, uploadDiscordAttachmentToGcp } from "@/gcp";
+import { getGcpAccessToken, uploadAttachment } from "@/gcp";
 import { createSystemOperation } from "@/lib/system-operation";
 import { autocompleteAlters } from "../../lib/autocomplete-alters";
 import { alterCollection } from "../../mongodb";
@@ -75,7 +75,7 @@ export default class EditAlterPictureCommand extends SubCommand {
     
             try {
                 const accessToken = await getGcpAccessToken();
-                let { newObject } = await uploadDiscordAttachmentToGcp(
+                let { newObject } = await uploadAttachment(
                     (attachment as { value: Attachment }).value,
                     accessToken,
                     bucketName,

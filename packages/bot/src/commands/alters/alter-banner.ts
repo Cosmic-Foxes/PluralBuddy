@@ -13,7 +13,7 @@ import {
 	SubCommand,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import { getGcpAccessToken, uploadDiscordAttachmentToGcp } from "@/gcp";
+import { getGcpAccessToken, getOldObject, uploadAttachment } from "@/gcp";
 import { w } from "@/webhooks";
 import { autocompleteAlters } from "../../lib/autocomplete-alters";
 import { alterCollection } from "../../mongodb";
@@ -60,7 +60,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 		});
 
 		const user = await ctx.retrievePUser();
-		const {
+		let {
 			"alter-name": alterName, 
 			"alter-banner": attachment,
 			"alter-banner-text": attachmentText,
@@ -112,31 +112,20 @@ export default class EditAlterPictureCommand extends SubCommand {
 			});
 		}
 
-		let objectName: string | undefined;
-
 		if (attachmentText === undefined) {
-			objectName = `${(process.env.BRANCH ?? "c")[0]}/${user.storagePrefix}/${assetStringGeneration(32)}`;
-			const bucketName = process.env.GCP_BUCKET ?? "";
-
 			try {
-				const accessToken = await getGcpAccessToken();
-				const { newObject } = await uploadDiscordAttachmentToGcp(
+				const objectUrl = await uploadAttachment(
 					(attachment as { value: Attachment }).value,
-					accessToken,
-					bucketName,
-					objectName,
+					`${(process.env.BRANCH ?? "c")[0]}/${user.storagePrefix}/${assetStringGeneration(32)}`,
 					{
 						authorId: ctx.author.id,
 						alterId: String(alter.alterId),
 						type: "banner",
 					},
-
-					(alter.banner ?? "").startsWith("https://pluralbuddy.giftedly.dev")
-						? `${(process.env.BRANCH ?? "a")[0]}/${user.storagePrefix}${alter.banner?.split(user.storagePrefix)[1]}`
-						: undefined,
+					getOldObject({ imageProperty: alter.banner, storagePrefix: user.storagePrefix }),
 				);
 
-				objectName = newObject;
+				attachmentText = objectUrl;
 			} catch (error) {
 				return await ctx.editResponse({
 					components: new AlertView(await ctx.userTranslations()).errorView(
@@ -147,20 +136,16 @@ export default class EditAlterPictureCommand extends SubCommand {
 			}
 		}
 
-		const publicUrl =
-			objectName !== undefined
-				? `https://pluralbuddy.giftedly.dev/${objectName}`
-				: attachmentText;
 		await alterCollection.updateOne(
 			{ alterId: alter.alterId },
-			{ $set: { banner: publicUrl } },
+			{ $set: { banner: attachmentText } },
 		);
 
 		w(ctx.author.id, "alter.update", {
 			type: "alter.update",
 			alter: {
 				...alter,
-				banner: publicUrl,
+				banner: attachmentText,
 			},
 		});
 
@@ -175,7 +160,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 				new Container().setComponents(
 					new MediaGallery().addItems(
 						new MediaGalleryItem()
-							.setMedia(`https://wsrv.nl/?url=${publicUrl}&w=1024&h=84`)
+							.setMedia(attachmentText)
 							.setDescription(`@${alter.username}'s profile`),
 					),
 				),
