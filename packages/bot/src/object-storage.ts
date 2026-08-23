@@ -1,14 +1,11 @@
-import { Readable } from "node:stream";
-import { fileTypeFromBuffer, fileTypeFromStream } from "file-type";
+import { fileTypeFromBuffer } from "file-type";
 import { S3mini } from "s3mini";
 import type { Attachment } from "seyfert";
-import { object } from "zod";
 
 const s3 = new S3mini({
 	accessKeyId: process.env.R2_ACCESS_KEY_ID ?? "",
 	secretAccessKey: process.env.R2_SECRET_ACCESS_KEY ?? "",
-	// Bucket-scoped endpoint — include your bucket name in the path
-	endpoint: `https://${process.env.ACCOUNT_ID}.r2.cloudflarestorage.com/pluralbuddy-data`,
+	endpoint: `https://${process.env.ACCOUNT_ID}.r2.cloudflarestorage.com/${process.env.BUCKET_NAME}`,
 	region: "auto",
 });
 
