@@ -57,7 +57,7 @@ export async function uploadAttachment(
 		await s3.deleteObject(oldObject)
 	}
 
-	return `https://img.pb.giftedly.dev/${objectName}.${fileType?.ext}`;
+	return `https://img.pb${process.env.BUCKET_NAME?.endsWith("-canary")?"c":""}.giftedly.dev/${objectName}.${fileType?.ext}`;
 }
 
 export function getOldObject({imageProperty = "", storagePrefix}: {imageProperty?: string | null, storagePrefix: string }) {
