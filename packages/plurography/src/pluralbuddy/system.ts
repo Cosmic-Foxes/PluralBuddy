@@ -84,7 +84,7 @@ export const PSystemObject = z.object({
 	disabledGuilds: z.string().array().optional().default([]),
 
 	/** WIP */
-	subAccounts: z.array(z.string()),
+	subAccounts: z.array(z.string()).default([]).optional(),
 	disabled: z.boolean().default(false),
 }).meta({ id: "PSystem" })
 
