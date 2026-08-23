@@ -17,6 +17,7 @@ import {
 	type UsingClient,
 	type Webhook,
 } from "seyfert";
+import type { MediaGalleryComponent } from "seyfert/lib/components/MediaGallery";
 import type { TextDisplayComponent } from "seyfert/lib/components/TextDisplay";
 import type { Message } from "seyfert/lib/structures";
 import {
@@ -365,9 +366,9 @@ export const getModernComponentsMappings = (
 					components[1]?.data.type === ComponentType.File)
 			? {
 					content:
-						"content" in components[0].data
-							? components[0].data.content?.startsWith("# <")
-								? components[0].data.content.slice(1)
+						components[0] !== undefined && ("content" in components[0].data)
+							? (components[0].data.content ?? "").startsWith("# <")
+								? (components[0].data.content ?? "").slice(1)
 								: components[0].data.content
 							: "_Failed to slice this message correctly._",
 					attachments: fileComponents
