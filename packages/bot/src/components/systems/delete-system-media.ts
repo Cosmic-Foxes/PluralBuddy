@@ -6,11 +6,11 @@ import {
 	AttachmentBuilder,
 	Button,
 	ComponentCommand,
-	File,
 	type ComponentContext,
+	File,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
-import { deleteAttachment, getGcpAccessToken } from "@/gcp";
+import { deleteAttachment } from "@/object-storage";
 import { assetStringGeneration } from "@/types/operation";
 import { buildExportPayload } from "../../lib/export";
 import { InteractionIdentifier } from "../../lib/interaction-ids";
@@ -54,9 +54,6 @@ export default class DeleteSystemButton extends ComponentCommand {
 			],
 			flags: MessageFlags.Ephemeral
 		});
-
-		// Add lifecycle rule to delete prefixed storage prefixes
-		const gcpToken = await getGcpAccessToken();
 
 		await deleteAttachment(user.storagePrefix);
 

@@ -14,7 +14,7 @@ import {
 	SubCommand,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import { getGcpAccessToken, getOldObject, uploadAttachment } from "@/gcp";
+import {  getOldObject, uploadAttachment } from "@/object-storage";
 import { w } from "@/webhooks";
 import { autocompleteAlters } from "../../lib/autocomplete-alters";
 import { alterCollection } from "../../mongodb";

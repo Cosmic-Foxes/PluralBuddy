@@ -1,9 +1,9 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 import { type Attachment, ModalCommand, type ModalContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import { getGcpAccessToken, getOldObject, uploadAttachment } from "@/gcp";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { alterCollection } from "@/mongodb";
+import {  getOldObject, uploadAttachment } from "@/object-storage";
 import { assetStringGeneration } from "@/types/operation";
 import { AlertView } from "@/views/alert";
 import { AlterView } from "@/views/alters";

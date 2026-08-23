@@ -14,8 +14,8 @@ import {
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { object } from "zod";
-import { getGcpAccessToken, getOldObject, uploadAttachment } from "@/gcp";
 import { createSystemOperation } from "@/lib/system-operation";
+import {  getOldObject, uploadAttachment } from "@/object-storage";
 import { autocompleteAlters } from "../../lib/autocomplete-alters";
 import { alterCollection } from "../../mongodb";
 import {
