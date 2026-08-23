@@ -12,7 +12,7 @@ const s3 = new S3mini({
 export async function deleteAttachment(
 	storagePrefix: string,
 ) {
-	const prefix = `${(process.env.BRANCH ?? "c")[0]}/${storagePrefix}`;
+	const prefix = `${storagePrefix}`;
 
 	const objects = await s3.listObjects("/", prefix);
 	if (objects === null) return null;

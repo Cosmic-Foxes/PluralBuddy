@@ -116,7 +116,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 			try {
 				const objectUrl = await uploadAttachment(
 					(attachment as { value: Attachment }).value,
-					`${(process.env.BRANCH ?? "c")[0]}/${user.storagePrefix}/${assetStringGeneration(32)}`,
+					`${user.storagePrefix}/${assetStringGeneration(32)}`,
 					{
 						authorId: ctx.author.id,
 						alterId: String(alter.alterId),

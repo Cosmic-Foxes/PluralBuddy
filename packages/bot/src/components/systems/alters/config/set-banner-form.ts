@@ -55,7 +55,7 @@ export default class SetPFPForm extends ModalCommand {
 			});
 		}
 
-		const objectName = `${(process.env.BRANCH ?? "c")[0]}/${user.storagePrefix}/${assetStringGeneration(32)}`;
+		const objectName = `${user.storagePrefix}/${assetStringGeneration(32)}`;
 		let url = "";
 
 		try {

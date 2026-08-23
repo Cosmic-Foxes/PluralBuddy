@@ -156,7 +156,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 			});
 		}
 
-		let objectName = `${(process.env.BRANCH ?? "c")[0]}/${user.storagePrefix}/${assetStringGeneration(32)}`;
+		let objectName = `${user.storagePrefix}/${assetStringGeneration(32)}`;
 
 		if (attachmentText === undefined) {
 

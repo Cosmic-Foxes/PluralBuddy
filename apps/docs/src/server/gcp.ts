@@ -74,7 +74,7 @@ export async function deleteAttachment(
 	storagePrefix: string,
 	accessToken: string,
 ) {
-	const prefix = `${(process.env.BRANCH ?? "c")[0]}/${storagePrefix}`;
+	const prefix = `${storagePrefix}`;
 
 	const existingResponse = await (
 		await fetch(
