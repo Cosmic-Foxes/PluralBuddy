@@ -61,7 +61,10 @@ export async function uploadAttachment(
 }
 
 export function getOldObject({imageProperty = "", storagePrefix}: {imageProperty?: string | null, storagePrefix: string }) {
-	return ((imageProperty ?? "").startsWith("https://pluralbuddy.giftedly.dev")) || (imageProperty ?? "").startsWith("https://img.pb.giftedly.dev")
+	return (imageProperty ?? "").startsWith("https://pluralbuddy.giftedly.dev") ||
+		(imageProperty ?? "").startsWith(
+			`https://img.pb${process.env.BUCKET_NAME?.endsWith("-canary") ? "c" : ""}.giftedly.dev`,
+		)
 		? `${(process.env.BRANCH ?? "a")[0]}/${storagePrefix}${(imageProperty ?? "").split(storagePrefix)[1]}`
 		: undefined;
 }
