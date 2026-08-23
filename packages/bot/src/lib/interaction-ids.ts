@@ -403,6 +403,8 @@ export const InteractionIdentifier = {
 				ConfigureTagExternal: createFromAdditionalArg(
 					"systems/config/tags/configure-external",
 				),
+				AssureDeleteTag: createFromAdditionalArg("systems/config/tags/assure-delete-tag"),
+				DeleteTag: createFromAdditionalArg("systems/config/tags/delete-tag"),
 
 				SetDisplayName: createFromAdditionalArg(
 					"systems/config/tags/set-display",

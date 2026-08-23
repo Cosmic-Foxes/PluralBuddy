@@ -272,6 +272,7 @@ export default createEvent({
 						guild,
 						message.member,
 					);
+					return;
 				}
 			}
 		}

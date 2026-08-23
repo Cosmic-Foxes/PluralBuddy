@@ -53,6 +53,7 @@ export async function performTagProxy(
 	guild: PGuild,
 	author: GuildMember,
 ) {
+
 	(async () => {
 		const channel = await message.channel();
 
@@ -157,6 +158,7 @@ export async function performTagProxy(
 	}
 
 	if (checkAlter?.alterMode === "both" || checkAlter?.alterMode === "webhook") {
+	;
 		if (similarWebhooks.length >= 1) {
 			webhook = similarWebhooks[0];
 		} else {
@@ -229,8 +231,10 @@ export async function performTagProxy(
 			proxyTag.prefix &&
 			contents.startsWith(proxyTag.prefix) &&
 			user.system &&
-			!(getSystemFeatures(user.system).keepProxyTags ||
-				getAlterFeatures(checkAlter).keepProxyTags)
+			!(
+				getSystemFeatures(user.system).keepProxyTags ||
+				getAlterFeatures(checkAlter).keepProxyTags
+			)
 		) {
 			contents = contents.slice(proxyTag.prefix.length);
 		}
@@ -238,8 +242,10 @@ export async function performTagProxy(
 			proxyTag.suffix &&
 			contents.endsWith(proxyTag.suffix) &&
 			user.system &&
-			!(getSystemFeatures(user.system).keepProxyTags ||
-				getAlterFeatures(checkAlter).keepProxyTags)
+			!(
+				getSystemFeatures(user.system).keepProxyTags ||
+				getAlterFeatures(checkAlter).keepProxyTags
+			)
 		) {
 			contents = contents.slice(0, contents.length - proxyTag.suffix.length);
 		}
@@ -359,6 +365,11 @@ export async function performTagProxy(
 			);
 
 		if (message.guildId && user.system)
-			setLastLatchAlter(message.guildId,message.channelId, user.system, checkAlter);
+			setLastLatchAlter(
+				message.guildId,
+				message.channelId,
+				user.system,
+				checkAlter,
+			);
 	}
 }
