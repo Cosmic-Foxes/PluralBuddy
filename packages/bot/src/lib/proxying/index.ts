@@ -119,7 +119,7 @@ export async function proxy(
 			...(message.stickerItems ?? []).map((c) =>
 				new MediaGallery().addItems(
 					new MediaGalleryItem().setMedia(
-						`https://media.discordapp.net/stickers/${c.id}.${c.formatType === StickerFormatType.GIF ? "gif" : c.formatType === StickerFormatType.PNG ? "png" : c.formatType === StickerFormatType.APNG ? "png" : "lottie"}?size=320`,
+						`https://media.discordapp.net/stickers/${c.id}.${c.formatType === StickerFormatType.GIF ? "gif" : c.formatType === StickerFormatType.PNG ? "png" : c.formatType === StickerFormatType.APNG ? "png" : "lottie"}?size=256`,
 					),
 				),
 			),
