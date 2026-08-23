@@ -1,7 +1,7 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 import { type Attachment, ModalCommand, type ModalContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import { getGcpAccessToken, uploadAttachment } from "@/gcp";
+import { getGcpAccessToken, getOldObject, uploadAttachment } from "@/gcp";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { alterCollection } from "@/mongodb";
 import { assetStringGeneration } from "@/types/operation";
@@ -22,7 +22,7 @@ export default class SetPFPForm extends ModalCommand {
 				ctx.customId,
 			)[0];
 
-		const user = await ctx.retrievePUser()
+		const user = await ctx.retrievePUser();
 		const systemId = ctx.author.id;
 		const query = alterCollection.findOne({
 			$and: [{ alterId: Number(alterId) }, { systemId }],
@@ -32,7 +32,7 @@ export default class SetPFPForm extends ModalCommand {
 
 		if (alter === null) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -48,59 +48,57 @@ export default class SetPFPForm extends ModalCommand {
 
 		if (attachment.value.size > 1_000_000) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_ATTACHMENT_TOO_LARGE",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
 
-		let objectName = `${(process.env.BRANCH ?? "c")[0]}/${user.storagePrefix}/${assetStringGeneration(32)}`;;
-		const bucketName = process.env.GCP_BUCKET ?? "";
+		const objectName = `${(process.env.BRANCH ?? "c")[0]}/${user.storagePrefix}/${assetStringGeneration(32)}`;
+		let url = "";
 
 		try {
-			const accessToken = await getGcpAccessToken();
-			const {newObject} = await uploadAttachment(
+			url = await uploadAttachment(
 				(attachment as { value: Attachment }).value,
-				accessToken,
-				bucketName,
 				objectName,
-				{ authorId: ctx.author.id, alterId: String(alter.alterId), type: "banner/form" },
-				(alter.banner ?? "").startsWith("https://pluralbuddy.giftedly.dev") ? `${(process.env.BRANCH ?? "a")[0]}/${user.storagePrefix}${alter.banner?.split(user.storagePrefix)[1]}` : undefined
+				{
+					authorId: ctx.author.id,
+					alterId: String(alter.alterId),
+					type: "banner/form",
+				},
+				getOldObject({ imageProperty: alter.banner, storagePrefix: user.storagePrefix })
 			);
-			objectName = newObject;
 		} catch (error) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_FAILED_TO_UPLOAD_TO_GCP",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
 
-		const publicUrl = `https://pluralbuddy.giftedly.dev/${objectName}`;
 		await alterCollection.updateOne(
 			{ alterId: alter.alterId },
-			{ $set: { banner: publicUrl } },
+			{ $set: { banner: url } },
 		);
 
 		w(ctx.author.id, "alter.update", {
 			type: "alter.update",
 			alter: {
 				...alter,
-				banner: publicUrl
+				banner: url,
 			},
 		});
 
-
 		return await ctx.interaction.update({
 			components: [
-				...new AlterView((await ctx.userTranslations())).alterTopView(
+				...new AlterView(await ctx.userTranslations()).alterTopView(
 					"public-settings",
 					alter.alterId.toString(),
 					alter.username,
 				),
-				...new AlterView((await ctx.userTranslations())).altersPublicView(
+				...new AlterView(await ctx.userTranslations()).altersPublicView(
 					alter,
 					(await ctx.guild()) ?? { name: "", id: "" },
 					(await ctx.getDefaultPrefix()) ?? "",

@@ -1,7 +1,7 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 import { type Attachment, ModalCommand, type ModalContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import { getGcpAccessToken, uploadAttachment } from "@/gcp";
+import { getGcpAccessToken, getOldObject, uploadAttachment } from "@/gcp";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { alterCollection } from "@/mongodb";
 import { assetStringGeneration } from "@/types/operation";
@@ -55,21 +55,16 @@ export default class SetPFPForm extends ModalCommand {
 			});
 		}
 
-		let objectName = `${(process.env.BRANCH ?? "c")[0]}/${user.storagePrefix}/${assetStringGeneration(32)}`;;
-		const bucketName = process.env.GCP_BUCKET ?? "";
+		const objectName = `${(process.env.BRANCH ?? "c")[0]}/${user.storagePrefix}/${assetStringGeneration(32)}`;;
+		let url = "";
 
 		try {
-			const accessToken = await getGcpAccessToken();
-			const { newObject } = await uploadAttachment(
+			url = await uploadAttachment(
 				(attachment as { value: Attachment }).value,
-				accessToken,
-				bucketName,
 				objectName,
 				{ authorId: ctx.author.id, alterId: String(alter.alterId), type: "profile-picture/form" },
-				(alter.avatarUrl ?? "").startsWith("https://pluralbuddy.giftedly.dev") ? `${(process.env.BRANCH ?? "a")[0]}/${user.storagePrefix}${alter.avatarUrl?.split(user.storagePrefix)[1]}` : undefined
+				getOldObject({ imageProperty: alter.avatarUrl, storagePrefix: user.storagePrefix })
 			);
-
-			objectName = newObject;
 		} catch (error) {
 			return await ctx.write({
 				components: new AlertView((await ctx.userTranslations())).errorView(
@@ -79,17 +74,16 @@ export default class SetPFPForm extends ModalCommand {
 			});
 		}
 
-		const publicUrl = `https://pluralbuddy.giftedly.dev/${objectName}`;
 		await alterCollection.updateOne(
 			{ alterId: alter.alterId },
-			{ $set: { avatarUrl: publicUrl } },
+			{ $set: { avatarUrl: url } },
 		);
 
 		w(ctx.author.id, "alter.update", {
 			type: "alter.update",
 			alter: {
 				...alter,
-				avatarUrl: publicUrl
+				avatarUrl: url
 			},
 		});
 

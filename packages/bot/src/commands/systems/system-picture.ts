@@ -14,7 +14,7 @@ import {
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { object } from "zod";
-import { getGcpAccessToken, uploadAttachment } from "@/gcp";
+import { getGcpAccessToken, getOldObject, uploadAttachment } from "@/gcp";
 import { createSystemOperation } from "@/lib/system-operation";
 import { autocompleteAlters } from "../../lib/autocomplete-alters";
 import { alterCollection } from "../../mongodb";
@@ -57,7 +57,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 		});
 
 		const user = await ctx.retrievePUser()
-		const { "system-avatar": attachment, "system-avatar-text": attachmentText } = ctx.options;
+		let { "system-avatar": attachment, "system-avatar-text": attachmentText } = ctx.options;
 
 		if (user.system === undefined) {
 			return await ctx.editResponse({
@@ -83,23 +83,16 @@ export default class EditAlterPictureCommand extends SubCommand {
 			});
 		}
 
-		let objectName: string | undefined;
+		const objectName = `${(process.env.BRANCH ?? "c")[0]}/${user.storagePrefix}/${assetStringGeneration(32)}}`;
 
 		if (attachmentText === undefined ) {
-			objectName = `${(process.env.BRANCH ?? "c")[0]}/${user.storagePrefix}/${assetStringGeneration(32)}}`;
-			const bucketName = process.env.GCP_BUCKET ?? "";
-	
 			try {
-				const accessToken = await getGcpAccessToken();
-				const {newObject} = await uploadAttachment(
+				attachmentText = await uploadAttachment(
 					(attachment as { value: Attachment }).value,
-					accessToken,
-					bucketName,
 					objectName,
 					{ authorId: ctx.author.id, alterId: '@system', type: "profile-picture" },
-					(user.system.systemAvatar ?? "").startsWith("https://pluralbuddy.giftedly.dev") ? `${(process.env.BRANCH ?? "a")[0]}/${user.storagePrefix}${user.system.systemAvatar?.split(user.storagePrefix)[1]}` : undefined
+					getOldObject({ imageProperty: user.system.systemAvatar, storagePrefix: user.storagePrefix })
 				);
-				objectName = newObject;
 			} catch (error) {
 				return await ctx.editResponse({
 					components: new AlertView((await ctx.userTranslations())).errorView(
@@ -110,10 +103,9 @@ export default class EditAlterPictureCommand extends SubCommand {
 			}
 		}
 
-		const publicUrl = objectName !== undefined ? `https://pluralbuddy.giftedly.dev/${objectName}` : attachmentText;
 
 		await createSystemOperation(
-			user.system, { systemAvatar: publicUrl }, (await ctx.userTranslations()), "discord"
+			user.system, { systemAvatar: attachmentText }, (await ctx.userTranslations()), "discord"
 		);
 
 		return await ctx.editResponse({
@@ -124,7 +116,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 				new Container().setComponents(
 					new MediaGallery().addItems(
 						new MediaGalleryItem()
-							.setMedia(`https://wsrv.nl/?url=${publicUrl}&w=256&h=256`)
+							.setMedia(attachmentText)
 							.setDescription(`System profile`),
 					),
 				),

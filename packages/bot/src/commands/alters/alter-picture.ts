@@ -14,7 +14,7 @@ import {
 	SubCommand,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import { getGcpAccessToken, uploadAttachment } from "@/gcp";
+import { getGcpAccessToken, getOldObject, uploadAttachment } from "@/gcp";
 import { w } from "@/webhooks";
 import { autocompleteAlters } from "../../lib/autocomplete-alters";
 import { alterCollection } from "../../mongodb";
@@ -66,7 +66,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 		});
 
 		const user = await ctx.retrievePUser();
-		const {
+		let {
 			"alter-name": alterName,
 			"alter-avatar": attachment,
 			"alter-avatar-text": attachmentText,
@@ -156,30 +156,21 @@ export default class EditAlterPictureCommand extends SubCommand {
 			});
 		}
 
-		let objectName: string | undefined;
+		let objectName = `${(process.env.BRANCH ?? "c")[0]}/${user.storagePrefix}/${assetStringGeneration(32)}`;
+
 		if (attachmentText === undefined) {
-			objectName = `${(process.env.BRANCH ?? "c")[0]}/${user.storagePrefix}/${assetStringGeneration(32)}`;
-			const bucketName = process.env.GCP_BUCKET ?? "";
 
 			try {
-				const accessToken = await getGcpAccessToken();
-				let { newObject } = await uploadAttachment(
+				attachmentText = await uploadAttachment(
 					(attachment as { value: Attachment }).value,
-					accessToken,
-					bucketName,
 					objectName,
 					{
 						authorId: ctx.author.id,
 						alterId: String(alter.alterId),
 						type: "profile-picture",
 					},
-
-					(alter.avatarUrl ?? "").startsWith("https://pluralbuddy.giftedly.dev")
-						? `${(process.env.BRANCH ?? "a")[0]}/${user.storagePrefix}${alter.avatarUrl?.split(user.storagePrefix)[1]}`
-						: undefined,
+					getOldObject({ imageProperty: alter.avatarUrl, storagePrefix: user.storagePrefix })
 				);
-
-				objectName = newObject;
 			} catch (error) {
 				ctx.client.logger.fatal(error);
 				return await ctx.editResponse({
@@ -191,17 +182,13 @@ export default class EditAlterPictureCommand extends SubCommand {
 			}
 		}
 
-		const publicUrl =
-			objectName !== undefined
-				? `https://pluralbuddy.giftedly.dev/${objectName}`
-				: attachmentText;
 		await alterCollection.updateOne(
 			{ alterId: alter.alterId },
 			{
 				$set:
 					se && ctx.guildId
-						? { [`avatarUrlMap.${ctx.guildId}`]: publicUrl }
-						: { avatarUrl: publicUrl },
+						? { [`avatarUrlMap.${ctx.guildId}`]: attachmentText }
+						: { avatarUrl: attachmentText },
 			},
 		);
 
@@ -209,7 +196,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 			type: "alter.update",
 			alter: {
 				...alter,
-				avatarUrl: publicUrl,
+				avatarUrl: attachmentText,
 			},
 		});
 
@@ -224,7 +211,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 				new Container().setComponents(
 					new MediaGallery().addItems(
 						new MediaGalleryItem()
-							.setMedia(publicUrl ?? "")
+							.setMedia(attachmentText ?? "")
 							.setDescription(`@${alter.username}'s profile`),
 					),
 				),
