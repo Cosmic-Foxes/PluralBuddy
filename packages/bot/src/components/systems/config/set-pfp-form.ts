@@ -3,6 +3,7 @@
 import { fileTypeFromBuffer } from "file-type";
 import { type Attachment, ModalCommand, type ModalContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { FileTooBigException } from "@/lib/file-too-big";
 import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { createSystemOperation } from "@/lib/system-operation";
@@ -40,7 +41,7 @@ export default class SetPFPForm extends ModalCommand {
 			)[0] as Attachment,
 		};
 
-		if (attachment.value.size > 1_000_000) {
+		if (attachment.value.size > 5_000_000) {
 			return await ctx.editResponse({
 				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_ATTACHMENT_TOO_LARGE",
@@ -57,9 +58,17 @@ export default class SetPFPForm extends ModalCommand {
 				(attachment as { value: Attachment }).value,
 				objectName,
 				{ authorId: ctx.author.id, alterId: '@system', type: "profile-picture/form" },
-				getOldObject({ imageProperty: system.systemAvatar, storagePrefix })
+				getOldObject({ imageProperty: system.systemAvatar, storagePrefix }),
+				{ width: 512, height: 512 }
 			);
 		} catch (error) {
+			if (error instanceof FileTooBigException)
+				return await ctx.editResponse({
+					components: new AlertView(await ctx.userTranslations()).errorView(
+						"AFTER_COMPRESSION_TOO_BIG",
+					),
+					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				});
 			return await ctx.editResponse({
 				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_FAILED_TO_UPLOAD_TO_GCP",

@@ -1,6 +1,8 @@
 import { fileTypeFromBuffer } from "file-type";
 import { S3mini } from "s3mini";
 import type { Attachment } from "seyfert";
+import sharp from "sharp";
+import { FileTooBigException } from "./lib/file-too-big";
 
 const s3 = new S3mini({
 	accessKeyId: process.env.R2_ACCESS_KEY_ID ?? "",
@@ -23,9 +25,11 @@ export async function uploadAttachment(
 	objectName: string,
 	metadata: Record<string, string>,
 	oldObject?: string,
+	resize?: { width?: number, height?: number }
 ) {
 	const attachmentUrl = attachment.url;
 	const discordResponse = await fetch(attachmentUrl);
+
 
 	if (!discordResponse.ok) {
 		throw new Error("Failed to fetch the image from Discord.");
@@ -35,7 +39,18 @@ export async function uploadAttachment(
 		throw new Error("Response body is null.");
 	}
 
-	const buffer = await Bun.readableStreamToArrayBuffer(discordResponse.body);
+	let buffer = await Bun.readableStreamToArrayBuffer(discordResponse.body);
+	if (resize) {
+		const arrBf = await sharp(buffer)
+			.resize({ height: resize.height, width: resize.width })
+			.webp()
+			.toBuffer();
+
+		buffer = arrBf.buffer;
+	}
+	if (Buffer.byteLength(buffer) > 1_000_000) {
+		throw new FileTooBigException();
+	}
 	const fileType = await fileTypeFromBuffer(buffer);
 	const headeredMetadata: Record<string, string> = {};
 

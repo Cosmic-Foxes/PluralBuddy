@@ -14,6 +14,7 @@ import {
 	SubCommand,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { FileTooBigException } from "@/lib/file-too-big";
 import {  deleteOldObject, getOldObject, uploadAttachment } from "@/object-storage";
 import { w } from "@/webhooks";
 import { autocompleteAlters } from "../../lib/autocomplete-alters";
@@ -39,8 +40,8 @@ const options = {
 		value(data, ok, fail) {
 			if (!data.value.contentType?.startsWith("image"))
 				fail("This attachment is not an image.");
-			if (data.value.size > 2_500_000)
-				fail("This attachment is too big. Attachments at most can be 2.5MB.");
+			if (data.value.size > 5_000_000)
+				fail("This attachment is too big. Attachments at most can be 5MB.");
 			ok(data);
 		},
 	}),
@@ -175,16 +176,24 @@ export default class EditAlterPictureCommand extends SubCommand {
 						alterId: String(alter.alterId),
 						type: "profile-picture",
 					},
-					getOldObject({ imageProperty: alter.avatarUrl, storagePrefix: user.storagePrefix })
+					getOldObject({ imageProperty: alter.avatarUrl, storagePrefix: user.storagePrefix }),
+					{ width: 512, height: 512 }
 				);
 			} catch (error) {
-				ctx.client.logger.fatal(error);
+			if (error instanceof FileTooBigException)
 				return await ctx.editResponse({
 					components: new AlertView(await ctx.userTranslations()).errorView(
-						"ERROR_FAILED_TO_UPLOAD_TO_GCP",
+						"AFTER_COMPRESSION_TOO_BIG",
 					),
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 				});
+			// ctx.client.logger.fatal(error);
+			return await ctx.editResponse({
+				components: new AlertView(await ctx.userTranslations()).errorView(
+					"ERROR_FAILED_TO_UPLOAD_TO_GCP",
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
 			}
 		} else 
 			await deleteOldObject({
