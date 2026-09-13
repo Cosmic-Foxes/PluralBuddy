@@ -1,4 +1,5 @@
 import { ObjectId } from "bson";
+import pkceChallenge from "pkce-challenge";
 import {
 	type PAlter,
 	PAlterObject,
@@ -247,20 +248,110 @@ function sortObject(
 		}, {});
 }
 
+export type WriteBackArguments = (
+	| {
+			type: "system";
+			id: "@me";
+			change: Partial<PSystem>;
+	  }
+	| {
+			type: "alter";
+			/**  The PluralKit ID of the member. */
+			id: string;
+			change: Partial<PAlter>;
+	  }
+	| {
+			type: "tag";
+			/**  The PluralKit ID of the group. */
+			id: string;
+			change: Partial<PTag>;
+	  }
+	| {
+			type: "member-group-relationship";
+			id: string;
+			change: { groupId: string; type: "add" | "remove" };
+	  }
+) & { syncConfig: PUser["syncConfiguration"] };
+
+export async function writeBack({
+	type,
+	id,
+	change,
+	syncConfig,
+}: WriteBackArguments) {
+	const pkSyncConfig = syncConfig?.pluralkit;
+
+	if (
+		!pkSyncConfig ||
+		!(pkSyncConfig.writeBack?.enabled ?? false) ||
+		!pkSyncConfig.token
+	)
+		return;
+
+	const token = await decryptToken(
+		pkSyncConfig.token?.i,
+		pkSyncConfig.token?.v,
+	);
+	const pkRuntime = pk(token);
+	const pkConverter = new PluralKitConverter();
+
+	if (type === "system") {
+		const updatedPartialSystem = pkConverter._syncUpdateSystem(change);
+
+		await pkRuntime.systemsCollection.updateOne(
+			{ userId: "@me" },
+			updatedPartialSystem,
+		);
+	}
+
+	if (type === "alter") {
+		const updatedPartialAlter = pkConverter._syncUpdateAlterBack(change);
+
+		await pkRuntime.membersCollection.updateOne(
+			{ memberId: id },
+			updatedPartialAlter,
+		);
+	}
+
+	if (type === "tag") {
+		const updatedPartialTag = pkConverter._syncUpdateTagBack(change);
+
+		await pkRuntime.groupsCollection.updateOne(
+			{ groupId: id },
+			updatedPartialTag,
+		);
+	}
+
+	if (type === "member-group-relationship") {
+		if (change.type === "add") {
+			await pkRuntime.addMemberGroupRelationship({
+				groupId: change.groupId,
+				memberId: id,
+			});
+		}
+		if (change.type === "remove") {
+			await pkRuntime.removeMemberGroupRelationship({
+				groupId: change.groupId,
+				memberId: id,
+			});
+		}
+	}
+}
+
 export async function automaticallySync({
 	syncConfiguration,
 	userId,
 	system: systemPB,
 }: PUser) {
 	console.log({
-
 		autoEnabled: syncConfiguration?.pluralkit?.automatic?.enabled,
 		tokenEnabled: syncConfiguration?.pluralkit?.token,
 		systemExists: systemPB,
-		timeCorrect: Date.now() -
-			(syncConfiguration?.pluralkit?.lastSynced ?? new Date()).valueOf() <
-			1800000
-	})
+		timeCorrect:
+			Date.now() -
+				(syncConfiguration?.pluralkit?.lastSynced ?? new Date()).valueOf() <
+			1800000,
+	});
 	if (
 		!syncConfiguration?.pluralkit?.automatic?.enabled ||
 		!syncConfiguration.pluralkit.token ||

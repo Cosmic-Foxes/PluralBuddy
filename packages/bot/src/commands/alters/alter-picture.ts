@@ -15,6 +15,7 @@ import {
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { FileTooBigException } from "@/lib/file-too-big";
+import { writeBack } from "@/lib/pk-sync-engine";
 import {  deleteOldObject, getOldObject, uploadAttachment } from "@/object-storage";
 import { w } from "@/webhooks";
 import { autocompleteAlters } from "../../lib/autocomplete-alters";
@@ -219,6 +220,14 @@ export default class EditAlterPictureCommand extends SubCommand {
 				avatarUrl: attachmentText,
 			},
 		});
+		if (alter.fields["@/converter/pk"])
+			writeBack({
+				type: "alter",
+				id: alter.fields["@/converter/pk"],
+				change: { avatarUrl: attachmentText },
+				syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+			});
+
 
 		return await ctx.editResponse({
 			components: [

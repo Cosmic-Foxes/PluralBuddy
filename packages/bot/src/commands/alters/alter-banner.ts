@@ -14,7 +14,12 @@ import {
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { FileTooBigException } from "@/lib/file-too-big";
-import {  deleteOldObject, getOldObject, uploadAttachment } from "@/object-storage";
+import { writeBack } from "@/lib/pk-sync-engine";
+import {
+	deleteOldObject,
+	getOldObject,
+	uploadAttachment,
+} from "@/object-storage";
 import { w } from "@/webhooks";
 import { autocompleteAlters } from "../../lib/autocomplete-alters";
 import { alterCollection } from "../../mongodb";
@@ -62,7 +67,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 
 		const user = await ctx.retrievePUser();
 		let {
-			"alter-name": alterName, 
+			"alter-name": alterName,
 			"alter-banner": attachment,
 			"alter-banner-text": attachmentText,
 		} = ctx.options;
@@ -91,12 +96,12 @@ export default class EditAlterPictureCommand extends SubCommand {
 				imageProperty: alter.banner,
 				storagePrefix: user.storagePrefix,
 			});
-			
+
 			await alterCollection.updateOne(
 				{ alterId: alter.alterId },
 				{ $set: { banner: null } },
 			);
-			
+
 			w(ctx.author.id, "alter.update", {
 				type: "alter.update",
 				alter: {
@@ -104,6 +109,16 @@ export default class EditAlterPictureCommand extends SubCommand {
 					banner: null,
 				},
 			});
+
+			if (alter.fields["@/converter/pk"])
+				writeBack({
+					type: "alter",
+					id: alter.fields["@/converter/pk"],
+					change: {
+						banner: null,
+					},
+					syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+				});
 
 			return await ctx.editResponse({
 				components: [
@@ -132,24 +147,24 @@ export default class EditAlterPictureCommand extends SubCommand {
 						imageProperty: alter.banner,
 						storagePrefix: user.storagePrefix,
 					}),
-					{ height: 450 }
+					{ height: 450 },
 				);
 
 				attachmentText = objectUrl;
 			} catch (error) {
-			if (error instanceof FileTooBigException)
+				if (error instanceof FileTooBigException)
+					return await ctx.editResponse({
+						components: new AlertView(await ctx.userTranslations()).errorView(
+							"AFTER_COMPRESSION_TOO_BIG",
+						),
+						flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+					});
 				return await ctx.editResponse({
 					components: new AlertView(await ctx.userTranslations()).errorView(
-						"AFTER_COMPRESSION_TOO_BIG",
+						"ERROR_FAILED_TO_UPLOAD_TO_GCP",
 					),
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 				});
-			return await ctx.editResponse({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ERROR_FAILED_TO_UPLOAD_TO_GCP",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
 			}
 		} else
 			await deleteOldObject({
@@ -169,6 +184,15 @@ export default class EditAlterPictureCommand extends SubCommand {
 				banner: attachmentText,
 			},
 		});
+		if (alter.fields["@/converter/pk"])
+			writeBack({
+				type: "alter",
+				id: alter.fields["@/converter/pk"],
+				change: {
+					banner: attachmentText,
+				},
+				syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+			});
 
 		return await ctx.editResponse({
 			components: [

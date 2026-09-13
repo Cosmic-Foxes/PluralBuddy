@@ -1,14 +1,14 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { type CommandContext, createStringOption, Declare, type OKFunction, Options } from "seyfert";
-import { SubCommand } from "seyfert"
-import { alterCollection } from "../../mongodb";
-import { AlertView } from "../../views/alert";
-import { MessageFlags } from "seyfert/lib/types";
-import { getUserById } from "../../types/user";
 import type { Document } from "mongodb";
-import { autocompleteAlters } from "../../lib/autocomplete-alters";
+import { type CommandContext, createStringOption, Declare, type OKFunction, Options, SubCommand } from "seyfert"
+import { MessageFlags } from "seyfert/lib/types";
+import { writeBack } from "@/lib/pk-sync-engine";
 import { w } from "@/webhooks";
+import { autocompleteAlters } from "../../lib/autocomplete-alters";
+import { alterCollection } from "../../mongodb";
+import { getUserById } from "../../types/user";
+import { AlertView } from "../../views/alert";
 
 const options = {
     "alter-name": createStringOption({
@@ -63,6 +63,13 @@ export default class EditAlterNameCommand extends SubCommand {
 				username: alterNewName,
 			},
 		});
+		if (alter.fields["@/converter/pk"])
+			writeBack({
+				type: "alter",
+				id: alter.fields["@/converter/pk"],
+				change: { username: alterNewName },
+				syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+			});
 
         return await ctx.editResponse({
             components: [

@@ -8,15 +8,16 @@ import {
 	Declare,
 	MediaGallery,
 	MediaGalleryItem,
-	Options,
 	type OKFunction,
+	Options,
+	SubCommand,
 } from "seyfert";
-import { SubCommand } from "seyfert";
-import { alterCollection } from "../../mongodb";
 import { MessageFlags } from "seyfert/lib/types";
-import { AlertView } from "../../views/alert";
-import { autocompleteAlters } from "../../lib/autocomplete-alters";
+import { writeBack } from "@/lib/pk-sync-engine";
 import { svix, w } from "@/webhooks";
+import { autocompleteAlters } from "../../lib/autocomplete-alters";
+import { alterCollection } from "../../mongodb";
+import { AlertView } from "../../views/alert";
 
 const options = {
 	"alter-name": createStringOption({
@@ -75,7 +76,7 @@ export default class EditAlterColorCommand extends SubCommand {
 				{ alterId: alter.alterId },
 				{ $set: { color: null } },
 			);
-			
+
 			w(ctx.author.id, "alter.update", {
 				type: "alter.update",
 				alter: {
@@ -84,6 +85,15 @@ export default class EditAlterColorCommand extends SubCommand {
 				},
 			});
 
+			if (alter.fields["@/converter/pk"])
+				writeBack({
+					type: "alter",
+					id: alter.fields["@/converter/pk"],
+					change: {
+						color: null,
+					},
+					syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+				});
 
 			return await ctx.editResponse({
 				components: [
@@ -110,6 +120,15 @@ export default class EditAlterColorCommand extends SubCommand {
 				color,
 			},
 		});
+		if (alter.fields["@/converter/pk"])
+			writeBack({
+				type: "alter",
+				id: alter.fields["@/converter/pk"],
+				change: {
+					color,
+				},
+				syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+			});
 
 		return await ctx.editResponse({
 			components: [

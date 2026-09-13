@@ -245,19 +245,19 @@ export default class PluralKitConverter
 						: []),
 				],
 			),
+			fields: {
+				'@/converter/pk': alter.uuid,
+			}
 		};
 	}
 	_syncUpdateTag(tag: z.infer<typeof PluralKitGroup>, i?: number) {
-
 		const date = new Date();
 		date.setSeconds(i ?? 0);
 
 		return {
-
 			tagFriendlyName: tag.display_name ?? tag.name,
 			tagDescription: tag.description ?? undefined,
 			tagColor: "pink",
-
 
 			public: this.combine(
 				...[
@@ -272,7 +272,150 @@ export default class PluralKitConverter
 						: []),
 				],
 			),
-		}
+		};
+	}
+
+	_syncUpdateSystem(system: Partial<z.infer<typeof PSystemObject>>) {
+		return {
+			name: system.systemName,
+			description: system.systemDescription,
+			tag: system.systemDisplayTag,
+			pronouns: system.systemPronouns,
+			avatar_url: system.systemAvatar,
+			banner: system.systemBanner,
+
+			privacy: system.public
+				? {
+						name_privacy: listFromMaskSystems(system.public).includes(
+							SystemProtectionFlags.NAME,
+						)
+							? "public"
+							: "private",
+						avatar_privacy: listFromMaskSystems(system.public).includes(
+							SystemProtectionFlags.AVATAR,
+						)
+							? "public"
+							: "private",
+						description_privacy: listFromMaskSystems(system.public).includes(
+							SystemProtectionFlags.DESCRIPTION,
+						)
+							? "public"
+							: "private",
+						banner_privacy: listFromMaskSystems(system.public).includes(
+							SystemProtectionFlags.BANNER,
+						)
+							? "public"
+							: "private",
+						pronoun_privacy: listFromMaskSystems(system.public).includes(
+							SystemProtectionFlags.PRONOUNS,
+						)
+							? "public"
+							: "private",
+						member_list_privacy: listFromMaskSystems(system.public).includes(
+							SystemProtectionFlags.ALTERS,
+						)
+							? "public"
+							: "private",
+						group_list_privacy: listFromMaskSystems(system.public).includes(
+							SystemProtectionFlags.TAGS,
+						)
+							? "public"
+							: "private",
+						front_privacy: "private",
+						front_history_privacy: "private",
+					}
+				: undefined,
+		} satisfies Partial<z.infer<typeof PluralKitSystem>>;
+	}
+
+	_syncUpdateAlterBack(alter: Partial<z.infer<typeof PAlterObject>>) {
+		return {
+			name: alter.username ? alter.username.substring(0, 100) : undefined,
+			display_name: alter.displayName
+				? alter.displayName.substring(0, 100)
+				: undefined,
+
+			color:
+				alter.color !== undefined
+					? alter.color !== null
+						? alter.color.slice(1)
+						: null
+					: undefined,
+			avatar_url: alter.avatarUrl,
+			webhook_avatar_url: alter.webhookAvatarUrl,
+			banner: alter.banner,
+			description: alter.description
+				? alter.description.substring(0, 1000)
+				: alter.description,
+			privacy: alter.public
+				? {
+						visibility: listFromMaskAlters(alter.public).includes(
+							AlterProtectionFlags.VISIBILITY,
+						)
+							? "public"
+							: "private",
+						name_privacy: listFromMaskAlters(alter.public).includes(
+							AlterProtectionFlags.NAME,
+						)
+							? "public"
+							: "private",
+						description_privacy: listFromMaskAlters(alter.public).includes(
+							AlterProtectionFlags.DESCRIPTION,
+						)
+							? "public"
+							: "private",
+						banner_privacy: listFromMaskAlters(alter.public).includes(
+							AlterProtectionFlags.BANNER,
+						)
+							? "public"
+							: "private",
+						birthday_privacy: "private",
+						pronoun_privacy: listFromMaskAlters(alter.public).includes(
+							AlterProtectionFlags.PRONOUNS,
+						)
+							? "public"
+							: "private",
+						avatar_privacy: listFromMaskAlters(alter.public).includes(
+							AlterProtectionFlags.AVATAR,
+						)
+							? "public"
+							: "private",
+						metadata_privacy: "private",
+						proxy_privacy: "private",
+					}
+				: undefined,
+		} satisfies Partial<z.infer<typeof PluralKitMember>>;
+	}
+	_syncUpdateTagBack(tag: Partial<z.infer<typeof PTagObject>>) {
+		return {
+			display_name: tag.tagFriendlyName,
+			description: tag.tagDescription,
+			color: tag.tagColor,
+
+			privacy: tag.public
+				? {
+						name_privacy: listFromMaskTags(tag.public).includes(
+							TagProtectionFlags.NAME,
+						)
+							? "public"
+							: "private",
+						description_privacy: listFromMaskTags(tag.public).includes(
+							TagProtectionFlags.DESCRIPTION,
+						)
+							? "public"
+							: "private",
+						banner_privacy: "private",
+						icon_privacy: "private",
+						list_privacy: listFromMaskTags(tag.public).includes(
+							TagProtectionFlags.ALTERS,
+						)
+							? "public"
+							: "private",
+						metadata_privacy: "private",
+						visibility: "private",
+					}
+				: undefined,
+		} satisfies Partial<z.infer<typeof PluralKitGroup>>;
 	}
 
 	toImport(data: PluralKitSystemType): z.infer<typeof ImportNotation> {
@@ -343,7 +486,7 @@ export default class PluralKitConverter
 				],
 			),
 			fields: {
-				"@/converter/pk": tag.id.substring(0, 30),
+				"@/converter/pk": tag.uuid.substring(0, 36),
 				...(tag.color !== null ? { "@/custom-color": tag.color } : {}),
 				...(tag.icon !== null ? { "@/icon": tag.icon } : {}),
 				...(tag.banner !== null ? { "@/banner": tag.banner } : {}),

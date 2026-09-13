@@ -38,7 +38,7 @@ import { PGuildCache } from "./cache/plural-guild";
 import { SimilarWebhookResource } from "./cache/similar-webhooks";
 import { StatisticResource } from "./cache/statistics";
 import { ProxyResource } from "./cache/system-proxy-tags";
-import TagCommand from "./commands/tag"
+import TagCommand from "./commands/tag";
 import {
 	PluralBuddyComponentErrorCommand,
 	PluralBuddyErrorCommand,
@@ -82,7 +82,6 @@ export const logger = process.env.SEQ_HOST
 		})
 	: null;
 
-
 if (logger) logger.info("PluralBuddy is online");
 
 export const build = `26.2.0/${process.env.SOURCE_COMMIT?.slice(0, 7)}`;
@@ -92,7 +91,6 @@ const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"globalBlockUserMiddleware",
 	"serverBlock",
 ];
-
 
 export const policyModal = async (
 	ctx: AnyContext | CollectorInteraction,
@@ -198,18 +196,19 @@ export const client = new Client({
 });
 
 if (import.meta.main) {
-	if (logger)
-		logger.info(
-			"The loaded branch is {branch}; loading PluralBuddy with default prefix(es) {prefix}",
-			{
-				branch: process.env.BRANCH ?? "unknown",
-				prefix:
-					defaultPrefixes[
-						(process.env.BRANCH as "production" | "canary") ?? "production"
-					],
-			},
-		);
+	// @ts-ignore
+	if (logger) client.logger = logger;
 
+	client.logger.info(
+		"The loaded branch is {branch}; loading PluralBuddy with default prefix(es) {prefix}",
+		{
+			branch: process.env.BRANCH ?? "unknown",
+			prefix:
+				defaultPrefixes[
+					(process.env.BRANCH as "production" | "canary") ?? "production"
+				],
+		},
+	);
 
 	client.setServices({
 		middlewares: middlewares,
@@ -227,8 +226,7 @@ if (import.meta.main) {
 	await setupMongoDB();
 	await setupDatabases();
 
-
-	(logger ?? console).info("MongoDB is loaded.");
+	client.logger.info("MongoDB is loaded.");
 
 	client.cache.statistic = new StatisticResource(client.cache, client);
 	client.cache.alterProxy = new ProxyResource(client.cache, client);
@@ -239,7 +237,7 @@ if (import.meta.main) {
 	);
 	client.cache.i18n = new Pi18nCache(client.cache, client);
 
-	if (logger) logger.info("Created cache");
+	client.logger.info("Created cache");
 
 	await client.start({ token: process.env.BOT_TOKEN });
 

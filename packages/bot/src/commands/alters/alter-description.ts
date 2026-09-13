@@ -1,19 +1,19 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { SubCommand } from "seyfert";
-import { autocompleteAlters } from "@/lib/autocomplete-alters";
-import { alterCollection } from "@/mongodb";
-import { AlertView } from "@/views/alert";
 import {
-	type CommandContext,
-	Container,
-	createBooleanOption,
-	createStringOption,
-	Declare,
-	Options,
-	TextDisplay,
+    type CommandContext,
+    Container,
+    createStringOption,
+    Declare,
+    Options,
+    SubCommand,
+    TextDisplay
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { autocompleteAlters } from "@/lib/autocomplete-alters";
+import { writeBack } from "@/lib/pk-sync-engine";
+import { alterCollection } from "@/mongodb";
+import { AlertView } from "@/views/alert";
 import { w } from "@/webhooks";
 
 const options = {
@@ -53,12 +53,17 @@ export default class EditAlterDisplayNameCommand extends SubCommand {
 					})));
 
 		if (alter === null) {
-			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
-					"ERROR_ALTER_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			}, undefined, undefined, ctx);
+			return await ctx.ephemeral(
+				{
+					components: new AlertView(await ctx.userTranslations()).errorView(
+						"ERROR_ALTER_DOESNT_EXIST",
+					),
+					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				},
+				undefined,
+				undefined,
+				ctx,
+			);
 		}
 
 		if (alterDescription === undefined) {
@@ -73,7 +78,9 @@ ${alter.description ?? "⛔ Your alter has no description."}
 					],
 					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 				},
-				true, undefined, ctx
+				true,
+				undefined,
+				ctx,
 			);
 		}
 
@@ -89,12 +96,23 @@ ${alter.description ?? "⛔ Your alter has no description."}
 				description: alterDescription,
 			},
 		});
+		if (alter.fields["@/converter/pk"])
+			writeBack({
+				type: "alter",
+				id: alter.fields["@/converter/pk"],
+				change: {
+					description: alterDescription,
+				},
+				syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+			});
 
 		return await ctx.editResponse({
 			components: [
-				...new AlertView((await ctx.userTranslations())).successViewCustom(
-					(await ctx.userTranslations())
-						.ALTER_SUCCESS_DESC.replace("%alter%", alter.username),
+				...new AlertView(await ctx.userTranslations()).successViewCustom(
+					(await ctx.userTranslations()).ALTER_SUCCESS_DESC.replace(
+						"%alter%",
+						alter.username,
+					),
 				),
 			],
 			flags: MessageFlags.IsComponentsV2,

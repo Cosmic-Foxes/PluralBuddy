@@ -1,20 +1,19 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { SubCommand } from "seyfert";
-import { autocompleteAlters } from "@/lib/autocomplete-alters";
-import { alterCollection, tagCollection } from "@/mongodb";
-import { AlertView } from "@/views/alert";
-import {
+import { 
 	type CommandContext,
 	Container,
 	createBooleanOption,
 	createStringOption,
 	Declare,
-	Options,
-	TextDisplay,
-} from "seyfert";
+	Options,SubCommand, 
+	TextDisplay,} from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { autocompleteAlters } from "@/lib/autocomplete-alters";
 import { autocompleteTags } from "@/lib/autocomplete-tags";
+import { writeBack } from "@/lib/pk-sync-engine";
+import { alterCollection, tagCollection } from "@/mongodb";
+import { AlertView } from "@/views/alert";
 import { w } from "@/webhooks";
 
 const options = {
@@ -90,6 +89,17 @@ ${tag.tagDescription ?? "⛔ Your tag has no description."}
 				tagDescription
 			},
 		});
+
+		if (tag.fields["@/converter/pk"])
+			writeBack({
+				type: "tag",
+				id: tag.fields["@/converter/pk"],
+				change: {
+					tagDescription,
+				},
+				syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+			});
+
 
 		return await ctx.editResponse({
 			components: [

@@ -1,24 +1,26 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import {
-	type CommandContext,
-	Container,
-	createStringOption,
-	Declare,
-	Options,
-	SubCommand,
-	TextDisplay,
-} from "seyfert";
-import { autocompleteAlters } from "@/lib/autocomplete-alters";
 import { AlterProtectionFlags } from "plurography";
-import { alterCollection } from "@/mongodb";
-import { MessageFlags } from "seyfert/lib/types";
-import { AlertView } from "@/views/alert";
 import {
-	friendlyProtectionAlters,
-	listFromMaskAlters,
-} from "@/lib/privacy-bitmask";
+    type CommandContext,
+    Container,
+    createStringOption,
+    Declare,
+    Options,
+    SubCommand,
+    TextDisplay,
+} from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
 import { createPartialAlterOperation } from "@/lib/alter-operation";
+import { autocompleteAlters } from "@/lib/autocomplete-alters";
+import { writeBack } from "@/lib/pk-sync-engine";
+import {
+    friendlyProtectionAlters,
+    listFromMaskAlters,
+} from "@/lib/privacy-bitmask";
+import { alterCollection } from "@/mongodb";
+import { AlertView } from "@/views/alert";
+import { w } from "@/webhooks";
 
 const options = {
 	"alter-name": createStringOption({
@@ -125,6 +127,21 @@ export default class EditAlterPrivacyCommand extends SubCommand {
 			await ctx.userTranslations(),
 			"discord",
 		);
+
+		w(ctx.author.id, "alter.update", {
+			type: "alter.update",
+			alter: {
+				...alter,
+				public: newPublic,
+			},
+		});
+		if (alter.fields["@/converter/pk"])
+			writeBack({
+				type: "alter",
+				id: alter.fields["@/converter/pk"],
+				change: { public: newPublic },
+				syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+			});
 
 		return await ctx.editResponse({
 			components: [

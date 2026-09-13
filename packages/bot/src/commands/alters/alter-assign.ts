@@ -14,6 +14,7 @@ import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
 import { autocompleteTags } from "@/lib/autocomplete-tags";
 import { emojis, getEmojiFromTagColor } from "@/lib/emojis";
+import { writeBack } from "@/lib/pk-sync-engine";
 import { alterCollection, tagCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import { w } from "@/webhooks";
@@ -117,6 +118,17 @@ export default class AssignTag extends SubCommand {
 				associatedAlters: [...tag.associatedAlters, alter.alterId.toString()],
 			},
 		});
+		if (alter.fields["@/converter/pk"] && tag.fields["@/converter/pk"])
+			writeBack({
+				type: "member-group-relationship",
+				id: alter.fields["@/converter/pk"],
+				change: {
+					type: "add",
+					groupId: tag.fields["@/converter/pk"]
+				},
+				syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+			});
+
 
 		return await ctx.ephemeral({
 			components: new AlertView((await ctx.userTranslations())).successViewCustom(

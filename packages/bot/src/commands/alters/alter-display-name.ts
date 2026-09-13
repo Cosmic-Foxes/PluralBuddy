@@ -1,19 +1,19 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { SubCommand } from "seyfert"
-import { autocompleteAlters } from "@/lib/autocomplete-alters";
-import { alterCollection } from "@/mongodb";
-import { AlertView } from "@/views/alert";
-import {
+import { 
 	type CommandContext,
 	Container,
 	createBooleanOption,
 	createStringOption,
 	Declare,
-	Options,
+	Options,SubCommand, 
 	TextDisplay,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { autocompleteAlters } from "@/lib/autocomplete-alters";
+import { writeBack } from "@/lib/pk-sync-engine";
+import { alterCollection } from "@/mongodb";
+import { AlertView } from "@/views/alert";
 import { w } from "@/webhooks";
 
 const options = {
@@ -120,10 +120,13 @@ ${alter.displayName}
 					},
 				);
 
-				finishedNameMap = [...finishedNameMap.filter(v => ctx.guildId !== v.server), {
-					server: ctx.guildId ?? "",
-					name: alterNewName
-				}]
+				finishedNameMap = [
+					...finishedNameMap.filter((v) => ctx.guildId !== v.server),
+					{
+						server: ctx.guildId ?? "",
+						name: alterNewName,
+					},
+				];
 			} else {
 				// Append a new mapping to the nameMap array
 				await alterCollection.updateOne(
@@ -133,22 +136,25 @@ ${alter.displayName}
 							nameMap: {
 								server: ctx.guildId as string,
 								name: alterNewName as string,
-							}
-						}
+							},
+						},
 					},
 				);
-				
-				finishedNameMap = [...finishedNameMap, {
-					server: ctx.guildId ?? "",
-					name: alterNewName
-				}]
+
+				finishedNameMap = [
+					...finishedNameMap,
+					{
+						server: ctx.guildId ?? "",
+						name: alterNewName,
+					},
+				];
 			}
 
 			w(ctx.author.id, "alter.update", {
 				type: "alter.update",
 				alter: {
 					...alter,
-					nameMap: finishedNameMap
+					nameMap: finishedNameMap,
 				},
 			});
 		} else {
@@ -165,6 +171,16 @@ ${alter.displayName}
 					displayName: alterNewName,
 				},
 			});
+			if (alter.fields["@/converter/pk"])
+				writeBack({
+					type: "alter",
+					id: alter.fields["@/converter/pk"],
+					change: {
+						displayName: alterNewName,
+					},
+					syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+				});
+
 		}
 
 		return await ctx.editResponse({
