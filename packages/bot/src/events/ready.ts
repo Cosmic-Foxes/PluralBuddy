@@ -8,7 +8,8 @@ export default createEvent({
 
 		
 		setInterval(() => {
-		client.logger.info(await client.cache.guilds?.count());}, 5000)
+		  client.logger.info(await client.cache.guilds?.count())
+		}, 5000)
     }
 
 });
