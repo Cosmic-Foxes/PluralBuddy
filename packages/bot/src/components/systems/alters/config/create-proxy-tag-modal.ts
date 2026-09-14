@@ -3,6 +3,7 @@
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import { ModalCommand, type ModalContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { writeBack } from "@/lib/pk-sync-engine";
 import { w } from "@/webhooks";
 import { InteractionIdentifier } from "../../../../lib/interaction-ids";
 import { alterCollection } from "../../../../mongodb";
@@ -43,7 +44,9 @@ export default class CreateProxyTagModal extends ModalCommand {
 		}
 
 		if (!(proxyTag.includes("text") || proxyTag.includes("Text"))) {
-			context.client.logger.info("Stage 1 (create-pt): {proxyTag}", { proxyTag });
+			context.client.logger.info("Stage 1 (create-pt): {proxyTag}", {
+				proxyTag,
+			});
 			return await context.write({
 				components: new AlertView(await context.userTranslations()).errorView(
 					"CREATING_NEW_PT_ERROR",
@@ -70,7 +73,9 @@ export default class CreateProxyTagModal extends ModalCommand {
 		}
 
 		if (prefix === "" && suffix === "") {
-			context.client.logger.info("Stage 2 (create-pt): {proxyTag}", { proxyTag });
+			context.client.logger.info("Stage 2 (create-pt): {proxyTag}", {
+				proxyTag,
+			});
 			return await context.write({
 				components: new AlertView(await context.userTranslations()).errorView(
 					"CREATING_NEW_PT_ERROR",
@@ -108,6 +113,23 @@ export default class CreateProxyTagModal extends ModalCommand {
 				],
 			},
 		});
+
+		if (alter.fields["@/converter/pk"])
+			writeBack({
+				type: "alter",
+				id: alter.fields["@/converter/pk"],
+				change: {
+					proxyTags: [
+						...alter.proxyTags,
+						{
+							prefix,
+							suffix,
+							id: String(id),
+						},
+					],
+				},
+				syncConfig: (await context.retrievePUser()).syncConfiguration,
+			});
 
 		alter =
 			(await alterCollection.findOne({

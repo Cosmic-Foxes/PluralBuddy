@@ -6,7 +6,7 @@ import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { createSystemOperation } from "@/lib/system-operation";
 import { alterCollection } from "@/mongodb";
-import {  getOldObject, uploadAttachment } from "@/object-storage";
+import { getOldObject, uploadAttachment } from "@/object-storage";
 import { assetStringGeneration } from "@/types/operation";
 import { AlertView } from "@/views/alert";
 import { AlterView } from "@/views/alters";

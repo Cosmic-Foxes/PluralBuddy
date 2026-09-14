@@ -2,21 +2,21 @@
 
 import { AlterProtectionFlags } from "plurography";
 import {
-    type CommandContext,
-    Container,
-    createStringOption,
-    Declare,
-    Options,
-    SubCommand,
-    TextDisplay,
+	type CommandContext,
+	Container,
+	createStringOption,
+	Declare,
+	Options,
+	SubCommand,
+	TextDisplay,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { createPartialAlterOperation } from "@/lib/alter-operation";
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
 import { writeBack } from "@/lib/pk-sync-engine";
 import {
-    friendlyProtectionAlters,
-    listFromMaskAlters,
+	friendlyProtectionAlters,
+	listFromMaskAlters,
 } from "@/lib/privacy-bitmask";
 import { alterCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";

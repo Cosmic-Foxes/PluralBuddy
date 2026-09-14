@@ -26,17 +26,17 @@ export default class ListPrefixesCommand extends SubCommand {
 
 		return await ctx.editResponse({
 			components: [
-				new Container().setComponents(
-					new TextDisplay().setContent(
-                        "\`                                                           \`\n" +
-						guildObj.managerRoles
-							.map((c) => `> - <@&${c}>`)
-							.join("\n"),
-					),
-				).setColor("#4cc270"),
+				new Container()
+					.setComponents(
+						new TextDisplay().setContent(
+							"\`                                                           \`\n" +
+								guildObj.managerRoles.map((c) => `> - <@&${c}>`).join("\n"),
+						),
+					)
+					.setColor("#4cc270"),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-            allowed_mentions: { parse: [] }
+			allowed_mentions: { parse: [] },
 		});
 	}
 }

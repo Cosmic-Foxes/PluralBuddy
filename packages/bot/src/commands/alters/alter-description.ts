@@ -1,13 +1,13 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import {
-    type CommandContext,
-    Container,
-    createStringOption,
-    Declare,
-    Options,
-    SubCommand,
-    TextDisplay
+	type CommandContext,
+	Container,
+	createStringOption,
+	Declare,
+	Options,
+	SubCommand,
+	TextDisplay,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { autocompleteAlters } from "@/lib/autocomplete-alters";

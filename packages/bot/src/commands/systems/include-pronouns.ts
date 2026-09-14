@@ -7,7 +7,8 @@ import { AlertView } from "@/views/alert";
 
 @Declare({
 	name: "include-pronouns",
-	description: "Toggling including pronouns in the webhook name after proxying with an alter.",
+	description:
+		"Toggling including pronouns in the webhook name after proxying with an alter.",
 })
 export default class IncludeProxyTags extends SubCommand {
 	override async run(ctx: CommandContext) {
@@ -20,7 +21,7 @@ export default class IncludeProxyTags extends SubCommand {
 						"ERROR_SYSTEM_DOESNT_EXIST",
 					),
 				],
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			});
 		}
 

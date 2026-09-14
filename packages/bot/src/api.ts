@@ -93,7 +93,7 @@ export const clientRoutes = app
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 				})
 				.then(async (message) => {
-					console.log(message)
+					console.log(message);
 					if (importStage.response === null) return;
 
 					const system = await userCollection.findOne({
@@ -107,22 +107,24 @@ export const clientRoutes = app
 						.toArray();
 					let response = null;
 
-					response = await importControllers[importStage.response.dataType][
-						importStage.importMode
-							.replace("full-mode", "both")
-							.replace("delete", "deleteM") as
-							| "both"
-							| "add"
-							| "replace"
-							| "deleteM"
-					]({
-						existing: {
-							alters,
-							tags,
-							userId: importStage.originatingSystemId,
-						},
-						import: JSON.parse(importStage.response?.data ?? ""),
-					}).catch(e => console.error(e));
+					response = await importControllers[importStage.response.dataType]
+						[
+							importStage.importMode
+								.replace("full-mode", "both")
+								.replace("delete", "deleteM") as
+								| "both"
+								| "add"
+								| "replace"
+								| "deleteM"
+						]({
+							existing: {
+								alters,
+								tags,
+								userId: importStage.originatingSystemId,
+							},
+							import: JSON.parse(importStage.response?.data ?? ""),
+						})
+						.catch((e) => console.error(e));
 
 					client.interactions.editOriginal(importStage.webhook.token, {
 						components: new AlertView(translations).successViewCustom(
@@ -153,7 +155,7 @@ export const clientRoutes = app
 				changedOperation: SystemEditInput,
 				oldSystem: PSystemObject.omit({
 					subAccounts: true,
-					systemAutoproxy: true
+					systemAutoproxy: true,
 				}),
 			}),
 		),
@@ -163,10 +165,10 @@ export const clientRoutes = app
 				oldSystem.associatedUserId ?? "",
 			);
 
-			console.log("notfying.?")
+			console.log("notfying.?");
 
 			createSystemOperation(
-				{...oldSystem, subAccounts: [], systemAutoproxy: []},
+				{ ...oldSystem, subAccounts: [], systemAutoproxy: [] },
 				changedOperation,
 				translations,
 				method === "exchange" ? "api-exchange" : "api-web",

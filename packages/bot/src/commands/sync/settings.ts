@@ -45,5 +45,5 @@ export default class SyncConfigCommand extends SubCommand {
 			undefined,
 			ctx,
 		);
-    }
+	}
 }

@@ -16,7 +16,7 @@ export default class PluralKitExternalExporting extends ComponentCommand {
 
 	override filter(ctx: ComponentContext<typeof this.componentType>) {
 		return InteractionIdentifier.Systems.ExternalExporting.Selector.equals(
-			ctx.customId
+			ctx.customId,
 		);
 	}
 
@@ -37,12 +37,14 @@ export default class PluralKitExternalExporting extends ComponentCommand {
 			});
 		}
 
-		const exportPayload = JSON.parse( await buildExportPayload(user.system) ) as z.infer<typeof ImportNotation>;
-		const converter = possibleConverters[ctx.interaction.data.values[0] ?? "pluralkit"]
-		
-		if (!converter)
-			throw new Error("couldn't find that converter.")
-		
+		const exportPayload = JSON.parse(
+			await buildExportPayload(user.system),
+		) as z.infer<typeof ImportNotation>;
+		const converter =
+			possibleConverters[ctx.interaction.data.values[0] ?? "pluralkit"];
+
+		if (!converter) throw new Error("couldn't find that converter.");
+
 		const converterObj = new converter.converter();
 
 		await ctx.followup({

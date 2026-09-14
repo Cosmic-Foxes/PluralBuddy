@@ -31,7 +31,10 @@ export default class NextPageAP extends ModalCommand {
 			});
 		}
 
-		const page = ctx.interaction.getInputValue(InteractionIdentifier.Systems.Configuration.AlterPlainPagination.CustomPageInput.create(), true)
+		const page = ctx.interaction.getInputValue(
+			InteractionIdentifier.Systems.Configuration.AlterPlainPagination.CustomPageInput.create(),
+			true,
+		);
 
 		if (Number.isNaN(Number(page))) {
 			return await ctx.ephemeral({
@@ -42,7 +45,7 @@ export default class NextPageAP extends ModalCommand {
 			});
 		}
 		if (Number(page) < 1) {
-			return await ctx.interaction.deferUpdate()
+			return await ctx.interaction.deferUpdate();
 		}
 
 		const alters = await alterCollection

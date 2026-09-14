@@ -88,7 +88,12 @@ export const extendedContext = extendContext((interaction) => {
 
 					await userCollection.updateOne(
 						{ userId: interaction.author.id },
-						{ $set: { policyStatus: 1, storagePrefix: assetStringGeneration(8) } },
+						{
+							$set: {
+								policyStatus: 1,
+								storagePrefix: assetStringGeneration(8),
+							},
+						},
 						{ upsert: true },
 					);
 

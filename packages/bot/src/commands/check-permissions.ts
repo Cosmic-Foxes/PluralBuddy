@@ -26,7 +26,7 @@ export default class CheckPermissionsCommand extends Command {
 
 				try {
 					await (ctx.message as Message).author.write({
-						components: new AlertView((await ctx.userTranslations())).errorView(
+						components: new AlertView(await ctx.userTranslations()).errorView(
 							"FEATURE_DISABLED_GUILD",
 						),
 						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -36,7 +36,7 @@ export default class CheckPermissionsCommand extends Command {
 			}
 
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"FEATURE_DISABLED_GUILD",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -45,7 +45,7 @@ export default class CheckPermissionsCommand extends Command {
 
 		if (ctx.guildId === undefined) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"DN_ERROR_SE",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -64,7 +64,7 @@ export default class CheckPermissionsCommand extends Command {
 			true,
 		);
 
-		const { forcedWebhookMode, forcedNicknameMode } = guild.getFeatures()
+		const { forcedWebhookMode, forcedNicknameMode } = guild.getFeatures();
 
 		return await ctx.write({
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

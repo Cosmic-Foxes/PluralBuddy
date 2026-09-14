@@ -7,11 +7,10 @@ import { AlertView } from "@/views/alert";
 	name: "enable",
 	description: "Enabling proxying in this server.",
 	aliases: ["e", "on"],
-	contexts: ["Guild"]
+	contexts: ["Guild"],
 })
 export default class EnableProxying extends SubCommand {
 	override async run(ctx: CommandContext) {
-
 		await ctx.deferReply(true);
 		const guild = await ctx.guild();
 
@@ -66,7 +65,7 @@ export default class EnableProxying extends SubCommand {
 					),
 				),
 			],
-			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
+			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});
 	}
 }

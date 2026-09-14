@@ -6,7 +6,7 @@ import {
 	Declare,
 	MediaGallery,
 	MediaGalleryItem,
-        TextDisplay,
+	TextDisplay,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { easterEggPlaybackIds, muxPlaybackURL } from "@/lib/easter-eggs";

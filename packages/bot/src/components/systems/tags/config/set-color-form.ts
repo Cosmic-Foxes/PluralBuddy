@@ -7,6 +7,7 @@ import { MessageFlags } from "seyfert/lib/types";
 import { tagCollection } from "@/mongodb";
 import { TagView } from "@/views/tags";
 import { w } from "@/webhooks";
+import {writeBack} from "@/lib/pk-sync-engine.ts";
 
 export default class SetUsernameButton extends ModalCommand {
 	override filter(context: ModalContext) {
@@ -30,7 +31,7 @@ export default class SetUsernameButton extends ModalCommand {
 
 		if (tag === null) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_TAG_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -52,14 +53,24 @@ export default class SetUsernameButton extends ModalCommand {
 				},
 			},
 		);
-		
+
 		w(ctx.author.id, "tag.update", {
 			type: "tag.update",
 			tag: {
 				...tag,
-				tagColor: newTagColor
+				tagColor: newTagColor,
 			},
 		});
+
+        if (tag.fields["@/converter/pk"])
+            writeBack({
+                type: "tag",
+                id: tag.fields["@/converter/pk"],
+                change: {
+                    tagColor: newTagColor,
+                },
+                syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+            });
 
 		tag =
 			(await tagCollection.findOne({
@@ -69,12 +80,12 @@ export default class SetUsernameButton extends ModalCommand {
 
 		return await ctx.interaction.update({
 			components: [
-				...new TagView((await ctx.userTranslations())).tagTopView(
+				...new TagView(await ctx.userTranslations()).tagTopView(
 					"general",
 					tag.tagId.toString(),
 					tag.tagFriendlyName,
 				),
-				...new TagView((await ctx.userTranslations())).tagGeneral(
+				...new TagView(await ctx.userTranslations()).tagGeneral(
 					tag,
 					(await ctx.getDefaultPrefix()) ?? "pb;",
 					ctx.interaction?.message?.messageReference === undefined,

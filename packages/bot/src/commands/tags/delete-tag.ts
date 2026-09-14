@@ -1,5 +1,5 @@
 import {
-    ActionRow,
+	ActionRow,
 	Button,
 	CommandContext,
 	createStringOption,
@@ -57,32 +57,40 @@ export default class EditTagDisplayNameCommand extends SubCommand {
 		}
 
 		if (tag.associatedAlters.length > 5) {
-			return await ctx.ephemeral({
-				components: [
-					...new AlertView(await ctx.userTranslations()).questionViewCustom(
-						(await ctx.userTranslations()).WARN_DELETE_TAG.replace(
-							"{{ tag }}",
-							tag.tagFriendlyName,
+			return await ctx.ephemeral(
+				{
+					components: [
+						...new AlertView(await ctx.userTranslations()).questionViewCustom(
+							(await ctx.userTranslations()).WARN_DELETE_TAG.replace(
+								"{{ tag }}",
+								tag.tagFriendlyName,
+							),
 						),
-					),
-					new ActionRow().setComponents(
-						new Button()
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.Tags.AssureDeleteTag.create(
-									tag.tagId,
-								),
-							)
-							.setLabel((await ctx.userTranslations()).ACKNOWLEDGE_DELETE_TAG)
-                            .setStyle(ButtonStyle.Danger)
-                            .setEmoji(emojis.xWhite),
-					),
-				],
-                flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-			}, undefined, undefined, ctx);
+						new ActionRow().setComponents(
+							new Button()
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.Tags.AssureDeleteTag.create(
+										tag.tagId,
+									),
+								)
+								.setLabel((await ctx.userTranslations()).ACKNOWLEDGE_DELETE_TAG)
+								.setStyle(ButtonStyle.Danger)
+								.setEmoji(emojis.xWhite),
+						),
+					],
+					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				},
+				undefined,
+				undefined,
+				ctx,
+			);
 		}
 
 		await tagCollection.deleteOne({ tagId: tag.tagId });
-        await userCollection.updateOne({ userId: ctx.author.id }, { $pull: { "system.tagIds": tag.tagId }})
+		await userCollection.updateOne(
+			{ userId: ctx.author.id },
+			{ $pull: { "system.tagIds": tag.tagId } },
+		);
 
 		return await ctx.editResponse({
 			components: [

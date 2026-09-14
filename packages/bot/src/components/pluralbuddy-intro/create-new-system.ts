@@ -1,6 +1,14 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { CheckboxGroup, CheckboxGroupOption, ComponentCommand, Label, Modal, TextDisplay, type ComponentContext } from "seyfert";
+import {
+	CheckboxGroup,
+	CheckboxGroupOption,
+	ComponentCommand,
+	Label,
+	Modal,
+	TextDisplay,
+	type ComponentContext,
+} from "seyfert";
 import { PluralBuddyIntro } from "../../views/pluralbuddy-intro";
 import { MessageFlags } from "seyfert/lib/types";
 import { InteractionIdentifier } from "../../lib/interaction-ids";

@@ -1,5 +1,6 @@
 import { ComponentCommand, type ComponentContext } from "seyfert";
-import { MessageFlags } from "seyfert/lib/types";import { getSystemFeatures } from "@/lib/get-system-flags";
+import { MessageFlags } from "seyfert/lib/types";
+import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { AlertView } from "@/views/alert";
 import { SystemSettingsView } from "@/views/system-settings";
@@ -18,7 +19,7 @@ export default class PublicProfileBtn extends ComponentCommand {
 
 		if (user.system === undefined) {
 			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -26,9 +27,10 @@ export default class PublicProfileBtn extends ComponentCommand {
 		}
 
 		return await ctx.write({
-			components: new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(user.system)?.preferAccessiblity).importSettings(
-				user.system,
-			),
+			components: new SystemSettingsView(
+				await ctx.userTranslations(),
+				getSystemFeatures(user.system)?.preferAccessiblity,
+			).importSettings(user.system),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
 	}

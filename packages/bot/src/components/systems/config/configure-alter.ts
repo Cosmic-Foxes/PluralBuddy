@@ -30,7 +30,7 @@ export default class ConfigureAlter extends ComponentCommand {
 
 		if (alter === null) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -39,12 +39,15 @@ export default class ConfigureAlter extends ComponentCommand {
 
 		return await ctx.editResponse({
 			components: [
-				...new AlterView((await ctx.userTranslations())).alterTopView(
+				...new AlterView(await ctx.userTranslations()).alterTopView(
 					"general",
 					alter.alterId.toString(),
 					alter.username,
 				),
-				...await new AlterView((await ctx.userTranslations())).alterGeneralView(alter,  ctx.guildId),
+				...(await new AlterView(await ctx.userTranslations()).alterGeneralView(
+					alter,
+					ctx.guildId,
+				)),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});

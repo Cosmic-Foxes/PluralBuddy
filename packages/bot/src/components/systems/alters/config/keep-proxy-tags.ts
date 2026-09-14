@@ -14,6 +14,7 @@ import { AlertView } from "@/views/alert";
 import { AlterView } from "@/views/alters";
 import { SystemSettingsView } from "@/views/system-settings";
 import { w } from "@/webhooks";
+import { writeBack } from "@/lib/pk-sync-engine.ts";
 
 export default class DeleteAlterButton extends ComponentCommand {
 	componentType = "Button" as const;
@@ -49,11 +50,11 @@ export default class DeleteAlterButton extends ComponentCommand {
 		await alterCollection.updateOne(
 			{ alterId: alter.alterId },
 			{
-                $set: {
-                    flags: getAlterFeatures(alter).keepProxyTags
-                        ? getAlterFeatures(alter).disable(AlterFlags.PROXY_TAGS_KEPT)
-                        : getAlterFeatures(alter).enable(AlterFlags.PROXY_TAGS_KEPT),
-                }
+				$set: {
+					flags: getAlterFeatures(alter).keepProxyTags
+						? getAlterFeatures(alter).disable(AlterFlags.PROXY_TAGS_KEPT)
+						: getAlterFeatures(alter).enable(AlterFlags.PROXY_TAGS_KEPT),
+				},
 			},
 		);
 
@@ -66,6 +67,18 @@ export default class DeleteAlterButton extends ComponentCommand {
 					: getAlterFeatures(alter).enable(AlterFlags.PROXY_TAGS_KEPT),
 			},
 		});
+
+		if (alter.fields["@/converter/pk"])
+			writeBack({
+				type: "alter",
+				id: alter.fields["@/converter/pk"],
+				change: {
+					flags: getAlterFeatures(alter).keepProxyTags
+						? getAlterFeatures(alter).disable(AlterFlags.PROXY_TAGS_KEPT)
+						: getAlterFeatures(alter).enable(AlterFlags.PROXY_TAGS_KEPT),
+				},
+				syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+			});
 
 		return await ctx.update({
 			components: [

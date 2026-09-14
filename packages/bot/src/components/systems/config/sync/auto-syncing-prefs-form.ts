@@ -61,8 +61,7 @@ export default class SetPronounsButton extends ModalCommand {
 			) ?? false,
 		];
 
-		if (!enabled)
-			destructive = false;
+		if (!enabled) destructive = false;
 
 		await userCollection.updateOne(
 			{ userId: ctx.author.id },

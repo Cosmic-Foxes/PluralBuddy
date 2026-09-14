@@ -29,17 +29,29 @@ export default class AddUserForm extends ComponentCommand {
 		if (user.nudging === undefined) {
 			await userCollection.updateOne(
 				{ userId: user.userId },
-				{ $set: { nudging: { blockedUsers: [], currentlyEnabled: true, dmReply: false } } },
+				{
+					$set: {
+						nudging: {
+							blockedUsers: [],
+							currentlyEnabled: true,
+							dmReply: false,
+						},
+					},
+				},
 			);
 
 			// Set user in memory
-			user.nudging = { blockedUsers: [], currentlyEnabled: true, dmReply: false };
+			user.nudging = {
+				blockedUsers: [],
+				currentlyEnabled: true,
+				dmReply: false,
+			};
 		}
 		// End database migration
 
 		if (user.nudging.blockedUsers.includes(userId as string)) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"USER_ALREADY_BLOCKED",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -60,7 +72,7 @@ export default class AddUserForm extends ComponentCommand {
 		};
 
 		return await ctx.write({
-			components: new AlertView((await ctx.userTranslations())).successView(
+			components: new AlertView(await ctx.userTranslations()).successView(
 				"SUCCESSFULLY_BLOCKED",
 			),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

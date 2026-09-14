@@ -25,7 +25,8 @@ const options = {
 		required: true,
 	}),
 	location: createStringOption({
-		description: "Container can be either be at the top or bottom of the proxy message.",
+		description:
+			"Container can be either be at the top or bottom of the proxy message.",
 		required: true,
 		choices: [
 			{ value: "top", name: "⬆️ Top" },
@@ -61,7 +62,7 @@ export default class ViewRoleContainer extends SubCommand {
 			await guildCollection.updateOne(
 				{ guildId: guild.guildId, "rolePreferences.roleId": role.id },
 				{ $set: { "rolePreferences.$.containerLocation": location } },
-				{ upsert: true }
+				{ upsert: true },
 			);
 		else
 			await guildCollection.updateOne(
@@ -71,10 +72,10 @@ export default class ViewRoleContainer extends SubCommand {
 						rolePreferences: { roleId: role.id, containerLocation: location },
 					},
 				},
-				{ upsert: true }
+				{ upsert: true },
 			);
 
-		ctx.client.cache.pguild.remove(guild.guildId)
+		ctx.client.cache.pguild.remove(guild.guildId);
 		guild.rolePreferences = [
 			...guild.rolePreferences.filter((c) => c.roleId !== role.id),
 			{ ...roleData, containerLocation: location },
@@ -121,9 +122,11 @@ export default class ViewRoleContainer extends SubCommand {
 						]
 					: []),
 				new Separator().setSpacing(Spacing.Small),
-				...new AlertView((await ctx.userTranslations())).successViewCustom(
-					(await ctx.userTranslations())
-						.SET_CONTAINERS_LOCATION.replace("%role%", role.id),
+				...new AlertView(await ctx.userTranslations()).successViewCustom(
+					(await ctx.userTranslations()).SET_CONTAINERS_LOCATION.replace(
+						"%role%",
+						role.id,
+					),
 				),
 				new ActionRow().setComponents(
 					new Button()

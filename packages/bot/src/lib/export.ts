@@ -23,14 +23,14 @@ import { PluralKitSystem } from "plurography";
 export { ImportNotation } from "plurography";
 
 function makeid(length: number) {
-    var result           = '';
-    var characters       = 'abcdefghijklmnopqrstuvwxyz';
-    var charactersLength = characters.length;
+	var result = "";
+	var characters = "abcdefghijklmnopqrstuvwxyz";
+	var charactersLength = characters.length;
 
-    for (let i = 0; i < length; i++ ) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
+	for (let i = 0; i < length; i++) {
+		result += characters.charAt(Math.floor(Math.random() * charactersLength));
+	}
+	return result;
 }
 
 export async function buildExportPayload(system: PSystem) {
@@ -84,41 +84,44 @@ export async function buildPkExportPayload(system: PSystem) {
 				visibility: listFromMaskAlters(alter.public).includes(
 					AlterProtectionFlags.VISIBILITY,
 				)
-					? ("public")
-					: ("private"),
+					? "public"
+					: "private",
 				name_privacy: listFromMaskAlters(alter.public).includes(
 					AlterProtectionFlags.NAME,
 				)
-					? ("public")
-					: ("private"),
+					? "public"
+					: "private",
 				description_privacy: listFromMaskAlters(alter.public).includes(
 					AlterProtectionFlags.DESCRIPTION,
 				)
-					? ("public")
-					: ("private"),
+					? "public"
+					: "private",
 				banner_privacy: listFromMaskAlters(alter.public).includes(
 					AlterProtectionFlags.BANNER,
 				)
-					? ("public")
-					: ("private"),
-				birthday_privacy: ("private"),
+					? "public"
+					: "private",
+				birthday_privacy: "private",
 				pronoun_privacy: listFromMaskAlters(alter.public).includes(
 					AlterProtectionFlags.PRONOUNS,
 				)
-					? ("public")
-					: ("private"),
+					? "public"
+					: "private",
 				avatar_privacy: listFromMaskAlters(alter.public).includes(
 					AlterProtectionFlags.AVATAR,
 				)
-					? ("public")
-					: ("private"),
-				metadata_privacy: ("private"),
-				proxy_privacy: ("private"),
+					? "public"
+					: "private",
+				metadata_privacy: "private",
+				proxy_privacy: "private",
 			},
 		}),
 	}));
 
-	console.error("ERRORS", convertedAlters.filter(v => v.parsed.error))
+	console.error(
+		"ERRORS",
+		convertedAlters.filter((v) => v.parsed.error),
+	);
 
 	const convertedTags = tags.map((tag, i) =>
 		PluralKitGroup.safeParse({
@@ -138,27 +141,29 @@ export async function buildPkExportPayload(system: PSystem) {
 				name_privacy: listFromMaskTags(tag.public).includes(
 					TagProtectionFlags.NAME,
 				)
-					? ("public")
-					: ("private"),
+					? "public"
+					: "private",
 				description_privacy: listFromMaskTags(tag.public).includes(
 					TagProtectionFlags.DESCRIPTION,
 				)
-					? ("public")
-					: ("private"),
-				banner_privacy: ("private"),
-				icon_privacy: ("private"),
+					? "public"
+					: "private",
+				banner_privacy: "private",
+				icon_privacy: "private",
 				list_privacy: listFromMaskTags(tag.public).includes(
 					TagProtectionFlags.ALTERS,
 				)
-					? ("public")
-					: ("private"),
-				metadata_privacy: ("private"),
-				visibility: ("private"),
+					? "public"
+					: "private",
+				metadata_privacy: "private",
+				visibility: "private",
 			},
 		}),
 	);
-		console.error("ERRORS", convertedTags.filter(v => v.error))
-
+	console.error(
+		"ERRORS",
+		convertedTags.filter((v) => v.error),
+	);
 
 	return JSON.stringify(
 		PluralKitSystem.parse({
@@ -171,49 +176,53 @@ export async function buildPkExportPayload(system: PSystem) {
 			description: system.systemDescription
 				? system.systemDescription.substring(0, 100)
 				: null,
-			tag: system.systemDisplayTag ? system.systemDisplayTag?.substring(0, 100) : null,
+			tag: system.systemDisplayTag
+				? system.systemDisplayTag?.substring(0, 100)
+				: null,
 			avatar_url: system.systemAvatar ?? null,
-			pronouns: system.systemPronouns ? system.systemPronouns?.substring(0, 100) : null,
+			pronouns: system.systemPronouns
+				? system.systemPronouns?.substring(0, 100)
+				: null,
 			banner: system.systemBanner ?? null,
 			color: null,
 			privacy: {
 				name_privacy: listFromMaskSystems(system.public).includes(
 					SystemProtectionFlags.NAME,
 				)
-					? ("public")
-					: ("private"),
+					? "public"
+					: "private",
 				avatar_privacy: listFromMaskSystems(system.public).includes(
 					SystemProtectionFlags.AVATAR,
 				)
-					? ("public")
-					: ("private"),
+					? "public"
+					: "private",
 				description_privacy: listFromMaskSystems(system.public).includes(
 					SystemProtectionFlags.DESCRIPTION,
 				)
-					? ("public")
-					: ("private"),
+					? "public"
+					: "private",
 				banner_privacy: listFromMaskSystems(system.public).includes(
 					SystemProtectionFlags.BANNER,
 				)
-					? ("public")
-					: ("private"),
+					? "public"
+					: "private",
 				pronoun_privacy: listFromMaskSystems(system.public).includes(
 					SystemProtectionFlags.PRONOUNS,
 				)
-					? ("public")
-					: ("private"),
+					? "public"
+					: "private",
 				member_list_privacy: listFromMaskSystems(system.public).includes(
 					SystemProtectionFlags.ALTERS,
 				)
-					? ("public")
-					: ("private"),
+					? "public"
+					: "private",
 				group_list_privacy: listFromMaskSystems(system.public).includes(
 					SystemProtectionFlags.TAGS,
 				)
-					? ("public")
-					: ("private"),
-				front_privacy: ("private"),
-				front_history_privacy: ("private"),
+					? "public"
+					: "private",
+				front_privacy: "private",
+				front_history_privacy: "private",
 			},
 			webhook_url: null,
 			config: {
@@ -235,10 +244,13 @@ export async function buildPkExportPayload(system: PSystem) {
 				name_format: null,
 				description_templates: [],
 			},
-			accounts: [Number(system.associatedUserId), ...(system.subAccounts ?? []).map(v => Number(v))],
-			members: convertedAlters.map(v => v.parsed.data),
-			groups: convertedTags.map(v => v.data),
-			switches: []
+			accounts: [
+				Number(system.associatedUserId),
+				...(system.subAccounts ?? []).map((v) => Number(v)),
+			],
+			members: convertedAlters.map((v) => v.parsed.data),
+			groups: convertedTags.map((v) => v.data),
+			switches: [],
 		}),
 	);
 }

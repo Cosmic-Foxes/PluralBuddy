@@ -46,18 +46,27 @@ export default class AssignTag extends SubCommand {
 
 		const systemId = ctx.author.id;
 
-        const alter = ctx.contextAlter() ?? await (Number.isNaN(Number.parseInt(alterName)) 
-            ? alterCollection.findOne( { $or: [ { username: alterName } ], systemId })
-            : alterCollection.findOne( { $or: [ { username: alterName }, { alterId: Number(alterName) } ], systemId }))
-
+		const alter =
+			ctx.contextAlter() ??
+			(await (Number.isNaN(Number.parseInt(alterName))
+				? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
+				: alterCollection.findOne({
+						$or: [{ username: alterName }, { alterId: Number(alterName) }],
+						systemId,
+					})));
 
 		if (alter === null) {
-			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
-					"ERROR_ALTER_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			}, undefined, undefined, ctx);
+			return await ctx.ephemeral(
+				{
+					components: new AlertView(await ctx.userTranslations()).errorView(
+						"ERROR_ALTER_DOESNT_EXIST",
+					),
+					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				},
+				undefined,
+				undefined,
+				ctx,
+			);
 		}
 
 		const tagQuery = Number.isNaN(Number.parseInt(tagName))
@@ -69,29 +78,41 @@ export default class AssignTag extends SubCommand {
 		const tag = await tagQuery;
 
 		if (tag === null) {
-			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
-					"ERROR_TAG_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			}, undefined, undefined, ctx);
+			return await ctx.ephemeral(
+				{
+					components: new AlertView(await ctx.userTranslations()).errorView(
+						"ERROR_TAG_DOESNT_EXIST",
+					),
+					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				},
+				undefined,
+				undefined,
+				ctx,
+			);
 		}
 
 		if (
 			tag.associatedAlters.includes(alter.alterId.toString()) ||
 			alter.tagIds.includes(tag.tagId)
 		) {
-			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorViewCustom(
-					(await (await ctx.userTranslations()))
-						.TAG_ALREADY_ASSIGNED.replaceAll(
+			return await ctx.ephemeral(
+				{
+					components: new AlertView(
+						await ctx.userTranslations(),
+					).errorViewCustom(
+						(
+							await await ctx.userTranslations()
+						).TAG_ALREADY_ASSIGNED.replaceAll(
 							"%tag%",
 							` ${getEmojiFromTagColor(tag.tagColor)}  ${tag.tagFriendlyName}`,
-						)
-						.replaceAll("%alter%", alter.username),
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			}, undefined, undefined, ctx);
+						).replaceAll("%alter%", alter.username),
+					),
+					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				},
+				undefined,
+				undefined,
+				ctx,
+			);
 		}
 
 		await alterCollection.updateOne(
@@ -124,22 +145,26 @@ export default class AssignTag extends SubCommand {
 				id: alter.fields["@/converter/pk"],
 				change: {
 					type: "add",
-					groupId: tag.fields["@/converter/pk"]
+					groupId: tag.fields["@/converter/pk"],
 				},
 				syncConfig: (await ctx.retrievePUser()).syncConfiguration,
 			});
 
-
-		return await ctx.ephemeral({
-			components: new AlertView((await ctx.userTranslations())).successViewCustom(
-				((await ctx.userTranslations()))
-					.ASSIGNED_TAG.replaceAll(
+		return await ctx.ephemeral(
+			{
+				components: new AlertView(
+					await ctx.userTranslations(),
+				).successViewCustom(
+					(await ctx.userTranslations()).ASSIGNED_TAG.replaceAll(
 						"%tag%",
 						` ${getEmojiFromTagColor(tag.tagColor)}  ${tag.tagFriendlyName}`,
-					)
-					.replaceAll("%alter%", alter.username),
-			),
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-		}, undefined, undefined, ctx);
+					).replaceAll("%alter%", alter.username),
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			},
+			undefined,
+			undefined,
+			ctx,
+		);
 	}
 }

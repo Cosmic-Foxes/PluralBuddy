@@ -1,13 +1,15 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { 
+import {
 	type CommandContext,
 	Container,
 	createBooleanOption,
 	createStringOption,
 	Declare,
-	Options,SubCommand, 
-	TextDisplay,} from "seyfert";
+	Options,
+	SubCommand,
+	TextDisplay,
+} from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
 import { autocompleteTags } from "@/lib/autocomplete-tags";
@@ -51,12 +53,17 @@ export default class EditTagDisplayNameCommand extends SubCommand {
 		const tag = await query;
 
 		if (tag === null) {
-			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
-					"ERROR_TAG_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			}, undefined, undefined, ctx);
+			return await ctx.ephemeral(
+				{
+					components: new AlertView(await ctx.userTranslations()).errorView(
+						"ERROR_TAG_DOESNT_EXIST",
+					),
+					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				},
+				undefined,
+				undefined,
+				ctx,
+			);
 		}
 
 		if (tagDescription === undefined) {
@@ -73,7 +80,7 @@ ${tag.tagDescription ?? "⛔ Your tag has no description."}
 				},
 				true,
 				undefined,
-				ctx
+				ctx,
 			);
 		}
 
@@ -86,7 +93,7 @@ ${tag.tagDescription ?? "⛔ Your tag has no description."}
 			type: "tag.update",
 			tag: {
 				...tag,
-				tagDescription
+				tagDescription,
 			},
 		});
 
@@ -100,12 +107,13 @@ ${tag.tagDescription ?? "⛔ Your tag has no description."}
 				syncConfig: (await ctx.retrievePUser()).syncConfiguration,
 			});
 
-
 		return await ctx.editResponse({
 			components: [
-				...new AlertView((await ctx.userTranslations())).successViewCustom(
-					(await ctx.userTranslations())
-						.ALTER_SUCCESS_DESC.replace("%alter%", tag.tagFriendlyName),
+				...new AlertView(await ctx.userTranslations()).successViewCustom(
+					(await ctx.userTranslations()).ALTER_SUCCESS_DESC.replace(
+						"%alter%",
+						tag.tagFriendlyName,
+					),
 				),
 			],
 			flags: MessageFlags.IsComponentsV2,

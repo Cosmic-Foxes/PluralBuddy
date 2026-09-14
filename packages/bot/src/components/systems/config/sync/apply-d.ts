@@ -12,7 +12,7 @@ import {
 	alterCollection,
 	alterOperationCollection,
 	importTranscriptCollection,
-    userCollection,
+	userCollection,
 } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import { LoadingView } from "@/views/loading";

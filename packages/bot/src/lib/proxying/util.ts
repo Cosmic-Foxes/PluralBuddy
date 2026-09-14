@@ -113,7 +113,7 @@ export const getDisplayNameWebhook = (
 
 	if (user.system && getSystemFeatures(user.system).leftSidedTag) {
 		body = `${tagElement} ${body}`;
-	} else body = `${body} ${tagElement}`
-	
+	} else body = `${body} ${tagElement}`;
+
 	return body;
 };

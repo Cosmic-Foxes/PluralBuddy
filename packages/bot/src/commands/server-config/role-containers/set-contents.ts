@@ -54,7 +54,7 @@ export default class ViewRoleContainer extends SubCommand {
 			await guildCollection.updateOne(
 				{ guildId: guild.guildId, "rolePreferences.roleId": role.id },
 				{ $set: { "rolePreferences.$.containerContents": contents } },
-				{ upsert: true }
+				{ upsert: true },
 			);
 		else
 			await guildCollection.updateOne(
@@ -64,10 +64,10 @@ export default class ViewRoleContainer extends SubCommand {
 						rolePreferences: { roleId: role.id, containerContents: contents },
 					},
 				},
-				{ upsert: true }
+				{ upsert: true },
 			);
 
-		ctx.client.cache.pguild.remove(guild.guildId)
+		ctx.client.cache.pguild.remove(guild.guildId);
 
 		guild.rolePreferences = [
 			...guild.rolePreferences.filter((c) => c.roleId !== role.id),
@@ -115,9 +115,11 @@ export default class ViewRoleContainer extends SubCommand {
 						]
 					: []),
 				new Separator().setSpacing(Spacing.Small),
-				...new AlertView((await ctx.userTranslations())).successViewCustom(
-					(await ctx.userTranslations())
-						.SET_CONTAINERS_CONTENT.replace("%role%", role.id),
+				...new AlertView(await ctx.userTranslations()).successViewCustom(
+					(await ctx.userTranslations()).SET_CONTAINERS_CONTENT.replace(
+						"%role%",
+						role.id,
+					),
 				),
 				new ActionRow().setComponents(
 					new Button()

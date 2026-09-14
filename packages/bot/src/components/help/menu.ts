@@ -35,7 +35,10 @@ export default class HelpPageSelect extends ComponentCommand {
 					.setComponents(
 						new TextDisplay().setContent(
 							contents
-								.replaceAll("{{ prefix }}", await ctx.getDefaultPrefix() ?? "pb;")
+								.replaceAll(
+									"{{ prefix }}",
+									(await ctx.getDefaultPrefix()) ?? "pb;",
+								)
 								.replaceAll("{{ command_list_2 }}", generateCommandList(2))
 								.replaceAll("{{ command_list_1 }}", generateCommandList(1)),
 						),

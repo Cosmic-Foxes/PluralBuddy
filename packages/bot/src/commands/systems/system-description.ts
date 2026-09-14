@@ -1,6 +1,6 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { SubCommand } from "seyfert"
+import { SubCommand } from "seyfert";
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
 import { alterCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
@@ -33,43 +33,56 @@ const options = {
 export default class EditAlterDisplayNameCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
 		await ctx.deferReply(true);
-		const {
-			"system-description": systemDescription,
-		} = ctx.options;
+		const { "system-description": systemDescription } = ctx.options;
 
 		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
-			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
-					"ERROR_SYSTEM_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			}, undefined, undefined, ctx);
+			return await ctx.ephemeral(
+				{
+					components: new AlertView(await ctx.userTranslations()).errorView(
+						"ERROR_SYSTEM_DOESNT_EXIST",
+					),
+					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				},
+				undefined,
+				undefined,
+				ctx,
+			);
 		}
 
 		if (systemDescription === undefined) {
-			return await ctx.ephemeral({
-				components: [
-					new Container().setComponents(
-						new TextDisplay().setContent(`\`\`\`
+			return await ctx.ephemeral(
+				{
+					components: [
+						new Container().setComponents(
+							new TextDisplay().setContent(`\`\`\`
 ${user.system.systemDescription ?? "⛔ Your system has no description."}
 \`\`\``),
-					),
-				],
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			}, true, undefined, ctx);
+						),
+					],
+					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+				},
+				true,
+				undefined,
+				ctx,
+			);
 		}
-		
-		await createSystemOperation(user.system, { systemDescription }, (await ctx.userTranslations()), "discord")
+
+		await createSystemOperation(
+			user.system,
+			{ systemDescription },
+			await ctx.userTranslations(),
+			"discord",
+		);
 
 		return await ctx.editResponse({
 			components: [
-				...new AlertView((await ctx.userTranslations())).successViewCustom(
-					(await (await ctx.userTranslations())).ALTER_SUCCESS_DESC.replace(
-							"@%alter%",
-							"your system",
-						),
+				...new AlertView(await ctx.userTranslations()).successViewCustom(
+					(await await ctx.userTranslations()).ALTER_SUCCESS_DESC.replace(
+						"@%alter%",
+						"your system",
+					),
 				),
 			],
 			flags: MessageFlags.IsComponentsV2,

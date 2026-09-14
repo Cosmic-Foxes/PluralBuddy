@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { ModalCommand, type ModalContext } from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
@@ -8,70 +8,89 @@ import { alterCollection, tagCollection } from "@/mongodb";
 import { AlterView } from "@/views/alters";
 import { TagView } from "@/views/tags";
 import { w } from "@/webhooks";
+import {writeBack} from "@/lib/pk-sync-engine.ts";
 
 export default class SetUsernameButton extends ModalCommand {
-   
-   override filter(context: ModalContext) {
-	   return InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagDisplayNameForm.startsWith(context.customId)
-   }
-
-   override async run(ctx: ModalContext) {
-	const tagId = InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagDisplayNameForm.substring(
-		ctx.customId,
-	)[0];
-
-	const systemId = ctx.author.id;
-	const query = tagCollection.findOne({
-		tagId,
-		systemId,
-	});
-	let tag = await query;
-
-	if (tag === null) {
-		return await ctx.write({
-			components: new AlertView((await ctx.userTranslations())).errorView("ERROR_TAG_DOESNT_EXIST"),
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-		})
+	override filter(context: ModalContext) {
+		return InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagDisplayNameForm.startsWith(
+			context.customId,
+		);
 	}
 
-	const newTagUsername = ctx.interaction.getInputValue(
-		InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagDisplayNameType.create(),
-		true,
-	);
+	override async run(ctx: ModalContext) {
+		const tagId =
+			InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagDisplayNameForm.substring(
+				ctx.customId,
+			)[0];
 
-	await tagCollection.updateOne(
-		{ tagId, systemId },
-		{
-			$set: {
-				tagFriendlyName: newTagUsername as string
+		const systemId = ctx.author.id;
+		const query = tagCollection.findOne({
+			tagId,
+			systemId,
+		});
+		let tag = await query;
+
+		if (tag === null) {
+			return await ctx.write({
+				components: new AlertView(await ctx.userTranslations()).errorView(
+					"ERROR_TAG_DOESNT_EXIST",
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
+		}
+
+		const newTagUsername = ctx.interaction.getInputValue(
+			InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagDisplayNameType.create(),
+			true,
+		);
+
+		await tagCollection.updateOne(
+			{ tagId, systemId },
+			{
+				$set: {
+					tagFriendlyName: newTagUsername as string,
+				},
 			},
-		},
-	);
+		);
 
-	w(ctx.author.id, "tag.update", {
-		type: "tag.update",
-		tag: {
-			...tag,
-			tagFriendlyName: newTagUsername as string
-		},
-	});
+		w(ctx.author.id, "tag.update", {
+			type: "tag.update",
+			tag: {
+				...tag,
+				tagFriendlyName: newTagUsername as string,
+			},
+		});
 
-	tag = await tagCollection.findOne({
-		tagId,
-		systemId,
-	}) ?? tag;
-	
-	return await ctx.interaction.update({
-		components: [
-			...new TagView((await ctx.userTranslations())).tagTopView(
-				"general",
-				tag.tagId.toString(),
-				tag.tagFriendlyName,
-			),
-			...new TagView((await ctx.userTranslations())).tagGeneral(tag, await ctx.getDefaultPrefix() ?? "pb;", 
-			ctx.interaction?.message?.messageReference === undefined),
-		],
-		flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-	});
-   }
+        if (tag.fields["@/converter/pk"])
+            writeBack({
+                type: "tag",
+                id: tag.fields["@/converter/pk"],
+                change: {
+                    tagFriendlyName: newTagUsername as string,
+                },
+                syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+            });
+
+		tag =
+			(await tagCollection.findOne({
+				tagId,
+				systemId,
+			})) ?? tag;
+
+		return await ctx.interaction.update({
+			components: [
+				...new TagView(await ctx.userTranslations()).tagTopView(
+					"general",
+					tag.tagId.toString(),
+					tag.tagFriendlyName,
+				),
+				...new TagView(await ctx.userTranslations()).tagGeneral(
+					tag,
+					(await ctx.getDefaultPrefix()) ?? "pb;",
+					ctx.interaction?.message?.messageReference === undefined,
+				),
+			],
+			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+		});
+	}
 }

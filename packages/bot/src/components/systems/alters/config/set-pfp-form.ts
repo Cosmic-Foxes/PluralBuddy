@@ -9,6 +9,7 @@ import { assetStringGeneration } from "@/types/operation";
 import { AlertView } from "@/views/alert";
 import { AlterView } from "@/views/alters";
 import { w } from "@/webhooks";
+import { writeBack } from "@/lib/pk-sync-engine.ts";
 
 export default class SetPFPForm extends ModalCommand {
 	override filter(context: ModalContext) {
@@ -102,6 +103,16 @@ export default class SetPFPForm extends ModalCommand {
 				avatarUrl: url,
 			},
 		});
+
+		if (alter.fields["@/converter/pk"])
+			writeBack({
+				type: "alter",
+				id: alter.fields["@/converter/pk"],
+				change: {
+					avatarUrl: url,
+				},
+				syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+			});
 
 		return await ctx.interaction.update({
 			components: [

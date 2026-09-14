@@ -38,7 +38,7 @@ export default class SetUsernameButton extends ComponentCommand {
 
 		if (tag === null) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_TAG_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -61,7 +61,7 @@ export default class SetUsernameButton extends ComponentCommand {
 								InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagColorType.create(),
 							)
 							.setOptions(
-								tagColorSelection((await ctx.userTranslations()), tag.tagColor),
+								tagColorSelection(await ctx.userTranslations(), tag.tagColor),
 							),
 					),
 			]);

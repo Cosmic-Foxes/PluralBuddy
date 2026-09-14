@@ -52,7 +52,6 @@ export default class SetPronounsButton extends ModalCommand {
 			});
 		}
 
-
 		let [enabled, destructive] = [
 			ctx.interaction.getInputValue(
 				InteractionIdentifier.Systems.Configuration.SyncPreferences.EnableAutoSync.create(),
@@ -62,18 +61,17 @@ export default class SetPronounsButton extends ModalCommand {
 			) ?? false,
 		];
 
-		if (!enabled)
-			destructive = false;
+		if (!enabled) destructive = false;
 
-		await userCollection.updateOne(		
-			{ userId: ctx.author.id },		
-			{		
-				$set: {		
-					"syncConfiguration.pluralkit.automatic.enabled": enabled,		
-					"syncConfiguration.pluralkit.automatic.destructive": destructive,		
-				},		
-			},		
-		);		
+		await userCollection.updateOne(
+			{ userId: ctx.author.id },
+			{
+				$set: {
+					"syncConfiguration.pluralkit.automatic.enabled": enabled,
+					"syncConfiguration.pluralkit.automatic.destructive": destructive,
+				},
+			},
+		);
 
 		return await ctx.interaction.update({
 			components: [

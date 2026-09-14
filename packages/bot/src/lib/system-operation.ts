@@ -1,6 +1,13 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { ActionRow, Button, Container, type DefaultLocale, Section, TextDisplay } from "seyfert";
+import {
+	ActionRow,
+	Button,
+	Container,
+	type DefaultLocale,
+	Section,
+	TextDisplay,
+} from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { client } from "..";
 import type { TranslationString } from "../lang";
@@ -21,7 +28,14 @@ export async function createSystemOperation(
 	operation: Partial<PSystem>,
 	translations: DefaultLocale,
 	environment: "discord" | "api-exchange" | "api-web",
-	flagDescription?: { flippedProxyTags?: boolean, flippedIncludePronouns?: boolean, flippedNoTypingStatus?: boolean; flippedPreferAccessiblity?: boolean, flippedLeftSideTag?: boolean, flippedCaseInsensitiveProxying?: boolean }
+	flagDescription?: {
+		flippedProxyTags?: boolean;
+		flippedIncludePronouns?: boolean;
+		flippedNoTypingStatus?: boolean;
+		flippedPreferAccessiblity?: boolean;
+		flippedLeftSideTag?: boolean;
+		flippedCaseInsensitiveProxying?: boolean;
+	},
 ) {
 	let oldSystem: Partial<PSystem> = {};
 
@@ -123,7 +137,7 @@ export async function createSystemOperation(
 
 					if (changes[0]) {
 						const { server, tag } = changes[0];
-						let formalServerName = `\`${server}\``
+						let formalServerName = `\`${server}\``;
 						if (environment === "discord")
 							formalServerName = `**${(await client.guilds.fetch(server)).name}**`;
 
@@ -229,12 +243,8 @@ export async function createSystemOperation(
 								.setColor("#F9DC00"),
 							new Section()
 								.setComponents(
-									new TextDisplay().setContent(
-										translations.NOTIFIED_1,
-									),
-									new TextDisplay().setContent(
-										translations.NOTIFIED_2,
-									),
+									new TextDisplay().setContent(translations.NOTIFIED_1),
+									new TextDisplay().setContent(translations.NOTIFIED_2),
 								)
 								.setAccessory(
 									new Button()
@@ -248,7 +258,7 @@ export async function createSystemOperation(
 					})
 					.catch(() => null);
 		} catch (e) {
-			console.log(e)
+			console.log(e);
 		}
 
 	return {

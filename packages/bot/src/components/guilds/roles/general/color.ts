@@ -27,8 +27,10 @@ export default class RoleGeneralColorButton extends ComponentCommand {
 
 		if (!roleId) throw new Error("no role");
 
-        const guild = await ctx.retrievePGuild();
-        const role = guild.rolePreferences.find(c => c.roleId === roleId) ?? { containerColor: "" }
+		const guild = await ctx.retrievePGuild();
+		const role = guild.rolePreferences.find((c) => c.roleId === roleId) ?? {
+			containerColor: "",
+		};
 
 		return await ctx.modal(
 			new Modal()
@@ -45,7 +47,7 @@ export default class RoleGeneralColorButton extends ComponentCommand {
 							new TextInput()
 								.setStyle(TextInputStyle.Short)
 								.setRequired(false)
-                                .setValue(role.containerColor ?? "")
+								.setValue(role.containerColor ?? "")
 								.setCustomId(
 									InteractionIdentifier.Guilds.FormSelection.ChangeRoleColorSelection.create(),
 								),

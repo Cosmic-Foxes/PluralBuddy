@@ -6,7 +6,11 @@ import { SystemProtectionFlags } from "../types/system";
 import { TagProtectionFlags } from "@/types/tag";
 
 export function combine(
-	...perms: (SystemProtectionFlags | AlterProtectionFlags | TagProtectionFlags)[]
+	...perms: (
+		| SystemProtectionFlags
+		| AlterProtectionFlags
+		| TagProtectionFlags
+	)[]
 ): number {
 	return perms.reduce((mask, p) => mask | p, 0);
 }
@@ -31,7 +35,6 @@ export function listFromMaskTags(mask: number): TagProtectionFlags[] {
 		.filter((v) => (mask & v) !== 0)
 		.map((v) => v as TagProtectionFlags);
 }
-
 
 export function friendlyProtectionSystem(
 	translations: TranslationString,

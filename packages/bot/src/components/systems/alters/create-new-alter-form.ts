@@ -3,7 +3,8 @@
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import { ModalCommand, type ModalContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import z from "zod";import { getSystemFeatures } from "@/lib/get-system-flags";
+import z from "zod";
+import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { alterCollection } from "@/mongodb";
 import { PAlterObject } from "@/types/alter";
@@ -33,7 +34,7 @@ export default class CreateNewAlterForm extends ModalCommand {
 
 		if (user.system === undefined) {
 			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -42,7 +43,7 @@ export default class CreateNewAlterForm extends ModalCommand {
 
 		if (user.system.alterIds.length >= 2000) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"TOO_MANY_ALTERS",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -72,12 +73,12 @@ export default class CreateNewAlterForm extends ModalCommand {
 		if (alter.error) {
 			return await ctx.interaction.update({
 				components: [
-					...new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(user.system)?.preferAccessiblity).topView(
-						"alters",
-						user.system.associatedUserId,
-					),
+					...new SystemSettingsView(
+						await ctx.userTranslations(),
+						getSystemFeatures(user.system)?.preferAccessiblity,
+					).topView("alters", user.system.associatedUserId),
 					...new AlertView(
-						(await ctx.userTranslations()),
+						await ctx.userTranslations(),
 					).errorViewCustom(`There was an error while creating that alter:
 
 \`\`\`

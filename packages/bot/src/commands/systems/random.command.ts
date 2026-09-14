@@ -17,7 +17,7 @@ const options = {
 	"query-tags": createBooleanOption({
 		description: "Whether to include tags in the random selection.",
 		aliases: ["qt", "t"],
-		flag: true
+		flag: true,
 	}),
 };
 
@@ -36,7 +36,7 @@ export default class RandomSystemCommand extends SubCommand {
 
 		if (user.system === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -65,14 +65,13 @@ export default class RandomSystemCommand extends SubCommand {
 				{ $project: { alter: "$alterId", type: "alter" } },
 			])
 			.toArray();
-			
 
 		if (queryTags) {
 			const finalQuery = Math.random() > 0.5 ? randomQuery : tagQuery;
 
 			if (finalQuery === null || finalQuery[0] === undefined) {
 				return await ctx.write({
-					components: new AlertView((await ctx.userTranslations())).errorView(
+					components: new AlertView(await ctx.userTranslations()).errorView(
 						"INSUFFICIENT_DATA_SIZE",
 					),
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -80,7 +79,6 @@ export default class RandomSystemCommand extends SubCommand {
 			}
 
 			if (finalQuery[0].type === "tag") {
-
 				const tagQuery = await tagCollection.findOne({
 					systemId: user.userId,
 					tagId: finalQuery[0].tag,
@@ -88,21 +86,33 @@ export default class RandomSystemCommand extends SubCommand {
 
 				if (tagQuery === null) {
 					return await ctx.editResponse({
-						components: new AlertView((await ctx.userTranslations())).errorView(
+						components: new AlertView(await ctx.userTranslations()).errorView(
 							"INSUFFICIENT_DATA_SIZE",
 						),
 						flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 					});
 				}
 
-				return await ctx.ephemeral({
-					components: [
-						...(new TagView((await ctx.userTranslations())).tagProfileView(tagQuery, tagQuery.systemId !== ctx.author.id)),
-						...(tagQuery.systemId === ctx.author.id ? new TagView((await ctx.userTranslations())).tagConfigureButton(tagQuery) : [])
-					],
-					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-					allowed_mentions: { parse: [] }
-				}, true, undefined, ctx)
+				return await ctx.ephemeral(
+					{
+						components: [
+							...new TagView(await ctx.userTranslations()).tagProfileView(
+								tagQuery,
+								tagQuery.systemId !== ctx.author.id,
+							),
+							...(tagQuery.systemId === ctx.author.id
+								? new TagView(await ctx.userTranslations()).tagConfigureButton(
+										tagQuery,
+									)
+								: []),
+						],
+						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+						allowed_mentions: { parse: [] },
+					},
+					true,
+					undefined,
+					ctx,
+				);
 			}
 
 			if (finalQuery[0].type === "alter") {
@@ -110,36 +120,46 @@ export default class RandomSystemCommand extends SubCommand {
 					systemId: user.userId,
 					alterId: Number(finalQuery[0].alter),
 				});
-		
+
 				if (alterQuery === null) {
 					return await ctx.editResponse({
-						components: new AlertView((await ctx.userTranslations())).errorView(
+						components: new AlertView(await ctx.userTranslations()).errorView(
 							"INSUFFICIENT_DATA_SIZE",
 						),
 						flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 					});
 				}
-		
-				return await ctx.ephemeral({
-					components: [
-						...(await new AlterView((await ctx.userTranslations())).alterProfileView(
-							alterQuery,
-							alterQuery.systemId !== ctx.author.id,
-						)),
-						...new AlterView((await ctx.userTranslations())).alterConfigureButton(
-							alterQuery,
-						),
-						...new AlterView((await ctx.userTranslations())).alterProxyModes(alterQuery, ctx.guildId),
-					],
-					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-					allowed_mentions: { parse: [] },
-				}, undefined, undefined, ctx);
+
+				return await ctx.ephemeral(
+					{
+						components: [
+							...(await new AlterView(
+								await ctx.userTranslations(),
+							).alterProfileView(
+								alterQuery,
+								alterQuery.systemId !== ctx.author.id,
+							)),
+							...new AlterView(
+								await ctx.userTranslations(),
+							).alterConfigureButton(alterQuery),
+							...new AlterView(await ctx.userTranslations()).alterProxyModes(
+								alterQuery,
+								ctx.guildId,
+							),
+						],
+						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+						allowed_mentions: { parse: [] },
+					},
+					undefined,
+					undefined,
+					ctx,
+				);
 			}
 		}
 
 		if (randomQuery[0] === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"INSUFFICIENT_DATA_SIZE",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -153,26 +173,36 @@ export default class RandomSystemCommand extends SubCommand {
 
 		if (alterQuery === null) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"INSUFFICIENT_DATA_SIZE",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
 
-		return await ctx.ephemeral({
-			components: [
-				...(await new AlterView((await ctx.userTranslations())).alterProfileView(
-					alterQuery,
-					alterQuery.systemId !== ctx.author.id,
-				)),
-				...new AlterView((await ctx.userTranslations())).alterConfigureButton(
-					alterQuery,
-				),
-				...new AlterView((await ctx.userTranslations())).alterProxyModes(alterQuery, ctx.guildId),
-			],
-			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			allowed_mentions: { parse: [] },
-		}, undefined, undefined, ctx);
+		return await ctx.ephemeral(
+			{
+				components: [
+					...(await new AlterView(
+						await ctx.userTranslations(),
+					).alterProfileView(
+						alterQuery,
+						alterQuery.systemId !== ctx.author.id,
+					)),
+					...new AlterView(await ctx.userTranslations()).alterConfigureButton(
+						alterQuery,
+					),
+					...new AlterView(await ctx.userTranslations()).alterProxyModes(
+						alterQuery,
+						ctx.guildId,
+					),
+				],
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+				allowed_mentions: { parse: [] },
+			},
+			undefined,
+			undefined,
+			ctx,
+		);
 	}
 }

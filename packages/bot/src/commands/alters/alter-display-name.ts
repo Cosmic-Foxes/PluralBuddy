@@ -1,12 +1,13 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { 
+import {
 	type CommandContext,
 	Container,
 	createBooleanOption,
 	createStringOption,
 	Declare,
-	Options,SubCommand, 
+	Options,
+	SubCommand,
 	TextDisplay,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
@@ -28,7 +29,7 @@ const options = {
 	}),
 	"server-specific": createBooleanOption({
 		description: "Is this display name specific to this server?",
-		aliases: ["se"]
+		aliases: ["se"],
 	}),
 };
 
@@ -49,53 +50,72 @@ export default class EditAlterDisplayNameCommand extends SubCommand {
 		} = ctx.options;
 
 		const systemId = ctx.author.id;
-        const alter = ctx.contextAlter() ?? await (Number.isNaN(Number.parseInt(alterName)) 
-            ? alterCollection.findOne( { $or: [ { username: alterName } ], systemId })
-            : alterCollection.findOne( { $or: [ { username: alterName }, { alterId: Number(alterName) } ], systemId }))
+		const alter =
+			ctx.contextAlter() ??
+			(await (Number.isNaN(Number.parseInt(alterName))
+				? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
+				: alterCollection.findOne({
+						$or: [{ username: alterName }, { alterId: Number(alterName) }],
+						systemId,
+					})));
 
 		if (alter === null) {
-			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
-					"ERROR_ALTER_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			}, undefined, undefined, ctx);
+			return await ctx.ephemeral(
+				{
+					components: new AlertView(await ctx.userTranslations()).errorView(
+						"ERROR_ALTER_DOESNT_EXIST",
+					),
+					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				},
+				undefined,
+				undefined,
+				ctx,
+			);
 		}
 
 		if (se && ctx.guildId === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"DN_ERROR_SE",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
 
-        if (se && alterNewName === undefined) {
-
-			return await ctx.ephemeral({
-				components: [
-					new Container().setComponents(
-						new TextDisplay().setContent(`\`\`\`
-${alter.nameMap.find(c => c.server === (ctx.guildId ?? ""))?.name ?? alter.displayName}
+		if (se && alterNewName === undefined) {
+			return await ctx.ephemeral(
+				{
+					components: [
+						new Container().setComponents(
+							new TextDisplay().setContent(`\`\`\`
+${alter.nameMap.find((c) => c.server === (ctx.guildId ?? ""))?.name ?? alter.displayName}
 \`\`\``),
-					),
-				],
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			}, true, undefined, ctx);
-        }
+						),
+					],
+					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+				},
+				true,
+				undefined,
+				ctx,
+			);
+		}
 
 		if (alterNewName === undefined) {
-			return await ctx.ephemeral({
-				components: [
-					new Container().setComponents(
-						new TextDisplay().setContent(`\`\`\`
+			return await ctx.ephemeral(
+				{
+					components: [
+						new Container().setComponents(
+							new TextDisplay().setContent(`\`\`\`
 ${alter.displayName}
 \`\`\``),
-					),
-				],
-				flags: MessageFlags.IsComponentsV2,
-			}, true, undefined, ctx);
+						),
+					],
+					flags: MessageFlags.IsComponentsV2,
+				},
+				true,
+				undefined,
+				ctx,
+			);
 		}
 
 		if (se) {
@@ -180,17 +200,13 @@ ${alter.displayName}
 					},
 					syncConfig: (await ctx.retrievePUser()).syncConfiguration,
 				});
-
 		}
 
 		return await ctx.editResponse({
 			components: [
-				...new AlertView((await ctx.userTranslations())).successViewCustom(
-					(await ctx.userTranslations())
-						[se ? "DN_SUCCESS_SS" : "DN_SUCCESS"].replace(
-							"%alter%",
-							alter.username,
-						)
+				...new AlertView(await ctx.userTranslations()).successViewCustom(
+					(await ctx.userTranslations())[se ? "DN_SUCCESS_SS" : "DN_SUCCESS"]
+						.replace("%alter%", alter.username)
 						.replace("%new-display%", alterNewName)
 						.replace("%server%", (await ctx.guild())?.name ?? ""),
 				),

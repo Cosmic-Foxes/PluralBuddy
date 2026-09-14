@@ -1,13 +1,14 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import type { PGuild } from "plurography";
-import {CacheFrom, 
+import {
+	CacheFrom,
 	Container,
 	GuildMember,
 	type Message,
 	TextDisplay,
 	type TopLevelBuilders,
-	type Webhook
+	type Webhook,
 } from "seyfert";
 import type {
 	ApplicableWebhookWritePayload,
@@ -37,7 +38,12 @@ export async function performAlterAutoProxy(
 	(async () => {
 		const channel = await message.channel();
 
-		if (channel.isTextable() && !guild.getFeatures().disabledProxyTyping && (user.system !== undefined && !getSystemFeatures(user.system).noTypingStatus)) {
+		if (
+			channel.isTextable() &&
+			!guild.getFeatures().disabledProxyTyping &&
+			user.system !== undefined &&
+			!getSystemFeatures(user.system).noTypingStatus
+		) {
 			channel.typing().catch(() => null);
 		}
 	})();

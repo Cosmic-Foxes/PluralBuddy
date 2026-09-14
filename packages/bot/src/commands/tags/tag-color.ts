@@ -48,33 +48,48 @@ export default class TagColorCommand extends SubCommand {
 		const tag = await query;
 
 		if (tag === null) {
-			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
-					"ERROR_TAG_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			}, undefined, undefined, ctx);
+			return await ctx.ephemeral(
+				{
+					components: new AlertView(await ctx.userTranslations()).errorView(
+						"ERROR_TAG_DOESNT_EXIST",
+					),
+					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				},
+				undefined,
+				undefined,
+				ctx,
+			);
 		}
 
-		return await ctx.ephemeral({
-			components: [
-				new Container()
-					.setComponents(
-						new TextDisplay().setContent(`## ${emojis.wrenchWhite} Set Tag Color for ${tag.tagFriendlyName}
+		return await ctx.ephemeral(
+			{
+				components: [
+					new Container()
+						.setComponents(
+							new TextDisplay().setContent(`## ${emojis.wrenchWhite} Set Tag Color for ${tag.tagFriendlyName}
 The current tag color for ${tag.tagFriendlyName} is   ${getEmojiFromTagColor(tag.tagColor)}  **${tag.tagColor}**. You can set the tag color below.`),
-						new ActionRow().setComponents(
-							new StringSelectMenu()
-								.setCustomId(
-									InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagColorComponent.create(tag.tagId),
-								)
-								.setOptions(
-									tagColorSelection((await ctx.userTranslations()), tag.tagColor),
-								),
-						),
-					)
-					.setColor(`#${tagHexColors[tagColors.indexOf(tag.tagColor)]}`),
-			],
-			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-		}, undefined, undefined, ctx);
+							new ActionRow().setComponents(
+								new StringSelectMenu()
+									.setCustomId(
+										InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagColorComponent.create(
+											tag.tagId,
+										),
+									)
+									.setOptions(
+										tagColorSelection(
+											await ctx.userTranslations(),
+											tag.tagColor,
+										),
+									),
+							),
+						)
+						.setColor(`#${tagHexColors[tagColors.indexOf(tag.tagColor)]}`),
+				],
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+			},
+			undefined,
+			undefined,
+			ctx,
+		);
 	}
 }

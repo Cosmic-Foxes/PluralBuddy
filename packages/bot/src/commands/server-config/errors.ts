@@ -1,5 +1,11 @@
 import { ServerConfigView } from "@/views/server-cfg";
-import { CommandContext, Declare, Middlewares, Options, SubCommand } from "seyfert";
+import {
+	CommandContext,
+	Declare,
+	Middlewares,
+	Options,
+	SubCommand,
+} from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
 @Declare({
@@ -8,26 +14,31 @@ import { MessageFlags } from "seyfert/lib/types";
 })
 @Middlewares(["ensureGuildPermissions"])
 export default class ServerErrors extends SubCommand {
-    override async run(ctx: CommandContext) {
+	override async run(ctx: CommandContext) {
 		await ctx.deferReply(true);
-        const pluralGuild = await ctx.retrievePGuild();
-        const nativeGuild = await ctx.guild()
-        
-        if (!nativeGuild) throw new Error("What.")
+		const pluralGuild = await ctx.retrievePGuild();
+		const nativeGuild = await ctx.guild();
 
-		return await ctx.ephemeral({
-			components: [
-				...new ServerConfigView((await ctx.userTranslations())).topView(
-					"errors",
-					pluralGuild.guildId,
-				),
-				...new ServerConfigView((await ctx.userTranslations())).errorSettings(
-					pluralGuild,
-					nativeGuild
-				),
-			],
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			allowed_mentions: { parse: [] },
-		}, undefined, undefined, ctx);
-    }
+		if (!nativeGuild) throw new Error("What.");
+
+		return await ctx.ephemeral(
+			{
+				components: [
+					...new ServerConfigView(await ctx.userTranslations()).topView(
+						"errors",
+						pluralGuild.guildId,
+					),
+					...new ServerConfigView(await ctx.userTranslations()).errorSettings(
+						pluralGuild,
+						nativeGuild,
+					),
+				],
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				allowed_mentions: { parse: [] },
+			},
+			undefined,
+			undefined,
+			ctx,
+		);
+	}
 }

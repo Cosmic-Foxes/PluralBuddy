@@ -1,11 +1,12 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { type Collection, type Db, MongoClient } from "mongodb";
-import type {PAlterOperation, 
+import type {
+	PAlterOperation,
 	PExpressApplication,
 	PGuildError,
-	PImportTranscript, 
-	PIntegrationFront
+	PImportTranscript,
+	PIntegrationFront,
 } from "plurography";
 import { connectMongo } from "./lib/libby";
 import type { PAlter } from "./types/alter";
@@ -53,8 +54,8 @@ export async function createPeriodicExpirationDates() {
 	);
 	await importTranscriptCollection.createIndex(
 		{ createdAt: 1 },
-		{ expireAfterSeconds: 1800 }
-	)
+		{ expireAfterSeconds: 1800 },
+	);
 
 	await tagCollection.createIndex(
 		{ tagFriendlyName: 1 },

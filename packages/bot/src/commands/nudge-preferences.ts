@@ -11,10 +11,10 @@ import { MessageFlags } from "seyfert/lib/types";
 	description: "Configure options about nudging",
 	aliases: ["nudge-pref", "np"],
 	contexts: ["Guild", "BotDM", "PrivateChannel"],
-	integrationTypes: ["GuildInstall", "UserInstall"]
+	integrationTypes: ["GuildInstall", "UserInstall"],
 })
 export default class NudgePreferencesCommand extends Command {
-    override async run(ctx: CommandContext) {
+	override async run(ctx: CommandContext) {
 		await ctx.deferReply(true);
 		let user = await ctx.retrievePUser();
 
@@ -22,17 +22,36 @@ export default class NudgePreferencesCommand extends Command {
 		if (user.nudging === undefined) {
 			await userCollection.updateOne(
 				{ userId: user.userId },
-				{ $set: { nudging: { blockedUsers: [], currentlyEnabled: true, dmReply: false} } },
+				{
+					$set: {
+						nudging: {
+							blockedUsers: [],
+							currentlyEnabled: true,
+							dmReply: false,
+						},
+					},
+				},
 			);
 
 			// Set user in memory
-			user.nudging = { blockedUsers: [], currentlyEnabled: true, dmReply: false };
+			user.nudging = {
+				blockedUsers: [],
+				currentlyEnabled: true,
+				dmReply: false,
+			};
 		}
 		// End database migration
-        
-		return await ctx.ephemeral({
-			components: new NudgePreferences((await ctx.userTranslations())).nudgePreferences(user),
-			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-		}, undefined, undefined, ctx);
-    }
+
+		return await ctx.ephemeral(
+			{
+				components: new NudgePreferences(
+					await ctx.userTranslations(),
+				).nudgePreferences(user),
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+			},
+			undefined,
+			undefined,
+			ctx,
+		);
+	}
 }

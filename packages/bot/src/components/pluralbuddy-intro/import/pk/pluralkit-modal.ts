@@ -35,7 +35,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 
 	async run(ctx: ModalContext) {
 		await ctx.interaction.update({
-			components: new LoadingView((await ctx.userTranslations())).loadingView(),
+			components: new LoadingView(await ctx.userTranslations()).loadingView(),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
 
@@ -49,7 +49,6 @@ export default class PluralBuddyImportModal extends ModalCommand {
 			fileData = ctx.interaction.getInputValue(
 				InteractionIdentifier.Setup.FormSelection.PkRawTextType.create(),
 			) as string;
-
 		} else {
 			if (!file) {
 				throw new Error("?");
@@ -59,12 +58,14 @@ export default class PluralBuddyImportModal extends ModalCommand {
 			if (file[0].size > MAX_FILE_SIZE) {
 				return await ctx.editResponse({
 					components: [
-						...new AlertView((await ctx.userTranslations())).errorView(
+						...new AlertView(await ctx.userTranslations()).errorView(
 							"PLURALBUDDY_IMPORT_ERROR_TOO_LARGE",
 						),
 						new ActionRow().addComponents(
 							new Button()
-								.setLabel((await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE)
+								.setLabel(
+									(await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE,
+								)
 								.setCustomId(
 									InteractionIdentifier.Setup.Pagination.Page2.create(),
 								)
@@ -82,7 +83,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		} catch (error) {
 			return await ctx.editResponse({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorView(
+					...new AlertView(await ctx.userTranslations()).errorView(
 						"PLURALBUDDY_IMPORT_ERROR_INVALID_JSON",
 					),
 					new ActionRow().addComponents(
@@ -102,12 +103,11 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		if (parsed.error) {
 			return await ctx.editResponse({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorViewCustom(
-						(await ctx.userTranslations())
-							.PLURALBUDDY_IMPORT_ERROR.replace(
-								"%zod_errors%",
-								z.prettifyError(parsed.error),
-							),
+					...new AlertView(await ctx.userTranslations()).errorViewCustom(
+						(await ctx.userTranslations()).PLURALBUDDY_IMPORT_ERROR.replace(
+							"%zod_errors%",
+							z.prettifyError(parsed.error),
+						),
 					),
 					new ActionRow().addComponents(
 						new Button()
@@ -144,18 +144,17 @@ export default class PluralBuddyImportModal extends ModalCommand {
 			subAccounts: [],
 			disabled: false,
 			flags: 0,
-			disabledGuilds: []
+			disabledGuilds: [],
 		} satisfies PSystem);
 
 		if (newSystem.error) {
 			return await ctx.editResponse({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorViewCustom(
-						(await ctx.userTranslations())
-							.PLURALBUDDY_IMPORT_ERROR.replace(
-								"%zod_errors%",
-								z.prettifyError(newSystem.error),
-							),
+					...new AlertView(await ctx.userTranslations()).errorViewCustom(
+						(await ctx.userTranslations()).PLURALBUDDY_IMPORT_ERROR.replace(
+							"%zod_errors%",
+							z.prettifyError(newSystem.error),
+						),
 					),
 					new ActionRow().addComponents(
 						new Button()
@@ -176,7 +175,11 @@ export default class PluralBuddyImportModal extends ModalCommand {
 				zodData: PAlterObject.safeParse({
 					alterId: Number(createRandomId(i)),
 					systemId: ctx.author.id,
-					username: member.name.replaceAll(" ", "").replaceAll("/", "").replaceAll("\\", "").replaceAll("@", ""),
+					username: member.name
+						.replaceAll(" ", "")
+						.replaceAll("/", "")
+						.replaceAll("\\", "")
+						.replaceAll("@", ""),
 					displayName: member.display_name ?? member.name,
 					nameMap: [],
 					color: member.color !== null ? `#${member.color}` : null,
@@ -216,9 +219,9 @@ export default class PluralBuddyImportModal extends ModalCommand {
 								: []),
 							...(member.privacy.metadata_privacy === "public"
 								? [
-									AlterProtectionFlags.MESSAGE_COUNT,
-									AlterProtectionFlags.TAGS,
-								]
+										AlterProtectionFlags.MESSAGE_COUNT,
+										AlterProtectionFlags.TAGS,
+									]
 								: []),
 							...(member.privacy.name_privacy === "public"
 								? [AlterProtectionFlags.NAME, AlterProtectionFlags.USERNAME]
@@ -227,9 +230,9 @@ export default class PluralBuddyImportModal extends ModalCommand {
 					),
 					avatarUrlMap: {},
 					fields: {
-						"@pk": member.id.substring(0, 30)
+						"@pk": member.id.substring(0, 30),
 					},
-					flags: 0
+					flags: 0,
 				} satisfies PAlter),
 				originalPkId: member.id,
 			};
@@ -264,8 +267,8 @@ export default class PluralBuddyImportModal extends ModalCommand {
 					],
 				),
 				fields: {
-					"@pk": group.id.substring(0, 30)
-				}
+					"@pk": group.id.substring(0, 30),
+				},
 			} satisfies PTag);
 		});
 
@@ -283,7 +286,6 @@ export default class PluralBuddyImportModal extends ModalCommand {
 				}
 			}
 		});
-
 
 		systemData.alterIds = parsedSafe
 			.map((v) => v.zodData)
@@ -313,8 +315,9 @@ export default class PluralBuddyImportModal extends ModalCommand {
 
 		ctx.client.logger.info("Possible PK errors (Zod): {errors}", {
 			errors: parsedSafe
-				.filter((v) => v.zodData.error !== undefined).map(v => v.zodData.error)
-		})
+				.filter((v) => v.zodData.error !== undefined)
+				.map((v) => v.zodData.error),
+		});
 
 		return await ctx.editResponse({
 			components: [

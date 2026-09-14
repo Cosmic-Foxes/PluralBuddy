@@ -5,7 +5,7 @@ import {
 	Declare,
 	Options,
 	SubCommand,
-    TextDisplay,
+	TextDisplay,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { autocompleteTags } from "@/lib/autocomplete-tags";

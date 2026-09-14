@@ -347,6 +347,10 @@ export default class PluralKitConverter
 			description: alter.description
 				? alter.description.substring(0, 1000)
 				: alter.description,
+			proxy_tags: (alter.proxyTags ?? []).map((c) => ({
+				prefix: c.prefix,
+				suffix: c.suffix,
+			})),
 			privacy: alter.public
 				? {
 						visibility: listFromMaskAlters(alter.public).includes(
@@ -391,7 +395,7 @@ export default class PluralKitConverter
 			display_name: tag.tagFriendlyName,
 			description: tag.tagDescription,
 			color: tag.tagColor,
-
+			
 			privacy: tag.public
 				? {
 						name_privacy: listFromMaskTags(tag.public).includes(

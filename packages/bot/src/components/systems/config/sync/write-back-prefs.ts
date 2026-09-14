@@ -33,7 +33,6 @@ export default class ManualSyncButton extends ComponentCommand {
 			});
 		}
 
-
 		const form = new Modal()
 			.setCustomId(
 				InteractionIdentifier.Systems.Configuration.SyncPreferences.WriteBackForm.create(),

@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { fileTypeFromBuffer } from "file-type";
 import { type Attachment, ModalCommand, type ModalContext } from "seyfert";
@@ -8,7 +8,7 @@ import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { createSystemOperation } from "@/lib/system-operation";
 import { alterCollection } from "@/mongodb";
-import {  getOldObject, uploadAttachment } from "@/object-storage";
+import { getOldObject, uploadAttachment } from "@/object-storage";
 import { assetStringGeneration } from "@/types/operation";
 import { AlertView } from "@/views/alert";
 import { AlterView } from "@/views/alters";
@@ -23,11 +23,11 @@ export default class SetPFPForm extends ModalCommand {
 	override async run(ctx: ModalContext) {
 		await ctx.interaction.update(ctx.loading(await ctx.userTranslations()));
 
-		const { system, storagePrefix } = await ctx.retrievePUser()
+		const { system, storagePrefix } = await ctx.retrievePUser();
 
 		if (system === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -43,23 +43,27 @@ export default class SetPFPForm extends ModalCommand {
 
 		if (attachment.value.size > 5_000_000) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_ATTACHMENT_TOO_LARGE",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
-		
-		const objectName = `${storagePrefix}/${assetStringGeneration(32)}`;;
+
+		const objectName = `${storagePrefix}/${assetStringGeneration(32)}`;
 		let url = "";
 
 		try {
 			url = await uploadAttachment(
 				(attachment as { value: Attachment }).value,
 				objectName,
-				{ authorId: ctx.author.id, alterId: '@system', type: "profile-picture/form" },
+				{
+					authorId: ctx.author.id,
+					alterId: "@system",
+					type: "profile-picture/form",
+				},
 				getOldObject({ imageProperty: system.systemAvatar, storagePrefix }),
-				{ width: 512, height: 512 }
+				{ width: 512, height: 512 },
 			);
 		} catch (error) {
 			if (error instanceof FileTooBigException)
@@ -70,7 +74,7 @@ export default class SetPFPForm extends ModalCommand {
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 				});
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_FAILED_TO_UPLOAD_TO_GCP",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -78,16 +82,22 @@ export default class SetPFPForm extends ModalCommand {
 		}
 
 		await createSystemOperation(
-			system, { systemAvatar: url }, (await ctx.userTranslations()), "discord"
+			system,
+			{ systemAvatar: url },
+			await ctx.userTranslations(),
+			"discord",
 		);
 
 		return await ctx.editResponse({
 			components: [
-				...new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(system)?.preferAccessiblity).topView(
-					"public-settings",
-					system.associatedUserId,
-				),
-				...new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(system)?.preferAccessiblity).publicProfile(
+				...new SystemSettingsView(
+					await ctx.userTranslations(),
+					getSystemFeatures(system)?.preferAccessiblity,
+				).topView("public-settings", system.associatedUserId),
+				...new SystemSettingsView(
+					await ctx.userTranslations(),
+					getSystemFeatures(system)?.preferAccessiblity,
+				).publicProfile(
 					system,
 					(await ctx.getDefaultPrefix()) ?? "",
 					ctx.interaction?.message?.messageReference === undefined,

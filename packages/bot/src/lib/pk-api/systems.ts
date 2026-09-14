@@ -18,21 +18,23 @@ export class SystemCollection {
 			},
 		});
 
-        return PluralKitAPISystem.parse(await system.json());
+		return PluralKitAPISystem.parse(await system.json());
 	}
 
-	async updateOne({ userId }: { userId: string }, system: Partial<z.infer<typeof PluralKitAPISystem>>) {
+	async updateOne(
+		{ userId }: { userId: string },
+		system: Partial<z.infer<typeof PluralKitAPISystem>>,
+	) {
 		const systemRun = await fetch(`${API_PREFIX}/systems/${userId}`, {
 			headers: {
 				Authorization: this.token,
 				"User-Agent": PK_UA,
-				"Content-Type": "application/json"
+				"Content-Type": "application/json",
 			},
 			method: "PATCH",
-			body: JSON.stringify(system)
-		})
+			body: JSON.stringify(system),
+		});
 
 		return PluralKitAPISystem.parse(await systemRun.json());
 	}
-    
 }

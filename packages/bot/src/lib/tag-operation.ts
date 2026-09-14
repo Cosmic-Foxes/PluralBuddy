@@ -122,7 +122,7 @@ export async function createSystemOperation(
 
 					if (changes[0]) {
 						const { server, tag } = changes[0];
-						let formalServerName = `\`${server}\``
+						let formalServerName = `\`${server}\``;
 						if (environment === "discord")
 							formalServerName = `**${(await client.guilds.fetch(server)).name}**`;
 

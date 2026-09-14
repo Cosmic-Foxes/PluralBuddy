@@ -193,7 +193,12 @@ export default class ReproxyCommand extends Command {
 						}
 					).autoproxyMode === "latch"
 				)
-					setLastLatchAlter(ctx.guildId ?? "", ctx.channelId ?? "", system, alter);
+					setLastLatchAlter(
+						ctx.guildId ?? "",
+						ctx.channelId ?? "",
+						system,
+						alter,
+					);
 
 				messagesCollection.replaceOne(
 					{ messageId: message.messageId },

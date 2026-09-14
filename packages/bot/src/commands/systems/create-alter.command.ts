@@ -12,8 +12,9 @@ import {
 	type OKFunction,
 	type OnOptionsReturnObject,
 	Options,
-	Separator,SubCommand, 
-	TextDisplay
+	Separator,
+	SubCommand,
+	TextDisplay,
 } from "seyfert";
 import { MessageFlags, Spacing } from "seyfert/lib/types";
 import { Shortcut } from "yunaforseyfert";
@@ -216,28 +217,30 @@ ${z.prettifyError(alter.error)}
 							),
 							new Separator().setSpacing(Spacing.Large),
 							new TextDisplay().setContent(
-								not_empty([
-									(displayName ?? username) !== username
-										? `> - ${(await ctx.userTranslations()).CREATE_NEW_ALTER_DISPLAY_NAME.replace("{{ dn }}", displayName ?? username)}`
-										: "",
-									pronouns !== undefined
-										? `> - ${(await ctx.userTranslations()).CREATE_NEW_ALTER_PRONOUNS.replace("{{ pronouns }}", pronouns)}`
-										: "",
-									desc !== undefined
-										? `> - ${(await ctx.userTranslations()).CREATE_NEW_ALTER_DESC.replace("{{ description }}", desc.replaceAll("\n", "\n  >   - "))}`
-										: "",
-									assignableTag === null && assign !== undefined
-										? `> - ${emojis.x} ${(await ctx.userTranslations()).NO_SUCH_TAG_CANT_ASSIGN}`
-										: "",
-									assignableTag !== null && assign !== undefined
-										? `> - ${(await ctx.userTranslations()).CREATE_NEW_ALTER_ASSIGN.replace("{{ tag }}", assignableTag.tagFriendlyName)}`
-										: "",
-									now === true
-										? `> - ${!done ? `${emojis.loading}  ` : ""}${(await ctx.userTranslations()).CREATE_NEW_ALTER_NOW}`
-										: "",
-								]
-									.filter((v) => v !== "")
-									.join("\n")),
+								not_empty(
+									[
+										(displayName ?? username) !== username
+											? `> - ${(await ctx.userTranslations()).CREATE_NEW_ALTER_DISPLAY_NAME.replace("{{ dn }}", displayName ?? username)}`
+											: "",
+										pronouns !== undefined
+											? `> - ${(await ctx.userTranslations()).CREATE_NEW_ALTER_PRONOUNS.replace("{{ pronouns }}", pronouns)}`
+											: "",
+										desc !== undefined
+											? `> - ${(await ctx.userTranslations()).CREATE_NEW_ALTER_DESC.replace("{{ description }}", desc.replaceAll("\n", "\n  >   - "))}`
+											: "",
+										assignableTag === null && assign !== undefined
+											? `> - ${emojis.x} ${(await ctx.userTranslations()).NO_SUCH_TAG_CANT_ASSIGN}`
+											: "",
+										assignableTag !== null && assign !== undefined
+											? `> - ${(await ctx.userTranslations()).CREATE_NEW_ALTER_ASSIGN.replace("{{ tag }}", assignableTag.tagFriendlyName)}`
+											: "",
+										now === true
+											? `> - ${!done ? `${emojis.loading}  ` : ""}${(await ctx.userTranslations()).CREATE_NEW_ALTER_NOW}`
+											: "",
+									]
+										.filter((v) => v !== "")
+										.join("\n"),
+								),
 							),
 						),
 				],
@@ -272,18 +275,18 @@ ${z.prettifyError(alter.error)}
 								autoproxyMode: "latch",
 								autoproxyAlter: String(alter.data.alterId),
 								serverId: ctx.guildId ?? "@global",
-								lastLatchTimestamp: new Date()
+								lastLatchTimestamp: new Date(),
 							},
 						},
 					},
 				);
 			}
 
-			await successMessage(true)
+			await successMessage(true);
 		}
 	}
 }
 
 function not_empty(string: string) {
-	return string.trim().length === 0 ? " -- " : string
+	return string.trim().length === 0 ? " -- " : string;
 }

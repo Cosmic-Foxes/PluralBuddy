@@ -59,7 +59,12 @@ ${this.translations.OWNED_BY_PROFILE}<@${system.associatedUserId}> (${system.ass
 											? "https://pb.giftedly.dev/image/pfp.png"
 											: system.systemAvatar,
 									)
-									.setDescription(this.translations.ALT_AVATAR.replace("{{ alter }}", system.associatedUserId)),
+									.setDescription(
+										this.translations.ALT_AVATAR.replace(
+											"{{ alter }}",
+											system.associatedUserId,
+										),
+									),
 							)
 							.setComponents(innerComponents)
 					: innerComponents,
@@ -70,7 +75,12 @@ ${this.translations.OWNED_BY_PROFILE}<@${system.associatedUserId}> (${system.ass
 							new MediaGallery().setItems(
 								new MediaGalleryItem()
 									.setMedia(system.systemBanner)
-									.setDescription(this.translations.ALT_BANNER.replace("{{ alter }}", system.associatedUserId)),
+									.setDescription(
+										this.translations.ALT_BANNER.replace(
+											"{{ alter }}",
+											system.associatedUserId,
+										),
+									),
 							),
 						]
 					: []),
