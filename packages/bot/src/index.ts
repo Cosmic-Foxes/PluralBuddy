@@ -285,7 +285,6 @@ if (import.meta.main) {
 
 	startIndexingCleanupTimer();
 	startEmojiCleanupTimer();
-	startStatisticalTimer();
 }
 
 export async function startTesting() {
