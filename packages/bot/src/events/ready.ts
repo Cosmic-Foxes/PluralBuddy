@@ -7,7 +7,7 @@ export default createEvent({
         await initializeApplicationCommands();
 
 		
-		setInterval(() => {
+		setInterval(async () => {
 		  client.logger.info(await client.cache.guilds?.count())
 		}, 5000)
     }
