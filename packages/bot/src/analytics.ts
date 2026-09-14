@@ -47,7 +47,7 @@ export async function gatherStatisticalData(): Promise<PAnalytics> {
 	}
 
 	await client.cache.statistic.set(CacheFrom.Gateway, "latest", {
-		guildCount: guilds.length,
+		guildCount: (await client.cache.guilds?.count()) ?? 3,
 		userCount,
 	});
 
