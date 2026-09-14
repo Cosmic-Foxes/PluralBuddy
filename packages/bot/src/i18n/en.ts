@@ -231,6 +231,7 @@ PluralBuddy uses a **username/display name** system.
 -# Scroll down to see the rest of this modal.`,
 	ALTER_AFTER: `-# 🎀 Good job! Your alter is awesome!`,
 	ALTER_DISPLAY_NAME_FORM_LABEL: "Display Name",
+	ALTER_USERNAME_FORM_LABEL: "Username",
 	ALTER_SEARCH_STRING_FORM_LABEL: "Search String (max 4 chars.)",
 	ALTER_SET_PRONOUNS: "Set Pronouns",
 	TAG_DELETE: "Delete Tag",

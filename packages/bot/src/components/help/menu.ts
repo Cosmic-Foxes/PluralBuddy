@@ -2,16 +2,16 @@ import {
 	ActionRow,
 	Button,
 	ComponentCommand,
+	type ComponentContext,
 	Container,
 	StringSelectMenu,
 	StringSelectOption,
 	TextDisplay,
-	type ComponentContext,
 } from "seyfert";
-import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { helpPages } from "@/commands/help";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
+import { helpPages } from "@/commands/help";
 import { generateCommandList } from "@/lib/command-list";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
 
 export default class HelpPageSelect extends ComponentCommand {
 	componentType = "StringSelect" as const;

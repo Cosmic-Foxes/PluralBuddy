@@ -1,16 +1,16 @@
 
+import { readdir } from "node:fs/promises"
 import {
-	OpenApiGeneratorV31,
 	OpenAPIRegistry,
+	OpenApiGeneratorV31,
 } from "@asteasolutions/zod-to-openapi";
 import { YAML } from "bun";
-import { readdir } from "node:fs/promises"
 import { fetchAllFilesFromGivenFolder } from "./utils";
 
 const registry = new OpenAPIRegistry();
 const routes = await fetchAllFilesFromGivenFolder("./src/openapi/routes")
 
-const modules = routes.map(async v => await import(`@/${v.split("/").slice(1).join('/')}`));
+const modules = routes.map(async v => await import(`../${v.split("/").slice(1).join('/')}`));
 
 await Promise.all(modules.map(async (m) => (await m).register(registry)))
 

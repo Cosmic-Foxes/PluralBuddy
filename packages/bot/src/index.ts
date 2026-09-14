@@ -52,6 +52,7 @@ import { startIndexingCleanupTimer } from "./lib/cleanup-indexing";
 import { emojis } from "./lib/emojis";
 import { getSystemFeatures } from "./lib/get-system-flags";
 import { InteractionIdentifier } from "./lib/interaction-ids";
+import { initializeApplicationCommands } from "./lib/mention-command";
 import { middlewares } from "./middleware";
 import { mongoClient, setupDatabases, setupMongoDB } from "./mongodb";
 import { defaultPrefixes, getGuildFromId } from "./types/guild";
@@ -280,9 +281,10 @@ if (import.meta.main) {
 		});
 	}, 10000);
 
+	await initializeApplicationCommands();
+
 	startIndexingCleanupTimer();
 	startEmojiCleanupTimer();
-	startStatisticalTimer();
 }
 
 export async function startTesting() {

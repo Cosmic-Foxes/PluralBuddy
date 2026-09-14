@@ -52,23 +52,16 @@ export default class SetPronounsButton extends ModalCommand {
 			});
 		}
 
-		let [enabled, destructive] = [
+		let enabled = 
 			ctx.interaction.getInputValue(
-				InteractionIdentifier.Systems.Configuration.SyncPreferences.EnableAutoSync.create(),
-			) ?? false,
-			ctx.interaction.getCheckbox(
-				InteractionIdentifier.Systems.Configuration.SyncPreferences.DestructiveSync.create(),
-			) ?? false,
-		];
-
-		if (!enabled) destructive = false;
+				InteractionIdentifier.Systems.Configuration.SyncPreferences.EnableWriteBackSync.create(),
+			) ?? false;
 
 		await userCollection.updateOne(
 			{ userId: ctx.author.id },
 			{
 				$set: {
-					"syncConfiguration.pluralkit.automatic.enabled": enabled,
-					"syncConfiguration.pluralkit.automatic.destructive": destructive,
+					"syncConfiguration.pluralkit.writeBack.enabled": enabled,
 				},
 			},
 		);

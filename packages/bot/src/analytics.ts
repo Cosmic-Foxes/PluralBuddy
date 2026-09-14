@@ -65,7 +65,7 @@ export async function gatherStatisticalData(): Promise<PAnalytics> {
 
 	return {
 		alterCount: alters,
-		guildCount: guilds.length,
+		guildCount: await client.cache.guilds?.count() ?? 3,
 		messageCount: messages,
 		configuredGuildCount: configuredGuilds,
 		systemCount: systems,

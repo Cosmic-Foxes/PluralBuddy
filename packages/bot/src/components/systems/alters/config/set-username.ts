@@ -2,15 +2,15 @@
 
 import {
 	ComponentCommand,
+	type ComponentContext,
 	Label,
 	Modal,
 	TextInput,
-	type ComponentContext,
 } from "seyfert";
-import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { AlertView } from "@/views/alert";
 import { MessageFlags, TextInputStyle } from "seyfert/lib/types";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { alterCollection } from "@/mongodb";
+import { AlertView } from "@/views/alert";
 
 export default class SetUsernameButton extends ComponentCommand {
 	componentType = "Button" as const;
@@ -52,7 +52,7 @@ export default class SetUsernameButton extends ComponentCommand {
 			.setTitle((await ctx.userTranslations()).ALTER_FORM_TITLE)
 			.addComponents([
 				new Label()
-					.setLabel((await ctx.userTranslations()).SYSTEM_NAME_FORM_LABEL)
+					.setLabel((await ctx.userTranslations()).ALTER_USERNAME_FORM_LABEL)
 					.setComponent(
 						new TextInput()
 							.setStyle(TextInputStyle.Short)

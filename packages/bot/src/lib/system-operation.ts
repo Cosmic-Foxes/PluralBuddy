@@ -9,6 +9,7 @@ import {
 	TextDisplay,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
+import { w } from "@/webhooks";
 import { client } from "..";
 import type { TranslationString } from "../lang";
 import { operationCollection } from "../mongodb";
@@ -18,6 +19,7 @@ import { getUserById, writeUserById } from "../types/user";
 import convert from "./delay-converter";
 import { emojis } from "./emojis";
 import { InteractionIdentifier } from "./interaction-ids";
+import { writeBack } from "./pk-sync-engine";
 import {
 	friendlyProtectionSystem,
 	listFromMaskSystems,
@@ -182,6 +184,27 @@ export async function createSystemOperation(
 	if (listItems.length === 0) return;
 
 	await operationCollection.insertOne(operationDb);
+
+	w(system.associatedUserId, "system.update", {
+		userId: system.associatedUserId,
+		type: "system.update",
+		system: {
+			...system,
+			...operation,
+		},
+	});
+
+	(async () => {
+
+		const { syncConfiguration } = await getUserById(system.associatedUserId)
+
+		writeBack({
+			type: "system",
+			id: "@me",
+			change: operation,
+			syncConfig: syncConfiguration,
+		});
+	})()
 
 	if (environment === "discord")
 		await writeUserById(system.associatedUserId, {
