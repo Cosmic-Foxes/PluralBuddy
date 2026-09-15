@@ -3,6 +3,7 @@
 import z from "zod";
 import { assetStringGeneration } from "./operation";
 import { PSystemObject } from "./system";
+import { PTerminology } from "./terminology";
 
 export const PUserObject = z.object({
 	userId: z.string(),
@@ -23,7 +24,7 @@ export const PUserObject = z.object({
 			currentlyEnabled: true,
 			dmReply: false,
 		}),
-
+    terminology: PTerminology,
 	syncConfiguration: z.record(
 		z.string(),
 		z.object({

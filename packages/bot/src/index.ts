@@ -38,6 +38,7 @@ import { PGuildCache } from "./cache/plural-guild";
 import { SimilarWebhookResource } from "./cache/similar-webhooks";
 import { StatisticResource } from "./cache/statistics";
 import { ProxyResource } from "./cache/system-proxy-tags";
+import { PTerminologyCache } from "./cache/terminology";
 import TagCommand from "./commands/tag";
 import {
 	PluralBuddyComponentErrorCommand,
@@ -237,6 +238,7 @@ if (import.meta.main) {
 		client,
 	);
 	client.cache.i18n = new Pi18nCache(client.cache, client);
+	client.cache.terminology = new PTerminologyCache(client.cache, client);
 
 	client.logger.info("Created cache");
 

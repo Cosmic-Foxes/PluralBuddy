@@ -1,9 +1,10 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { PluralKitSystem } from "plurography";
+import { PluralKitSystem, terminologyDefaults } from "plurography";
 import {
 	ActionRow,
 	Button,
+	CacheFrom,
 	ComponentCommand,
 	type ComponentContext,
 	Container,
@@ -17,10 +18,15 @@ import { emojis } from "@/lib/emojis";
 import { mentionCommand } from "@/lib/mention-command";
 import { combine } from "@/lib/privacy-bitmask";
 import { createRandomId } from "@/lib/random-id";
-import { alterCollection, tagCollection } from "@/mongodb";
+import { terminologyTemplates } from "@/lib/terminology-templates";
+import { alterCollection, tagCollection, userCollection } from "@/mongodb";
 import { AlterProtectionFlags, type PAlter, PAlterObject } from "@/types/alter";
 import { type PTag, PTagObject, TagProtectionFlags } from "@/types/tag";
-import { getUserById, writeUserById } from "@/types/user";
+import {
+	getUserById,
+	terminologyMemoryCache,
+	writeUserById,
+} from "@/types/user";
 import { InteractionIdentifier } from "../../../../lib/interaction-ids";
 import { type PSystem, PSystemObject } from "../../../../types/system";
 import { AlertView } from "../../../../views/alert";
@@ -43,6 +49,9 @@ export default class PluralBuddyImportModal extends ModalCommand {
 
 		const file = ctx.interaction.getFiles(
 			InteractionIdentifier.Setup.FormSelection.PkType.create(),
+		);
+		const usingTerminology = ctx.interaction.getCheckbox(
+			InteractionIdentifier.Setup.FormSelection.PkTerminologyCheckboxType.create(),
 		);
 
 		if (file === undefined || file[0] === undefined) {
@@ -318,6 +327,28 @@ export default class PluralBuddyImportModal extends ModalCommand {
 				.filter((v) => v.zodData.error !== undefined)
 				.map((v) => v.zodData.error),
 		});
+
+		if (usingTerminology === true) {
+			const template = terminologyTemplates.find(
+				(c) => c.name === "PluralKit",
+			) ?? { data: terminologyDefaults };
+
+			await userCollection.updateOne(
+				{ userId: ctx.author.id },
+				{
+					$set: {
+						terminology: template.data,
+					},
+				},
+			);
+
+			const newObj = JSON.stringify(template.data);
+
+			terminologyMemoryCache[ctx.author.id] = newObj;
+			ctx.client.cache.terminology.set(CacheFrom.Gateway, ctx.author.id, {
+				terms: newObj,
+			});
+		}
 
 		return await ctx.editResponse({
 			components: [

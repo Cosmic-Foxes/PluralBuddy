@@ -1,6 +1,12 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { assetStringGeneration, type PAlter } from "plurography";
+import { cloneDeep } from "lodash";
+import {
+	assetStringGeneration,
+	type PAlter,
+	type PTerminology,
+	terminologyDefaults,
+} from "plurography";
 import {
 	ActionRow,
 	Button,
@@ -29,7 +35,7 @@ import { InteractionIdentifier } from "./lib/interaction-ids";
 import { getLanguageByUserId, langMemoryCache } from "./lib/lang";
 import { userCollection } from "./mongodb";
 import { defaultPrefixes, getGuildFromId, PGuildObject } from "./types/guild";
-import { getUserById } from "./types/user";
+import { getUserById, terminologyMemoryCache } from "./types/user";
 import { LoadingView } from "./views/loading";
 
 export const extendedContext = extendContext((interaction) => {
@@ -183,6 +189,32 @@ export const extendedContext = extendContext((interaction) => {
 			return "en";
 		}
 	};
+	const terminology = async () => {
+		try {
+			let data =
+				terminologyMemoryCache[interaction.user.id] ??
+				(await client.cache.terminology.get(interaction.user.id))?.terms;
+
+			if (data === undefined) {
+				data = JSON.stringify(
+					(await getUserById(interaction.user.id)).terminology,
+				);
+				try {
+					await client.cache.terminology.set(
+						CacheFrom.Gateway,
+						interaction.user.id,
+						{
+							terms: data,
+						},
+					);
+					terminologyMemoryCache[interaction.user.id] = data;
+				} catch (_) {}
+			}
+			return JSON.parse(data);
+		} catch (_) {
+			return terminologyDefaults;
+		}
+	};
 
 	return {
 		ephemeral,
@@ -193,7 +225,10 @@ export const extendedContext = extendContext((interaction) => {
 				await getGuildFromId(interaction.guildId ?? "??"),
 			),
 		userTranslations: async () =>
-			client.t(await language()).get(await language()),
+			replaceTranslations(
+				client.t(await language()).get(await language()),
+				await terminology(),
+			),
 		setContextAlter: (alter: PAlter) => {
 			contextAlter = alter;
 		},
@@ -220,3 +255,74 @@ export const extendedContext = extendContext((interaction) => {
 		},
 	};
 });
+
+const ENGLISH_VOWELS = ["a", "e", "i", "o", "u"];
+const replaceTranslations = (
+	translations: DefaultLocale,
+	terminology: PTerminology = terminologyDefaults,
+) => {
+	const startsWithArray = (string: string, array: string[]) => {
+		for (const item of array) {
+			if (string.startsWith(item)) return true;
+		}
+		return false;
+	};
+	const clonedTranslations = cloneDeep(translations);
+
+	const replace = () =>
+		Object.keys(clonedTranslations).forEach((c: string) => {
+			const conflictingPlaceholders: Record<string, string> = {};
+			const placeholderRegex1 = /%([^%]+)%/g;
+			const placeholderRegex2 = /(\{[^}]*\}\})/g;
+
+			const matches = [
+				...clonedTranslations[c as keyof DefaultLocale].matchAll(
+					placeholderRegex1,
+				),
+				...clonedTranslations[c as keyof DefaultLocale].matchAll(
+					placeholderRegex2,
+				),
+			];
+			matches.forEach((match) => {
+				conflictingPlaceholders[match[0]] = `{{ ${crypto.randomUUID()} }}`;
+			});
+
+			Object.entries(conflictingPlaceholders).forEach(([k, v]) => {
+				clonedTranslations[c as keyof DefaultLocale] = clonedTranslations[
+					c as keyof DefaultLocale
+				].replaceAll(k, v);
+			});
+			clonedTranslations[c as keyof DefaultLocale] = clonedTranslations[
+				c as keyof DefaultLocale
+			]
+				.replaceAll("systems", `${terminology.system_plural}`)
+				.replaceAll("system", `${terminology.system}`)
+				.replaceAll("System", `${terminology.system_capital}`)
+				.replaceAll(
+					"an alter",
+					`a${startsWithArray(terminology.alters, ENGLISH_VOWELS) ? "n" : ""} ${terminology.alters}`,
+				)
+				.replaceAll("proxy tags", terminology.proxy_tags_plural)
+				.replaceAll("proxy tag", terminology.proxy_tag)
+				.replaceAll("Proxy Tags", terminology.proxy_tags_capital)
+				.replaceAll("display tag", terminology.display_tag)
+				.replaceAll(
+					"a tag",
+					`a${startsWithArray(terminology.tags, ENGLISH_VOWELS) ? "n" : ""} ${terminology.alters}`,
+				)
+				.replaceAll("Alter", terminology.alters_capital)
+				.replaceAll("alter", terminology.alters)
+				.replaceAll("tags", terminology.tags_plural)
+				.replaceAll("tag", terminology.tags)
+				.replaceAll("Tag", terminology.tags_capital);
+			Object.entries(conflictingPlaceholders).forEach(([k, v]) => {
+				clonedTranslations[c as keyof DefaultLocale] = clonedTranslations[
+					c as keyof DefaultLocale
+				].replaceAll(v, k);
+			});
+		});
+
+	replace();
+
+	return clonedTranslations;
+};

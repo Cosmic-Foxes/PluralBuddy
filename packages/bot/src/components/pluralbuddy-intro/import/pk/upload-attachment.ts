@@ -1,10 +1,11 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 import {
+    Checkbox,
 	ComponentCommand,
+	type ComponentContext,
 	FileUpload,
 	Label,
 	Modal,
-	type ComponentContext,
 } from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 
@@ -33,6 +34,18 @@ export default class PluralKitUploadAttachment extends ComponentCommand {
 								.setMaxValues(1)
 								.setMinValues(1)
 								.setRequired(true),
+						),
+					new Label()
+						.setLabel(
+							(await ctx.userTranslations()).USE_PLURALKIT_TERMINOLOGY_TITLE,
+						)
+						.setDescription(
+							(await ctx.userTranslations()).USE_PLURALKIT_TERMINOLOGY_DESC,
+						)
+						.setComponent(
+							new Checkbox().setCustomId(
+								InteractionIdentifier.Setup.FormSelection.PkTerminologyCheckboxType.create(),
+							),
 						),
 				]),
 		);

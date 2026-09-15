@@ -35,6 +35,7 @@ export * from "./pluralbuddy/message";
 export * from "./pluralbuddy/operation";
 export * from "./pluralbuddy/system";
 export * from "./pluralbuddy/tag";
+export * from "./pluralbuddy/terminology"
 export * from "./pluralbuddy/user";
 export * from "./pluralbuddy/util";
 

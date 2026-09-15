@@ -17,6 +17,7 @@ import {
 } from "seyfert";
 import { ButtonStyle, Spacing } from "seyfert/lib/types";
 import { mentionCommand } from "@/lib/mention-command";
+import { terminologyTemplates } from "@/lib/terminology-templates";
 import paginateComponents from "@/lib/views/paginate";
 import { alterCollection, tagCollection } from "@/mongodb";
 import { AlterProtectionFlags, type PAlter } from "@/types/alter";
@@ -63,9 +64,48 @@ export enum QuickSyncStatus {
 
 export class SystemSettingsView extends TranslatedView {
 	topView(
-		currentTab: "general" | "alters" | "tags" | "public-settings",
+		currentTab:
+			| "general"
+			| "alters"
+			| "tags"
+			| "public-settings"
+			| "terminology",
 		systemId: string,
 	) {
+		const page2Tabs = ["terminology"];
+
+		if (page2Tabs.includes(currentTab))
+			return [
+				new Container().setComponents(
+					...(this.preferAccessiblity
+						? []
+						: [new TextDisplay().setContent(`-# ID: \`${systemId}\``)]),
+					new ActionRow().setComponents(
+						new Button()
+							.setStyle(ButtonStyle.Secondary)
+							.setEmoji(emojis.chevronLeft)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.GeneralTab.Index.create(),
+							),
+						new Button()
+							.setLabel(this.translations.TERMINOLOGY_LABEL)
+							.setStyle(
+								currentTab === "terminology"
+									? ButtonStyle.Success
+									: ButtonStyle.Secondary,
+							)
+							.setEmoji(
+								currentTab === "terminology"
+									? emojis.squareCheck
+									: emojis.squareDashed,
+							)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.TerminologyTab.Index.create(),
+							),
+					),
+				),
+			];
+
 		return [
 			new Container().setComponents(
 				...(this.preferAccessiblity
@@ -129,6 +169,12 @@ export class SystemSettingsView extends TranslatedView {
 						)
 						.setCustomId(
 							InteractionIdentifier.Systems.Configuration.PublicProfile.Index.create(),
+						),
+					new Button()
+						.setStyle(ButtonStyle.Secondary)
+						.setEmoji(emojis.chevronRight)
+						.setCustomId(
+							InteractionIdentifier.Systems.Configuration.TerminologyTab.Index.create(),
 						),
 				),
 			),
@@ -383,7 +429,7 @@ export class SystemSettingsView extends TranslatedView {
 							$translations.CASE_INSENS_PROXIES_DESC,
 						),
 					),
-				new Separator(),
+				new Separator().setSpacing(Spacing.Large),
 				new TextDisplay().setContent(
 					`${$translations.EXPORT_SYS_DESC}\n\n${$translations.IMPORT_SYS_DESC}`,
 				),
@@ -401,7 +447,6 @@ export class SystemSettingsView extends TranslatedView {
 							InteractionIdentifier.Systems.Configuration.GeneralTab.ImportSystem.create(),
 						),
 				),
-				new Separator(),
 				new TextDisplay().setContent($translations.EXTERNAL_EXPORT_SYS_DESC),
 				new ActionRow().setComponents(
 					new StringSelectMenu()
@@ -1129,6 +1174,91 @@ export class SystemSettingsView extends TranslatedView {
 							),
 				),
 			),
+		]
+	}
+
+	
+	terminologySettings(system: PSystem) {
+		return [
+			new Container()
+				.setComponents(
+					new TextDisplay().setContent(
+						this.translations.TERMINOLOGY_SYSTEM_TITLE.replace(
+							"{{ emoji }}",
+							emojis.settings,
+						).replace("{{ systemName }}", system.systemName),
+					),
+					new TextDisplay().setContent(this.translations.TERMINOLOGY_DESC),
+					new Separator().setSpacing(Spacing.Large),
+					new TextDisplay().setContent(
+						this.translations.TEMPLATE_TERMINOLOGY_DESC,
+					),
+					new ActionRow().setComponents(
+						new StringSelectMenu()
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.TerminologyTab.TemplatesSelect.create(),
+							)
+							.setValuesLength({ min: 1, max: 1 })
+							.setPlaceholder(this.translations.TEMPLATE_PLACEHOLDER)
+							.setOptions(
+								terminologyTemplates.map((template) =>
+									new StringSelectOption()
+										.setValue(template.name.toLocaleLowerCase())
+										.setLabel(template.name)
+										.setDescription(template.description),
+								),
+							),
+					),
+					new Separator(),
+					new Section()
+						.setComponents(
+							new TextDisplay().setContent(
+								this.translations.NORMAL_TERMS_TITLE,
+							),
+							new TextDisplay().setContent(this.translations.NORMAL_TERMS_DESC),
+						)
+						.setAccessory(
+							new Button()
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.TerminologyTab.EditNormalTerms.create(),
+								)
+								.setLabel(this.translations.EDIT_NORMAL_TERMS_BTN)
+								.setStyle(ButtonStyle.Primary),
+						),
+					new Section()
+						.setComponents(
+							new TextDisplay().setContent(
+								this.translations.PLURAL_TERMS_TITLE,
+							),
+							new TextDisplay().setContent(this.translations.PLURAL_TERMS_DESC),
+						)
+						.setAccessory(
+							new Button()
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.TerminologyTab.EditPluralTerms.create(),
+								)
+								.setLabel(this.translations.EDIT_PLURAL_TERMS_BTN)
+								.setStyle(ButtonStyle.Primary),
+						),
+					new Section()
+						.setComponents(
+							new TextDisplay().setContent(
+								this.translations.CAPITAL_TERMS_TITLE,
+							),
+							new TextDisplay().setContent(
+								this.translations.CAPITAL_TERMS_DESC,
+							),
+						)
+						.setAccessory(
+							new Button()
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.TerminologyTab.EditCapitalTerms.create(),
+								)
+								.setLabel(this.translations.EDIT_CAPITAL_TERMS_BTN)
+								.setStyle(ButtonStyle.Primary),
+						),
+				)
+				.setColor("#1190FF"),
 		];
 	}
 }
