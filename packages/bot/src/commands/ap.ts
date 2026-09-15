@@ -1,12 +1,3 @@
-import { alterOptions, runAlterCommand } from "@/lib/ap-cmds/alter";
-import { runClearLatch } from "@/lib/ap-cmds/clear-latch";
-import { customOptions, runCustomProviderCommand } from "@/lib/ap-cmds/custom";
-import { latchOptions, runLatchCommand } from "@/lib/ap-cmds/latch";
-import { offOptions, runOffCommand } from "@/lib/ap-cmds/off";
-import { runStatusCommand } from "@/lib/ap-cmds/status";
-import { getOAuthConsents } from "@/lib/oauth";
-import { parseOffScope, parseScope } from "@/lib/scope-parsing";
-import { AlertView } from "@/views/alert";
 import {
 	Command,
 	CommandContext,
@@ -19,6 +10,16 @@ import {
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { DeclareParserConfig } from "yunaforseyfert";
+import { alterOptions, runAlterCommand } from "@/lib/ap-cmds/alter";
+import { runClearLatch } from "@/lib/ap-cmds/clear-latch";
+import { customOptions, runCustomProviderCommand } from "@/lib/ap-cmds/custom";
+import { latchOptions, runLatchCommand } from "@/lib/ap-cmds/latch";
+import { offOptions, runOffCommand } from "@/lib/ap-cmds/off";
+import { runStatusCommand } from "@/lib/ap-cmds/status";
+import { getOAuthConsents } from "@/lib/oauth";
+import { parseOffScope, parseScope } from "@/lib/scope-parsing";
+import { alterCollection } from "@/mongodb";
+import { AlertView } from "@/views/alert";
 
 const options = {
 	args: createStringOption({
@@ -105,6 +106,16 @@ export default class AutoProxyCommand extends Command {
 		if (["cl", "clear-latch"].includes(args.split(" ")[0] ?? "")) {
 			return await runClearLatch(ctx);
 		}
+		const firstAlter = args.split(" ").join(" ");
+		const query = await (Number.isNaN(Number.parseInt(firstAlter))
+			? alterCollection.findOne({
+					$or: [{ username: firstAlter }],
+					systemId: ctx.author.id,
+				})
+			: alterCollection.findOne({
+					$or: [{ username: firstAlter }, { alterId: Number(firstAlter) }],
+					systemId: ctx.author.id,
+				}));
 		const oauthConsents = await getOAuthConsents(ctx.author.id);
 		if (
 			oauthConsents.some((c) => c.metadata?.aaid === (args.split(" ")[0] ?? ""))
@@ -119,6 +130,12 @@ export default class AutoProxyCommand extends Command {
 			return await runCustomProviderCommand(
 				ctx as CommandContext<typeof customOptions>,
 			);
+		}
+
+		if (query !== null) {
+			(ctx as CommandContext<typeof alterOptions>).options.alter = firstAlter;
+
+			return await runAlterCommand(ctx as CommandContext<typeof alterOptions>);
 		}
 
 		return await ctx.write({

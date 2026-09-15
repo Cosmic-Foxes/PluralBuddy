@@ -927,7 +927,7 @@ Your system is using the front state of **{{ mode }}**.`,
 	PROVIDER_NOT_FOUND: `That auto-proxy provider was not found, or you didn't authorize with the [\`system:ai-ap\`](https://pb.giftedly.dev/docs/pluralbuddy/ai-ap) scope. Contact the developer of this integration if you believe this is incorrect.
 	
 -# Integration: \`{{ id }}\``,
-	AP_INVALID_SYNTAX: `Invalid autoproxy mode or provider \`{{ mode }}\`.
+	AP_INVALID_SYNTAX: `Invalid autoproxy mode, alter or provider \`{{ mode }}\`.
 
 **Auto-proxy Usage:**
 \`pb;autoproxy [off|latch|alter|status|clear-latch|{{ aiap }}]\``,
