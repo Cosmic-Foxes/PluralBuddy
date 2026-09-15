@@ -1,22 +1,21 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import { DiscordSnowflake } from "@sapphire/snowflake";
+import { 
+	type CommandContext,Container, 
+	createStringOption,
+	Declare,
+	type OKFunction,
+	Options,SubCommand, TextDisplay, } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
+import z from "zod";
 import { getEmojiFromTagColor } from "@/lib/emojis";
 import { mentionCommand } from "@/lib/mention-command";
 import { tagCollection } from "@/mongodb";
 import { PTagObject, tagColors } from "@/types/tag";
 import { getUserById, writeUserById } from "@/types/user";
 import { AlertView } from "@/views/alert";
-import { DiscordSnowflake } from "@sapphire/snowflake";
-import { Container, SubCommand, TextDisplay } from "seyfert";
-import {
-	type CommandContext,
-	createStringOption,
-	Declare,
-	Options,
-	type OKFunction,
-} from "seyfert";
-import { MessageFlags } from "seyfert/lib/types";
-import z from "zod";
+import { w } from "@/webhooks";
 
 const options = {
 	color: createStringOption({
@@ -120,6 +119,13 @@ ${z.prettifyError(tag.error)}
 		});
 
 		tagCollection.insertOne(tag.data);
+
+		w(ctx.author.id, "tag.create", {
+			tag: tag.data,
+			type: "tag.create",
+			userId: ctx.author.id,
+		});
+
 
 		await ctx.editResponse({
 			components: [

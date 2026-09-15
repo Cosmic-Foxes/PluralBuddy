@@ -21,6 +21,7 @@ import { Shortcut } from "yunaforseyfert";
 import z from "zod";
 import { getSpecificAutoProxy, getWiderAutoProxy } from "@/lib/autoproxy-util";
 import { emojis } from "@/lib/emojis";
+import { w } from "@/webhooks";
 import { alterCollection, tagCollection, userCollection } from "../../mongodb";
 import { PAlterObject } from "../../types/alter";
 import { getUserById, writeUserById } from "../../types/user";
@@ -284,6 +285,12 @@ ${z.prettifyError(alter.error)}
 
 			await successMessage(true);
 		}
+
+		w(ctx.author.id, "alter.create", {
+			userId: ctx.author.id,
+			type: "alter.create",
+			alter: alter.data
+		})
 	}
 }
 

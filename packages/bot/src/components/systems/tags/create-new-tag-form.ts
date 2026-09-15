@@ -13,6 +13,7 @@ import { PTagObject } from "@/types/tag";
 import { getUserById, writeUserById } from "@/types/user";
 import { AlertView } from "@/views/alert";
 import { SystemSettingsView } from "@/views/system-settings";
+import { w } from "@/webhooks";
 
 export default class CreateNewAlterForm extends ModalCommand {
 	override filter(context: ModalContext) {
@@ -96,6 +97,12 @@ ${z.prettifyError(tag.error)}
 		});
 
 		await tagCollection.insertOne(tag.data);
+
+		w(ctx.author.id, "tag.create", {
+			tag: tag.data,
+			type: "tag.create",
+			userId: ctx.author.id
+		})
 
 		await ctx.editResponse({
 			components: await new SystemSettingsView(

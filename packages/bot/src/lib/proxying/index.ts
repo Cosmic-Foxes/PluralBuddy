@@ -33,6 +33,7 @@ import type {
 import { alterCollection, messagesCollection } from "@/mongodb";
 import { getGuildFromId, type PGuild } from "@/types/guild";
 import { getUserById } from "@/types/user";
+import { w } from "@/webhooks";
 import { createError } from "../create-error";
 import { emojis } from "../emojis";
 import { automaticallySync } from "../pk-sync-engine";
@@ -202,6 +203,19 @@ export async function proxy(
 					},
 				})
 				.then((sentMessage) => {
+					w(systemId, "message.create", {
+						message: {
+							messageId: sentMessage?.id ?? "0",
+							alterId,
+							systemId,
+							createdAt: new Date(),
+							guildId: message.guildId,
+							channelId: message.channelId,
+							referencedMessage: message.referencedMessage?.id,
+						},
+						type: "message.create",
+						userId: systemId
+					});
 					messagesCollection.insertOne({
 						messageId: sentMessage?.id ?? "0",
 						alterId,

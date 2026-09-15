@@ -11,6 +11,7 @@ import { PAlterObject } from "@/types/alter";
 import { getUserById, writeUserById } from "@/types/user";
 import { AlertView } from "@/views/alert";
 import { SystemSettingsView } from "@/views/system-settings";
+import { w } from "@/webhooks";
 
 export default class CreateNewAlterForm extends ModalCommand {
 	override filter(context: ModalContext) {
@@ -106,6 +107,12 @@ ${z.prettifyError(alter.error)}
 				...user.system,
 				alterIds: [...user.system.alterIds, alter.data.alterId],
 			}),
+		});
+		
+		w(ctx.author.id, "alter.create", {
+			userId: ctx.author.id,
+			type: "alter.create",
+			alter: alter.data,
 		});
 	}
 }
