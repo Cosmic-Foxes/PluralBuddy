@@ -11,6 +11,7 @@ import { MessageFlags } from "seyfert/lib/types";
 import z from "zod";
 import { getEmojiFromTagColor } from "@/lib/emojis";
 import { mentionCommand } from "@/lib/mention-command";
+import { writeBack } from "@/lib/pk-sync-engine";
 import { tagCollection } from "@/mongodb";
 import { PTagObject, tagColors } from "@/types/tag";
 import { getUserById, writeUserById } from "@/types/user";
@@ -119,6 +120,13 @@ ${z.prettifyError(tag.error)}
 		});
 
 		tagCollection.insertOne(tag.data);
+
+		writeBack({
+			type: "create-tag",
+			id: String(tag.data.tagId),
+			change: { ...tag.data, userId: user.userId },
+			syncConfig: user.syncConfiguration,
+		});
 
 		w(ctx.author.id, "tag.create", {
 			tag: tag.data,

@@ -16,7 +16,7 @@ import {
 	PSystemObject,
 	SystemProtectionFlags,
 } from "../pluralbuddy/system";
-import { PTag, PTagObject, TagProtectionFlags } from "../pluralbuddy/tag";
+import { PTag, PTagObject, TagProtectionFlags, tagColors, tagHexColors } from "../pluralbuddy/tag";
 import { makePkId, PluralKitSystem, PluralKitSystemType } from "../pluralkit";
 import { PluralKitGroup } from "../pluralkit/group";
 import { PluralKitMember } from "../pluralkit/member";
@@ -393,8 +393,9 @@ export default class PluralKitConverter
 	_syncUpdateTagBack(tag: Partial<z.infer<typeof PTagObject>>) {
 		return {
 			display_name: tag.tagFriendlyName,
+			name: tag.tagFriendlyName,
 			description: tag.tagDescription,
-			color: tag.tagColor,
+			color: tag.tagColor ? (tagHexColors[tagColors.indexOf(tag.tagColor)]) : undefined,
 			
 			privacy: tag.public
 				? {

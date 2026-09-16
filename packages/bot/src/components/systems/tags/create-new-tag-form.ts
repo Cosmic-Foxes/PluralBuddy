@@ -7,6 +7,7 @@ import z from "zod";
 import { getEmojiFromTagColor } from "@/lib/emojis";
 import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { writeBack } from "@/lib/pk-sync-engine";
 import { alterCollection, tagCollection } from "@/mongodb";
 import { PAlterObject } from "@/types/alter";
 import { PTagObject } from "@/types/tag";
@@ -97,6 +98,12 @@ ${z.prettifyError(tag.error)}
 		});
 
 		await tagCollection.insertOne(tag.data);
+		writeBack({
+			type: "create-tag",
+			id: String(tag.data.tagId),
+			change: {...tag.data, userId: user.userId},
+			syncConfig: user.syncConfiguration,
+		});
 
 		w(ctx.author.id, "tag.create", {
 			tag: tag.data,

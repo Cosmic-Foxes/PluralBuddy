@@ -10,6 +10,8 @@ export function getSystemFeatures(data: PSystem) {
 		leftSidedTag: ((data.flags ?? 0) & SystemFlags.LEFT_SIDED_TAG) !== 0,
 		caseInsensitiveProxies:
 			((data.flags ?? 0) & SystemFlags.CASE_INSENSITIVE_PROXIES) !== 0,
+		publicDefault:
+			((data.flags ?? 0) & SystemFlags.PUBLIC_DEFAULT) !== 0,
 
 		has: (flag: SystemFlags) => ((data.flags ?? 0) & flag) !== 0,
 		disable: (flag: SystemFlags) =>

@@ -1,4 +1,4 @@
-import { ObjectId } from "bson";
+import { Double, ObjectId } from "bson";
 import pkceChallenge from "pkce-challenge";
 import {
 	type PAlter,
@@ -249,29 +249,29 @@ function sortObject(
 }
 
 export type WriteBackArguments = (
-	| {
-			type: "system";
-			id: "@me";
-			change: Partial<PSystem>;
-	  }
-	| {
-			type: "alter";
-			/**  The PluralKit ID of the member. */
-			id: string;
-			change: Partial<PAlter>;
-	  }
-	| {
-			type: "tag";
-			/**  The PluralKit ID of the group. */
-			id: string;
-			change: Partial<PTag>;
-	  }
-	| {
-			type: "member-group-relationship";
-			id: string;
-			change: { groupId: string; type: "add" | "remove" };
-	  }
-) & { syncConfig: PUser["syncConfiguration"] };
+		| {
+				type: "system";
+				id: "@me";
+				change: Partial<PSystem>;
+		  }
+		| {
+				type: "alter" | "create-alter";
+				/**  The PluralKit ID of the member. */
+				id: string;
+				change: Partial<PAlter> & { userId?: string };
+		  }
+		| {
+				type: "tag" | "create-tag";
+				/**  The PluralKit ID of the group. */
+				id: string;
+				change: Partial<PTag> & { userId?: string };
+		  }
+		| {
+				type: "member-group-relationship";
+				id: string;
+				change: { groupId: string; type: "add" | "remove" };
+		  }
+	) & { syncConfig: PUser["syncConfiguration"] };
 
 export async function writeBack({
 	type,
@@ -319,6 +319,44 @@ export async function writeBack({
 		await pkRuntime.groupsCollection.updateOne(
 			{ groupId: id },
 			updatedPartialTag,
+		);
+	}
+
+	if (type === "create-alter") {
+		const { userId, ...alter } = change;
+		const updatedPartialAlter = pkConverter._syncUpdateAlterBack(alter);
+
+		if (updatedPartialAlter.name === undefined)
+			throw new Error("name required to create a group");
+
+		const { uuid } = await pkRuntime.membersCollection.insertOne(
+			updatedPartialAlter as Partial<z.infer<typeof PluralKitMember>> & {
+				name: string;
+			},
+		);
+
+		await alterCollection.updateOne(
+			{ alterId: new Double(Number(id)), systemId: userId },
+			{ $set: { 'fields.@/converter/pk': uuid } },
+		);
+	}
+
+	if (type === "create-tag") {
+		const { userId, ...tag } = change;
+		const updatedPartialTag = pkConverter._syncUpdateTagBack(tag);
+
+		if (updatedPartialTag.name === undefined)
+			throw new Error("name required to create a group");
+
+		const { uuid } = await pkRuntime.groupsCollection.insertOne(
+			updatedPartialTag as Partial<z.infer<typeof PluralKitGroup>> & {
+				name: string;
+			},
+		);
+
+		await tagCollection.updateOne(
+			{ tagId: id, systemId: userId },
+			{ $set: { 'fields.@/converter/pk': uuid } },
 		);
 	}
 

@@ -25,7 +25,8 @@ const flagDescription = `This is a bitwise operation-based number which determin
 | NO_TYPING_STATUS         | \`4\` \`(1 << 2)\`      | Typing status from the bot wont be displayed. |
 | PREFER_ACCESSIBLITY      | \`8\` \`(1 << 3)\`      | Prefer accessiblity in menus for this system. |
 | LEFT_SIDED_TAG           | \`16\` \`(1 << 4)\`     | Display tags will be displayed on the left side of the webhook. |
-| CASE_INSENSITIVE_PROXIES | \`32\` \`(1 << 5)\`     | Proxy tags when proxying will be matched case insensitively. |`;
+| CASE_INSENSITIVE_PROXIES | \`32\` \`(1 << 5)\`     | Proxy tags when proxying will be matched case insensitively. |
+| PUBLIC_DEFAULT           | \`64\` \`(1 << 6)\`     | All new objects in the system will automatically be created publicly. |`;
 
 const tagMapDescription = `This is a map that shows the association between a Discord server ID and a custom display tag.
 
@@ -53,6 +54,7 @@ export enum SystemFlags {
 	PREFER_ACCESSIBLITY = 1 << 3,
 	LEFT_SIDED_TAG = 1 << 4,
 	CASE_INSENSITIVE_PROXIES = 1 << 5,
+	PUBLIC_DEFAULT = 1 << 6
 }
 
 export const PSystemObject = z

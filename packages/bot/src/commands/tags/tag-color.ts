@@ -1,3 +1,15 @@
+import {
+	ActionRow,
+	type CommandContext,
+	Container,
+	createStringOption,
+	Declare,
+	Options,
+	StringSelectMenu,
+	SubCommand,
+	TextDisplay,
+} from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
 import { autocompleteTags } from "@/lib/autocomplete-tags";
 import { emojis, getEmojiFromTagColor } from "@/lib/emojis";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
@@ -5,18 +17,7 @@ import { tagColorSelection } from "@/lib/selection-options";
 import { tagCollection } from "@/mongodb";
 import { tagColors, tagHexColors } from "@/types/tag";
 import { AlertView } from "@/views/alert";
-import {
-	type CommandContext,
-	createStringOption,
-	Declare,
-	SubCommand,
-	Options,
-	Container,
-	TextDisplay,
-	ActionRow,
-	StringSelectMenu,
-} from "seyfert";
-import { MessageFlags } from "seyfert/lib/types";
+import { w } from "@/webhooks";
 
 const options = {
 	"tag-name": createStringOption({
@@ -46,6 +47,8 @@ export default class TagColorCommand extends SubCommand {
 					systemId,
 				});
 		const tag = await query;
+
+
 
 		if (tag === null) {
 			return await ctx.ephemeral(

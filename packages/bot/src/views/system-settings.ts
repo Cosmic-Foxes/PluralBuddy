@@ -2,7 +2,13 @@
 
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import type { FindCursor, WithId } from "mongodb";
-import { type PUser, possibleConverters, SystemFlags } from "plurography";
+import {
+	PImportTranscript,
+	type POperation,
+	type PUser,
+	possibleConverters,
+	SystemFlags,
+} from "plurography";
 import {
 	ActionRow,
 	Button,
@@ -1174,10 +1180,9 @@ export class SystemSettingsView extends TranslatedView {
 							),
 				),
 			),
-		]
+		];
 	}
 
-	
 	terminologySettings(system: PSystem) {
 		return [
 			new Container()
@@ -1259,6 +1264,132 @@ export class SystemSettingsView extends TranslatedView {
 						),
 				)
 				.setColor("#1190FF"),
+		];
+	}
+
+	syncOperation(
+		existingTranscript: WithId<PImportTranscript>,
+		existingCounts: { alters: number; tags: number },
+	) {
+		const possiblyTooMuch = {
+			destructiveTags:
+				existingCounts.tags +
+					existingTranscript.tags.add.length -
+					existingTranscript.tags.remove.length >
+				1000,
+			destructiveAlters:
+				existingCounts.alters +
+					existingTranscript.alters.add.length -
+					existingTranscript.tags.remove.length >
+				2000,
+
+			nonDestructiveTags:
+				existingCounts.tags + existingTranscript.tags.add.length > 1000,
+			nonDestructiveAlters:
+				existingCounts.alters + existingTranscript.alters.add.length > 2000,
+		};
+		const anyPossiblyTooMuch =
+			possiblyTooMuch.destructiveAlters ||
+			possiblyTooMuch.destructiveTags ||
+			possiblyTooMuch.nonDestructiveAlters ||
+			possiblyTooMuch.nonDestructiveTags;
+
+		return [
+			new Container()
+				.setColor("#FFDF00")
+				.setComponents(
+					new TextDisplay().setContent(
+						this.translations.TRANSCRIPT_TOP.replace(
+							"{{ circleQuestionWhite }}",
+							emojis.circleQuestionWhite,
+						),
+					),
+					new Separator(),
+					new TextDisplay().setContent(this.translations.ALTERS_SEPARATOR),
+					new ActionRow().setComponents(
+						new Button()
+							.setDisabled()
+							.setCustomId("d_")
+							.setStyle(ButtonStyle.Success)
+							.setLabel(`${existingTranscript.alters.add.length.toString()}`)
+							.setEmoji(emojis.plus),
+						new Button()
+							.setDisabled()
+							.setCustomId("d")
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel(existingTranscript.alters.update.length.toString()),
+						new Button()
+							.setDisabled()
+							.setCustomId("da_")
+							.setStyle(ButtonStyle.Danger)
+							.setLabel(`${existingTranscript.alters.remove.length.toString()}`)
+							.setEmoji(emojis.minus),
+					),
+					new Separator(),
+					new TextDisplay().setContent(this.translations.TAGS_SEPARATOR),
+					new ActionRow().setComponents(
+						new Button()
+							.setDisabled()
+							.setCustomId("d____")
+							.setStyle(ButtonStyle.Success)
+							.setLabel(`${existingTranscript.tags.add.length.toString()}`)
+							.setEmoji(emojis.plus),
+						new Button()
+							.setDisabled()
+							.setCustomId("d___")
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel(existingTranscript.tags.update.length.toString()),
+						new Button()
+							.setDisabled()
+							.setCustomId("da__")
+							.setStyle(ButtonStyle.Danger)
+							.setLabel(`${existingTranscript.tags.remove.length.toString()}`)
+							.setEmoji(emojis.minus),
+					),
+				),
+			new ActionRow().setComponents(
+				new Button()
+					.setStyle(ButtonStyle.Primary)
+					.setCustomId(
+						InteractionIdentifier.Systems.Syncing.ApplyTranscript.create(
+							existingTranscript._id.toString(),
+						),
+					)
+					.setLabel(this.translations.PK_TRANSCRIPT_APPLY)
+					.setDisabled(
+						possiblyTooMuch.nonDestructiveAlters ||
+							possiblyTooMuch.nonDestructiveTags,
+					)
+					.setEmoji(emojis.wrenchWhite),
+				new Button()
+					.setStyle(ButtonStyle.Danger)
+					.setCustomId(
+						InteractionIdentifier.Systems.Syncing.ApplyTranscriptDestructively.create(
+							existingTranscript._id.toString(),
+						),
+					)
+					.setLabel(this.translations.PK_TRANSCRIPT_APPLY_DESTRUCTIVE)
+					.setDisabled(
+						possiblyTooMuch.destructiveAlters ||
+							possiblyTooMuch.destructiveTags,
+					)
+					.setEmoji(emojis.xWhite),
+			),
+			...(anyPossiblyTooMuch
+				? [
+						new TextDisplay().setContent(
+							this.translations.ALTER_TAG_COUNT_TOO_HIGH,
+						),
+					]
+				: []),
+			new ActionRow().setComponents(
+				new Button()
+					.setURL(
+						`${process.env.APP_HOST}/app/settings/sync/transcript/${existingTranscript._id.toString()}`,
+					)
+					.setStyle(ButtonStyle.Link)
+					.setLabel(this.translations.PK_TRANSCRIPT_VIEW),
+			),
 		];
 	}
 }

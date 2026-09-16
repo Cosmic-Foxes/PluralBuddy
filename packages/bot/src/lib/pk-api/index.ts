@@ -39,10 +39,11 @@ export class PluralKitAPI {
 					"User-Agent": PK_UA,
 					"Content-Type": "application/json",
 				},
-				method: "PATCH",
+				method: "POST",
 				body: JSON.stringify([groupId]),
 			},
-		);
+		)
+		return groupUpdate;
 	}
 
 	async removeMemberGroupRelationship({
@@ -60,10 +61,12 @@ export class PluralKitAPI {
 					"User-Agent": PK_UA,
 					"Content-Type": "application/json",
 				},
-				method: "PATCH",
+				method: "POST",
 				body: JSON.stringify([groupId]),
 			},
 		);
+
+		return groupUpdate;
 	}
 }
 

@@ -6,6 +6,7 @@ import { MessageFlags } from "seyfert/lib/types";
 import z from "zod";
 import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { writeBack } from "@/lib/pk-sync-engine";
 import { alterCollection } from "@/mongodb";
 import { PAlterObject } from "@/types/alter";
 import { getUserById, writeUserById } from "@/types/user";
@@ -97,7 +98,13 @@ ${z.prettifyError(alter.error)}
 			},
 		});
 
-		await alterCollection.insertOne(alter.data);
+		await alterCollection.insertOne(alter.data);		
+		writeBack({
+			type: "create-alter",
+			id: String(alter.data.alterId),
+			change: { ...alter.data, userId: ctx.author.id },
+			syncConfig: user.syncConfiguration,
+		});
 
 		await ctx.interaction.update({
 			components: await new SystemSettingsView(

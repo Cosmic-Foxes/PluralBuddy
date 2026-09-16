@@ -21,6 +21,7 @@ import { Shortcut } from "yunaforseyfert";
 import z from "zod";
 import { getSpecificAutoProxy, getWiderAutoProxy } from "@/lib/autoproxy-util";
 import { emojis } from "@/lib/emojis";
+import { writeBack } from "@/lib/pk-sync-engine";
 import { w } from "@/webhooks";
 import { alterCollection, tagCollection, userCollection } from "../../mongodb";
 import { PAlterObject } from "../../types/alter";
@@ -199,7 +200,13 @@ ${z.prettifyError(alter.error)}
 		});
 
 		await alterCollection.insertOne(alter.data);
-
+		writeBack({
+			type: "create-alter",
+			id: String(alter.data.alterId),
+			change: { ...alter.data, userId: ctx.author.id },
+			syncConfig: user.syncConfiguration,
+		});
+		
 		const successMessage = async (done: boolean) =>
 			await ctx.editResponse({
 				components: [
