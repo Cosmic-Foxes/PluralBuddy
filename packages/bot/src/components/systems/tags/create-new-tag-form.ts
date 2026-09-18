@@ -8,6 +8,7 @@ import { getEmojiFromTagColor } from "@/lib/emojis";
 import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { writeBack } from "@/lib/pk-sync-engine";
+import { getMaxTagPublicValue } from "@/lib/privacy-bitmask";
 import { alterCollection, tagCollection } from "@/mongodb";
 import { PAlterObject } from "@/types/alter";
 import { PTagObject } from "@/types/tag";
@@ -68,7 +69,9 @@ export default class CreateNewAlterForm extends ModalCommand {
 			associatedAlters: [],
 
 			/** @see {@link TagProtectionFlags} */
-			public: 0,
+			public: getSystemFeatures(user.system).publicDefault
+				? getMaxTagPublicValue()
+				: 0,
 		});
 
 		if (tag.error) {

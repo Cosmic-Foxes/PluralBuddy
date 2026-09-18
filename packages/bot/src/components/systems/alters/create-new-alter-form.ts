@@ -7,8 +7,9 @@ import z from "zod";
 import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { writeBack } from "@/lib/pk-sync-engine";
+import { getMaxAlterPublicValue } from "@/lib/privacy-bitmask";
 import { alterCollection } from "@/mongodb";
-import { PAlterObject } from "@/types/alter";
+import { AlterProtectionFlags, PAlterObject } from "@/types/alter";
 import { getUserById, writeUserById } from "@/types/user";
 import { AlertView } from "@/views/alert";
 import { SystemSettingsView } from "@/views/system-settings";
@@ -51,7 +52,7 @@ export default class CreateNewAlterForm extends ModalCommand {
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
-
+		
 		const alter = PAlterObject.safeParse({
 			alterId: Number(DiscordSnowflake.generate()),
 			systemId: user.system.associatedUserId,
@@ -69,7 +70,9 @@ export default class CreateNewAlterForm extends ModalCommand {
 			lastMessageTimestamp: null,
 			messageCount: 0,
 			alterMode: "webhook",
-			public: 0,
+			public: getSystemFeatures(user.system).publicDefault
+				? getMaxAlterPublicValue()
+				: 0,
 		});
 
 		if (alter.error) {
@@ -98,7 +101,7 @@ ${z.prettifyError(alter.error)}
 			},
 		});
 
-		await alterCollection.insertOne(alter.data);		
+		await alterCollection.insertOne(alter.data);
 		writeBack({
 			type: "create-alter",
 			id: String(alter.data.alterId),
@@ -115,7 +118,7 @@ ${z.prettifyError(alter.error)}
 				alterIds: [...user.system.alterIds, alter.data.alterId],
 			}),
 		});
-		
+
 		w(ctx.author.id, "alter.create", {
 			userId: ctx.author.id,
 			type: "alter.create",

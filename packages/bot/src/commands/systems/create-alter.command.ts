@@ -1,7 +1,11 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { DiscordSnowflake } from "@sapphire/snowflake";
-import { assetStringGeneration, type PTag } from "plurography";
+import {
+	AlterProtectionFlags,
+	assetStringGeneration,
+	type PTag,
+} from "plurography";
 import {
 	type CommandContext,
 	Container,
@@ -21,6 +25,7 @@ import { Shortcut } from "yunaforseyfert";
 import z from "zod";
 import { getSpecificAutoProxy, getWiderAutoProxy } from "@/lib/autoproxy-util";
 import { emojis } from "@/lib/emojis";
+import { getSystemFeatures } from "@/lib/get-system-flags";
 import { writeBack } from "@/lib/pk-sync-engine";
 import { w } from "@/webhooks";
 import { alterCollection, tagCollection, userCollection } from "../../mongodb";
@@ -159,7 +164,9 @@ export default class CreateAlterCommand extends SubCommand {
 			lastMessageTimestamp: null,
 			messageCount: 0,
 			alterMode: "webhook",
-			public: 0,
+			public: getSystemFeatures(user.system).publicDefault
+				? Object.keys(AlterProtectionFlags).reduce((prev, cur) => prev + cur)
+				: 0,
 			tagIds: assignableTag !== null ? [assignableTag.tagId] : [],
 		});
 
@@ -206,7 +213,7 @@ ${z.prettifyError(alter.error)}
 			change: { ...alter.data, userId: ctx.author.id },
 			syncConfig: user.syncConfiguration,
 		});
-		
+
 		const successMessage = async (done: boolean) =>
 			await ctx.editResponse({
 				components: [
@@ -296,8 +303,8 @@ ${z.prettifyError(alter.error)}
 		w(ctx.author.id, "alter.create", {
 			userId: ctx.author.id,
 			type: "alter.create",
-			alter: alter.data
-		})
+			alter: alter.data,
+		});
 	}
 }
 

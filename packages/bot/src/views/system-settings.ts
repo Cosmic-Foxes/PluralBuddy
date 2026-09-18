@@ -435,6 +435,24 @@ export class SystemSettingsView extends TranslatedView {
 							$translations.CASE_INSENS_PROXIES_DESC,
 						),
 					),
+				new Section()
+					.setAccessory(
+						new Button()
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel(
+								caseInsensitiveProxies
+									? $translations.CASE_INSENS_PROXIES_BTN
+									: $translations.CASE_INSENS_PROXIES_BTN_D,
+							)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.GeneralTab.ToggleCaseInsensitiveProxies.create(),
+							),
+					)
+					.setComponents(
+						new TextDisplay().setContent(
+							$translations.CASE_INSENS_PROXIES_DESC,
+						),
+					),
 				new Separator().setSpacing(Spacing.Large),
 				new TextDisplay().setContent(
 					`${$translations.EXPORT_SYS_DESC}\n\n${$translations.IMPORT_SYS_DESC}`,

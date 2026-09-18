@@ -1,9 +1,9 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { AlterProtectionFlags } from "@/types/alter";
+import { TagProtectionFlags } from "@/types/tag";
 import type { TranslationString } from "../lang";
 import { SystemProtectionFlags } from "../types/system";
-import { TagProtectionFlags } from "@/types/tag";
 
 export function combine(
 	...perms: (
@@ -97,4 +97,36 @@ export function has(
 	mask?: number,
 ): boolean {
 	return ((mask ?? 0) & perm) !== 0;
+}
+
+export function getMaxAlterPublicValue() {
+	return (
+		Object.keys(AlterProtectionFlags).filter(
+			(v) => Number.isNaN(Number(v)) === true,
+		) as unknown as Array<number>
+	).reduce(
+		(prev, cur) =>
+			(((typeof prev === "number"
+				? prev
+				: AlterProtectionFlags[
+						prev as keyof typeof AlterProtectionFlags
+					]) as number) +
+				AlterProtectionFlags[
+					cur as unknown as keyof typeof AlterProtectionFlags
+				]) as number,
+	);
+}
+
+export function getMaxTagPublicValue() {
+	return (Object.keys(TagProtectionFlags)
+		.filter((v) => Number.isNaN(Number(v)) === true) as unknown as Array<number>)
+		.reduce(
+			(prev, cur) =>
+				(((typeof prev === "number"
+					? prev
+					: TagProtectionFlags[
+							prev as keyof typeof TagProtectionFlags
+						]) as number) +
+					TagProtectionFlags[cur as unknown as keyof typeof TagProtectionFlags]) as number,
+		);
 }

@@ -10,8 +10,10 @@ import {
 import { MessageFlags } from "seyfert/lib/types";
 import z from "zod";
 import { getEmojiFromTagColor } from "@/lib/emojis";
+import { getSystemFeatures } from "@/lib/get-system-flags";
 import { mentionCommand } from "@/lib/mention-command";
 import { writeBack } from "@/lib/pk-sync-engine";
+import { getMaxTagPublicValue } from "@/lib/privacy-bitmask";
 import { tagCollection } from "@/mongodb";
 import { PTagObject, tagColors } from "@/types/tag";
 import { getUserById, writeUserById } from "@/types/user";
@@ -94,7 +96,9 @@ export default class CreateTagCommand extends SubCommand {
 			associatedAlters: [],
 
 			/** @see {@link TagProtectionFlags} */
-			public: 0,
+			public: getSystemFeatures(user.system).publicDefault
+				? getMaxTagPublicValue()
+				: 0,
 		});
 
 		if (tag.error) {
