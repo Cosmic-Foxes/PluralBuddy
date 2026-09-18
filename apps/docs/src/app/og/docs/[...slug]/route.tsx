@@ -1,10 +1,11 @@
-
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { notFound } from "next/navigation";
 import { ImageResponse } from "next/og";
 import { generate as DefaultImage } from "@/lib/mono";
 import { getPageImageUrl, source } from "@/lib/source";
+
+export const revalidate = false;
 
 export async function GET(
 	_req: Request,
