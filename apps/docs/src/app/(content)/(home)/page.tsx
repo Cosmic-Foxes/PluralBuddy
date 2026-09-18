@@ -25,9 +25,9 @@ import { GithubDark } from "@/components/ui/svgs/githubDark";
 import { GithubLight } from "@/components/ui/svgs/githubLight";
 import { cn } from "@/lib/cn";
 import { correctSSRLocale } from "@/lib/correct-locale";
-import { getRealisticAbout } from "@/lib/get-realistic-about";
 import { m } from "@/paraglide/messages.js";
 import { getLocale, setLocale } from "@/paraglide/runtime";
+import { getRealisticAbout } from "@/server/get-realistic-about";
 import { DynamicHighligher, Hero } from "./page.client";
 
 // export const metadata: Metadata = {
