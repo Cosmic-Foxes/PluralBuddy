@@ -11,7 +11,10 @@ import type { StatisticResource } from "./cache/statistics";
 import { emojis } from "./lib/emojis";
 import { importControllers } from "./lib/importing/importControllers";
 import { getLanguageByUserId } from "./lib/lang";
-import { mentionCommand } from "./lib/mention-command";
+import {
+	loadedApplicationCommands,
+	mentionCommand,
+} from "./lib/mention-command";
 import { createSystemOperation } from "./lib/system-operation";
 import {
 	alterCollection,
@@ -68,6 +71,20 @@ export const clientRoutes = app
 				.replace("%command%", mentionCommand("pb;", "setup", true)),
 		);
 	})
+	.post(
+		"/api/commands",
+		zValidator("json", z.object({ commandName: z.string() })),
+		async ({ req, json }) => {
+			const { commandName } = req.valid("json");
+
+			return json({
+				mention: mentionCommand("pb;", commandName, true),
+				subcommands: loadedApplicationCommands.filter((v) =>
+					v.name.startsWith(commandName),
+				),
+			});
+		},
+	)
 	.post(
 		"/api/import-staging-reminder",
 		zValidator("json", z.object({ importStageId: z.string() })),
