@@ -3,7 +3,6 @@ import { type NextRequest, NextResponse } from "next/server";
 import { type PTag, PTagObject, type PUser, tagColors } from "plurography";
 import z from "zod";
 import { authenticateOAuth } from "@/lib/oauth";
-import { w } from "@/lib/webhooks";
 import { createOAuthFunction } from "@/server/wrapper";
 
 const CreateTagParams = z.object({
@@ -59,10 +58,6 @@ export const POST = createOAuthFunction<
 				{ $push: { "system.tagIds": tag.data.tagId } },
 			),
 		]);
-
-		w(user.userId, "tag.create", {
-
-		})
 
 		return ctx.respond(tag.data);
 	},
