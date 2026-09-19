@@ -58,7 +58,6 @@ import { middlewares } from "./middleware";
 import { mongoClient, setupDatabases, setupMongoDB } from "./mongodb";
 import { defaultPrefixes, getGuildFromId } from "./types/guild";
 import type { SeyfertError } from "seyfert/lib/common";
-import { decodeDetail } from "./lib/errors/seyfert-bad-request-commands";
 
 
 
@@ -252,11 +251,6 @@ if (import.meta.main) {
 		await client.uploadCommands();
 	} catch (e) {
 		(logger ?? console).warn(e);
-
-		if ((e as SeyfertError).metadata && (e as SeyfertError).metadata?.detail) {
-			(logger ?? console).warn("PluralBuddy couldn't load commands correctly. {error}", {error: decodeDetail((e as SeyfertError).metadata?.detail as string)});
-
-		}
 		// uploading commands has an extremely low ratelimit.
 	}
 
