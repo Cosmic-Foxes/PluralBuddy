@@ -1,6 +1,13 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { CommandContext, createStringOption, Declare, IgnoreCommand, Options, SubCommand } from "seyfert";
+import {
+	CommandContext,
+	createStringOption,
+	Declare,
+	IgnoreCommand,
+	Options,
+	SubCommand,
+} from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { Shortcut } from "yunaforseyfert";
 import { runOffCommand } from "@/lib/ap-cmds/off";
@@ -15,9 +22,9 @@ const options = {
 		choices: [
 			{ name: "Globally", value: "global" },
 			{ name: "Server-wide", value: "server" },
-			{ name: "Channel-wide", value: "channels" }
-		]
-	})
+			{ name: "Channel-wide", value: "channels" },
+		],
+	}),
 };
 
 @Declare({
@@ -25,7 +32,7 @@ const options = {
 	description: "Disable auto-proxy",
 	contexts: ["Guild", "BotDM"],
 	aliases: ["shutup"],
-	ignore: IgnoreCommand.Message
+	ignore: IgnoreCommand.Message,
 })
 @Options(options)
 export default class OffAutoProxy extends SubCommand {

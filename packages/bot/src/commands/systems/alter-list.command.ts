@@ -28,9 +28,10 @@ const options = {
 		required: false,
 	}),
 	plain: createBooleanOption({
-		description: "View all alters in a view as a plain list with no containers.",
+		description:
+			"View all alters in a view as a plain list with no containers.",
 		flag: true,
-		required: false
+		required: false,
 	}),
 };
 
@@ -138,7 +139,7 @@ export default class AlterListCommand extends SubCommand {
 							new Button()
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.AlterPlainPagination.CustomPage.create(
-										"1"
+										"1",
 									),
 								)
 								.setLabel(`1/${Math.ceil(user.system.alterIds.length / 90)}`)

@@ -4,22 +4,22 @@ import {
 	AlterProtectionFlags,
 	PAlter,
 	PAlterObject,
-} from "@/pluralbuddy/alter";
-import { ImportNotation } from "@/pluralbuddy/import-notation";
+} from "../pluralbuddy/alter";
+import { ImportNotation } from "../pluralbuddy/import-notation";
 import {
 	listFromMaskAlters,
 	listFromMaskSystems,
 	listFromMaskTags,
-} from "@/pluralbuddy/privacy-bitmask";
+} from "../pluralbuddy/privacy-bitmask";
 import {
 	PSystem,
 	PSystemObject,
 	SystemProtectionFlags,
-} from "@/pluralbuddy/system";
-import { PTag, PTagObject, TagProtectionFlags } from "@/pluralbuddy/tag";
-import { PluralKitGroup } from "@/pluralkit/group";
-import { PluralKitMember } from "@/pluralkit/member";
+} from "../pluralbuddy/system";
+import { PTag, PTagObject, TagProtectionFlags, tagColors, tagHexColors } from "../pluralbuddy/tag";
 import { makePkId, PluralKitSystem, PluralKitSystemType } from "../pluralkit";
+import { PluralKitGroup } from "../pluralkit/group";
+import { PluralKitMember } from "../pluralkit/member";
 import Converter from ".";
 
 export default class PluralKitConverter
@@ -176,8 +176,253 @@ export default class PluralKitConverter
 					? { "@/birthday": birthdayDate.toISOString() }
 					: {}),
 			},
+			flags: 0,
 		} satisfies PAlter);
 	}
+
+	_syncUpdateAlter(alter: z.infer<typeof PluralKitMember>, i?: number) {
+		const date = new Date();
+		date.setSeconds(i ?? 0);
+
+		let birthdayDate = alter.birthday ? new Date() : null;
+
+		if (birthdayDate !== null) {
+			const [year, month, date] = (alter.birthday ?? "").split("-");
+			if (
+				Number.isNaN(Number(year)) ||
+				Number.isNaN(Number(month)) ||
+				Number.isNaN(Number(date))
+			) {
+				birthdayDate = null;
+			} else
+				birthdayDate.setFullYear(Number(year), Number(month), Number(date));
+		}
+
+		return {
+			color: alter.color !== null ? `#${alter.color}` : null,
+			description: alter.description,
+			pronouns: alter.pronouns,
+			avatarUrl: alter.avatar_url ?? alter.webhook_avatar_url,
+			banner: alter.banner,
+			proxyTags: alter.proxy_tags.map((tag, i) => {
+				const date = new Date();
+				date.setSeconds(i ?? 0);
+
+				const id = DiscordSnowflake.generate({
+					timestamp: date,
+					workerId: BigInt(i ?? 0),
+					processId: BigInt(Math.floor(Math.random() * 1000)),
+				});
+
+				return {
+					prefix: tag.prefix?.replaceAll('"', "") ?? "",
+					suffix: tag.suffix?.replaceAll('"', "") ?? "",
+					id: Number(id).toString(),
+				};
+			}),
+			public: this.combine(
+				...[
+					...(alter.privacy.visibility === "public"
+						? [AlterProtectionFlags.VISIBILITY]
+						: []),
+					...(alter.privacy.pronoun_privacy === "public"
+						? [AlterProtectionFlags.PRONOUNS]
+						: []),
+					...(alter.privacy.description_privacy === "public"
+						? [AlterProtectionFlags.DESCRIPTION]
+						: []),
+					...(alter.privacy.avatar_privacy === "public"
+						? [AlterProtectionFlags.AVATAR]
+						: []),
+					...(alter.privacy.banner_privacy === "public"
+						? [AlterProtectionFlags.BANNER]
+						: []),
+					...(alter.privacy.metadata_privacy === "public"
+						? [AlterProtectionFlags.MESSAGE_COUNT, AlterProtectionFlags.TAGS]
+						: []),
+					...(alter.privacy.name_privacy === "public"
+						? [AlterProtectionFlags.NAME, AlterProtectionFlags.USERNAME]
+						: []),
+				],
+			),
+			fields: {
+				'@/converter/pk': alter.uuid,
+			}
+		};
+	}
+	_syncUpdateTag(tag: z.infer<typeof PluralKitGroup>, i?: number) {
+		const date = new Date();
+		date.setSeconds(i ?? 0);
+
+		return {
+			tagFriendlyName: tag.display_name ?? tag.name,
+			tagDescription: tag.description ?? undefined,
+			tagColor: "pink",
+
+			public: this.combine(
+				...[
+					...(tag.privacy.description_privacy === "public"
+						? [TagProtectionFlags.DESCRIPTION]
+						: []),
+					...(tag.privacy.name_privacy === "public"
+						? [TagProtectionFlags.NAME]
+						: []),
+					...(tag.privacy.metadata_privacy === "public"
+						? [TagProtectionFlags.ALTERS, TagProtectionFlags.COLOR]
+						: []),
+				],
+			),
+		};
+	}
+
+	_syncUpdateSystem(system: Partial<z.infer<typeof PSystemObject>>) {
+		return {
+			name: system.systemName,
+			description: system.systemDescription,
+			tag: system.systemDisplayTag,
+			pronouns: system.systemPronouns,
+			avatar_url: system.systemAvatar,
+			banner: system.systemBanner,
+
+			privacy: system.public
+				? {
+						name_privacy: listFromMaskSystems(system.public).includes(
+							SystemProtectionFlags.NAME,
+						)
+							? "public"
+							: "private",
+						avatar_privacy: listFromMaskSystems(system.public).includes(
+							SystemProtectionFlags.AVATAR,
+						)
+							? "public"
+							: "private",
+						description_privacy: listFromMaskSystems(system.public).includes(
+							SystemProtectionFlags.DESCRIPTION,
+						)
+							? "public"
+							: "private",
+						banner_privacy: listFromMaskSystems(system.public).includes(
+							SystemProtectionFlags.BANNER,
+						)
+							? "public"
+							: "private",
+						pronoun_privacy: listFromMaskSystems(system.public).includes(
+							SystemProtectionFlags.PRONOUNS,
+						)
+							? "public"
+							: "private",
+						member_list_privacy: listFromMaskSystems(system.public).includes(
+							SystemProtectionFlags.ALTERS,
+						)
+							? "public"
+							: "private",
+						group_list_privacy: listFromMaskSystems(system.public).includes(
+							SystemProtectionFlags.TAGS,
+						)
+							? "public"
+							: "private",
+						front_privacy: "private",
+						front_history_privacy: "private",
+					}
+				: undefined,
+		} satisfies Partial<z.infer<typeof PluralKitSystem>>;
+	}
+
+	_syncUpdateAlterBack(alter: Partial<z.infer<typeof PAlterObject>>) {
+		return {
+			name: alter.username ? alter.username.substring(0, 100) : undefined,
+			display_name: alter.displayName
+				? alter.displayName.substring(0, 100)
+				: undefined,
+
+			color:
+				alter.color !== undefined
+					? alter.color !== null
+						? alter.color.slice(1)
+						: null
+					: undefined,
+			avatar_url: alter.avatarUrl,
+			webhook_avatar_url: alter.webhookAvatarUrl,
+			banner: alter.banner,
+			description: alter.description
+				? alter.description.substring(0, 1000)
+				: alter.description,
+			proxy_tags: (alter.proxyTags ?? []).map((c) => ({
+				prefix: c.prefix,
+				suffix: c.suffix,
+			})),
+			privacy: alter.public
+				? {
+						visibility: listFromMaskAlters(alter.public).includes(
+							AlterProtectionFlags.VISIBILITY,
+						)
+							? "public"
+							: "private",
+						name_privacy: listFromMaskAlters(alter.public).includes(
+							AlterProtectionFlags.NAME,
+						)
+							? "public"
+							: "private",
+						description_privacy: listFromMaskAlters(alter.public).includes(
+							AlterProtectionFlags.DESCRIPTION,
+						)
+							? "public"
+							: "private",
+						banner_privacy: listFromMaskAlters(alter.public).includes(
+							AlterProtectionFlags.BANNER,
+						)
+							? "public"
+							: "private",
+						birthday_privacy: "private",
+						pronoun_privacy: listFromMaskAlters(alter.public).includes(
+							AlterProtectionFlags.PRONOUNS,
+						)
+							? "public"
+							: "private",
+						avatar_privacy: listFromMaskAlters(alter.public).includes(
+							AlterProtectionFlags.AVATAR,
+						)
+							? "public"
+							: "private",
+						metadata_privacy: "private",
+						proxy_privacy: "private",
+					}
+				: undefined,
+		} satisfies Partial<z.infer<typeof PluralKitMember>>;
+	}
+	_syncUpdateTagBack(tag: Partial<z.infer<typeof PTagObject>>) {
+		return {
+			display_name: tag.tagFriendlyName,
+			name: tag.tagFriendlyName,
+			description: tag.tagDescription,
+			color: tag.tagColor ? (tagHexColors[tagColors.indexOf(tag.tagColor)]) : undefined,
+			
+			privacy: tag.public
+				? {
+						name_privacy: listFromMaskTags(tag.public).includes(
+							TagProtectionFlags.NAME,
+						)
+							? "public"
+							: "private",
+						description_privacy: listFromMaskTags(tag.public).includes(
+							TagProtectionFlags.DESCRIPTION,
+						)
+							? "public"
+							: "private",
+						banner_privacy: "private",
+						icon_privacy: "private",
+						list_privacy: listFromMaskTags(tag.public).includes(
+							TagProtectionFlags.ALTERS,
+						)
+							? "public"
+							: "private",
+						metadata_privacy: "private",
+						visibility: "private",
+					}
+				: undefined,
+		} satisfies Partial<z.infer<typeof PluralKitGroup>>;
+	}
+
 	toImport(data: PluralKitSystemType): z.infer<typeof ImportNotation> {
 		let alters = data.members.map((v, i) =>
 			this.toAlter(v, i, String(data.accounts[0])),
@@ -230,7 +475,7 @@ export default class PluralKitConverter
 			tagDescription: tag.description ?? undefined,
 			tagColor: "pink",
 
-			associatedAlters: tag.members,
+			associatedAlters: tag.members ?? [],
 
 			public: this.combine(
 				...[
@@ -246,7 +491,7 @@ export default class PluralKitConverter
 				],
 			),
 			fields: {
-				"@/converter/pk": tag.id.substring(0, 30),
+				"@/converter/pk": tag.uuid.substring(0, 36),
 				...(tag.color !== null ? { "@/custom-color": tag.color } : {}),
 				...(tag.icon !== null ? { "@/icon": tag.icon } : {}),
 				...(tag.banner !== null ? { "@/banner": tag.banner } : {}),
@@ -411,7 +656,7 @@ export default class PluralKitConverter
 
 		groups = groups.map((v) => ({
 			...v,
-			members: v.members
+			members: (v.members ?? [])
 				.map((c) => members.find((m) => String(m.oldId) === c))
 				.filter((v) => v !== undefined)
 				.map((v) => v.parsed.id),

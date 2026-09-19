@@ -36,7 +36,6 @@ export default class NextPageAP extends ComponentCommand {
 				ctx.customId,
 			)[0];
 
-
 		const alters = await alterCollection
 			.find({ systemId: user.system.associatedUserId })
 			.limit(90)
@@ -99,7 +98,7 @@ export default class NextPageAP extends ComponentCommand {
 								Number(page ?? "1") - 1,
 							),
 						)
-						.setDisabled(Number(page ?? '1') === 1)
+						.setDisabled(Number(page ?? "1") === 1)
 						.setLabel((await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE)
 						.setStyle(ButtonStyle.Primary),
 					new Button()
@@ -112,7 +111,11 @@ export default class NextPageAP extends ComponentCommand {
 						.setDisabled(alters.length !== 90)
 						.setStyle(ButtonStyle.Primary),
 					new Button()
-						.setCustomId(InteractionIdentifier.Systems.Configuration.AlterPlainPagination.CustomPage.create(page ?? '1'))
+						.setCustomId(
+							InteractionIdentifier.Systems.Configuration.AlterPlainPagination.CustomPage.create(
+								page ?? "1",
+							),
+						)
 						.setLabel(`${page}/${Math.ceil(user.system.alterIds.length / 90)}`)
 						.setStyle(ButtonStyle.Secondary),
 				),

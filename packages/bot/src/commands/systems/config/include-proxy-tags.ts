@@ -2,13 +2,16 @@ import { getSystemFeatures } from "@/lib/get-system-flags";
 import { createSystemOperation } from "@/lib/system-operation";
 import { AlertView } from "@/views/alert";
 import { SystemFlags } from "plurography";
-import { CommandContext, Declare, SubCommand } from "seyfert";
+import { CommandContext, Declare, Group, SubCommand } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { Shortcut } from "yunaforseyfert";
 
 @Declare({
-	name: "toggle-typing-status",
-	description: "Toggling typing status after proxying.",
+	name: "include-proxy-tags",
+	description: "Toggling including proxy tags after proxying with an alter.",
 })
+@Group("settings")
+@Shortcut()
 export default class IncludeProxyTags extends SubCommand {
 	override async run(ctx: CommandContext) {
 		const { system } = await ctx.retrievePUser();
@@ -20,30 +23,30 @@ export default class IncludeProxyTags extends SubCommand {
 						"ERROR_SYSTEM_DOESNT_EXIST",
 					),
 				],
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			});
 		}
 
 		await createSystemOperation(
 			system,
 			{
-				flags: getSystemFeatures(system).noTypingStatus
-					? getSystemFeatures(system).disable(SystemFlags.NO_TYPING_STATUS)
-					: getSystemFeatures(system).enable(SystemFlags.NO_TYPING_STATUS),
+				flags: getSystemFeatures(system).keepProxyTags
+					? getSystemFeatures(system).disable(SystemFlags.KEEP_PROXY_TAGS)
+					: getSystemFeatures(system).enable(SystemFlags.KEEP_PROXY_TAGS),
 			},
 			await ctx.userTranslations(),
 			"discord",
 			{
-				flippedNoTypingStatus: true,
+				flippedProxyTags: true,
 			},
 		);
 
 		return await ctx.write({
 			components: [
 				...new AlertView(await ctx.userTranslations()).successView(
-					getSystemFeatures(system).noTypingStatus
-						? "TOGGLED_TYPING_STATUS_D"
-						: "TOGGLED_TYPING_STATUS_E",
+					getSystemFeatures(system).keepProxyTags
+						? "TOGGLED_INCLUDING_PROXY_TAGS_D"
+						: "TOGGLED_INCLUDING_PROXY_TAGS_E",
 				),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

@@ -44,14 +44,14 @@ export default class RequireSystemTags extends SubCommand {
 						.bool(GuildFlags.MANDATORY_GUILD_TAG, option === "on"),
 				},
 			},
-			{ upsert: true }
+			{ upsert: true },
 		);
-		ctx.client.cache.pguild.remove(pluralGuild.guildId)
-		
+		ctx.client.cache.pguild.remove(pluralGuild.guildId);
+
 		pluralGuild = await ctx.retrievePGuild();
 
 		return await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).successView(
+			components: new AlertView(await ctx.userTranslations()).successView(
 				pluralGuild.getFeatures().requiresGuildTag
 					? "REQUIRE_TAG_ENABLED"
 					: "REQUIRE_TAG_DISABLED",

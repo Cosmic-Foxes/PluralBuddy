@@ -1,14 +1,17 @@
-import { SystemFlags } from "plurography";
-import { CommandContext, Declare, SubCommand } from "seyfert";
-import { MessageFlags } from "seyfert/lib/types";
 import { getSystemFeatures } from "@/lib/get-system-flags";
 import { createSystemOperation } from "@/lib/system-operation";
 import { AlertView } from "@/views/alert";
+import { SystemFlags } from "plurography";
+import { CommandContext, Declare, Group, SubCommand } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
+import { Shortcut } from "yunaforseyfert";
 
 @Declare({
-	name: "toggle-left-tags",
-	description: "Toggling left side display tags on webhook names.",
+	name: "toggle-typing-status",
+	description: "Toggling typing status after proxying.",
 })
+@Group("settings")
+@Shortcut()
 export default class IncludeProxyTags extends SubCommand {
 	override async run(ctx: CommandContext) {
 		const { system } = await ctx.retrievePUser();
@@ -20,16 +23,16 @@ export default class IncludeProxyTags extends SubCommand {
 						"ERROR_SYSTEM_DOESNT_EXIST",
 					),
 				],
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			});
 		}
 
 		await createSystemOperation(
 			system,
 			{
-				flags: getSystemFeatures(system).leftSidedTag
-					? getSystemFeatures(system).disable(SystemFlags.LEFT_SIDED_TAG)
-					: getSystemFeatures(system).enable(SystemFlags.LEFT_SIDED_TAG),
+				flags: getSystemFeatures(system).noTypingStatus
+					? getSystemFeatures(system).disable(SystemFlags.NO_TYPING_STATUS)
+					: getSystemFeatures(system).enable(SystemFlags.NO_TYPING_STATUS),
 			},
 			await ctx.userTranslations(),
 			"discord",
@@ -41,9 +44,9 @@ export default class IncludeProxyTags extends SubCommand {
 		return await ctx.write({
 			components: [
 				...new AlertView(await ctx.userTranslations()).successView(
-					getSystemFeatures(system).leftSidedTag
-						? "TOGGLED_LEFT_SIDED_TAGS_D"
-						: "TOGGLED_LEFT_SIDED_TAGS_E",
+					getSystemFeatures(system).noTypingStatus
+						? "TOGGLED_TYPING_STATUS_D"
+						: "TOGGLED_TYPING_STATUS_E",
 				),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

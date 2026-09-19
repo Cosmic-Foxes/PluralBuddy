@@ -1,7 +1,15 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { ActionRow, Button, Container, type DefaultLocale, Section, TextDisplay } from "seyfert";
+import {
+	ActionRow,
+	Button,
+	Container,
+	type DefaultLocale,
+	Section,
+	TextDisplay,
+} from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
+import { w } from "@/webhooks";
 import { client } from "..";
 import type { TranslationString } from "../lang";
 import { operationCollection } from "../mongodb";
@@ -11,6 +19,7 @@ import { getUserById, writeUserById } from "../types/user";
 import convert from "./delay-converter";
 import { emojis } from "./emojis";
 import { InteractionIdentifier } from "./interaction-ids";
+import { writeBack } from "./pk-sync-engine";
 import {
 	friendlyProtectionSystem,
 	listFromMaskSystems,
@@ -21,7 +30,15 @@ export async function createSystemOperation(
 	operation: Partial<PSystem>,
 	translations: DefaultLocale,
 	environment: "discord" | "api-exchange" | "api-web",
-	flagDescription?: { flippedProxyTags?: boolean, flippedIncludePronouns?: boolean, flippedNoTypingStatus?: boolean; flippedPreferAccessiblity?: boolean, flippedLeftSideTag?: boolean, flippedCaseInsensitiveProxying?: boolean }
+	flagDescription?: {
+		flippedProxyTags?: boolean;
+		flippedIncludePronouns?: boolean;
+		flippedNoTypingStatus?: boolean;
+		flippedPreferAccessiblity?: boolean;
+		flippedPublicDefault?: boolean;
+		flippedLeftSideTag?: boolean;
+		flippedCaseInsensitiveProxying?: boolean;
+	},
 ) {
 	let oldSystem: Partial<PSystem> = {};
 
@@ -123,7 +140,7 @@ export async function createSystemOperation(
 
 					if (changes[0]) {
 						const { server, tag } = changes[0];
-						let formalServerName = `\`${server}\``
+						let formalServerName = `\`${server}\``;
 						if (environment === "discord")
 							formalServerName = `**${(await client.guilds.fetch(server)).name}**`;
 
@@ -157,6 +174,9 @@ export async function createSystemOperation(
 				if (flagDescription?.flippedCaseInsensitiveProxying === true) {
 					return translations.OPERATION_FLIPPED_CASE_INSENS_PROXIES;
 				}
+				if (flagDescription?.flippedPublicDefault === true) {
+					return translations.OPERATION_FLIPPED_PUBLIC_DEFAULT;
+				}
 
 				return translations.OPERATION_FALLBACK.replace("%property%", c).replace(
 					"%value%",
@@ -168,6 +188,27 @@ export async function createSystemOperation(
 	if (listItems.length === 0) return;
 
 	await operationCollection.insertOne(operationDb);
+
+	w(system.associatedUserId, "system.update", {
+		userId: system.associatedUserId,
+		type: "system.update",
+		system: {
+			...system,
+			...operation,
+		},
+	});
+
+	(async () => {
+
+		const { syncConfiguration } = await getUserById(system.associatedUserId)
+
+		writeBack({
+			type: "system",
+			id: "@me",
+			change: operation,
+			syncConfig: syncConfiguration,
+		});
+	})()
 
 	if (environment === "discord")
 		await writeUserById(system.associatedUserId, {
@@ -229,12 +270,8 @@ export async function createSystemOperation(
 								.setColor("#F9DC00"),
 							new Section()
 								.setComponents(
-									new TextDisplay().setContent(
-										translations.NOTIFIED_1,
-									),
-									new TextDisplay().setContent(
-										translations.NOTIFIED_2,
-									),
+									new TextDisplay().setContent(translations.NOTIFIED_1),
+									new TextDisplay().setContent(translations.NOTIFIED_2),
 								)
 								.setAccessory(
 									new Button()
@@ -248,7 +285,7 @@ export async function createSystemOperation(
 					})
 					.catch(() => null);
 		} catch (e) {
-			console.log(e)
+			console.log(e);
 		}
 
 	return {

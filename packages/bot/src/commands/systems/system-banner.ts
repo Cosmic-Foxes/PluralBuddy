@@ -15,7 +15,11 @@ import {
 import { MessageFlags } from "seyfert/lib/types";
 import { FileTooBigException } from "@/lib/file-too-big";
 import { createSystemOperation } from "@/lib/system-operation";
-import {  deleteOldObject, getOldObject, uploadAttachment } from "@/object-storage";
+import {
+	deleteOldObject,
+	getOldObject,
+	uploadAttachment,
+} from "@/object-storage";
 import { autocompleteAlters } from "../../lib/autocomplete-alters";
 import { alterCollection } from "../../mongodb";
 import {
@@ -106,23 +110,22 @@ export default class EditAlterPictureCommand extends SubCommand {
 						imageProperty: user.system.systemBanner,
 						storagePrefix: user.storagePrefix,
 					}),
-					{ height: 450 }
+					{ height: 450 },
 				);
 			} catch (error) {
-
-			if (error instanceof FileTooBigException)
+				if (error instanceof FileTooBigException)
+					return await ctx.editResponse({
+						components: new AlertView(await ctx.userTranslations()).errorView(
+							"AFTER_COMPRESSION_TOO_BIG",
+						),
+						flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+					});
 				return await ctx.editResponse({
 					components: new AlertView(await ctx.userTranslations()).errorView(
-						"AFTER_COMPRESSION_TOO_BIG",
+						"ERROR_FAILED_TO_UPLOAD_TO_GCP",
 					),
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 				});
-			return await ctx.editResponse({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ERROR_FAILED_TO_UPLOAD_TO_GCP",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
 			}
 		} else
 			await deleteOldObject({

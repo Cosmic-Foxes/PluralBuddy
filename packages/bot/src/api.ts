@@ -1,3 +1,4 @@
+import { styleText } from "node:util";
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { trimTrailingSlash } from "hono/trailing-slash";
@@ -22,6 +23,7 @@ import {
 	tagCollection,
 	userCollection,
 } from "./mongodb";
+import { terminologyMemoryCache } from "./types/user";
 import { AlertView } from "./views/alert";
 import { LoadingView } from "./views/loading";
 
@@ -43,7 +45,13 @@ app.use("/api/*", async (ctx, next) => {
 	if (ctx.req.header("X-PluralBuddy-Api-Key") !== process.env.API_KEY)
 		return ctx.json({ error: "invalid key" }, { status: 400 });
 
-	return await next();
+	const timeStart = new Date();
+
+	await next();
+	
+	console.log(
+		`${styleText("gray", "[API]")} ${ctx.req.method} ${ctx.req.path} ${styleText(ctx.res.status >= 400 ? 'red' : 'green', ctx.res.status.toString())} in ${new Date().getMilliseconds() - timeStart.getMilliseconds()}ms`,
+	);
 });
 app.use(trimTrailingSlash());
 
@@ -218,6 +226,28 @@ export const clientRoutes = app
 				.filter((v) => !v.path.endsWith("*"))
 				.map((v) => v.path),
 		}),
+	)
+	.delete(
+		"/api/cache",
+		zValidator(
+			"json",
+			z.object({
+				type: z.enum(["terminology", "statistic", "similarWebhookResource", "pguild", "i18n"]),
+				key: z.string(),
+			}),
+		),
+		async (c) => {
+			const { type, key } = c.req.valid("json");
+			await client.cache[type].remove(key);
+
+			if (type === "terminology") {
+				delete terminologyMemoryCache[key];
+			}
+
+			return c.json({
+				success: true,
+			});
+		},
 	);
 
 export default {

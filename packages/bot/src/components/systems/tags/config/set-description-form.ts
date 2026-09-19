@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { ModalCommand, type ModalContext } from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
@@ -8,6 +8,7 @@ import { alterCollection, tagCollection } from "@/mongodb";
 import { AlterView } from "@/views/alters";
 import { TagView } from "@/views/tags";
 import { w } from "@/webhooks";
+import {writeBack} from "@/lib/pk-sync-engine.ts";
 
 export default class SetPronounsButton extends ModalCommand {
 	override filter(context: ModalContext) {
@@ -31,7 +32,7 @@ export default class SetPronounsButton extends ModalCommand {
 
 		if (tag === null) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_TAG_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -51,14 +52,26 @@ export default class SetPronounsButton extends ModalCommand {
 				},
 			},
 		);
-		
+
 		w(ctx.author.id, "tag.update", {
 			type: "tag.update",
 			tag: {
 				...tag,
-				tagDescription: tagDescription
+				tagDescription: tagDescription,
 			},
 		});
+
+
+
+        if (tag.fields["@/converter/pk"])
+            writeBack({
+                type: "tag",
+                id: tag.fields["@/converter/pk"],
+                change: {
+                    tagDescription: tagDescription,
+                },
+                syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+            });
 
 		tag =
 			(await tagCollection.findOne({
@@ -68,13 +81,16 @@ export default class SetPronounsButton extends ModalCommand {
 
 		return await ctx.interaction.update({
 			components: [
-				...new TagView((await ctx.userTranslations())).tagTopView(
+				...new TagView(await ctx.userTranslations()).tagTopView(
 					"general",
 					tag.tagId.toString(),
 					tag.tagFriendlyName,
 				),
-				...new TagView((await ctx.userTranslations())).tagGeneral(tag, await ctx.getDefaultPrefix() ?? "pb;", 
-				ctx.interaction?.message?.messageReference === undefined,),
+				...new TagView(await ctx.userTranslations()).tagGeneral(
+					tag,
+					(await ctx.getDefaultPrefix()) ?? "pb;",
+					ctx.interaction?.message?.messageReference === undefined,
+				),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});

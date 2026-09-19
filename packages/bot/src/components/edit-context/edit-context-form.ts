@@ -21,43 +21,51 @@ export default class EditContextForm extends ModalCommand {
 	}
 
 	override async run(ctx: ModalContext) {
-        const messageId = InteractionIdentifier.EditMenu.EditContextForm.substring(ctx.customId)[0];
-        const contents = ctx.interaction.getInputValue(InteractionIdentifier.EditMenu.EditContextType.create(), true);
-		const message = await messagesCollection.findOne(
-			{ messageId },
+		const messageId = InteractionIdentifier.EditMenu.EditContextForm.substring(
+			ctx.customId,
+		)[0];
+		const contents = ctx.interaction.getInputValue(
+			InteractionIdentifier.EditMenu.EditContextType.create(),
+			true,
 		);
+		const message = await messagesCollection.findOne({ messageId });
 		const guild = await ctx.retrievePGuild();
 
-        if (message === null) {
+		if (message === null) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"NOT_RECENT_ENOUGH",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			});
-        }
+		}
 
 		if (
 			message?.systemId !== ctx.author.id ||
 			message.guildId !== ctx.guildId
 		) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_OWN_MESSAGE",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			});
 		}
 
-		const fetchedMessage = await ctx.client.messages.fetch(message.messageId, message.channelId, true);
-		const channel = await fetchedMessage.channel()
-		const parent = ("parentId" in channel && channel.isThread()) ? channel.parentId : null;
+		const fetchedMessage = await ctx.client.messages.fetch(
+			message.messageId,
+			message.channelId,
+			true,
+		);
+		const channel = await fetchedMessage.channel();
+		const parent =
+			"parentId" in channel && channel.isThread() ? channel.parentId : null;
 
 		const similarWebhooks = await getSimilarWebhooks(parent ?? channel.id);
 
 		if (similarWebhooks[0] === undefined) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_MANUAL_PROXY",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -66,15 +74,25 @@ export default class EditContextForm extends ModalCommand {
 
 		const webhook = similarWebhooks[0];
 
-		if (!ctx.member) throw new Error("No member object.")
+		if (!ctx.member) throw new Error("No member object.");
 
-		await processEditContents(message, fetchedMessage, webhook, contents as string, guild, ctx.member)
+		await processEditContents(
+			message,
+			fetchedMessage,
+			webhook,
+			contents as string,
+			guild,
+			ctx.member,
+		);
 
 		return ctx.write({
-			components: new AlertView((await ctx.userTranslations())).successViewCustom(
-				(await ctx.userTranslations()).SUCCESSFULLY_EDITED_MESSAGE.replace("%message%", `https://discord.com/channels/${ctx.guildId}/${fetchedMessage?.channelId}/${fetchedMessage?.id}`),
+			components: new AlertView(await ctx.userTranslations()).successViewCustom(
+				(await ctx.userTranslations()).SUCCESSFULLY_EDITED_MESSAGE.replace(
+					"%message%",
+					`https://discord.com/channels/${ctx.guildId}/${fetchedMessage?.channelId}/${fetchedMessage?.id}`,
+				),
 			),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});
-    }
+	}
 }

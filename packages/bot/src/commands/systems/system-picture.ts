@@ -115,7 +115,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 						imageProperty: user.system.systemAvatar,
 						storagePrefix: user.storagePrefix,
 					}),
-					{ height: 512, width: 512 }
+					{ height: 512, width: 512 },
 				);
 			} catch (error) {
 				if (error instanceof FileTooBigException)

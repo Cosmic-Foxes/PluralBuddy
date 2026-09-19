@@ -1,11 +1,12 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { client } from "..";
 import {
-	ApplicationCommandOptionType,
 	type APIApplicationCommand,
 	type APIApplicationCommandSubcommandOption,
+	ApplicationCommandOptionType,
 } from "seyfert/lib/types";
+import cachedCommands from "@/../commands.json"
+import { client } from "..";
 
 export let loadedApplicationCommands: (
 	| APIApplicationCommand

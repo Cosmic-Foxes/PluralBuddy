@@ -16,10 +16,12 @@ export default class OffDMsButton extends ComponentCommand {
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
-        const [ guildId ] = InteractionIdentifier.Systems.AutoProxy.Off.substring(ctx.customId);
+		const [guildId] = InteractionIdentifier.Systems.AutoProxy.Off.substring(
+			ctx.customId,
+		);
 		if (guildId === undefined) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"DN_ERROR_SE",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -31,7 +33,7 @@ export default class OffDMsButton extends ComponentCommand {
 
 		if (guild === undefined) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"DN_ERROR_SE",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -40,7 +42,7 @@ export default class OffDMsButton extends ComponentCommand {
 
 		if (system === undefined) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -57,7 +59,7 @@ export default class OffDMsButton extends ComponentCommand {
 				{
 					$set: {
 						"system.systemAutoproxy.$[serverEntry].autoproxyMode": "off",
-                        "system.systemAutoproxy.$[serverEntry].autoproxyAlter": null
+						"system.systemAutoproxy.$[serverEntry].autoproxyAlter": null,
 					},
 				},
 				{
@@ -83,12 +85,13 @@ export default class OffDMsButton extends ComponentCommand {
         await ctx.interaction.message.delete().catch((_) => null);
 
 		return await ctx.write({
-			components: new AlertView((await ctx.userTranslations())).successViewCustom(
-				((await ctx.userTranslations()))
-					.SET_AUTO_PROXY_SRV.replaceAll("%server_name%", guild?.name ?? "??")
-					.replaceAll("%mode%", "off"),
+			components: new AlertView(await ctx.userTranslations()).successViewCustom(
+				(await ctx.userTranslations()).SET_AUTO_PROXY_SRV.replaceAll(
+					"%server_name%",
+					guild?.name ?? "??",
+				).replaceAll("%mode%", "off"),
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
-    }
+	}
 }

@@ -29,7 +29,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 
 	async run(ctx: ModalContext) {
 		await ctx.interaction.update({
-			components: new LoadingView((await ctx.userTranslations())).loadingView(),
+			components: new LoadingView(await ctx.userTranslations()).loadingView(),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
 
@@ -45,7 +45,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		if (file.size > MAX_FILE_SIZE) {
 			return await ctx.editResponse({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorView(
+					...new AlertView(await ctx.userTranslations()).errorView(
 						"PLURALBUDDY_IMPORT_ERROR_TOO_LARGE",
 					),
 					new ActionRow().addComponents(
@@ -67,12 +67,11 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		if (parsed.error) {
 			return await ctx.editResponse({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorViewCustom(
-						(await ctx.userTranslations())
-							.PLURALBUDDY_IMPORT_ERROR.replace(
-								"%zod_errors%",
-								z.prettifyError(parsed.error),
-							),
+					...new AlertView(await ctx.userTranslations()).errorViewCustom(
+						(await ctx.userTranslations()).PLURALBUDDY_IMPORT_ERROR.replace(
+							"%zod_errors%",
+							z.prettifyError(parsed.error),
+						),
 					),
 					new ActionRow().addComponents(
 						new Button()
@@ -179,13 +178,11 @@ export default class PluralBuddyImportModal extends ModalCommand {
 
 		await ctx.editResponse({
 			components: [
-				...new AlertView((await ctx.userTranslations())).successViewCustom(
-					(await ctx.userTranslations())
-						.SUCCESSFULLY_IMPORTED.replace(
-							"%alter_count%",
-							String(data.system.alterIds.length),
-						)
-						.replace("%system_name%", String(data.system.systemName)),
+				...new AlertView(await ctx.userTranslations()).successViewCustom(
+					(await ctx.userTranslations()).SUCCESSFULLY_IMPORTED.replace(
+						"%alter_count%",
+						String(data.system.alterIds.length),
+					).replace("%system_name%", String(data.system.systemName)),
 				),
 			],
 			flags: MessageFlags.IsComponentsV2,

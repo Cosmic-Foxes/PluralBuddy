@@ -123,7 +123,7 @@ export const ImportStagingRouter = router({
 
 			if (!session) throw new Error("Session error.");
 
-			const mongoClient = new MongoClient(process.env.MONGO ?? "");
+			const mongoClient = ctx.db;
 			const mongoDb = mongoClient.db(`${process.env.ENV}-pluralbuddy-app`);
 
 			let result = (await mongoDb

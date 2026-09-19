@@ -15,7 +15,12 @@ import {
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { FileTooBigException } from "@/lib/file-too-big";
-import {  deleteOldObject, getOldObject, uploadAttachment } from "@/object-storage";
+import { writeBack } from "@/lib/pk-sync-engine";
+import {
+	deleteOldObject,
+	getOldObject,
+	uploadAttachment,
+} from "@/object-storage";
 import { w } from "@/webhooks";
 import { autocompleteAlters } from "../../lib/autocomplete-alters";
 import { alterCollection } from "../../mongodb";
@@ -108,7 +113,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 					imageProperty: alter.avatarUrl,
 					storagePrefix: user.storagePrefix,
 				});
-				
+
 			await alterCollection.updateOne(
 				{ alterId: alter.alterId },
 				{
@@ -166,7 +171,6 @@ export default class EditAlterPictureCommand extends SubCommand {
 		let objectName = `${user.storagePrefix}/${assetStringGeneration(32)}`;
 
 		if (attachmentText === undefined) {
-
 			try {
 				attachmentText = await uploadAttachment(
 					(attachment as { value: Attachment }).value,
@@ -176,31 +180,33 @@ export default class EditAlterPictureCommand extends SubCommand {
 						alterId: String(alter.alterId),
 						type: "profile-picture",
 					},
-					getOldObject({ imageProperty: alter.avatarUrl, storagePrefix: user.storagePrefix }),
-					{ width: 512, height: 512 }
+					getOldObject({
+						imageProperty: alter.avatarUrl,
+						storagePrefix: user.storagePrefix,
+					}),
+					{ width: 512, height: 512 },
 				);
 			} catch (error) {
-			if (error instanceof FileTooBigException)
+				if (error instanceof FileTooBigException)
+					return await ctx.editResponse({
+						components: new AlertView(await ctx.userTranslations()).errorView(
+							"AFTER_COMPRESSION_TOO_BIG",
+						),
+						flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+					});
+				// ctx.client.logger.fatal(error);
 				return await ctx.editResponse({
 					components: new AlertView(await ctx.userTranslations()).errorView(
-						"AFTER_COMPRESSION_TOO_BIG",
+						"ERROR_FAILED_TO_UPLOAD_TO_GCP",
 					),
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 				});
-			// ctx.client.logger.fatal(error);
-			return await ctx.editResponse({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ERROR_FAILED_TO_UPLOAD_TO_GCP",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
 			}
-		} else 
+		} else
 			await deleteOldObject({
 				imageProperty: alter.avatarUrl,
 				storagePrefix: user.storagePrefix,
 			});
-
 
 		await alterCollection.updateOne(
 			{ alterId: alter.alterId },
@@ -219,6 +225,13 @@ export default class EditAlterPictureCommand extends SubCommand {
 				avatarUrl: attachmentText,
 			},
 		});
+		if (alter.fields["@/converter/pk"])
+			writeBack({
+				type: "alter",
+				id: alter.fields["@/converter/pk"],
+				change: { avatarUrl: attachmentText },
+				syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+			});
 
 		return await ctx.editResponse({
 			components: [

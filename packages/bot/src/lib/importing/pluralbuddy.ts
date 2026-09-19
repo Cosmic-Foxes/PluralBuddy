@@ -134,7 +134,7 @@ export async function add(
 			replacedAlter,
 		);
 	}
-	
+
 	for (const replacedTag of newTags) {
 		await tagCollection.replaceOne({ tagId: replacedTag.tagId }, replacedTag);
 	}
@@ -194,7 +194,9 @@ export async function deleteM(
 		},
 		{
 			$pull: {
-				"system.alterIds": { $each: pendingDeletedAlters.map((v) => v.alterId) },
+				"system.alterIds": {
+					$each: pendingDeletedAlters.map((v) => v.alterId),
+				},
 				"system.tagIds": { $each: pendingDeletedTags.map((v) => v.tagId) },
 			},
 		},

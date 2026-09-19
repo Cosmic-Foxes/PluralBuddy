@@ -32,8 +32,11 @@ import type {
 } from "@/events/on-message-create";
 import { alterCollection, messagesCollection } from "@/mongodb";
 import { getGuildFromId, type PGuild } from "@/types/guild";
+import { getUserById } from "@/types/user";
+import { w } from "@/webhooks";
 import { createError } from "../create-error";
 import { emojis } from "../emojis";
+import { automaticallySync } from "../pk-sync-engine";
 import { processFileAttachments } from "./process-file-attachments";
 import { processUrlIntegrations } from "./process-url-attachments";
 
@@ -200,6 +203,19 @@ export async function proxy(
 					},
 				})
 				.then((sentMessage) => {
+					w(systemId, "message.create", {
+						message: {
+							messageId: sentMessage?.id ?? "0",
+							alterId,
+							systemId,
+							createdAt: new Date(),
+							guildId: message.guildId,
+							channelId: message.channelId,
+							referencedMessage: message.referencedMessage?.id,
+						},
+						type: "message.create",
+						userId: systemId
+					});
 					messagesCollection.insertOne({
 						messageId: sentMessage?.id ?? "0",
 						alterId,
@@ -333,7 +349,11 @@ export async function proxy(
 			client.cache.similarWebhookResource.remove(message.channelId);
 		}
 
-		await message.delete().catch((_) => null);
+		await message.delete().catch((_) => null).then(async () => {
+			const user = await getUserById(message.author.id);
+
+			await automaticallySync(user);
+		});;
 	}
 }
 
@@ -350,7 +370,6 @@ export const getModernComponentsMappings = (
 		components[1]?.data.type === ComponentType.MediaGallery
 	) {
 	}
-	console.log(fileComponents);
 	return components.length === 1 &&
 		components[0]?.data.type === ComponentType.TextDisplay
 		? {

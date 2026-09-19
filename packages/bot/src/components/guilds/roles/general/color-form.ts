@@ -24,19 +24,18 @@ export default class RoleContentsForm extends ModalCommand {
 		const guild = await ctx.retrievePGuild();
 		const role = guild.rolePreferences.find((c) => c.roleId === roleId);
 
-		if (newColor === "")
-			newColor = undefined;
+		if (newColor === "") newColor = undefined;
 
 		if (!role)
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ROLE_PREFERENCE_DOESNT_EXIST",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			});
 		if (newColor !== undefined && !/^#?[0-9a-fA-F]{6}$/.test(newColor ?? "")) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_INVALID_COLOR",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -52,14 +51,14 @@ export default class RoleContentsForm extends ModalCommand {
 		await guildCollection.updateOne(
 			{ guildId: guild.guildId, "rolePreferences.roleId": roleId },
 			{ $set: { "rolePreferences.$.containerColor": newColor } },
-			{ upsert: true }
+			{ upsert: true },
 		);
-		ctx.client.cache.pguild.remove(guild.guildId)
+		ctx.client.cache.pguild.remove(guild.guildId);
 
 		return await ctx.interaction.update({
-			components: new ServerConfigView((await ctx.userTranslations())).roleGeneralView(
-				role,
-			),
+			components: new ServerConfigView(
+				await ctx.userTranslations(),
+			).roleGeneralView(role),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			allowed_mentions: { parse: [] },
 		});

@@ -34,18 +34,22 @@ export default class AddPrefixCommand extends SubCommand {
 		const guildObj = await ctx.retrievePGuild();
 		const { channel } = ctx.options;
 
-		guildObj.blockedChannels = guildObj.blockedChannels.filter((c) => c !== channel.id);
+		guildObj.blockedChannels = guildObj.blockedChannels.filter(
+			(c) => c !== channel.id,
+		);
 
 		await guildCollection.updateOne(
 			{ guildId: guildObj.guildId },
 			{ $pull: { blockedChannels: channel.id } },
-			{ upsert: true }
+			{ upsert: true },
 		);
-		ctx.client.cache.pguild.remove(guildObj.guildId)
+		ctx.client.cache.pguild.remove(guildObj.guildId);
 
 		return await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).successViewCustom(`${(await ctx.userTranslations()).SUCCESS_REMOVE_ITEM_BLOCKED.replace("%item%", `<#${channel.id}>`)} ${(await ctx.userTranslations())
-				.SUCCESS_CHANGED_SERVER_BLOCKS.replace(
+			components: new AlertView(await ctx.userTranslations()).successViewCustom(
+				`${(await ctx.userTranslations()).SUCCESS_REMOVE_ITEM_BLOCKED.replace("%item%", `<#${channel.id}>`)} ${(
+					await ctx.userTranslations()
+				).SUCCESS_CHANGED_SERVER_BLOCKS.replace(
 					"%block_items%",
 					[
 						...guildObj.blockedChannels.map((c) => {
@@ -54,22 +58,31 @@ export default class AddPrefixCommand extends SubCommand {
 						...guildObj.blockedRoles.map((c) => {
 							return { id: c, type: "role" };
 						}),
-						...(await Promise.all(guildObj.blockedCategories.map(async (c) => {
-							const category = await ctx.client.channels.fetch(c).catch(() => null);
+						...(
+							await Promise.all(
+								guildObj.blockedCategories.map(async (c) => {
+									const category = await ctx.client.channels
+										.fetch(c)
+										.catch(() => null);
 
-							if (!category || !category.isCategory()) {
-								return null;
-							}
+									if (!category || !category.isCategory()) {
+										return null;
+									}
 
-							return { id: category.name, type: "category"}
-						}))).filter(v => v !== null)
+									return { id: category.name, type: "category" };
+								}),
+							)
+						).filter((v) => v !== null),
 					]
-					.map((c) => `> - ${c.type === "channel" ? "<#" : (c.type === "category" ? "" : "<@&")}${c.id}${c.type !== "category" ? ">" : ""}`)
-					.join("\n"),
-				)}`
+						.map(
+							(c) =>
+								`> - ${c.type === "channel" ? "<#" : c.type === "category" ? "" : "<@&"}${c.id}${c.type !== "category" ? ">" : ""}`,
+						)
+						.join("\n"),
+				)}`,
 			),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			allowed_mentions: { parse: [] }
+			allowed_mentions: { parse: [] },
 		});
 	}
 }

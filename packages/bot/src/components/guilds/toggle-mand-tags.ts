@@ -16,36 +16,39 @@ export default class ToggleMandatoryTags extends ComponentCommand {
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
-
 		const guildObj = await ctx.retrievePGuild();
-        const nativeGuild = await ctx.guild()
-        const newValue = !guildObj.getFeatures().requiresGuildTag;
+		const nativeGuild = await ctx.guild();
+		const newValue = !guildObj.getFeatures().requiresGuildTag;
 
-		guildObj.flags = guildObj.getFeatures().bool(GuildFlags.MANDATORY_GUILD_TAG, newValue);
+		guildObj.flags = guildObj
+			.getFeatures()
+			.bool(GuildFlags.MANDATORY_GUILD_TAG, newValue);
 
-        if (!nativeGuild) throw new Error("What.")
+		if (!nativeGuild) throw new Error("What.");
 
 		await guildCollection.updateOne(
 			{ guildId: ctx.guildId },
 			{ $set: { flags: guildObj.flags } },
 			{ upsert: true },
 		);
-		ctx.client.cache.pguild.remove(guildObj.guildId)
+		ctx.client.cache.pguild.remove(guildObj.guildId);
 
 		return await ctx.interaction.update({
 			components: [
-				...new ServerConfigView((await ctx.userTranslations())).topView(
+				...new ServerConfigView(await ctx.userTranslations()).topView(
 					"general",
 					guildObj.guildId,
 				),
-				...await new ServerConfigView((await ctx.userTranslations())).generalSettings(
+				...(await new ServerConfigView(
+					await ctx.userTranslations(),
+				).generalSettings(
 					PGuildObject.parse(guildObj),
 					(await ctx.getDefaultPrefix()) ?? "",
 					ctx.interaction?.message?.messageReference === undefined,
-				),
+				)),
 			],
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			allowed_mentions: { parse: [] },
 		});
-    }
+	}
 }

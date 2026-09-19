@@ -1,5 +1,12 @@
 import { ServerConfigView } from "@/views/server-cfg";
-import { AutoLoad, Command, CommandContext, Declare, Groups, Middlewares } from "seyfert";
+import {
+	AutoLoad,
+	Command,
+	CommandContext,
+	Declare,
+	Groups,
+	Middlewares,
+} from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
 @Declare({
@@ -23,8 +30,8 @@ import { MessageFlags } from "seyfert/lib/types";
 	},
 	"role-containers": {
 		defaultDescription: "Role containers.",
-		aliases: ["containers", "roles", "rc"]
-	}
+		aliases: ["containers", "roles", "rc"],
+	},
 })
 @Middlewares(["ensureGuildPermissions"])
 export default class ServerConfigCommand extends Command {
@@ -32,20 +39,27 @@ export default class ServerConfigCommand extends Command {
 		await ctx.deferReply(true);
 		const pluralGuild = await ctx.retrievePGuild();
 
-		return await ctx.ephemeral({
-			components: [
-				...new ServerConfigView((await ctx.userTranslations())).topView(
-					"general",
-					pluralGuild.guildId,
-				),
-				...await new ServerConfigView((await ctx.userTranslations())).generalSettings(
-					pluralGuild,
-					(await ctx.getDefaultPrefix()) ?? "",
-					ctx.interaction?.message?.messageReference === undefined,
-				),
-			],
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			allowed_mentions: { parse: [] },
-		}, undefined, undefined, ctx);
+		return await ctx.ephemeral(
+			{
+				components: [
+					...new ServerConfigView(await ctx.userTranslations()).topView(
+						"general",
+						pluralGuild.guildId,
+					),
+					...(await new ServerConfigView(
+						await ctx.userTranslations(),
+					).generalSettings(
+						pluralGuild,
+						(await ctx.getDefaultPrefix()) ?? "",
+						ctx.interaction?.message?.messageReference === undefined,
+					)),
+				],
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				allowed_mentions: { parse: [] },
+			},
+			undefined,
+			undefined,
+			ctx,
+		);
 	}
 }

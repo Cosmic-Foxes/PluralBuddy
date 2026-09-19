@@ -1,6 +1,7 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 import { ComponentCommand, type ComponentContext } from "seyfert";
-import { MessageFlags } from "seyfert/lib/types";import { getSystemFeatures } from "@/lib/get-system-flags";
+import { MessageFlags } from "seyfert/lib/types";
+import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { AlertView } from "@/views/alert";
 import { alterPagination, SystemSettingsView } from "@/views/system-settings";
@@ -20,19 +21,21 @@ export default class NextPageAP extends ComponentCommand {
 				ctx.customId,
 			)[0];
 		const corresponding = alterPagination.find((v) => v.id === paginationToken);
-        const user = await ctx.retrievePUser();
+		const user = await ctx.retrievePUser();
 
-        if (user.system === undefined) {
-            return await ctx.ephemeral({
-                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
-                flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-            })
-        }
+		if (user.system === undefined) {
+			return await ctx.ephemeral({
+				components: new AlertView(await ctx.userTranslations()).errorView(
+					"ERROR_SYSTEM_DOESNT_EXIST",
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
+		}
 
 		if (corresponding === undefined) {
 			return await ctx.write({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorView(
+					...new AlertView(await ctx.userTranslations()).errorView(
 						"ERROR_PAGINATION_TOO_OLD",
 					),
 				],
@@ -52,10 +55,13 @@ export default class NextPageAP extends ComponentCommand {
 		// Re-add it to the array
 		alterPagination.push(corresponding);
 
-        return await ctx.update({
-            components: [
-                ...await new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(user.system)?.preferAccessiblity).altersSettings(user.system, corresponding)
-            ]
-        })
+		return await ctx.update({
+			components: [
+				...(await new SystemSettingsView(
+					await ctx.userTranslations(),
+					getSystemFeatures(user.system)?.preferAccessiblity,
+				).altersSettings(user.system, corresponding)),
+			],
+		});
 	}
 }

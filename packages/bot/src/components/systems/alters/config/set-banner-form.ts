@@ -4,11 +4,12 @@ import { MessageFlags } from "seyfert/lib/types";
 import { FileTooBigException } from "@/lib/file-too-big";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { alterCollection } from "@/mongodb";
-import {  getOldObject, uploadAttachment } from "@/object-storage";
+import { getOldObject, uploadAttachment } from "@/object-storage";
 import { assetStringGeneration } from "@/types/operation";
 import { AlertView } from "@/views/alert";
 import { AlterView } from "@/views/alters";
 import { w } from "@/webhooks";
+import { writeBack } from "@/lib/pk-sync-engine.ts";
 
 export default class SetPFPForm extends ModalCommand {
 	override filter(context: ModalContext) {
@@ -68,11 +69,13 @@ export default class SetPFPForm extends ModalCommand {
 					alterId: String(alter.alterId),
 					type: "banner/form",
 				},
-				getOldObject({ imageProperty: alter.banner, storagePrefix: user.storagePrefix }),
-				{ height: 450 }
+				getOldObject({
+					imageProperty: alter.banner,
+					storagePrefix: user.storagePrefix,
+				}),
+				{ height: 450 },
 			);
 		} catch (error) {
-
 			if (error instanceof FileTooBigException)
 				return await ctx.editResponse({
 					components: new AlertView(await ctx.userTranslations()).errorView(
@@ -100,6 +103,16 @@ export default class SetPFPForm extends ModalCommand {
 				banner: url,
 			},
 		});
+
+		if (alter.fields["@/converter/pk"])
+			writeBack({
+				type: "alter",
+				id: alter.fields["@/converter/pk"],
+				change: {
+					banner: url,
+				},
+				syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+			});
 
 		return await ctx.interaction.update({
 			components: [

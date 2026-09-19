@@ -26,7 +26,7 @@ export default class AppExplanationCommand extends Command {
 				(ctx.message as Message).delete().catch(_ => null);
 				try {
 					await (ctx.message as Message).author.write({
-						components: new AlertView((await ctx.userTranslations())).errorView(
+						components: new AlertView(await ctx.userTranslations()).errorView(
 							"FEATURE_DISABLED_GUILD",
 						),
 						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -36,7 +36,7 @@ export default class AppExplanationCommand extends Command {
 			}
 
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"FEATURE_DISABLED_GUILD",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

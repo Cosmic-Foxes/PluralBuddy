@@ -23,17 +23,30 @@ export default class ImportCommand extends SubCommand {
 		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
-			return ctx.ephemeral({
-				components: new PluralBuddyIntro((await ctx.userTranslations())).pageTwo(await ctx.getDefaultPrefix() ?? "pb;"),
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral ,
-			}, undefined, undefined, ctx);
+			return ctx.ephemeral(
+				{
+					components: new PluralBuddyIntro(
+						await ctx.userTranslations(),
+					).pageTwo((await ctx.getDefaultPrefix()) ?? "pb;"),
+					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+				},
+				undefined,
+				undefined,
+				ctx,
+			);
 		}
 
-		return await ctx.ephemeral({
-			components: new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(user.system)?.preferAccessiblity).importSettings(
-				user.system,
-			),
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-		}, undefined, undefined, ctx);
+		return await ctx.ephemeral(
+			{
+				components: new SystemSettingsView(
+					await ctx.userTranslations(),
+					getSystemFeatures(user.system)?.preferAccessiblity,
+				).importSettings(user.system),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			},
+			undefined,
+			undefined,
+			ctx,
+		);
 	}
 }

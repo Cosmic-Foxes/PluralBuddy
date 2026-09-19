@@ -33,10 +33,12 @@ export default class ExpressCommand extends Command {
 	override async run(ctx: CommandContext<typeof options>) {
 		return await ctx.write({
 			components: [
-				...new AlertView(await ctx.userTranslations()).errorView("EXPRESS_DISCONTINUED")
+				...new AlertView(await ctx.userTranslations()).errorView(
+					"EXPRESS_DISCONTINUED",
+				),
 			],
-			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
-		})
+			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+		});
 		// await ctx.deferReply(true);
 		// const { alter: alterName } = ctx.options;
 

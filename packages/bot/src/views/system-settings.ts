@@ -2,7 +2,13 @@
 
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import type { FindCursor, WithId } from "mongodb";
-import { SystemFlags } from "plurography";
+import {
+	PImportTranscript,
+	type POperation,
+	type PUser,
+	possibleConverters,
+	SystemFlags,
+} from "plurography";
 import {
 	ActionRow,
 	Button,
@@ -17,9 +23,11 @@ import {
 } from "seyfert";
 import { ButtonStyle, Spacing } from "seyfert/lib/types";
 import { mentionCommand } from "@/lib/mention-command";
+import { terminologyTemplates } from "@/lib/terminology-templates";
 import paginateComponents from "@/lib/views/paginate";
 import { alterCollection, tagCollection } from "@/mongodb";
 import { AlterProtectionFlags, type PAlter } from "@/types/alter";
+import { build } from "..";
 import { emojis, getEmojiFromTagColor } from "../lib/emojis";
 import { InteractionIdentifier } from "../lib/interaction-ids";
 import {
@@ -53,11 +61,57 @@ export const tagsPagination: {
 	documentCount: number;
 	searchQuery?: string | undefined;
 }[] = [];
+
+export enum QuickSyncStatus {
+	NotSyncing,
+	Loading,
+	Done,
+}
+
 export class SystemSettingsView extends TranslatedView {
 	topView(
-		currentTab: "general" | "alters" | "tags" | "public-settings",
+		currentTab:
+			| "general"
+			| "alters"
+			| "tags"
+			| "public-settings"
+			| "terminology",
 		systemId: string,
 	) {
+		const page2Tabs = ["terminology"];
+
+		if (page2Tabs.includes(currentTab))
+			return [
+				new Container().setComponents(
+					...(this.preferAccessiblity
+						? []
+						: [new TextDisplay().setContent(`-# ID: \`${systemId}\``)]),
+					new ActionRow().setComponents(
+						new Button()
+							.setStyle(ButtonStyle.Secondary)
+							.setEmoji(emojis.chevronLeft)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.GeneralTab.Index.create(),
+							),
+						new Button()
+							.setLabel(this.translations.TERMINOLOGY_LABEL)
+							.setStyle(
+								currentTab === "terminology"
+									? ButtonStyle.Success
+									: ButtonStyle.Secondary,
+							)
+							.setEmoji(
+								currentTab === "terminology"
+									? emojis.squareCheck
+									: emojis.squareDashed,
+							)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.TerminologyTab.Index.create(),
+							),
+					),
+				),
+			];
+
 		return [
 			new Container().setComponents(
 				...(this.preferAccessiblity
@@ -121,6 +175,12 @@ export class SystemSettingsView extends TranslatedView {
 						)
 						.setCustomId(
 							InteractionIdentifier.Systems.Configuration.PublicProfile.Index.create(),
+						),
+					new Button()
+						.setStyle(ButtonStyle.Secondary)
+						.setEmoji(emojis.chevronRight)
+						.setCustomId(
+							InteractionIdentifier.Systems.Configuration.TerminologyTab.Index.create(),
 						),
 				),
 			),
@@ -263,7 +323,8 @@ export class SystemSettingsView extends TranslatedView {
 			((system.flags ?? 0) & SystemFlags.PREFER_ACCESSIBLITY) === 0;
 		const leftSidedTag =
 			((system.flags ?? 0) & SystemFlags.LEFT_SIDED_TAG) === 0;
-		const caseInsensitiveProxies = ((system.flags ?? 0) & SystemFlags.CASE_INSENSITIVE_PROXIES) === 0;
+		const caseInsensitiveProxies =
+			((system.flags ?? 0) & SystemFlags.CASE_INSENSITIVE_PROXIES) === 0;
 
 		return [
 			new Container().setColor("#1190FF").setComponents(
@@ -374,7 +435,25 @@ export class SystemSettingsView extends TranslatedView {
 							$translations.CASE_INSENS_PROXIES_DESC,
 						),
 					),
-				new Separator(),
+				new Section()
+					.setAccessory(
+						new Button()
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel(
+								caseInsensitiveProxies
+									? $translations.CASE_INSENS_PROXIES_BTN
+									: $translations.CASE_INSENS_PROXIES_BTN_D,
+							)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.GeneralTab.ToggleCaseInsensitiveProxies.create(),
+							),
+					)
+					.setComponents(
+						new TextDisplay().setContent(
+							$translations.CASE_INSENS_PROXIES_DESC,
+						),
+					),
+				new Separator().setSpacing(Spacing.Large),
 				new TextDisplay().setContent(
 					`${$translations.EXPORT_SYS_DESC}\n\n${$translations.IMPORT_SYS_DESC}`,
 				),
@@ -392,20 +471,20 @@ export class SystemSettingsView extends TranslatedView {
 							InteractionIdentifier.Systems.Configuration.GeneralTab.ImportSystem.create(),
 						),
 				),
-				new Separator(),
 				new TextDisplay().setContent($translations.EXTERNAL_EXPORT_SYS_DESC),
 				new ActionRow().setComponents(
 					new StringSelectMenu()
 						.setCustomId(
 							InteractionIdentifier.Systems.ExternalExporting.Selector.create(),
 						)
-						.setOptions([
-							new StringSelectOption()
-								.setLabel("PluralKit")
-								.setValue(
-									InteractionIdentifier.Systems.ExternalExporting.PluralKit.create(),
-								),
-						]),
+						.setOptions(
+							Object.entries(possibleConverters).map(([k, v]) =>
+								new StringSelectOption()
+									.setLabel(v.name)
+									.setDescription(v.description)
+									.setValue(k),
+							),
+						),
 				),
 			),
 		];
@@ -1025,6 +1104,309 @@ export class SystemSettingsView extends TranslatedView {
 								.setValue("delete"),
 						]),
 				),
+			),
+		];
+	}
+
+	syncSettings(
+		user: PUser,
+		state: QuickSyncStatus = QuickSyncStatus.NotSyncing,
+	) {
+		const tokenStored = user.syncConfiguration?.pluralkit?.token !== undefined;
+
+		return [
+			new Container().setComponents(
+				new Section()
+					.setAccessory(
+						new Button()
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.SyncPreferences.QuickSync.create(),
+							)
+							.setStyle(ButtonStyle.Secondary)
+							.setEmoji(
+								state === QuickSyncStatus.Done
+									? emojis.check
+									: state === QuickSyncStatus.Loading
+										? emojis.loading
+										: emojis.refresh,
+							)
+							.setDisabled(
+								!tokenStored || state !== QuickSyncStatus.NotSyncing,
+							),
+					)
+					.setComponents(
+						new TextDisplay().setContent(this.translations.SYNC_PREF_TITLE),
+					),
+				new Separator().setSpacing(Spacing.Large),
+				new Section()
+					.setAccessory(
+						new Button()
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.SyncPreferences.SyncManually.create(),
+							)
+							.setLabel(this.translations.SYNC_MANUALLY)
+							.setStyle(ButtonStyle.Secondary),
+					)
+					.setComponents(
+						new TextDisplay().setContent(
+							this.translations.SYNC_MANUALLY_DESC_1,
+						),
+						new TextDisplay().setContent(
+							this.translations.SYNC_MANUALLY_DESC_2,
+						),
+					),
+				new Section()
+					.setAccessory(
+						new Button()
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.SyncPreferences.ToggleAutoSync.create(),
+							)
+							.setLabel(this.translations.AUTO_SYNCING_TOGGLE)
+							.setStyle(ButtonStyle.Secondary)
+							.setDisabled(!tokenStored),
+					)
+					.setComponents(
+						new TextDisplay().setContent(this.translations.AUTO_SYNCING_DESC_1),
+						new TextDisplay().setContent(this.translations.AUTO_SYNCING_DESC_2),
+					),
+				new Section()
+					.setAccessory(
+						new Button()
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.SyncPreferences.ToggleWriteback.create(),
+							)
+							.setLabel(this.translations.WRITE_BACK_TOGGLE)
+							.setStyle(ButtonStyle.Secondary)
+							.setDisabled(!tokenStored),
+					)
+					.setComponents(
+						new TextDisplay().setContent(this.translations.WRITE_BACK_DESC_1),
+						new TextDisplay().setContent(this.translations.WRITE_BACK_DESC_2),
+					),
+				new TextDisplay().setContent(
+					user.syncConfiguration?.pluralkit?.lastSynced
+						? this.translations.SYNC_FOOTER.replace(
+								"{{ build }}",
+								build,
+							).replace(
+								"{{ lastSyncDate }}",
+								`<t:${Math.floor(user.syncConfiguration?.pluralkit?.lastSynced.getTime() / 1000)}:f>`,
+							)
+						: this.translations.SYNC_FOOTER_NEVER_SYNCED.replace(
+								"{{ build }}",
+								build,
+							),
+				),
+			),
+		];
+	}
+
+	terminologySettings(system: PSystem) {
+		return [
+			new Container()
+				.setComponents(
+					new TextDisplay().setContent(
+						this.translations.TERMINOLOGY_SYSTEM_TITLE.replace(
+							"{{ emoji }}",
+							emojis.settings,
+						).replace("{{ systemName }}", system.systemName),
+					),
+					new TextDisplay().setContent(this.translations.TERMINOLOGY_DESC),
+					new Separator().setSpacing(Spacing.Large),
+					new TextDisplay().setContent(
+						this.translations.TEMPLATE_TERMINOLOGY_DESC,
+					),
+					new ActionRow().setComponents(
+						new StringSelectMenu()
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.TerminologyTab.TemplatesSelect.create(),
+							)
+							.setValuesLength({ min: 1, max: 1 })
+							.setPlaceholder(this.translations.TEMPLATE_PLACEHOLDER)
+							.setOptions(
+								terminologyTemplates.map((template) =>
+									new StringSelectOption()
+										.setValue(template.name.toLocaleLowerCase())
+										.setLabel(template.name)
+										.setDescription(template.description),
+								),
+							),
+					),
+					new Separator(),
+					new Section()
+						.setComponents(
+							new TextDisplay().setContent(
+								this.translations.NORMAL_TERMS_TITLE,
+							),
+							new TextDisplay().setContent(this.translations.NORMAL_TERMS_DESC),
+						)
+						.setAccessory(
+							new Button()
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.TerminologyTab.EditNormalTerms.create(),
+								)
+								.setLabel(this.translations.EDIT_NORMAL_TERMS_BTN)
+								.setStyle(ButtonStyle.Primary),
+						),
+					new Section()
+						.setComponents(
+							new TextDisplay().setContent(
+								this.translations.PLURAL_TERMS_TITLE,
+							),
+							new TextDisplay().setContent(this.translations.PLURAL_TERMS_DESC),
+						)
+						.setAccessory(
+							new Button()
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.TerminologyTab.EditPluralTerms.create(),
+								)
+								.setLabel(this.translations.EDIT_PLURAL_TERMS_BTN)
+								.setStyle(ButtonStyle.Primary),
+						),
+					new Section()
+						.setComponents(
+							new TextDisplay().setContent(
+								this.translations.CAPITAL_TERMS_TITLE,
+							),
+							new TextDisplay().setContent(
+								this.translations.CAPITAL_TERMS_DESC,
+							),
+						)
+						.setAccessory(
+							new Button()
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.TerminologyTab.EditCapitalTerms.create(),
+								)
+								.setLabel(this.translations.EDIT_CAPITAL_TERMS_BTN)
+								.setStyle(ButtonStyle.Primary),
+						),
+				)
+				.setColor("#1190FF"),
+		];
+	}
+
+	syncOperation(
+		existingTranscript: WithId<PImportTranscript>,
+		existingCounts: { alters: number; tags: number },
+	) {
+		const possiblyTooMuch = {
+			destructiveTags:
+				existingCounts.tags +
+					existingTranscript.tags.add.length -
+					existingTranscript.tags.remove.length >
+				1000,
+			destructiveAlters:
+				existingCounts.alters +
+					existingTranscript.alters.add.length -
+					existingTranscript.tags.remove.length >
+				2000,
+
+			nonDestructiveTags:
+				existingCounts.tags + existingTranscript.tags.add.length > 1000,
+			nonDestructiveAlters:
+				existingCounts.alters + existingTranscript.alters.add.length > 2000,
+		};
+		const anyPossiblyTooMuch =
+			possiblyTooMuch.destructiveAlters ||
+			possiblyTooMuch.destructiveTags ||
+			possiblyTooMuch.nonDestructiveAlters ||
+			possiblyTooMuch.nonDestructiveTags;
+
+		return [
+			new Container()
+				.setColor("#FFDF00")
+				.setComponents(
+					new TextDisplay().setContent(
+						this.translations.TRANSCRIPT_TOP.replace(
+							"{{ circleQuestionWhite }}",
+							emojis.circleQuestionWhite,
+						),
+					),
+					new Separator(),
+					new TextDisplay().setContent(this.translations.ALTERS_SEPARATOR),
+					new ActionRow().setComponents(
+						new Button()
+							.setDisabled()
+							.setCustomId("d_")
+							.setStyle(ButtonStyle.Success)
+							.setLabel(`${existingTranscript.alters.add.length.toString()}`)
+							.setEmoji(emojis.plus),
+						new Button()
+							.setDisabled()
+							.setCustomId("d")
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel(existingTranscript.alters.update.length.toString()),
+						new Button()
+							.setDisabled()
+							.setCustomId("da_")
+							.setStyle(ButtonStyle.Danger)
+							.setLabel(`${existingTranscript.alters.remove.length.toString()}`)
+							.setEmoji(emojis.minus),
+					),
+					new Separator(),
+					new TextDisplay().setContent(this.translations.TAGS_SEPARATOR),
+					new ActionRow().setComponents(
+						new Button()
+							.setDisabled()
+							.setCustomId("d____")
+							.setStyle(ButtonStyle.Success)
+							.setLabel(`${existingTranscript.tags.add.length.toString()}`)
+							.setEmoji(emojis.plus),
+						new Button()
+							.setDisabled()
+							.setCustomId("d___")
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel(existingTranscript.tags.update.length.toString()),
+						new Button()
+							.setDisabled()
+							.setCustomId("da__")
+							.setStyle(ButtonStyle.Danger)
+							.setLabel(`${existingTranscript.tags.remove.length.toString()}`)
+							.setEmoji(emojis.minus),
+					),
+				),
+			new ActionRow().setComponents(
+				new Button()
+					.setStyle(ButtonStyle.Primary)
+					.setCustomId(
+						InteractionIdentifier.Systems.Syncing.ApplyTranscript.create(
+							existingTranscript._id.toString(),
+						),
+					)
+					.setLabel(this.translations.PK_TRANSCRIPT_APPLY)
+					.setDisabled(
+						possiblyTooMuch.nonDestructiveAlters ||
+							possiblyTooMuch.nonDestructiveTags,
+					)
+					.setEmoji(emojis.wrenchWhite),
+				new Button()
+					.setStyle(ButtonStyle.Danger)
+					.setCustomId(
+						InteractionIdentifier.Systems.Syncing.ApplyTranscriptDestructively.create(
+							existingTranscript._id.toString(),
+						),
+					)
+					.setLabel(this.translations.PK_TRANSCRIPT_APPLY_DESTRUCTIVE)
+					.setDisabled(
+						possiblyTooMuch.destructiveAlters ||
+							possiblyTooMuch.destructiveTags,
+					)
+					.setEmoji(emojis.xWhite),
+			),
+			...(anyPossiblyTooMuch
+				? [
+						new TextDisplay().setContent(
+							this.translations.ALTER_TAG_COUNT_TOO_HIGH,
+						),
+					]
+				: []),
+			new ActionRow().setComponents(
+				new Button()
+					.setURL(
+						`${process.env.APP_HOST}/app/settings/sync/transcript/${existingTranscript._id.toString()}`,
+					)
+					.setStyle(ButtonStyle.Link)
+					.setLabel(this.translations.PK_TRANSCRIPT_VIEW),
 			),
 		];
 	}

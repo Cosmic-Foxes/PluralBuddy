@@ -1,12 +1,13 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import {ContextMenuCommand, 
+import {
+	ContextMenuCommand,
 	Declare,
 	Label,
 	MenuCommandContext,
 	MessageCommandInteraction,
 	Modal,
-	TextInput
+	TextInput,
 } from "seyfert";
 import {
 	type APIContainerComponent,
@@ -29,8 +30,8 @@ export default class EditMessageContextMenuCommand extends ContextMenuCommand {
 		const isExpress = ctx.target.webhookId === undefined;
 		const contents =
 			ctx.target.content !== ""
-				// Make fake virtual component
-				? { data: { content: ctx.target.content } }
+				? // Make fake virtual component
+					{ data: { content: ctx.target.content } }
 				: ctx.target.components.find((v) =>
 						isExpress
 							? (v.data.type === ComponentType.TextDisplay &&

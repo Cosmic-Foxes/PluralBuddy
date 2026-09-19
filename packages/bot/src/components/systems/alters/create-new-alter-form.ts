@@ -3,13 +3,17 @@
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import { ModalCommand, type ModalContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import z from "zod";import { getSystemFeatures } from "@/lib/get-system-flags";
+import z from "zod";
+import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { writeBack } from "@/lib/pk-sync-engine";
+import { getMaxAlterPublicValue } from "@/lib/privacy-bitmask";
 import { alterCollection } from "@/mongodb";
-import { PAlterObject } from "@/types/alter";
+import { AlterProtectionFlags, PAlterObject } from "@/types/alter";
 import { getUserById, writeUserById } from "@/types/user";
 import { AlertView } from "@/views/alert";
 import { SystemSettingsView } from "@/views/system-settings";
+import { w } from "@/webhooks";
 
 export default class CreateNewAlterForm extends ModalCommand {
 	override filter(context: ModalContext) {
@@ -33,7 +37,7 @@ export default class CreateNewAlterForm extends ModalCommand {
 
 		if (user.system === undefined) {
 			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -42,13 +46,13 @@ export default class CreateNewAlterForm extends ModalCommand {
 
 		if (user.system.alterIds.length >= 2000) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"TOO_MANY_ALTERS",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
-
+		
 		const alter = PAlterObject.safeParse({
 			alterId: Number(DiscordSnowflake.generate()),
 			systemId: user.system.associatedUserId,
@@ -66,18 +70,20 @@ export default class CreateNewAlterForm extends ModalCommand {
 			lastMessageTimestamp: null,
 			messageCount: 0,
 			alterMode: "webhook",
-			public: 0,
+			public: getSystemFeatures(user.system).publicDefault
+				? getMaxAlterPublicValue()
+				: 0,
 		});
 
 		if (alter.error) {
 			return await ctx.interaction.update({
 				components: [
-					...new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(user.system)?.preferAccessiblity).topView(
-						"alters",
-						user.system.associatedUserId,
-					),
+					...new SystemSettingsView(
+						await ctx.userTranslations(),
+						getSystemFeatures(user.system)?.preferAccessiblity,
+					).topView("alters", user.system.associatedUserId),
 					...new AlertView(
-						(await ctx.userTranslations()),
+						await ctx.userTranslations(),
 					).errorViewCustom(`There was an error while creating that alter:
 
 \`\`\`
@@ -96,6 +102,12 @@ ${z.prettifyError(alter.error)}
 		});
 
 		await alterCollection.insertOne(alter.data);
+		writeBack({
+			type: "create-alter",
+			id: String(alter.data.alterId),
+			change: { ...alter.data, userId: ctx.author.id },
+			syncConfig: user.syncConfiguration,
+		});
 
 		await ctx.interaction.update({
 			components: await new SystemSettingsView(
@@ -105,6 +117,12 @@ ${z.prettifyError(alter.error)}
 				...user.system,
 				alterIds: [...user.system.alterIds, alter.data.alterId],
 			}),
+		});
+
+		w(ctx.author.id, "alter.create", {
+			userId: ctx.author.id,
+			type: "alter.create",
+			alter: alter.data,
 		});
 	}
 }

@@ -7,4 +7,5 @@ export const easterEggPlaybackIds = {
 	fwf: "OmmnD6f5n3C0002g02rSqlYZa39WZlaaqXhdn6vwyX00zNE",
 };
 
-export const muxPlaybackURL = (id: string) => `https://stream.mux.com/${id}/highest.mp4`;
+export const muxPlaybackURL = (id: string) =>
+	`https://stream.mux.com/${id}/highest.mp4`;

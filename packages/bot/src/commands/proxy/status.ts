@@ -1,5 +1,11 @@
 import { runStatusCommand } from "@/lib/ap-cmds/status";
-import { type CommandContext, createStringOption, Declare, Options, SubCommand } from "seyfert";
+import {
+	type CommandContext,
+	createStringOption,
+	Declare,
+	Options,
+	SubCommand,
+} from "seyfert";
 
 const options = {
 	scope: createStringOption({

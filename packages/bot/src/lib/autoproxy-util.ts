@@ -8,7 +8,10 @@ export const getWiderAutoProxy = (
 	serverId?: string | undefined,
 	channelId?: string | undefined,
 ) => {
-	const channelLevel = serverId && channelId ? getSpecificAutoProxy(system, `${serverId}/${channelId}`) : null;
+	const channelLevel =
+		serverId && channelId
+			? getSpecificAutoProxy(system, `${serverId}/${channelId}`)
+			: null;
 	const serverLevel = serverId ? getSpecificAutoProxy(system, serverId) : null;
 	const globalLevel = getSpecificAutoProxy(system, "@global");
 
@@ -29,10 +32,7 @@ export const getCorrectLabel = (
 	serverId: string,
 	channelId: string,
 ) => {
-    if (input === "global")
-        return "@global";
-    if (input === "server")
-        return serverId
-    if (input === "channels")
-        return `${serverId}/${channelId}`
+	if (input === "global") return "@global";
+	if (input === "server") return serverId;
+	if (input === "channels") return `${serverId}/${channelId}`;
 };

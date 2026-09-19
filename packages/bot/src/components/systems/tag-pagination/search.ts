@@ -28,14 +28,12 @@ export default class NextPagePagination extends ComponentCommand {
 			InteractionIdentifier.Systems.Configuration.TagPagination.Search.substring(
 				ctx.customId,
 			)[0];
-		const corresponding = tagsPagination.find(
-			(v) => v.id === paginationToken,
-		);
+		const corresponding = tagsPagination.find((v) => v.id === paginationToken);
 
 		if (corresponding === undefined) {
 			return await ctx.write({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorView(
+					...new AlertView(await ctx.userTranslations()).errorView(
 						"ERROR_TAG_PAGINATION_TOO_OLD",
 					),
 				],
@@ -46,17 +44,25 @@ export default class NextPagePagination extends ComponentCommand {
 		return await ctx.modal(
 			new Modal()
 				.setTitle((await ctx.userTranslations()).SEARCH_FORM_TITLE)
-                .setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.TagPagination.SearchQueryForm.create(corresponding.id))
+				.setCustomId(
+					InteractionIdentifier.Systems.Configuration.FormSelection.TagPagination.SearchQueryForm.create(
+						corresponding.id,
+					),
+				)
 				.setComponents([
 					new Label()
 						.setLabel((await ctx.userTranslations()).SEARCH_QUERY)
-						.setDescription((await ctx.userTranslations()).SEARCH_REG_EXPRESSIONS)
+						.setDescription(
+							(await ctx.userTranslations()).SEARCH_REG_EXPRESSIONS,
+						)
 						.setComponent(
-                            new TextInput()
-                                .setStyle(TextInputStyle.Short)
-                                .setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.TagPagination.SearchQueryType.create())
-                                .setRequired(true)
-                        ),
+							new TextInput()
+								.setStyle(TextInputStyle.Short)
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.FormSelection.TagPagination.SearchQueryType.create(),
+								)
+								.setRequired(true),
+						),
 				]),
 		);
 	}

@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { ModalCommand, type ModalContext } from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
@@ -11,107 +11,152 @@ import { TagProtectionFlags } from "@/types/tag";
 import { combine } from "@/lib/privacy-bitmask";
 import { AlterProtectionFlags } from "@/types/alter";
 import { w } from "@/webhooks";
+import { writeBack } from "@/lib/pk-sync-engine.ts";
+import { getAlterFeatures } from "@/lib/get-alter-flags.ts";
+import { AlterFlags } from "plurography";
 
 export default class SetPrivacyModal extends ModalCommand {
-   
-   override filter(context: ModalContext) {
-	   return InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPrivacyForm.startsWith(context.customId)
-   }
-
-   override async run(ctx: ModalContext) {
-	const alterId = InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPrivacyForm.substring(
-		ctx.customId,
-	)[0];
-
-    const systemId = ctx.author.id;
-    const query = alterCollection.findOne({
-        alterId: Number(alterId),
-        systemId,
-    });
-    let alter = await query;
-
-	if (alter === null) {
-		return await ctx.write({
-			components: new AlertView((await ctx.userTranslations())).errorView("ERROR_ALTER_DOESNT_EXIST"),
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-		})
+	override filter(context: ModalContext) {
+		return InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPrivacyForm.startsWith(
+			context.customId,
+		);
 	}
 
-	const newTagPrivacy = ctx.interaction.getInputValue(
-		InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPrivacyType.create(),
-	) as string[] | undefined ?? [];
-	
-    let privacyFlag = 0;
-    privacyFlag = combine(...(
-        newTagPrivacy.map((val) => {
-            if (val === InteractionIdentifier.Selection.PrivacyValues.PRIVACY_NAME.create()) {
-                return AlterProtectionFlags.NAME;
-            }
-            if (val === InteractionIdentifier.Selection.PrivacyValues.PRIVACY_DESCRIPTION.create()) {
-                return AlterProtectionFlags.DESCRIPTION;
-            }
-            if (val === InteractionIdentifier.Selection.PrivacyValues.PRIVACY_PRONOUNS.create()) {
-                return AlterProtectionFlags.PRONOUNS;
-            }
-            if (val === InteractionIdentifier.Selection.PrivacyValues.PRIVACY_BANNER.create()) {
-                return AlterProtectionFlags.BANNER;
-            }
-            if (val === InteractionIdentifier.Selection.PrivacyValues.PRIVACY_AVATAR.create()) {
-                return AlterProtectionFlags.AVATAR;
-            }
-            if (val === InteractionIdentifier.Selection.PrivacyValues.PRIVACY_VISIBILITY.create()) {
-                return AlterProtectionFlags.VISIBILITY;
-            }
-            if (val === InteractionIdentifier.Selection.PrivacyValues.PRIVACY_TAGS.create()) {
-                return AlterProtectionFlags.TAGS
-            }
-            if (val === InteractionIdentifier.Selection.PrivacyValues.PRIVACY_USERNAME.create()) {
-                return AlterProtectionFlags.USERNAME
-            }
-            if (val === InteractionIdentifier.Selection.PrivacyValues.PRIVACY_MESSAGE_COUNT.create()) {
-                return AlterProtectionFlags.MESSAGE_COUNT
-            }
+	override async run(ctx: ModalContext) {
+		const alterId =
+			InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPrivacyForm.substring(
+				ctx.customId,
+			)[0];
 
-            return AlterProtectionFlags.NAME;
-        })
-    ))
+		const systemId = ctx.author.id;
+		const query = alterCollection.findOne({
+			alterId: Number(alterId),
+			systemId,
+		});
+		let alter = await query;
 
-	await alterCollection.updateOne(
-		{ alterId: Number(alterId), systemId },
-		{
-			$set: {
-				public: privacyFlag
+		if (alter === null) {
+			return await ctx.write({
+				components: new AlertView(await ctx.userTranslations()).errorView(
+					"ERROR_ALTER_DOESNT_EXIST",
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
+		}
+
+		const newTagPrivacy =
+			(ctx.interaction.getInputValue(
+				InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPrivacyType.create(),
+			) as string[] | undefined) ?? [];
+
+		let privacyFlag = 0;
+		privacyFlag = combine(
+			...newTagPrivacy.map((val) => {
+				if (
+					val ===
+					InteractionIdentifier.Selection.PrivacyValues.PRIVACY_NAME.create()
+				) {
+					return AlterProtectionFlags.NAME;
+				}
+				if (
+					val ===
+					InteractionIdentifier.Selection.PrivacyValues.PRIVACY_DESCRIPTION.create()
+				) {
+					return AlterProtectionFlags.DESCRIPTION;
+				}
+				if (
+					val ===
+					InteractionIdentifier.Selection.PrivacyValues.PRIVACY_PRONOUNS.create()
+				) {
+					return AlterProtectionFlags.PRONOUNS;
+				}
+				if (
+					val ===
+					InteractionIdentifier.Selection.PrivacyValues.PRIVACY_BANNER.create()
+				) {
+					return AlterProtectionFlags.BANNER;
+				}
+				if (
+					val ===
+					InteractionIdentifier.Selection.PrivacyValues.PRIVACY_AVATAR.create()
+				) {
+					return AlterProtectionFlags.AVATAR;
+				}
+				if (
+					val ===
+					InteractionIdentifier.Selection.PrivacyValues.PRIVACY_VISIBILITY.create()
+				) {
+					return AlterProtectionFlags.VISIBILITY;
+				}
+				if (
+					val ===
+					InteractionIdentifier.Selection.PrivacyValues.PRIVACY_TAGS.create()
+				) {
+					return AlterProtectionFlags.TAGS;
+				}
+				if (
+					val ===
+					InteractionIdentifier.Selection.PrivacyValues.PRIVACY_USERNAME.create()
+				) {
+					return AlterProtectionFlags.USERNAME;
+				}
+				if (
+					val ===
+					InteractionIdentifier.Selection.PrivacyValues.PRIVACY_MESSAGE_COUNT.create()
+				) {
+					return AlterProtectionFlags.MESSAGE_COUNT;
+				}
+
+				return AlterProtectionFlags.NAME;
+			}),
+		);
+
+		await alterCollection.updateOne(
+			{ alterId: Number(alterId), systemId },
+			{
+				$set: {
+					public: privacyFlag,
+				},
 			},
-		},
-	);
+		);
 
-    w(ctx.author.id, "alter.update", {
-        type: "alter.update",
-        alter: {
-            ...alter,
-            public: privacyFlag
-        },
-    });
+		w(ctx.author.id, "alter.update", {
+			type: "alter.update",
+			alter: {
+				...alter,
+				public: privacyFlag,
+			},
+		});
 
+		if (alter.fields["@/converter/pk"])
+			writeBack({
+				type: "alter",
+				id: alter.fields["@/converter/pk"],
+				change: {
+					public: privacyFlag,
+				},
+				syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+			});
 
-	alter = await alterCollection.findOne({
-		alterId: Number(alterId),
-		systemId,
-	}) ?? alter;
-	
-    return await ctx.interaction.update({
-        components: [
-            ...new AlterView((await ctx.userTranslations())).alterTopView(
-                "general",
-                alter.alterId.toString(),
-                alter.username,
-            ),
-            ...await new AlterView((await ctx.userTranslations())).alterGeneralView(
-                alter,
-                ctx.guildId
-            ),
-        ],
-        flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-    });
-   }
+		alter =
+			(await alterCollection.findOne({
+				alterId: Number(alterId),
+				systemId,
+			})) ?? alter;
+
+		return await ctx.interaction.update({
+			components: [
+				...new AlterView(await ctx.userTranslations()).alterTopView(
+					"general",
+					alter.alterId.toString(),
+					alter.username,
+				),
+				...(await new AlterView(await ctx.userTranslations()).alterGeneralView(
+					alter,
+					ctx.guildId,
+				)),
+			],
+			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+		});
+	}
 }

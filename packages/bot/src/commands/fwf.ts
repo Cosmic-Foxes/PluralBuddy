@@ -17,9 +17,9 @@ const options = {
 	"time-machine": createBooleanOption({
 		description: "Bleh",
 		required: false,
-		flag: true
-	})
-}
+		flag: true,
+	}),
+};
 
 @Declare({
 	name: "fwf",

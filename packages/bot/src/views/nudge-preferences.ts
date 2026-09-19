@@ -63,7 +63,10 @@ export class NudgePreferences extends TranslatedView {
 				new ActionRow().setComponents(
 					new Button()
 						.setLabel(
-							((user.nudging ?? { blockedUsers: [] }).blockedUsers ?? []).length >= 100 ? this.translations.EXPORT_NUDGE_BLOCKLIST : this.translations.VIEW_NUDGE_BLOCKLIST,
+							((user.nudging ?? { blockedUsers: [] }).blockedUsers ?? [])
+								.length >= 100
+								? this.translations.EXPORT_NUDGE_BLOCKLIST
+								: this.translations.VIEW_NUDGE_BLOCKLIST,
 						)
 						.setCustomId(InteractionIdentifier.Nudge.ExportBlockList.create())
 						.setStyle(ButtonStyle.Primary),

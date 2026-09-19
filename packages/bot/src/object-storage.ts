@@ -25,11 +25,10 @@ export async function uploadAttachment(
 	objectName: string,
 	metadata: Record<string, string>,
 	oldObject?: string,
-	resize?: { width?: number, height?: number }
+	resize?: { width?: number; height?: number },
 ) {
 	const attachmentUrl = attachment.url;
 	const discordResponse = await fetch(attachmentUrl);
-
 
 	if (!discordResponse.ok) {
 		throw new Error("Failed to fetch the image from Discord.");

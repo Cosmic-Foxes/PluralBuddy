@@ -1,12 +1,13 @@
 import { ComponentCommand, type ComponentContext } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { writeBack } from "@/lib/pk-sync-engine";
+import { alterCollection, tagCollection } from "@/mongodb";
+import { AlertView } from "@/views/alert";
 import {
 	AlertAssignTagView,
 	assignTagPagination,
 } from "@/views/alter-assign-tag";
-import { AlertView } from "@/views/alert";
-import { MessageFlags } from "seyfert/lib/types";
-import { alterCollection, tagCollection } from "@/mongodb";
 import { w } from "@/webhooks";
 
 export default class ToggleAssignButton extends ComponentCommand {
@@ -35,7 +36,7 @@ export default class ToggleAssignButton extends ComponentCommand {
 
 		if (user.system === undefined) {
 			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -45,7 +46,7 @@ export default class ToggleAssignButton extends ComponentCommand {
 		if (corresponding === undefined) {
 			return await ctx.write({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorView(
+					...new AlertView(await ctx.userTranslations()).errorView(
 						"ERROR_ASSIGN_PAGINATION_TOO_OLD",
 					),
 				],
@@ -65,29 +66,43 @@ export default class ToggleAssignButton extends ComponentCommand {
 					$pull: { tagIds: tagId },
 				},
 			);
-            await tagCollection.updateOne(
-                { tagId, systemId: corresponding.alter.systemId },
-                { $pull: { associatedAlters: corresponding.alter.alterId.toString() } },
-            )
+			await tagCollection.updateOne(
+				{ tagId, systemId: corresponding.alter.systemId },
+				{ $pull: { associatedAlters: corresponding.alter.alterId.toString() } },
+			);
 
 			w(ctx.author.id, "alter.update", {
 				type: "alter.update",
 				alter: {
 					...corresponding.alter,
-					tagIds: corresponding.alter.tagIds.filter(v => v !== tagId),
+					tagIds: corresponding.alter.tagIds.filter((v) => v !== tagId),
 				},
 			});
-	
+
 			(async () => {
-				const tag = await tagCollection.findOne({ tagId })
+				const tag = await tagCollection.findOne({ tagId });
 
 				w(ctx.author.id, "tag.update", {
 					type: "tag.update",
-					tag
+					tag,
 				});
-			})()
 
-            // Refresh from database
+				if (
+					tag?.fields["@/converter/pk"] &&
+					corresponding.alter.fields["@/converter/pk"]
+				)
+					writeBack({
+						type: "member-group-relationship",
+						id: corresponding.alter.fields["@/converter/pk"],
+						change: {
+							type: "remove",
+							groupId: tag?.fields["@/converter/pk"],
+						},
+						syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+					});
+			})();
+
+			// Refresh from database
 			const nextAlter = await alterCollection.findOne({
 				alterId: corresponding.alter.alterId,
 				systemId: corresponding.alter.systemId,
@@ -100,11 +115,11 @@ export default class ToggleAssignButton extends ComponentCommand {
 
 			corresponding.alter = nextAlter!;
 
-		    assignTagPagination.push(corresponding);
+			assignTagPagination.push(corresponding);
 		} else {
-            // Assign tag
+			// Assign tag
 
-            await alterCollection.updateOne(
+			await alterCollection.updateOne(
 				{
 					alterId: corresponding.alter.alterId,
 					systemId: corresponding.alter.systemId,
@@ -113,29 +128,46 @@ export default class ToggleAssignButton extends ComponentCommand {
 					$push: { tagIds: tagId },
 				},
 			);
-            await tagCollection.updateOne(
-                { tagId, systemId: corresponding.alter.systemId },
-                { $push: { associatedAlters: corresponding.alter.alterId.toString() } },
-            )
+			await tagCollection.updateOne(
+				{ tagId, systemId: corresponding.alter.systemId },
+				{ $push: { associatedAlters: corresponding.alter.alterId.toString() } },
+			);
 
 			w(ctx.author.id, "alter.update", {
 				type: "alter.update",
 				alter: {
 					...corresponding.alter,
-					tagIds: [...corresponding.alter.tagIds, corresponding.alter.alterId.toString() ],
+					tagIds: [
+						...corresponding.alter.tagIds,
+						corresponding.alter.alterId.toString(),
+					],
 				},
 			});
-	
+
 			(async () => {
-				const tag = await tagCollection.findOne({ tagId })
+				const tag = await tagCollection.findOne({ tagId });
 
 				w(ctx.author.id, "tag.update", {
 					type: "tag.update",
-					tag
+					tag,
 				});
-			})()
-            
-            // Refresh from database
+
+				if (
+					tag?.fields["@/converter/pk"] &&
+					corresponding.alter.fields["@/converter/pk"]
+				)
+					writeBack({
+						type: "member-group-relationship",
+						id: corresponding.alter.fields["@/converter/pk"],
+						change: {
+							type: "add",
+							groupId: tag?.fields["@/converter/pk"],
+						},
+						syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+					});
+			})();
+
+			// Refresh from database
 			const nextAlter = await alterCollection.findOne({
 				alterId: corresponding.alter.alterId,
 				systemId: corresponding.alter.systemId,
@@ -148,16 +180,14 @@ export default class ToggleAssignButton extends ComponentCommand {
 
 			corresponding.alter = nextAlter!;
 
-		    assignTagPagination.push(corresponding);
-        }
+			assignTagPagination.push(corresponding);
+		}
 
 		return await ctx.update({
 			components: [
-				...(await new AlertAssignTagView((await ctx.userTranslations())).alterAssignTag(
-					user.system,
-					undefined,
-					corresponding,
-				)),
+				...(await new AlertAssignTagView(
+					await ctx.userTranslations(),
+				).alterAssignTag(user.system, undefined, corresponding)),
 			],
 		});
 	}

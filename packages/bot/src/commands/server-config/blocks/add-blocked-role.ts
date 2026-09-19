@@ -36,57 +36,69 @@ export default class AddPrefixCommand extends SubCommand {
 
 		if (guildObj.blockedRoles.includes(role.id)) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"BLOCK_ALREADY_EXISTS",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			});
 		}
 
-        if (guildObj.blockedRoles.length >= 25) {
-            return await ctx.editResponse({
-                components: new AlertView((await ctx.userTranslations())).errorView("TOO_MANY_BLOCKED_ITEMS"),
+		if (guildObj.blockedRoles.length >= 25) {
+			return await ctx.editResponse({
+				components: new AlertView(await ctx.userTranslations()).errorView(
+					"TOO_MANY_BLOCKED_ITEMS",
+				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-            })
-        }
+			});
+		}
 
 		guildObj.blockedRoles.push(role.id);
 
 		await guildCollection.updateOne(
 			{ guildId: guildObj.guildId },
 			{ $push: { blockedRoles: role.id } },
-			{ upsert: true }
+			{ upsert: true },
 		);
-		ctx.client.cache.pguild.remove(guildObj.guildId)
+		ctx.client.cache.pguild.remove(guildObj.guildId);
 
 		return await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).successViewCustom(
-				`${(await ctx.userTranslations()).SUCCESS_ADD_ITEM_BLOCKED.replace("%item%", `<@&${role.id}>`)} ${((await ctx.userTranslations()))
-					.SUCCESS_CHANGED_SERVER_BLOCKS.replace(
-						"%block_items%",
-						[
-							...guildObj.blockedCategories.map((c) => {
-								return { id: c, type: "channel" };
-							}),
-							...guildObj.blockedRoles.map((c) => {
-								return { id: c, type: "role" };
-							}),
-                            ...(await Promise.all(guildObj.blockedCategories.map(async (c) => {
-                                const category = await ctx.client.channels.fetch(c).catch(() => null);
+			components: new AlertView(await ctx.userTranslations()).successViewCustom(
+				`${(await ctx.userTranslations()).SUCCESS_ADD_ITEM_BLOCKED.replace("%item%", `<@&${role.id}>`)} ${(
+					await ctx.userTranslations()
+				).SUCCESS_CHANGED_SERVER_BLOCKS.replace(
+					"%block_items%",
+					[
+						...guildObj.blockedCategories.map((c) => {
+							return { id: c, type: "channel" };
+						}),
+						...guildObj.blockedRoles.map((c) => {
+							return { id: c, type: "role" };
+						}),
+						...(
+							await Promise.all(
+								guildObj.blockedCategories.map(async (c) => {
+									const category = await ctx.client.channels
+										.fetch(c)
+										.catch(() => null);
 
-                                if (!category || !category.isCategory()) {
-                                    return null;
-                                }
+									if (!category || !category.isCategory()) {
+										return null;
+									}
 
-                                return { id: category.name, type: "category"}
-                            }))).filter(v => v !== null)
-						]
-						.map((c) => `> - ${c.type === "channel" ? "<#" : (c.type === "category" ? "" : "<@&")}${c.id}${c.type !== "category" ? ">" : ""}`)
+									return { id: category.name, type: "category" };
+								}),
+							)
+						).filter((v) => v !== null),
+					]
+						.map(
+							(c) =>
+								`> - ${c.type === "channel" ? "<#" : c.type === "category" ? "" : "<@&"}${c.id}${c.type !== "category" ? ">" : ""}`,
+						)
 						.join("\n"),
-					)}`,
+				)}`,
 			),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-            allowed_mentions: { parse: [] }
+			allowed_mentions: { parse: [] },
 		});
 	}
 }

@@ -19,8 +19,8 @@ export async function gatherStatisticalData(): Promise<PAnalytics> {
 	const configuredGuilds = await guildCollection.countDocuments();
 	const messages = await messagesCollection.countDocuments();
 
-	const guilds = (await client.guilds.list({with_counts: true}, true)) ?? [];
- 
+	const guilds = (await client.guilds.list({ with_counts: true }, true)) ?? [];
+
 	if (guilds.length === 200 && guilds[199]) {
 		guilds.push(
 			...((await client.guilds.list(
@@ -40,8 +40,13 @@ export async function gatherStatisticalData(): Promise<PAnalytics> {
 	for (const guild of guilds) {
 		const channels = await client.cache.channels?.values(guild.id);
 
-		if (((guild as unknown as { approximateMemberCount: number }).approximateMemberCount)) {
-			userCount += ((guild as unknown as { approximateMemberCount: number }).approximateMemberCount) ?? 0;
+		if (
+			(guild as unknown as { approximateMemberCount: number })
+				.approximateMemberCount
+		) {
+			userCount +=
+				(guild as unknown as { approximateMemberCount: number })
+					.approximateMemberCount ?? 0;
 		}
 		if (channels) channelCount += channels.length;
 	}
@@ -51,10 +56,11 @@ export async function gatherStatisticalData(): Promise<PAnalytics> {
 		userCount,
 	});
 
-	const latency = latencyDataPoints.reduce(
-		(accumulator, currentValue) => accumulator + currentValue,
-		0,
-	) / latencyDataPoints.length;
+	const latency =
+		latencyDataPoints.reduce(
+			(accumulator, currentValue) => accumulator + currentValue,
+			0,
+		) / latencyDataPoints.length;
 	latencyDataPoints = [];
 
 	return {

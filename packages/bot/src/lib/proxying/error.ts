@@ -50,16 +50,14 @@ export async function createProxyError(
 			new Container()
 				.setComponents(
 					opts.type === "EnforcedGuildTagRegulation"
-						? new Section()
-								.setComponents(textDisplay)
-								.setAccessory(
-									new Button()
-										.setCustomId(
-											InteractionIdentifier.Systems.Configuration.SetSystemTag.create(),
-										)
-										.setLabel(opts.setSystemTag ?? "Set System Tag")
-										.setStyle(ButtonStyle.Primary),
-								)
+						? new Section().setComponents(textDisplay).setAccessory(
+								new Button()
+									.setCustomId(
+										InteractionIdentifier.Systems.Configuration.SetSystemTag.create(),
+									)
+									.setLabel(opts.setSystemTag ?? "Set System Tag")
+									.setStyle(ButtonStyle.Primary),
+							)
 						: textDisplay,
 				)
 				.setColor("#B70000"),

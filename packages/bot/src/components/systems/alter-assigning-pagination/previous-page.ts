@@ -1,6 +1,9 @@
 import { ComponentCommand, type ComponentContext } from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { AlertAssignTagView, assignTagPagination } from "@/views/alter-assign-tag";
+import {
+	AlertAssignTagView,
+	assignTagPagination,
+} from "@/views/alter-assign-tag";
 import { AlertView } from "@/views/alert";
 import { MessageFlags } from "seyfert/lib/types";
 
@@ -18,12 +21,14 @@ export default class PreviousPageAlterAssigning extends ComponentCommand {
 			InteractionIdentifier.Systems.Configuration.AlterAssignPagination.PreviousPage.substring(
 				ctx.customId,
 			)[0];
-		const corresponding = assignTagPagination.find((v) => v.id === paginationToken);
+		const corresponding = assignTagPagination.find(
+			(v) => v.id === paginationToken,
+		);
 		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
 			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -33,7 +38,7 @@ export default class PreviousPageAlterAssigning extends ComponentCommand {
 		if (corresponding === undefined) {
 			return await ctx.write({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorView(
+					...new AlertView(await ctx.userTranslations()).errorView(
 						"ERROR_ASSIGN_PAGINATION_TOO_OLD",
 					),
 				],
@@ -55,7 +60,9 @@ export default class PreviousPageAlterAssigning extends ComponentCommand {
 
 		return await ctx.update({
 			components: [
-                ...await new AlertAssignTagView((await ctx.userTranslations())).alterAssignTag(user.system, undefined, corresponding)
+				...(await new AlertAssignTagView(
+					await ctx.userTranslations(),
+				).alterAssignTag(user.system, undefined, corresponding)),
 			],
 		});
 	}

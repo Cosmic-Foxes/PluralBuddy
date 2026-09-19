@@ -14,7 +14,9 @@ export async function cleanupIndexingMap() {
 			if (
 				container.components[0] &&
 				container.components[0].type === ComponentType.TextDisplay &&
-				(container.components[0] as TextDisplayComponent).content.endsWith("-# **Current Status:** 0% indexed.")
+				(container.components[0] as TextDisplayComponent).content.endsWith(
+					"-# **Current Status:** 0% indexed.",
+				)
 			) {
 				setTimeout(async () => {
 					const newMessage = await message.fetch();
@@ -27,7 +29,9 @@ export async function cleanupIndexingMap() {
 						if (
 							container.components[0] &&
 							container.components[0].type === ComponentType.TextDisplay &&
-							(container.components[0] as TextDisplayComponent).content.endsWith("-# **Current Status:** 0% indexed.")
+							(
+								container.components[0] as TextDisplayComponent
+							).content.endsWith("-# **Current Status:** 0% indexed.")
 						) {
 							await message.delete().catch((_) => null);
 							delete indexingMessageMap[user]
@@ -40,7 +44,7 @@ export async function cleanupIndexingMap() {
 }
 
 export function startIndexingCleanupTimer() {
-    setInterval(() => {
-        cleanupIndexingMap()
-    }, 4000);
+	setInterval(() => {
+		cleanupIndexingMap();
+	}, 4000);
 }

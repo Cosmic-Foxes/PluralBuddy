@@ -38,7 +38,8 @@ import { PGuildCache } from "./cache/plural-guild";
 import { SimilarWebhookResource } from "./cache/similar-webhooks";
 import { StatisticResource } from "./cache/statistics";
 import { ProxyResource } from "./cache/system-proxy-tags";
-import TagCommand from "./commands/tag"
+import { PTerminologyCache } from "./cache/terminology";
+import TagCommand from "./commands/tag";
 import {
 	PluralBuddyComponentErrorCommand,
 	PluralBuddyErrorCommand,
@@ -52,9 +53,12 @@ import { startIndexingCleanupTimer } from "./lib/cleanup-indexing";
 import { emojis } from "./lib/emojis";
 import { getSystemFeatures } from "./lib/get-system-flags";
 import { InteractionIdentifier } from "./lib/interaction-ids";
+import { initializeApplicationCommands } from "./lib/mention-command";
 import { middlewares } from "./middleware";
 import { mongoClient, setupDatabases, setupMongoDB } from "./mongodb";
 import { defaultPrefixes, getGuildFromId } from "./types/guild";
+import type { SeyfertError } from "seyfert/lib/common";
+import { decodeDetail } from "./lib/errors/seyfert-bad-request-commands";
 
 
 
@@ -86,14 +90,13 @@ export const logger = process.env.SEQ_HOST
 
 if (logger) logger.info("PluralBuddy is online");
 
-export const build = `26.1.2/${process.env.SOURCE_COMMIT?.slice(0, 7)}`;
+export const build = `26.2.0/${process.env.SOURCE_COMMIT?.slice(0, 7)}`;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"latency",
 	"noWebhookMiddleware",
 	"globalBlockUserMiddleware",
 	"serverBlock",
 ];
-
 
 export const policyModal = async (
 	ctx: AnyContext | CollectorInteraction,
@@ -161,9 +164,9 @@ export const posthogClient =
 	process.env.POSTHOG_API_KEY === undefined
 		? null
 		: new PostHog(process.env.POSTHOG_API_KEY ?? "", {
-				host: "https://us.i.posthog.com",
-				enableExceptionAutocapture: true,
-			});
+			host: "https://us.i.posthog.com",
+			enableExceptionAutocapture: true,
+		});
 
 export const client = new Client({
 	commands: {
@@ -199,18 +202,19 @@ export const client = new Client({
 });
 
 if (import.meta.main) {
-	if (logger)
-		logger.info(
-			"The loaded branch is {branch}; loading PluralBuddy with default prefix(es) {prefix}",
-			{
-				branch: process.env.BRANCH ?? "unknown",
-				prefix:
-					defaultPrefixes[
-						(process.env.BRANCH as "production" | "canary") ?? "production"
-					],
-			},
-		);
+	// @ts-ignore
+	if (logger) client.logger = logger;
 
+	client.logger.info(
+		"The loaded branch is {branch}; loading PluralBuddy with default prefix(es) {prefix}",
+		{
+			branch: process.env.BRANCH ?? "unknown",
+			prefix:
+				defaultPrefixes[
+				(process.env.BRANCH as "production" | "canary") ?? "production"
+				],
+		},
+	);
 
 	client.setServices({
 		middlewares: middlewares,
@@ -228,8 +232,7 @@ if (import.meta.main) {
 	await setupMongoDB();
 	await setupDatabases();
 
-
-	(logger ?? console).info("MongoDB is loaded.");
+	client.logger.info("MongoDB is loaded.");
 
 	client.cache.statistic = new StatisticResource(client.cache, client);
 	client.cache.alterProxy = new ProxyResource(client.cache, client);
@@ -239,8 +242,9 @@ if (import.meta.main) {
 		client,
 	);
 	client.cache.i18n = new Pi18nCache(client.cache, client);
+	client.cache.terminology = new PTerminologyCache(client.cache, client);
 
-	if (logger) logger.info("Created cache");
+	client.logger.info("Created cache");
 
 	await client.start({ token: process.env.BOT_TOKEN });
 
@@ -248,6 +252,11 @@ if (import.meta.main) {
 		await client.uploadCommands();
 	} catch (e) {
 		(logger ?? console).warn(e);
+
+		if ((e as SeyfertError).metadata && (e as SeyfertError).metadata?.detail) {
+			(logger ?? console).warn("PluralBuddy couldn't load commands correctly. {error}", {error: decodeDetail((e as SeyfertError).metadata?.detail as string)});
+
+		}
 		// uploading commands has an extremely low ratelimit.
 	}
 
@@ -282,6 +291,8 @@ if (import.meta.main) {
 			afk: false,
 		});
 	}, 10000);
+
+	await initializeApplicationCommands();
 
 	startIndexingCleanupTimer();
 	startEmojiCleanupTimer();
