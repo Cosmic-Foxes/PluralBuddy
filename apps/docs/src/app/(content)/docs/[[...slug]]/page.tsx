@@ -62,49 +62,47 @@ export default async function Page(
 				style: "normal",
 			}}
 		>
-			{commandData && <DressedEmbedLayout>
-				<Container accent_color={0xfccee8}>
-					<Section
-						accessory={
-							<Button
-								url="https://gftl.fyi/discord"
-								label="Invite PluralBuddy"
-							/>
-						}
-					>
-						<TextDisplay>
-							## [**{page.data.title}**](https://pb.giftedly.dev/docs/
-							{params.slug?.join("/")})
-						</TextDisplay>
-					</Section>
-
-					<DressedSeparator />
-
-					<TextDisplay>
-						{
-							(await page.data.getText("raw"))
-								.split("---")[2]
-								.slice(2)
-								.split("\n")
-								.filter((c) => !c.startsWith("import") && c !== "")[0]
-						}
-					</TextDisplay>
-
-					{commandData?.subcommands.length !== 1 ? (
-						<>
-							<DressedSeparator />
-
+			{commandData && (
+				<DressedEmbedLayout>
+					<Container accent_color={0xfccee8}>
+						<Section
+							accessory={
+								<Button
+									url="https://gftl.fyi/discord"
+									label="Invite PluralBuddy"
+								/>
+							}
+						>
 							<TextDisplay>
-								### Sub-commands {"\n"}
-								{commandData?.subcommands
-									.slice(1)
-									.map((v) => ` - </${v.name}:${v.id}> - ${v.description}`)
-									.join("\n")}
+								## [**{page.data.title}**](https://pb.giftedly.dev/docs/
+								{params.slug?.join("/")})
 							</TextDisplay>
-						</>
-					) : <TextDisplay>{commandData.mention}</TextDisplay>}
-				</Container>
-			</DressedEmbedLayout>}
+						</Section>
+
+						<DressedSeparator />
+
+						<TextDisplay>
+							{page.data.body({}).props.children[0].props.children}
+						</TextDisplay>
+
+						{commandData?.subcommands.length !== 1 ? (
+							<>
+								<DressedSeparator />
+
+								<TextDisplay>
+									### Sub-commands {"\n"}
+									{commandData?.subcommands
+										.slice(1)
+										.map((v) => ` - </${v.name}:${v.id}> - ${v.description}`)
+										.join("\n")}
+								</TextDisplay>
+							</>
+						) : (
+							<TextDisplay>{commandData.mention}</TextDisplay>
+						)}
+					</Container>
+				</DressedEmbedLayout>
+			)}
 			<DocsTitle>{page.data.title}</DocsTitle>
 			<DocsDescription>{page.data.description}</DocsDescription>
 			<Separator />
