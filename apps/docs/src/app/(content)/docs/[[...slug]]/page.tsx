@@ -62,7 +62,7 @@ export default async function Page(
 				style: "normal",
 			}}
 		>
-			<DressedEmbedLayout>
+			{commandData && <DressedEmbedLayout>
 				<Container accent_color={0xfccee8}>
 					<Section
 						accessory={
@@ -104,7 +104,7 @@ export default async function Page(
 						</>
 					) : <TextDisplay>{commandData.mention}</TextDisplay>}
 				</Container>
-			</DressedEmbedLayout>
+			</DressedEmbedLayout>}
 			<DocsTitle>{page.data.title}</DocsTitle>
 			<DocsDescription>{page.data.description}</DocsDescription>
 			<Separator />
