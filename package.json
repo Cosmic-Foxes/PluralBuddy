@@ -6,6 +6,7 @@
 		"concurrently": "^10.0.5"
 	},
 	"private": true,
+	"packageManager": "bun@1.3.13",
 	"scripts": {
 		"bot": "cd packages/bot && bun run bot",
 		"bot:watch": "cd packages/bot && bun run bot:watch",
