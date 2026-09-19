@@ -22,7 +22,7 @@ export default class CheckPermissionsCommand extends Command {
 
 		if (guild.getFeatures().disabledPermissionCheck) {
 			if (ctx.isChat() && ctx.message) {
-				(ctx.message as Message).delete();
+				(ctx.message as Message).delete().catch(_ => null);
 
 				try {
 					await (ctx.message as Message).author.write({

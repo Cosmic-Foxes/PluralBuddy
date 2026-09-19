@@ -55,7 +55,7 @@ export const serverBlock = createMiddleware<void>(async (middle) => {
 			)
 		) {
 			if (ctx.isChat() && ctx.message) {
-				(ctx.message as Message).delete();
+				(ctx.message as Message).delete().catch((_) => null);
 
 				if (
 					process.env.LIBBY_DEBUG === "true" ||

@@ -80,7 +80,7 @@ export default class OffDMsButton extends ComponentCommand {
 			);
 		}
 
-        await ctx.interaction.message.delete();
+        await ctx.interaction.message.delete().catch((_) => null);
 
 		return await ctx.write({
 			components: new AlertView((await ctx.userTranslations())).successViewCustom(

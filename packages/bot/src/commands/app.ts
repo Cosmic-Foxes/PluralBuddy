@@ -1,5 +1,3 @@
-import { emojis } from "@/lib/emojis";
-import { AlertView } from "@/views/alert";
 import {
 	Command,
 	CommandContext,
@@ -11,6 +9,8 @@ import {
 	TextDisplay,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { emojis } from "@/lib/emojis";
+import { AlertView } from "@/views/alert";
 
 @Declare({
 	name: "app",
@@ -23,7 +23,7 @@ export default class AppExplanationCommand extends Command {
 
 		if (guild.getFeatures().disabledAppExplain) {
 			if (ctx.isChat() && ctx.message) {
-				(ctx.message as Message).delete();
+				(ctx.message as Message).delete().catch(_ => null);
 				try {
 					await (ctx.message as Message).author.write({
 						components: new AlertView((await ctx.userTranslations())).errorView(

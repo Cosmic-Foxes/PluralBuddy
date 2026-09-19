@@ -1,14 +1,14 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { ActionRow, Button, ComponentCommand, Container, type ComponentContext } from "seyfert";
+import { ActionRow, Button, ComponentCommand, type ComponentContext, Container } from "seyfert";
+import { type APIContainerComponent, ButtonStyle, MessageFlags } from "seyfert/lib/types";
+import { createTextChangeRange } from "typescript";
+import { emojis } from "../../lib/emojis";
 import { InteractionIdentifier } from "../../lib/interaction-ids";
 import { getOperationById } from "../../types/operation";
-import { ButtonStyle, MessageFlags, type APIContainerComponent } from "seyfert/lib/types";
-import { emojis } from "../../lib/emojis";
+import { getUserById, writeUserById } from "../../types/user";
 import { AlertView } from "../../views/alert";
 import { LoadingView } from "../../views/loading";
-import { getUserById, writeUserById } from "../../types/user";
-import { createTextChangeRange } from "typescript";
 
 export default class UndoOperationButton extends ComponentCommand {
     componentType = 'Button' as const;
@@ -65,6 +65,6 @@ export default class UndoOperationButton extends ComponentCommand {
                     .replace("%value-count%", operation.changedOperationStrings.length.toString()))
         })
         
-        await ctx.interaction.message.delete();
+        await ctx.interaction.message.delete().catch((_) => null);
     }
 }

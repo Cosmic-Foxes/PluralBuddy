@@ -106,7 +106,7 @@ export default createEvent({
 			const guild = await getGuildFromId(message.guildId ?? "");
 
 			if (guild.getFeatures().disabledHelp) {
-				message.delete();
+				message.delete().catch((_) => null);
 
 				try {
 					await message.author.write({
@@ -346,7 +346,7 @@ export default createEvent({
 				delete indexingMessageMap[message.author.id];
 
 				clearTimeout(indexingTimeout);
-				if (indexingMessage !== null) indexingMessage.delete();
+				if (indexingMessage !== null) indexingMessage.delete().catch((_) => null);
 			};
 
 			// Only find the alters that we need

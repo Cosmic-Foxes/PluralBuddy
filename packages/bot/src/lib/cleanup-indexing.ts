@@ -29,7 +29,7 @@ export async function cleanupIndexingMap() {
 							container.components[0].type === ComponentType.TextDisplay &&
 							(container.components[0] as TextDisplayComponent).content.endsWith("-# **Current Status:** 0% indexed.")
 						) {
-							await message.delete();
+							await message.delete().catch((_) => null);
 							delete indexingMessageMap[user]
 						}
 					}

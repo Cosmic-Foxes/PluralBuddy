@@ -105,7 +105,7 @@ export const extendedContext = extendContext((interaction) => {
 						});
 
 					if (i.isButton()) {
-						message.delete();
+						message.delete().catch(_ => null);
 						const writtenMessage = await modal.write(body, true);
 
 						if (afterSendTask)
@@ -130,7 +130,7 @@ export const extendedContext = extendContext((interaction) => {
 					});
 
 				if (i.isButton()) {
-					message.delete();
+					message.delete().catch((_) => null);
 					const writtenMessage = await i.write(body, true);
 
 					if (afterSendTask)

@@ -186,6 +186,6 @@ ${json?.description ?? json?.["og:description"] ?? json?.["twitter:description"]
 		});
 	}
 	for (const emoji of uploadedEmojis) {
-		emoji.delete();
+		emoji.delete().catch((_) => null);
 	}
 }

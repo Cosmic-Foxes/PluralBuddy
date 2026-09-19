@@ -48,7 +48,7 @@ export default class PluralBuddyHelpCommand extends Command {
 
 		if (guild.getFeatures().disabledHelp) {
 			if (ctx.isChat() && ctx.message) {
-				(ctx.message as Message).delete();
+				(ctx.message as Message).delete().catch(_ => null);
 
 				try {
 					await (ctx.message as Message).author.write({

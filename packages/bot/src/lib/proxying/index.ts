@@ -333,7 +333,7 @@ export async function proxy(
 			client.cache.similarWebhookResource.remove(message.channelId);
 		}
 
-		await message.delete();
+		await message.delete().catch((_) => null);
 	}
 }
 
