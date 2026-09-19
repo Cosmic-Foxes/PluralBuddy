@@ -7,10 +7,12 @@ import {
 	createNumberOption,
 	createStringOption,
 	Declare,
+	Group,
 	Options,
 	SubCommand,
 } from "seyfert/lib/commands";
 import { MessageFlags } from "seyfert/lib/types";
+import { Shortcut } from "yunaforseyfert";
 
 const options = {
 	"latch-delay": createStringOption({
@@ -25,6 +27,8 @@ const options = {
 	aliases: ["ld", "l"],
 	contexts: ["BotDM", "Guild"],
 })
+@Group("settings")
+@Shortcut()
 @Options(options)
 export default class SetLatchDelayCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {

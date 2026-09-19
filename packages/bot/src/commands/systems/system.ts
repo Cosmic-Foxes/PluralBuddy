@@ -5,6 +5,7 @@ import {
 	AutoLoad,
 	type CommandContext,
 	Message,
+    Groups,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { SystemView } from "../../views/system";
@@ -15,6 +16,13 @@ import { AlertView } from "../../views/alert";
 	description: "system command",
 	aliases: ["s"],
 	contexts: ["BotDM", "Guild"],
+})
+@Groups({
+	settings: {
+		defaultDescription: "Configure settings about the system.",
+		shortcut: true,
+		aliases: ["config"]
+	}
 })
 // Being in the same folder with @AutoLoad() you can save this step
 @AutoLoad()

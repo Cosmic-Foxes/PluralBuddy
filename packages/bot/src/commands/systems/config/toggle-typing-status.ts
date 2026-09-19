@@ -1,15 +1,17 @@
-import { SystemFlags } from "plurography";
-import { CommandContext, Declare, SubCommand } from "seyfert";
-import { MessageFlags } from "seyfert/lib/types";
 import { getSystemFeatures } from "@/lib/get-system-flags";
 import { createSystemOperation } from "@/lib/system-operation";
 import { AlertView } from "@/views/alert";
+import { SystemFlags } from "plurography";
+import { CommandContext, Declare, Group, SubCommand } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
+import { Shortcut } from "yunaforseyfert";
 
 @Declare({
-	name: "include-pronouns",
-	description:
-		"Toggling including pronouns in the webhook name after proxying with an alter.",
+	name: "toggle-typing-status",
+	description: "Toggling typing status after proxying.",
 })
+@Group("settings")
+@Shortcut()
 export default class IncludeProxyTags extends SubCommand {
 	override async run(ctx: CommandContext) {
 		const { system } = await ctx.retrievePUser();
@@ -28,23 +30,23 @@ export default class IncludeProxyTags extends SubCommand {
 		await createSystemOperation(
 			system,
 			{
-				flags: getSystemFeatures(system).includePronouns
-					? getSystemFeatures(system).disable(SystemFlags.INCLUDE_PRONOUNS)
-					: getSystemFeatures(system).enable(SystemFlags.INCLUDE_PRONOUNS),
+				flags: getSystemFeatures(system).noTypingStatus
+					? getSystemFeatures(system).disable(SystemFlags.NO_TYPING_STATUS)
+					: getSystemFeatures(system).enable(SystemFlags.NO_TYPING_STATUS),
 			},
 			await ctx.userTranslations(),
 			"discord",
 			{
-				flippedProxyTags: true,
+				flippedNoTypingStatus: true,
 			},
 		);
 
 		return await ctx.write({
 			components: [
 				...new AlertView(await ctx.userTranslations()).successView(
-					getSystemFeatures(system).includePronouns
-						? "TOGGLED_INCLUDING_PRONOUNS_D"
-						: "TOGGLED_INCLUDING_PRONOUNS_E",
+					getSystemFeatures(system).noTypingStatus
+						? "TOGGLED_TYPING_STATUS_D"
+						: "TOGGLED_TYPING_STATUS_E",
 				),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

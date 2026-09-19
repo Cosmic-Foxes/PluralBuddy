@@ -35,6 +35,7 @@ export async function createSystemOperation(
 		flippedIncludePronouns?: boolean;
 		flippedNoTypingStatus?: boolean;
 		flippedPreferAccessiblity?: boolean;
+		flippedPublicDefault?: boolean;
 		flippedLeftSideTag?: boolean;
 		flippedCaseInsensitiveProxying?: boolean;
 	},
@@ -172,6 +173,9 @@ export async function createSystemOperation(
 				}
 				if (flagDescription?.flippedCaseInsensitiveProxying === true) {
 					return translations.OPERATION_FLIPPED_CASE_INSENS_PROXIES;
+				}
+				if (flagDescription?.flippedPublicDefault === true) {
+					return translations.OPERATION_FLIPPED_PUBLIC_DEFAULT;
 				}
 
 				return translations.OPERATION_FALLBACK.replace("%property%", c).replace(

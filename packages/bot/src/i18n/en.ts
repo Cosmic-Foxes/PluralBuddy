@@ -451,6 +451,8 @@ PluralBuddy uses a **username/display name** system.
 	OPERATION_FLIPPED_DT: "Toggled left side display tags on the system.",
 	OPERATION_FLIPPED_CASE_INSENS_PROXIES:
 		"Toggled case insensitive proxying on this system.",
+	OPERATION_FLIPPED_PUBLIC_DEFAULT:
+		"Toggled public defaulting on this system.",
 
 	EDIT_MESSAGE: "Editing message",
 	MESSAGE_CONTENTS: "New Message Contents",
@@ -957,6 +959,10 @@ Your system is using the front state of **{{ mode }}**.`,
 		"Successfully toggled preferring accessiblity. (Enabled)",
 	PREFER_ACCESSIBLITY_D:
 		"Successfully toggled preferring accessiblity. (Disabled)",
+	PUBLIC_DEFAULT_E:
+		"Successfully toggled public defaulting. (Enabled)",
+	PUBLIC_DEFAULT_D:
+		"Successfully toggled public defaulting. (Disabled)",
 
 	NOT_FRIDAY:
 		"Flatworm Friday is only on Friday in New York, come back next Friday to Wall Street or use `--time-machine`.",

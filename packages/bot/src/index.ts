@@ -57,31 +57,33 @@ import { initializeApplicationCommands } from "./lib/mention-command";
 import { middlewares } from "./middleware";
 import { mongoClient, setupDatabases, setupMongoDB } from "./mongodb";
 import { defaultPrefixes, getGuildFromId } from "./types/guild";
+import type { SeyfertError } from "seyfert/lib/common";
+import { decodeDetail } from "./lib/errors/seyfert-bad-request-commands";
 
 export const logger = process.env.SEQ_HOST
 	? winston.createLogger({
-			level: "info",
-			format: winston.format.combine(
-				/* This is required to get errors to log with stack traces. See https://github.com/winstonjs/winston/issues/1498 */
-				winston.format.errors({ stack: true }),
-				winston.format.json(),
-			),
-			defaultMeta: { application: "pluralbuddy" },
-			transports: [
-				new winston.transports.Console({
-					format: winston.format.simple(),
-				}),
-				new SeqTransport({
-					serverUrl: process.env.SEQ_HOST,
-					apiKey: process.env.SEQ_KEY,
-					onError: (e) => {
-						console.error(e);
-					},
-					handleExceptions: true,
-					handleRejections: true,
-				}),
-			],
-		})
+		level: "info",
+		format: winston.format.combine(
+			/* This is required to get errors to log with stack traces. See https://github.com/winstonjs/winston/issues/1498 */
+			winston.format.errors({ stack: true }),
+			winston.format.json(),
+		),
+		defaultMeta: { application: "pluralbuddy" },
+		transports: [
+			new winston.transports.Console({
+				format: winston.format.simple(),
+			}),
+			new SeqTransport({
+				serverUrl: process.env.SEQ_HOST,
+				apiKey: process.env.SEQ_KEY,
+				onError: (e) => {
+					console.error(e);
+				},
+				handleExceptions: true,
+				handleRejections: true,
+			}),
+		],
+	})
 	: null;
 
 if (logger) logger.info("PluralBuddy is online");
@@ -160,9 +162,9 @@ export const posthogClient =
 	process.env.POSTHOG_API_KEY === undefined
 		? null
 		: new PostHog(process.env.POSTHOG_API_KEY ?? "", {
-				host: "https://us.i.posthog.com",
-				enableExceptionAutocapture: true,
-			});
+			host: "https://us.i.posthog.com",
+			enableExceptionAutocapture: true,
+		});
 
 export const client = new Client({
 	commands: {
@@ -207,7 +209,7 @@ if (import.meta.main) {
 			branch: process.env.BRANCH ?? "unknown",
 			prefix:
 				defaultPrefixes[
-					(process.env.BRANCH as "production" | "canary") ?? "production"
+				(process.env.BRANCH as "production" | "canary") ?? "production"
 				],
 		},
 	);
@@ -248,6 +250,11 @@ if (import.meta.main) {
 		await client.uploadCommands();
 	} catch (e) {
 		(logger ?? console).warn(e);
+
+		if ((e as SeyfertError).metadata && (e as SeyfertError).metadata?.detail) {
+			(logger ?? console).warn("PluralBuddy couldn't load commands correctly. {error}", {error: decodeDetail((e as SeyfertError).metadata?.detail as string)});
+
+		}
 		// uploading commands has an extremely low ratelimit.
 	}
 
