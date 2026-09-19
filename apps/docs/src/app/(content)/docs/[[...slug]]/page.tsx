@@ -40,9 +40,7 @@ const getDiscordCommandData = unstable_cache(
 	},
 );
 
-export default async function Page(
-	props: PageProps<"/docs/[[...slug]]">,
-) {
+export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 	const params = await props.params;
 	const page = source.getPage(params.slug);
 	if (!page) notFound();
@@ -82,7 +80,11 @@ export default async function Page(
 						<DressedSeparator />
 
 						<TextDisplay>
-							{page.data.body({}).props.children[0].props.children}
+							{
+								page.data.body({
+									components: getMDXComponents({}),
+								}).props.children[0].props.children
+							}
 						</TextDisplay>
 
 						{commandData?.subcommands.length !== 1 ? (
