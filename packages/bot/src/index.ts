@@ -202,7 +202,7 @@ export const client = new Client({
 
 if (import.meta.main) {
 	// @ts-ignore
-	if (logger) client.logger = {...logger, fatal: logger.error};
+	if (logger) client.logger = {...client.logger, info: logger.info, warn: logger.warn, fatal: logger.error};
 
 	client.logger.info(
 		"The loaded branch is {branch}; loading PluralBuddy with default prefix(es) {prefix}",
