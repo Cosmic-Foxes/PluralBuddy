@@ -199,6 +199,7 @@ export default class PluralKitConverter
 		}
 
 		return {
+			displayName: alter.display_name ?? alter.name,
 			color: alter.color !== null ? `#${alter.color}` : null,
 			description: alter.description,
 			pronouns: alter.pronouns,
