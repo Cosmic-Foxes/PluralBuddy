@@ -272,6 +272,10 @@ export default class PluralKitConverter
 						: []),
 				],
 			),
+
+			fields: {
+				"@/converter/pk": tag.id,
+			}
 		};
 	}
 
