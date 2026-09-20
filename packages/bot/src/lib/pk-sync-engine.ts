@@ -79,7 +79,7 @@ export function runSandboxActions({
 		.filter(
 			(c) =>
 				!(
-					usernames.includes(c.display_name ?? "") || usernames.includes(c.name)
+					usernames.includes(c.display_name ?? "") && usernames.includes(c.name)
 				),
 		)
 		.forEach((c, i) => creationAlters.push(converter.toAlter(c, i, authorId)));
