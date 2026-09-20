@@ -59,8 +59,6 @@ import { mongoClient, setupDatabases, setupMongoDB } from "./mongodb";
 import { defaultPrefixes, getGuildFromId } from "./types/guild";
 import type { SeyfertError } from "seyfert/lib/common";
 
-
-
 export const logger = process.env.SEQ_HOST
 	? winston.createLogger({
 			level: "info",

@@ -381,15 +381,6 @@ export async function automaticallySync({
 	userId,
 	system: systemPB,
 }: PUser) {
-	console.log({
-		autoEnabled: syncConfiguration?.pluralkit?.automatic?.enabled,
-		tokenEnabled: syncConfiguration?.pluralkit?.token,
-		systemExists: systemPB,
-		timeCorrect:
-			Date.now() -
-				(syncConfiguration?.pluralkit?.lastSynced ?? new Date()).valueOf() <
-			1800000,
-	});
 	if (
 		!syncConfiguration?.pluralkit?.automatic?.enabled ||
 		!syncConfiguration.pluralkit.token ||
