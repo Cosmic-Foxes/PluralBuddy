@@ -69,7 +69,7 @@ export function runSandboxActions({
 
 	const usernames = pluralbuddy.alters.map((c) => c.username);
 	const displayNames = pluralbuddy.alters.map((c) => c.displayName);
-	const existingPkIds = pluralbuddy.alters.map(c => c.fields["@/converter/pk"])
+	const existingPkIds = pluralbuddy.alters.map(c => (c.fields ?? {})["@/converter/pk"] ?? "")
 	const pkUsernames = pluralkit.members.map((c) => c.name);
 	const converter = new PluralKitConverter();
 
