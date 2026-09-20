@@ -221,15 +221,15 @@ export function runSandboxActions({
 function sortObject(
 	obj:
 		| Record<
-				string,
-				| string
-				| number
-				| unknown[]
-				| Record<string, string | undefined>
-				| Date
-				| undefined
-				| null
-		  >
+			string,
+			| string
+			| number
+			| unknown[]
+			| Record<string, string | undefined>
+			| Date
+			| undefined
+			| null
+		>
 		| Date
 		| unknown[],
 ) {
@@ -249,29 +249,29 @@ function sortObject(
 }
 
 export type WriteBackArguments = (
-		| {
-				type: "system";
-				id: "@me";
-				change: Partial<PSystem>;
-		  }
-		| {
-				type: "alter" | "create-alter";
-				/**  The PluralKit ID of the member. */
-				id: string;
-				change: Partial<PAlter> & { userId?: string };
-		  }
-		| {
-				type: "tag" | "create-tag";
-				/**  The PluralKit ID of the group. */
-				id: string;
-				change: Partial<PTag> & { userId?: string };
-		  }
-		| {
-				type: "member-group-relationship";
-				id: string;
-				change: { groupId: string; type: "add" | "remove" };
-		  }
-	) & { syncConfig: PUser["syncConfiguration"] };
+	| {
+		type: "system";
+		id: "@me";
+		change: Partial<PSystem>;
+	}
+	| {
+		type: "alter" | "create-alter";
+		/**  The PluralKit ID of the member. */
+		id: string;
+		change: Partial<PAlter> & { userId?: string };
+	}
+	| {
+		type: "tag" | "create-tag";
+		/**  The PluralKit ID of the group. */
+		id: string;
+		change: Partial<PTag> & { userId?: string };
+	}
+	| {
+		type: "member-group-relationship";
+		id: string;
+		change: { groupId: string; type: "add" | "remove" };
+	}
+) & { syncConfig: PUser["syncConfiguration"] };
 
 export async function writeBack({
 	type,
@@ -386,8 +386,8 @@ export async function automaticallySync({
 		!syncConfiguration.pluralkit.token ||
 		!systemPB ||
 		Date.now() -
-			(syncConfiguration.pluralkit.lastSynced ?? new Date()).valueOf() <
-			1800000
+		(syncConfiguration.pluralkit.lastSynced ?? new Date()).valueOf() <
+		1800000
 	) {
 		return;
 	}
@@ -448,4 +448,30 @@ export async function automaticallySync({
 			},
 			systemId: userId,
 		});
+
+
+	if (transcript.tags.add.length > 0)
+		await tagCollection.insertMany(transcript.tags.add);
+
+
+	await Promise.all(
+		transcript.tags.update.map(async (element) => {
+			await tagCollection.replaceOne(
+				{ tagId: element.tagId, systemId: element.systemId },
+				element,
+			);
+		}),
+	);
+
+	if (transcript.tags.remove.length > 0 && destructive)
+		await tagCollection.deleteMany({
+			tagId: {
+				$in: transcript.tags.remove.map((v) => v.tagId),
+			},
+			systemId: userId,
+		})
+
+	await userCollection.updateOne({ userId }, { $set: { "system": destructive ? transcript.system.destructive : transcript.system.nondestructive } })
+
+
 }
