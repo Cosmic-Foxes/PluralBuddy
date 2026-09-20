@@ -115,7 +115,7 @@ export default class PluralKitConverter
 				.replaceAll("/", "")
 				.replaceAll("\\", "")
 				.replaceAll("@", ""),
-			displayName: alter.name ?? alter.display_name,
+			displayName: alter.display_name ?? alter.name,
 			nameMap: [],
 			color: alter.color !== null ? `#${alter.color}` : null,
 			alterMode: "webhook",
