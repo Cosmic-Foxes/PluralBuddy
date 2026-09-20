@@ -171,7 +171,7 @@ export default class PluralKitConverter
 			),
 			avatarUrlMap: {},
 			fields: {
-				"@/converter/pk": alter.id,
+				"@/converter/pk": alter.uuid,
 				...(birthdayDate !== null
 					? { "@/birthday": birthdayDate.toISOString() }
 					: {}),
@@ -274,7 +274,7 @@ export default class PluralKitConverter
 			),
 
 			fields: {
-				"@/converter/pk": tag.id,
+				"@/converter/pk": tag.uuid,
 			}
 		};
 	}
