@@ -245,9 +245,9 @@ export class SystemSettingsView extends TranslatedView {
 							new TextDisplay().setContent(
 								// biome-ignore lint/style/useTemplate: a
 								$translations.SYSTEM_PRIVACY_DESC +
-									((system.public ?? 0) > 0
-										? `\n-# ${$translations.CREATING_NEW_SYSTEM_PRIVACY_SET} \`${friendlyProtectionSystem($translations, listFromMaskSystems(system.public ?? 0)).join("`, `")}\``
-										: ""),
+								((system.public ?? 0) > 0
+									? `\n-# ${$translations.CREATING_NEW_SYSTEM_PRIVACY_SET} \`${friendlyProtectionSystem($translations, listFromMaskSystems(system.public ?? 0)).join("`, `")}\``
+									: ""),
 							),
 						),
 
@@ -435,24 +435,6 @@ export class SystemSettingsView extends TranslatedView {
 							$translations.CASE_INSENS_PROXIES_DESC,
 						),
 					),
-				new Section()
-					.setAccessory(
-						new Button()
-							.setStyle(ButtonStyle.Secondary)
-							.setLabel(
-								caseInsensitiveProxies
-									? $translations.CASE_INSENS_PROXIES_BTN
-									: $translations.CASE_INSENS_PROXIES_BTN_D,
-							)
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.GeneralTab.ToggleCaseInsensitiveProxies.create(),
-							),
-					)
-					.setComponents(
-						new TextDisplay().setContent(
-							$translations.CASE_INSENS_PROXIES_DESC,
-						),
-					),
 				new Separator().setSpacing(Spacing.Large),
 				new TextDisplay().setContent(
 					`${$translations.EXPORT_SYS_DESC}\n\n${$translations.IMPORT_SYS_DESC}`,
@@ -616,11 +598,11 @@ export class SystemSettingsView extends TranslatedView {
 								`[\`@${has(AlterProtectionFlags.USERNAME, alter.public) ? alter.username : "••••••"}\`] **${has(AlterProtectionFlags.NAME, alter.public) ? alter.displayName : "••••••••"}${alter.pronouns !== null && alter.pronouns !== undefined && has(AlterProtectionFlags.PRONOUNS, alter.public) ? ` | ${alter.pronouns}` : ""}**`,
 						)
 						.join("\n") +
-						(alters.filter((v) =>
-							has(AlterProtectionFlags.VISIBILITY, v.public),
-						).length === 0
-							? this.translations.NO_PUBLIC_ALTERS_DESC
-							: ""),
+					(alters.filter((v) =>
+						has(AlterProtectionFlags.VISIBILITY, v.public),
+					).length === 0
+						? this.translations.NO_PUBLIC_ALTERS_DESC
+						: ""),
 				),
 				new Separator().setSpacing(Spacing.Large),
 				new TextDisplay().setContent(
@@ -639,9 +621,9 @@ export class SystemSettingsView extends TranslatedView {
 							"{{ possibleSearchQuery }}",
 							pgObj.searchQuery !== undefined
 								? this.translations.ALTERS_POSSIBLE_SQ.replace(
-										"{{ query }}",
-										`\`${pgObj.searchQuery}\` (${pgObj.queryType?.replaceAll("-", " ")})`,
-									)
+									"{{ query }}",
+									`\`${pgObj.searchQuery}\` (${pgObj.queryType?.replaceAll("-", " ")})`,
+								)
 								: "",
 						),
 				),
@@ -659,7 +641,7 @@ export class SystemSettingsView extends TranslatedView {
 						.setLabel(this.translations.PAGINATION_NEXT_PAGE)
 						.setDisabled(
 							pgObj?.memoryPage ===
-								Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage),
+							Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage),
 						)
 						.setCustomId(
 							InteractionIdentifier.Systems.Configuration.OtherAlterPagination.NextPage.create(
@@ -777,9 +759,9 @@ export class SystemSettingsView extends TranslatedView {
 							"{{ possibleSearchQuery }}",
 							pgObj.searchQuery !== undefined
 								? this.translations.ALTERS_POSSIBLE_SQ.replace(
-										"{{ query }}",
-										`\`${pgObj.searchQuery}\` (${pgObj.queryType?.replaceAll("-", " ")})`,
-									)
+									"{{ query }}",
+									`\`${pgObj.searchQuery}\` (${pgObj.queryType?.replaceAll("-", " ")})`,
+								)
 								: "",
 						),
 				),
@@ -803,7 +785,7 @@ export class SystemSettingsView extends TranslatedView {
 						.setLabel(this.translations.PAGINATION_NEXT_PAGE)
 						.setDisabled(
 							pgObj?.memoryPage ===
-								Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage),
+							Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage),
 						)
 						.setCustomId(
 							InteractionIdentifier.Systems.Configuration.AlterPagination.NextPage.create(
@@ -921,9 +903,9 @@ export class SystemSettingsView extends TranslatedView {
 							"{{ possibleSearchQuery }}",
 							pgObj.searchQuery !== undefined
 								? this.translations.ALTERS_POSSIBLE_SQ.replace(
-										"{{ query }}",
-										`\`${pgObj.searchQuery}\``,
-									)
+									"{{ query }}",
+									`\`${pgObj.searchQuery}\``,
+								)
 								: "",
 						),
 				),
@@ -947,7 +929,7 @@ export class SystemSettingsView extends TranslatedView {
 						.setLabel(this.translations.PAGINATION_NEXT_PAGE)
 						.setDisabled(
 							pgObj?.memoryPage ===
-								Math.ceil((pgObj?.documentCount ?? 0) / tagsPerPage),
+							Math.ceil((pgObj?.documentCount ?? 0) / tagsPerPage),
 						)
 						.setCustomId(
 							InteractionIdentifier.Systems.Configuration.TagPagination.NextPage.create(
@@ -1019,7 +1001,7 @@ export class SystemSettingsView extends TranslatedView {
 							).replace(
 								"{{ pronouns }}",
 								system.systemPronouns ??
-									this.translations.PUBLIC_PROFILE_UNSET_PN,
+								this.translations.PUBLIC_PROFILE_UNSET_PN,
 							),
 						),
 					)
@@ -1059,7 +1041,7 @@ export class SystemSettingsView extends TranslatedView {
 							).replace(
 								"{{ displayTag }}",
 								system.systemDisplayTag ??
-									this.translations.PUBLIC_PROFILE_UNSET_PN,
+								this.translations.PUBLIC_PROFILE_UNSET_PN,
 							),
 						),
 					)
@@ -1186,16 +1168,16 @@ export class SystemSettingsView extends TranslatedView {
 				new TextDisplay().setContent(
 					user.syncConfiguration?.pluralkit?.lastSynced
 						? this.translations.SYNC_FOOTER.replace(
-								"{{ build }}",
-								build,
-							).replace(
-								"{{ lastSyncDate }}",
-								`<t:${Math.floor(user.syncConfiguration?.pluralkit?.lastSynced.getTime() / 1000)}:f>`,
-							)
+							"{{ build }}",
+							build,
+						).replace(
+							"{{ lastSyncDate }}",
+							`<t:${Math.floor(user.syncConfiguration?.pluralkit?.lastSynced.getTime() / 1000)}:f>`,
+						)
 						: this.translations.SYNC_FOOTER_NEVER_SYNCED.replace(
-								"{{ build }}",
-								build,
-							),
+							"{{ build }}",
+							build,
+						),
 				),
 			),
 		];
@@ -1292,13 +1274,13 @@ export class SystemSettingsView extends TranslatedView {
 		const possiblyTooMuch = {
 			destructiveTags:
 				existingCounts.tags +
-					existingTranscript.tags.add.length -
-					existingTranscript.tags.remove.length >
+				existingTranscript.tags.add.length -
+				existingTranscript.tags.remove.length >
 				1000,
 			destructiveAlters:
 				existingCounts.alters +
-					existingTranscript.alters.add.length -
-					existingTranscript.tags.remove.length >
+				existingTranscript.alters.add.length -
+				existingTranscript.tags.remove.length >
 				2000,
 
 			nonDestructiveTags:
@@ -1376,7 +1358,7 @@ export class SystemSettingsView extends TranslatedView {
 					.setLabel(this.translations.PK_TRANSCRIPT_APPLY)
 					.setDisabled(
 						possiblyTooMuch.nonDestructiveAlters ||
-							possiblyTooMuch.nonDestructiveTags,
+						possiblyTooMuch.nonDestructiveTags,
 					)
 					.setEmoji(emojis.wrenchWhite),
 				new Button()
@@ -1389,16 +1371,16 @@ export class SystemSettingsView extends TranslatedView {
 					.setLabel(this.translations.PK_TRANSCRIPT_APPLY_DESTRUCTIVE)
 					.setDisabled(
 						possiblyTooMuch.destructiveAlters ||
-							possiblyTooMuch.destructiveTags,
+						possiblyTooMuch.destructiveTags,
 					)
 					.setEmoji(emojis.xWhite),
 			),
 			...(anyPossiblyTooMuch
 				? [
-						new TextDisplay().setContent(
-							this.translations.ALTER_TAG_COUNT_TOO_HIGH,
-						),
-					]
+					new TextDisplay().setContent(
+						this.translations.ALTER_TAG_COUNT_TOO_HIGH,
+					),
+				]
 				: []),
 			new ActionRow().setComponents(
 				new Button()
