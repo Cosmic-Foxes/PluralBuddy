@@ -43,9 +43,9 @@ export default class QuickSync extends ComponentCommand {
 			syncConfiguration?.pluralkit?.token === undefined
 				? null
 				: await decryptToken(
-						syncConfiguration.pluralkit.token.i,
-						syncConfiguration.pluralkit.token.v,
-					);
+					syncConfiguration.pluralkit.token.i,
+					syncConfiguration.pluralkit.token.v,
+				);
 
 		if (!token) return await ctx.deferUpdate();
 
@@ -91,6 +91,21 @@ export default class QuickSync extends ComponentCommand {
 				);
 			}),
 		);
+
+
+		if (transcript.tags.add.length > 0)
+			await tagCollection.insertMany(transcript.tags.add);
+
+		await Promise.all(
+			transcript.tags.update.map(async (element) => {
+				await tagCollection.replaceOne(
+					{ tagId: element.tagId, systemId: element.systemId },
+					element,
+				);
+			}),
+		);
+
+		await userCollection.updateOne({ userId: ctx.author.id }, { $set: { "system": transcript.system.nondestructive } })
 
 		await userCollection.updateOne(
 			{ userId: ctx.author.id },
