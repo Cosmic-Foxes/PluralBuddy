@@ -68,6 +68,8 @@ export function runSandboxActions({
 	};
 
 	const usernames = pluralbuddy.alters.map((c) => c.username);
+	const displayNames = pluralbuddy.alters.map((c) => c.displayName);
+	const existingPkIds = pluralbuddy.alters.map(c => c.fields["@/converter/pk"])
 	const pkUsernames = pluralkit.members.map((c) => c.name);
 	const converter = new PluralKitConverter();
 
@@ -79,7 +81,7 @@ export function runSandboxActions({
 		.filter(
 			(c) =>
 				!(
-					usernames.includes(c.display_name ?? "") || usernames.includes(c.name)
+					existingPkIds.includes(c.uuid) || displayNames.includes(c.display_name ?? "") || usernames.includes(c.name)
 				),
 		)
 		.forEach((c, i) => creationAlters.push(converter.toAlter(c, i, authorId)));
@@ -87,11 +89,11 @@ export function runSandboxActions({
 	pluralkit.members
 		.filter(
 			(c) =>
-				usernames.includes(c.display_name ?? "") || usernames.includes(c.name),
+				existingPkIds.includes(c.uuid) || displayNames.includes(c.display_name ?? "") || usernames.includes(c.name)
 		)
 		.forEach((v, i) => {
 			const possibleAlter = pluralbuddy.alters.find(
-				(c) => c.username === v.display_name || c.username === v.name,
+				(c) => c.fields["@/converter/pk"] === v.uuid || c.username === v.display_name || c.username === v.name,
 			);
 			const newAlter = converter._syncUpdateAlter(v, i);
 
