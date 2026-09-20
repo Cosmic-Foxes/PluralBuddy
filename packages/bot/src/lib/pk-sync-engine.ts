@@ -93,7 +93,7 @@ export function runSandboxActions({
 		)
 		.forEach((v, i) => {
 			const possibleAlter = pluralbuddy.alters.find(
-				(c) => c.fields["@/converter/pk"] === v.uuid || c.username === v.display_name || c.username === v.name,
+				(c) => (c.fields ?? {})["@/converter/pk"] === v.uuid || c.username === v.display_name || c.username === v.name,
 			);
 			const newAlter = converter._syncUpdateAlter(v, i);
 
