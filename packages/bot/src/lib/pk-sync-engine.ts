@@ -22,6 +22,7 @@ import {
 import { hexToBuffer } from "./hex-buffer-operation";
 import { pk } from "./pk-api";
 import { decryptToken } from "./pk-token-encryption";
+import { logger } from "..";
 
 type SyncEngineAction<K> = {
 	add: Array<K>;
@@ -66,6 +67,7 @@ export function runSandboxActions({
 		systemDisplayTag:
 			systemParsed.tag ?? pluralbuddy.system.systemDisplayTag ?? undefined,
 	};
+	logger?.info("parsed system")
 
 	const usernames = pluralbuddy.alters.map((c) => c.username);
 	const displayNames = pluralbuddy.alters.map((c) => c.displayName);

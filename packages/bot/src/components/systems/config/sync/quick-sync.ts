@@ -7,7 +7,7 @@ import {
 import { ComponentCommand, ComponentContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import type { z } from "zod";
-import { build } from "@/index";
+import { build, logger } from "@/index";
 import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { pk } from "@/lib/pk-api";
@@ -62,6 +62,7 @@ export default class QuickSync extends ComponentCommand {
 		const system = await pk(token).systemsCollection.findOne({ userId: "@me" });
 		const members = await pk(token).membersCollection.find({ userId: "@me" });
 		const groups = await pk(token).groupsCollection.find({ userId: "@me" });
+		logger?.info("found pk objects")
 
 		const alters = await alterCollection
 			.find({ systemId: ctx.author.id })

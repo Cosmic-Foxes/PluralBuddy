@@ -88,7 +88,7 @@ export const clientRoutes = app
 			return json({
 				mention: mentionCommand("pb;", commandName, true),
 				subcommands: loadedApplicationCommands.filter((v) =>
-					v.name.startsWith(commandName),
+					v.name.startsWith(`${commandName} `),
 				),
 			});
 		},
