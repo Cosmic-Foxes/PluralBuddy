@@ -1021,6 +1021,7 @@ Actions to the right (destructive actions) will only be applied if you hit **App
 -# Please note that PluralKit errors are only in English.`,
 	PREPARING_WRITE: "Preparing to write to database...",
 	DELETING_ALTERS_STAGE: "Deleting operated alters...",
+	DELETING_TAGS_STAGE: "Deleting operated tags...",
 	CREATING_ALTERS_STAGE: "Creating operated alters...",
 	CREATING_TAGS_STAGE: "Creating operated tags...",
 	UPDATING_ALTERS_STAGE: "Updating alter of {{ maxAlters }}...",
