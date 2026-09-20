@@ -95,7 +95,7 @@ export function runSandboxActions({
 		)
 		.forEach((v, i) => {
 			const possibleAlter = pluralbuddy.alters.find(
-				(c) => (c.fields ?? {})["@/converter/pk"] === v.uuid || c.username === v.display_name || c.username === v.name,
+				(c) => (c.fields ?? {})["@/converter/pk"] === v.uuid || c.displayName === v.display_name || c.username === v.name,
 			);
 			const newAlter = converter._syncUpdateAlter(v, i);
 
@@ -143,7 +143,7 @@ export function runSandboxActions({
 					tagFriendlyNames.includes(c.display_name ?? "") ||
 					tagFriendlyNames.includes(c.name)
 				),
-		)
+		).filter(v => v !== undefined)
 		.forEach((c, i) => creationTags.push(converter.toTag(c, i, authorId)));
 
 	pluralkit.groups
