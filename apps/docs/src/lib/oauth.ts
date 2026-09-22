@@ -44,9 +44,8 @@ export async function authenticateOAuth(
 	}
 	const token = await verifyAccessToken(accessToken, {
 		verifyOptions: {
-			issuer: `${origin}/api/auth`,
-			audience: origin ?? "",
-			subject: origin ?? "",
+			issuer: `${process.env.BETTER_AUTH_URL}/api/auth`,
+			audience: origin ?? ""
 		},
 		jwksUrl: `${origin}/api/auth/jwks`,
 	}).catch((e) => {
