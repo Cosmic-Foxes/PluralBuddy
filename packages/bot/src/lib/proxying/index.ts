@@ -191,7 +191,7 @@ export async function proxy(
 												})
 												.setFooter({
 													text: "Unable to proxy this message",
-													iconUrl: "https://pb.giftedly.dev/image/pfp.png",
+													iconUrl: "https://pluralbuddy.app/image/pfp.png",
 												});
 										})(),
 									]

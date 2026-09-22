@@ -73,7 +73,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 							}
 						>
 							<TextDisplay>
-								## [**{page.data.title}**](https://pb.giftedly.dev/docs/
+								## [**{page.data.title}**](https://pluralbuddy.app/docs/
 								{params.slug?.join("/")})
 							</TextDisplay>
 						</Section>
@@ -88,7 +88,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 							}
 						</TextDisplay>
 
-						{commandData?.subcommands.length !== 1 ? (
+						{commandData?.subcommands.length > 1 ? (
 							<>
 								<DressedSeparator />
 

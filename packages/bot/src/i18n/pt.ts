@@ -347,8 +347,8 @@ PluralBuddy uses a **username/display name** system.
 -# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
 
 -# **LINKS**
-> -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pb.giftedly.dev)
-> -# [Terms of Service](<https://pb.giftedly.dev/docs/policies/terms>) · [Privacy Policy](<https://pb.giftedly.dev/docs/policies/privacy>)`,
+> -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pluralbuddy.app)
+> -# [Terms of Service](<https://pluralbuddy.app/docs/policies/terms>) · [Privacy Policy](<https://pluralbuddy.app/docs/policies/privacy>)`,
   TAG_ASSIGN_ALTER: "Atribuir Tag",
   SET_AUTO_PROXY_SRV: "Successfully set proxy mode to **%mode%** for your system in **%server_name%**.",
   SET_AUTO_PROXY_GLOBAL: "Successfully set proxy mode to **%mode%** for your system everywhere.",
@@ -466,7 +466,7 @@ PluralBuddy uses a **username/display name** system.
 	REQUIRED_SERVER_PROXY: "Você precisa estar em um servidor para usar proxy",
 	SELECT_DEFAULT_PROXY: "Selecione um modo de proxy",
 	POLICY_MODAL_TITLE: "Welcome to PluralBuddy!",
-	POLICY_MODAL_DESCRIPTION: `${emojis.clockCheck} Hello, welcome to PluralBuddy for Discord! In order for us to keep PluralBuddy a safe bot, we require that you agree to our [Privacy Policy](https://pb.giftedly.dev/en/docs/policies/privacy) & [Terms of Service](https://pb.giftedly.dev/en/docs/policies/terms) to use PluralBuddy.
+	POLICY_MODAL_DESCRIPTION: `${emojis.clockCheck} Hello, welcome to PluralBuddy for Discord! In order for us to keep PluralBuddy a safe bot, we require that you agree to our [Privacy Policy](https://pluralbuddy.app/en/docs/policies/privacy) & [Terms of Service](https://pluralbuddy.app/en/docs/policies/terms) to use PluralBuddy.
 
 -# - NSFW content is not tolerated on PluralBuddy. NSFW will result in an instant block. Be careful with the content you upload.
 -# - While PluralBuddy is a **private-first** bot from a user perspective, however due to the nature of centralized Discord bots, all system-related data you provide PluralBuddy is able to be seen by developers.
@@ -696,7 +696,7 @@ There is an example below of what an example proxy with this role would look lik
 	ALTER_COUNT_LABEL: "**Contador Integrantes:** ",
 	SELF_REACTION_ERR: "Não foi possível remover auto-reação",
 	SELF_REACTION_DESC:
-		"PluralBuddy não conseguiu remover o emoji de carregamento ao tentar executar uma [Ação de Menu de Contexto](<https://pb.giftedly.dev/docs/pluralbuddy/context-actions>).",
+		"PluralBuddy não conseguiu remover o emoji de carregamento ao tentar executar uma [Ação de Menu de Contexto](<https://pluralbuddy.app/docs/pluralbuddy/context-actions>).",
 	REACTION_ERR: "Não foi possível remover a reação do usuário",
 	REPLY_IN_RESPONSE: "-# {{ reply }} Em resposta a: {{ link }}",
 	AWAKE:
@@ -711,7 +711,7 @@ There is an example below of what an example proxy with this role would look lik
 	NOTIFIED_1:
 		"-# Você foi notificado sobre esta ação devido à associação do seu integrante PluralBuddy.",
 	NOTIFIED_2:
-		"-# Desenvolvido como software open-source @ [pb.giftedly.dev](<https://pb.giftedly.dev>)",
+		"-# Desenvolvido como software open-source @ [pluralbuddy.app](<https://pluralbuddy.app>)",
 	OPT_OUT_DMS: "Desativar recebimento de mensagens diretas",
 	UNDO_BTN: "Desfazer Operação",
 	EXPIRED: "Expirado",
@@ -757,7 +757,7 @@ Your system is using the front state of **{{ mode }}**.`,
 	DISABLED_SERVER: `This server is disabled from proxying.`,
 	AP_AS: "-# **AUTO-PROXYING AS:**",
 	AP_INTEGRATION_AS: "-# **{{ provider }} FRONTING AS:**",
-	PROVIDER_NOT_FOUND: `That auto-proxy provider was not found, or you didn't authorize with the [\`system:ai-ap\`](https://pb.giftedly.dev/docs/pluralbuddy/ai-ap) scope. Contact the developer of this integration if you believe this is incorrect.
+	PROVIDER_NOT_FOUND: `That auto-proxy provider was not found, or you didn't authorize with the [\`system:ai-ap\`](https://pluralbuddy.app/docs/pluralbuddy/ai-ap) scope. Contact the developer of this integration if you believe this is incorrect.
 	
 -# Integration: \`{{ id }}\``,
 	AP_INVALID_SYNTAX: `Invalid autoproxy mode or provider \`{{ mode }}\`.

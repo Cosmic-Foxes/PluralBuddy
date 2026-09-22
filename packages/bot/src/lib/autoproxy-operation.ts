@@ -64,7 +64,7 @@ export async function sendAutoproxyOperationDM(
 									"-# You were notified of this action due to your association with your PluralBuddy system's auto-proxy settings.",
 								),
 								new TextDisplay().setContent(
-									"-# Developed as open-source software @ [pb.giftedly.dev](<https://pb.giftedly.dev>)",
+									"-# Developed as open-source software @ [pluralbuddy.app](<https://pluralbuddy.app>)",
 								),
 							)
 							.setAccessory(

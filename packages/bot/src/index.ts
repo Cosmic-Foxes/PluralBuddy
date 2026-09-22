@@ -275,7 +275,7 @@ if (import.meta.main) {
 				{
 					name: "PluralBuddy",
 					type: ActivityType.Custom,
-					state: `pb;help · pb.giftedly.dev · servers: ${data?.guildCount} · proxying: ${data?.userCount}`,
+					state: `pb;help · pluralbuddy.app · servers: ${data?.guildCount} · proxying: ${data?.userCount}`,
 				},
 			],
 			status: PresenceUpdateStatus.DoNotDisturb,

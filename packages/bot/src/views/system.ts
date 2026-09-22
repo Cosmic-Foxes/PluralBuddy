@@ -56,7 +56,7 @@ ${this.translations.OWNED_BY_PROFILE}<@${system.associatedUserId}> (${system.ass
 								new Thumbnail()
 									.setMedia(
 										system.systemAvatar === ""
-											? "https://pb.giftedly.dev/image/pfp.png"
+											? "https://pluralbuddy.app/image/pfp.png"
 											: system.systemAvatar,
 									)
 									.setDescription(

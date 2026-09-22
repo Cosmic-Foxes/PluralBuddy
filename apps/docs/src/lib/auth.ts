@@ -76,6 +76,7 @@ export const auth = betterAuth({
 			},
 			validAudiences: [
 				process.env.BETTER_AUTH_URL ?? "",
+				"https://pb.giftedly.dev"
 			],
 			loginPage: "/auth/sign-in",
 			consentPage: "/auth/consent",
