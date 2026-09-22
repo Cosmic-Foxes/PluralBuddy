@@ -25,7 +25,8 @@ export default function proxy(request: NextRequest, event: NextFetchEvent) {
 	if (request.nextUrl.origin === ("https://pb.giftedly.dev") && !request.url.startsWith("/api/")) {
 
 		return NextResponse.redirect(
-			new URL(request.url, process.env.BETTER_AUTH_URL),
+			new URL(`${process.env.BETTER_AUTH_URL}/${request.url}`),
+			308
 		);
 	}
 
