@@ -46,6 +46,7 @@ export async function authenticateOAuth(
 		verifyOptions: {
 			issuer: `${origin}/api/auth`,
 			audience: origin ?? "",
+			subject: origin ?? "",
 		},
 		jwksUrl: `${origin}/api/auth/jwks`,
 	}).catch((e) => {
