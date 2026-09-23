@@ -26,7 +26,8 @@ const options = {
 @Options(options)
 export default class SystemInfoCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
-		await ctx.deferReply(true);
+		const isEphemeral = ctx.options.public !== true;
+		await ctx.deferReply(isEphemeral);
 		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
