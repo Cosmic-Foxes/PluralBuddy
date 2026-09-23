@@ -80,7 +80,7 @@ export async function sanitizeEmojis(input: string): Promise<{
 	return {
 		postHook: async () => {
 			for (const emoji of uploadedEmojis) {
-				await emoji.delete();
+				await emoji.delete().catch((_) => null);
 			}
 		},
 		result: processedContents,

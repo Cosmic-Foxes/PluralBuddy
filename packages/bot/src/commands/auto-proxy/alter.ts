@@ -28,9 +28,9 @@ const options = {
 		choices: [
 			{ name: "Globally", value: "global" },
 			{ name: "Server-wide", value: "server" },
-			{ name: "Channel-wide", value: "channels" }
-		]
-	})
+			{ name: "Channel-wide", value: "channels" },
+		],
+	}),
 };
 
 @Declare({
@@ -38,7 +38,7 @@ const options = {
 	description: "Use alter mode in auto-proxy",
 	aliases: ["a"],
 	contexts: ["Guild"],
-	ignore: IgnoreCommand.Message
+	ignore: IgnoreCommand.Message,
 })
 @Options(options)
 export default class AlterProxyMode extends SubCommand {

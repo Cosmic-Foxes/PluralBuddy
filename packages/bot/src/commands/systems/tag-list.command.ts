@@ -1,7 +1,8 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { type CommandContext, Declare, SubCommand } from "seyfert";
-import { MessageFlags } from "seyfert/lib/types";import { getSystemFeatures } from "@/lib/get-system-flags";
+import { MessageFlags } from "seyfert/lib/types";
+import { getSystemFeatures } from "@/lib/get-system-flags";
 import { AlertView } from "@/views/alert";
 import { SystemSettingsView } from "@/views/system-settings";
 
@@ -17,21 +18,32 @@ export default class AlterListCommand extends SubCommand {
 		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
-			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
-					"ERROR_SYSTEM_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			}, undefined, undefined, ctx);
+			return await ctx.ephemeral(
+				{
+					components: new AlertView(await ctx.userTranslations()).errorView(
+						"ERROR_SYSTEM_DOESNT_EXIST",
+					),
+					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				},
+				undefined,
+				undefined,
+				ctx,
+			);
 		}
 
-		return await ctx.ephemeral({
-			components: [
-				...(await new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(user.system)?.preferAccessiblity).tagsSettings(
-					user.system,
-				)),
-			],
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-		}, undefined, undefined, ctx);
+		return await ctx.ephemeral(
+			{
+				components: [
+					...(await new SystemSettingsView(
+						await ctx.userTranslations(),
+						getSystemFeatures(user.system)?.preferAccessiblity,
+					).tagsSettings(user.system)),
+				],
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			},
+			undefined,
+			undefined,
+			ctx,
+		);
 	}
 }

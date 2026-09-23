@@ -16,7 +16,7 @@ Some scopes are very similar to ones found on other applications using OAuth 2.1
 
 ## OpenID Configuration
 
-The OpenID Configuration for PluralBuddy is located [here](/.well-known/openid-configuration). (`https://pb.giftedly.dev/.well-known/openid-configuration`)
+The OpenID Configuration for PluralBuddy is located [here](/.well-known/openid-configuration). (`https://pluralbuddy.app/.well-known/openid-configuration`)
 
 ## Authorize User
 
@@ -42,7 +42,7 @@ GET /auth/oauth2/authorize
 Redirect your users to this URL to get consent or a new token to login with PluralBuddy. For example:
 
 ```
-https://pb.giftedly.dev/api/auth/oauth2/authorize
+https://pluralbuddy.app/api/auth/oauth2/authorize
     ?client_id=123456789
     &response_type=code
     &redirect_uri=https://example.com
@@ -64,7 +64,7 @@ POST /auth/oauth2/token
 | `client_id`                              | Client ID provided in the developer dashboard found above.      | `true`                           |
 | `client_secret`                          | OAuth2 client secret                                            | `true`                           |
 | `code_verifier`                          | Code verifier from PKCE                                         | depends on `authorization_code`  |
-| `resource`                               | Always `https://pb.giftedly.dev`.                               | `true`                           |
+| `resource`                               | Always `https://pluralbuddy.app`.                               | `true`                           |
 | `refresh_token`                          | Refresh token (for `refresh_token` grant)                       | depends on `refresh_token`       |
 | `redirect_uri`                           | Redirect URI (for `authorization_code` grant)                   | depends on `authorization_code`  |
 

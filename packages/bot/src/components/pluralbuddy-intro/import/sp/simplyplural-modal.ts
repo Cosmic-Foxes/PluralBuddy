@@ -8,8 +8,19 @@ import { getUserById, writeUserById } from "@/types/user";
 import { AlertView } from "@/views/alert";
 import { LoadingView } from "@/views/loading";
 import { DiscordSnowflake } from "@sapphire/snowflake";
-import { PAlterObject, PSystemObject, PTagObject, type PSystem } from "plurography";
-import { ActionRow, Button, ModalCommand, TextDisplay, type ModalContext } from "seyfert";
+import {
+	PAlterObject,
+	PSystemObject,
+	PTagObject,
+	type PSystem,
+} from "plurography";
+import {
+	ActionRow,
+	Button,
+	ModalCommand,
+	TextDisplay,
+	type ModalContext,
+} from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { sys } from "typescript";
 import z from "zod";
@@ -28,7 +39,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		) as string;
 
 		await ctx.interaction.update({
-			components: new LoadingView((await ctx.userTranslations())).loadingView(),
+			components: new LoadingView(await ctx.userTranslations()).loadingView(),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
 
@@ -37,15 +48,15 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		if (!system)
 			return await ctx.editResponse({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorView("SP_ERROR"),
+					...new AlertView(await ctx.userTranslations()).errorView("SP_ERROR"),
 					new ActionRow().addComponents(
 						new Button()
 							.setLabel((await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE)
 							.setCustomId(
 								InteractionIdentifier.Setup.Pagination.Page2.create(),
 							)
-							.setStyle(ButtonStyle.Secondary)
-					)
+							.setStyle(ButtonStyle.Secondary),
+					),
 				],
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
@@ -56,7 +67,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		if (!alters || !tags)
 			return await ctx.editResponse({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorView("SP_ERROR"),
+					...new AlertView(await ctx.userTranslations()).errorView("SP_ERROR"),
 					new ActionRow().addComponents(
 						new Button()
 							.setLabel((await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE)
@@ -64,7 +75,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 								InteractionIdentifier.Setup.Pagination.Page2.create(),
 							)
 							.setStyle(ButtonStyle.Secondary),
-					)
+					),
 				],
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
@@ -75,7 +86,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 			systemName: system.content.username ?? "Untitled System",
 			systemAvatar: system.content.avatarUrl ?? undefined,
 			systemBanner: undefined,
-            displayTagMap: {},
+			displayTagMap: {},
 			systemDescription: system.content.desc ?? undefined,
 			systemDisplayTag: undefined,
 			systemPronouns: undefined,
@@ -94,12 +105,11 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		if (newSystem.error) {
 			return await ctx.editResponse({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorViewCustom(
-						(await ctx.userTranslations())
-							.PLURALBUDDY_IMPORT_ERROR.replace(
-								"%zod_errors%",
-								z.prettifyError(newSystem.error),
-							),
+					...new AlertView(await ctx.userTranslations()).errorViewCustom(
+						(await ctx.userTranslations()).PLURALBUDDY_IMPORT_ERROR.replace(
+							"%zod_errors%",
+							z.prettifyError(newSystem.error),
+						),
 					),
 					new ActionRow().addComponents(
 						new Button()
@@ -127,8 +137,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 						.replaceAll("@", ""),
 					displayName: member.content.name,
 					nameMap: [],
-					color:
-						member.content.color !== null ? member.content.color : null,
+					color: member.content.color !== null ? member.content.color : null,
 					alterMode: "webhook",
 					description: member.content.desc,
 					created: new Date(),
@@ -208,7 +217,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		return await ctx.editResponse({
 			components: [
 				...new AlertView(
-					(await ctx.userTranslations()),
+					await ctx.userTranslations(),
 				).successViewCustom(`Successfully imported your Simply Plural system!
 
 > **Disclaimer:** You may feel your system might not be completely identical to Simply Plural. This is because the core data structure of some resources are different from Simply Plural's and as a result may not be identical.

@@ -1,15 +1,18 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { 
+import {
 	type CommandContext,
 	Container,
 	createBooleanOption,
 	createStringOption,
 	Declare,
-	Options,SubCommand, 
-	TextDisplay,} from "seyfert";
+	Options,
+	SubCommand,
+	TextDisplay,
+} from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
+import { writeBack } from "@/lib/pk-sync-engine";
 import { alterCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import { w } from "@/webhooks";
@@ -93,6 +96,13 @@ ${alter.pronouns ?? "⛔ Your alter has no pronouns."}
 				pronouns: alterPronouns,
 			},
 		});
+		if (alter.fields["@/converter/pk"])
+			writeBack({
+				type: "alter",
+				id: alter.fields["@/converter/pk"],
+				change: { pronouns: alterPronouns },
+				syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+			});
 
 		return await ctx.editResponse({
 			components: [

@@ -39,12 +39,17 @@ export default class SetupCommand extends SubCommand {
 		const { system } = await ctx.retrievePUser();
 
 		if (!system) {
-			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
-					"ERROR_SYSTEM_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			}, undefined, undefined, ctx);
+			return await ctx.ephemeral(
+				{
+					components: new AlertView(await ctx.userTranslations()).errorView(
+						"ERROR_SYSTEM_DOESNT_EXIST",
+					),
+					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				},
+				undefined,
+				undefined,
+				ctx,
+			);
 		}
 
 		return await ctx.ephemeral(
@@ -74,7 +79,8 @@ export default class SetupCommand extends SubCommand {
 								.setStyle(ButtonStyle.Danger)
 								.setDisabled(true)
 								.setLabel(
-									(await ctx.userTranslations()).CONFIRMATION_SYSTEM_DELETION_BTN,
+									(await ctx.userTranslations())
+										.CONFIRMATION_SYSTEM_DELETION_BTN,
 								)
 								.setCustomId(
 									mi
@@ -83,16 +89,17 @@ export default class SetupCommand extends SubCommand {
 								),
 						),
 						new TextDisplay().setContent(
-							(await ctx.userTranslations())
-								.CONFIRMATION_SYSTEM_DELETION_PRIVACY.replace(
-									"%command%",
-									mentionCommand(
-										(await ctx.getDefaultPrefix()) ?? "pb;",
-										"system delete",
-										ctx.interaction?.message?.messageReference === undefined,
-										"-mi",
-									),
+							(
+								await ctx.userTranslations()
+							).CONFIRMATION_SYSTEM_DELETION_PRIVACY.replace(
+								"%command%",
+								mentionCommand(
+									(await ctx.getDefaultPrefix()) ?? "pb;",
+									"system delete",
+									ctx.interaction?.message?.messageReference === undefined,
+									"-mi",
 								),
+							),
 						),
 					),
 				],
@@ -126,7 +133,8 @@ export default class SetupCommand extends SubCommand {
 									.setStyle(ButtonStyle.Danger)
 									.setDisabled(true)
 									.setLabel(
-										(await ctx.userTranslations()).CONFIRMATION_SYSTEM_DELETION_BTN,
+										(await ctx.userTranslations())
+											.CONFIRMATION_SYSTEM_DELETION_BTN,
 									)
 									.setCustomId(
 										mi
@@ -135,16 +143,17 @@ export default class SetupCommand extends SubCommand {
 									),
 							),
 							new TextDisplay().setContent(
-								(await ctx.userTranslations())
-									.CONFIRMATION_SYSTEM_DELETION_PRIVACY.replace(
-										"%command%",
-										mentionCommand(
-											(await ctx.getDefaultPrefix()) ?? "pb;",
-											"system delete",
-											ctx.interaction?.message?.messageReference === undefined,
-											"-mi",
-										),
+								(
+									await ctx.userTranslations()
+								).CONFIRMATION_SYSTEM_DELETION_PRIVACY.replace(
+									"%command%",
+									mentionCommand(
+										(await ctx.getDefaultPrefix()) ?? "pb;",
+										"system delete",
+										ctx.interaction?.message?.messageReference === undefined,
+										"-mi",
 									),
+								),
 							),
 						),
 					],
@@ -173,7 +182,8 @@ export default class SetupCommand extends SubCommand {
 										.setEmoji(emojis.circleQuestionWhite)
 										.setStyle(ButtonStyle.Danger)
 										.setLabel(
-											(await ctx.userTranslations()).CONFIRMATION_SYSTEM_DELETION_BTN,
+											(await ctx.userTranslations())
+												.CONFIRMATION_SYSTEM_DELETION_BTN,
 										)
 										.setCustomId(
 											mi
@@ -182,24 +192,24 @@ export default class SetupCommand extends SubCommand {
 										),
 								),
 								new TextDisplay().setContent(
-									(await ctx.userTranslations())
-										.CONFIRMATION_SYSTEM_DELETION_PRIVACY.replace(
-											"%command%",
-											mentionCommand(
-												(await ctx.getDefaultPrefix()) ?? "pb;",
-												"system delete",
-												ctx.interaction?.message?.messageReference ===
-													undefined,
-												"-mi",
-											),
+									(
+										await ctx.userTranslations()
+									).CONFIRMATION_SYSTEM_DELETION_PRIVACY.replace(
+										"%command%",
+										mentionCommand(
+											(await ctx.getDefaultPrefix()) ?? "pb;",
+											"system delete",
+											ctx.interaction?.message?.messageReference === undefined,
+											"-mi",
 										),
+									),
 								),
 							),
 						],
 					});
 				}, 10000);
 			},
-			ctx
+			ctx,
 		);
 	}
 }

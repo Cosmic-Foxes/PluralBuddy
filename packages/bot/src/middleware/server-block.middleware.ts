@@ -7,9 +7,7 @@ import { Command, createMiddleware, Message, SubCommand } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
 export const serverBlock = createMiddleware<void>(async (middle) => {
-
-	if (!middle.context.guildId)
-		return middle.next()
+	if (!middle.context.guildId) return middle.next();
 	const { blockedChannels, blockedRoles, blockedCategories } =
 		PGuildObject.parse(
 			(
@@ -36,10 +34,7 @@ export const serverBlock = createMiddleware<void>(async (middle) => {
 			});
 		}
 
-	if (
-		blockedChannels.includes(middle.context.channelId) &&
-		!isServerConfig
-	) {
+	if (blockedChannels.includes(middle.context.channelId) && !isServerConfig) {
 		return await ctx.write({
 			components: new AlertView(await ctx.userTranslations()).errorView(
 				"FEATURE_DISABLED_CHANNEL",
@@ -55,7 +50,7 @@ export const serverBlock = createMiddleware<void>(async (middle) => {
 			)
 		) {
 			if (ctx.isChat() && ctx.message) {
-				(ctx.message as Message).delete();
+				(ctx.message as Message).delete().catch((_) => null);
 
 				if (
 					process.env.LIBBY_DEBUG === "true" ||

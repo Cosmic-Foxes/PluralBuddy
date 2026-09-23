@@ -11,26 +11,28 @@ import { ApplicationCommandType, MessageFlags } from "seyfert/lib/types";
 @Declare({
 	type: ApplicationCommandType.Message,
 	name: `${process.env.BRANCH === "canary" ? "Canary " : ""}Get Message Info`,
-    contexts: ["BotDM", "Guild", "PrivateChannel"],
-    integrationTypes: ["GuildInstall", "UserInstall"]
+	contexts: ["BotDM", "Guild", "PrivateChannel"],
+	integrationTypes: ["GuildInstall", "UserInstall"],
 })
 export default class GetMessageInfoCommand extends ContextMenuCommand {
 	override async run(ctx: MenuCommandContext<MessageCommandInteraction>) {
 		await ctx.deferReply(true);
 		const messageId = ctx.target.id;
 		const message = await messagesCollection.findOne({ messageId });
-		const guild = await ctx.retrievePGuild()
+		const guild = await ctx.retrievePGuild();
 
-        if (guild.getFeatures().disabledMessageInfo) {
-            return await ctx.editResponse({
-                components: new AlertView((await ctx.userTranslations())).errorView("FEATURE_DISABLED_GUILD"),
-                flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
-            })
-        }
+		if (guild.getFeatures().disabledMessageInfo) {
+			return await ctx.editResponse({
+				components: new AlertView(await ctx.userTranslations()).errorView(
+					"FEATURE_DISABLED_GUILD",
+				),
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+			});
+		}
 
 		if (message === null) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"MESSAGE_NOT_MINE",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -42,7 +44,7 @@ export default class GetMessageInfoCommand extends ContextMenuCommand {
 
 		if (user === null || user.system === undefined || alter === null) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"DATA_DOESNT_EXIST",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -50,7 +52,9 @@ export default class GetMessageInfoCommand extends ContextMenuCommand {
 		}
 
 		return await ctx.editResponse({
-			components: await new MessageInfo((await ctx.userTranslations())).messageInfo(
+			components: await new MessageInfo(
+				await ctx.userTranslations(),
+			).messageInfo(
 				message,
 				alter,
 				user.system,
@@ -59,8 +63,7 @@ export default class GetMessageInfoCommand extends ContextMenuCommand {
 				alter.systemId !== ctx.author.id,
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			allowed_mentions: { parse: [] }
-			
+			allowed_mentions: { parse: [] },
 		});
 	}
 }

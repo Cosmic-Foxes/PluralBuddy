@@ -51,7 +51,7 @@ export const register = (registry: OpenAPIRegistry) =>
 								type: "string",
 								description:
 									"Requested token resource (ie audience) to obtain a JWT formatted access token",
-								enum: ["https://pb.giftedly.dev"],
+								enum: ["https://pluralbuddy.app"],
 							},
 							scope: {
 								type: "string",

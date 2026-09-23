@@ -1,9 +1,5 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { SubCommand } from "seyfert"
-import { autocompleteAlters } from "@/lib/autocomplete-alters";
-import { alterCollection } from "@/mongodb";
-import { AlertView } from "@/views/alert";
 import {
 	type CommandContext,
 	Container,
@@ -11,9 +7,14 @@ import {
 	createStringOption,
 	Declare,
 	Options,
+	SubCommand,
 	TextDisplay,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { autocompleteAlters } from "@/lib/autocomplete-alters";
+import { writeBack } from "@/lib/pk-sync-engine";
+import { alterCollection } from "@/mongodb";
+import { AlertView } from "@/views/alert";
 import { w } from "@/webhooks";
 
 const options = {
@@ -28,7 +29,7 @@ const options = {
 	}),
 	"server-specific": createBooleanOption({
 		description: "Is this display name specific to this server?",
-		aliases: ["se"]
+		aliases: ["se"],
 	}),
 };
 
@@ -49,53 +50,72 @@ export default class EditAlterDisplayNameCommand extends SubCommand {
 		} = ctx.options;
 
 		const systemId = ctx.author.id;
-        const alter = ctx.contextAlter() ?? await (Number.isNaN(Number.parseInt(alterName)) 
-            ? alterCollection.findOne( { $or: [ { username: alterName } ], systemId })
-            : alterCollection.findOne( { $or: [ { username: alterName }, { alterId: Number(alterName) } ], systemId }))
+		const alter =
+			ctx.contextAlter() ??
+			(await (Number.isNaN(Number.parseInt(alterName))
+				? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
+				: alterCollection.findOne({
+						$or: [{ username: alterName }, { alterId: Number(alterName) }],
+						systemId,
+					})));
 
 		if (alter === null) {
-			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
-					"ERROR_ALTER_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			}, undefined, undefined, ctx);
+			return await ctx.ephemeral(
+				{
+					components: new AlertView(await ctx.userTranslations()).errorView(
+						"ERROR_ALTER_DOESNT_EXIST",
+					),
+					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				},
+				undefined,
+				undefined,
+				ctx,
+			);
 		}
 
 		if (se && ctx.guildId === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"DN_ERROR_SE",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
 
-        if (se && alterNewName === undefined) {
-
-			return await ctx.ephemeral({
-				components: [
-					new Container().setComponents(
-						new TextDisplay().setContent(`\`\`\`
-${alter.nameMap.find(c => c.server === (ctx.guildId ?? ""))?.name ?? alter.displayName}
+		if (se && alterNewName === undefined) {
+			return await ctx.ephemeral(
+				{
+					components: [
+						new Container().setComponents(
+							new TextDisplay().setContent(`\`\`\`
+${alter.nameMap.find((c) => c.server === (ctx.guildId ?? ""))?.name ?? alter.displayName}
 \`\`\``),
-					),
-				],
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			}, true, undefined, ctx);
-        }
+						),
+					],
+					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+				},
+				true,
+				undefined,
+				ctx,
+			);
+		}
 
 		if (alterNewName === undefined) {
-			return await ctx.ephemeral({
-				components: [
-					new Container().setComponents(
-						new TextDisplay().setContent(`\`\`\`
+			return await ctx.ephemeral(
+				{
+					components: [
+						new Container().setComponents(
+							new TextDisplay().setContent(`\`\`\`
 ${alter.displayName}
 \`\`\``),
-					),
-				],
-				flags: MessageFlags.IsComponentsV2,
-			}, true, undefined, ctx);
+						),
+					],
+					flags: MessageFlags.IsComponentsV2,
+				},
+				true,
+				undefined,
+				ctx,
+			);
 		}
 
 		if (se) {
@@ -120,10 +140,13 @@ ${alter.displayName}
 					},
 				);
 
-				finishedNameMap = [...finishedNameMap.filter(v => ctx.guildId !== v.server), {
-					server: ctx.guildId ?? "",
-					name: alterNewName
-				}]
+				finishedNameMap = [
+					...finishedNameMap.filter((v) => ctx.guildId !== v.server),
+					{
+						server: ctx.guildId ?? "",
+						name: alterNewName,
+					},
+				];
 			} else {
 				// Append a new mapping to the nameMap array
 				await alterCollection.updateOne(
@@ -133,22 +156,25 @@ ${alter.displayName}
 							nameMap: {
 								server: ctx.guildId as string,
 								name: alterNewName as string,
-							}
-						}
+							},
+						},
 					},
 				);
-				
-				finishedNameMap = [...finishedNameMap, {
-					server: ctx.guildId ?? "",
-					name: alterNewName
-				}]
+
+				finishedNameMap = [
+					...finishedNameMap,
+					{
+						server: ctx.guildId ?? "",
+						name: alterNewName,
+					},
+				];
 			}
 
 			w(ctx.author.id, "alter.update", {
 				type: "alter.update",
 				alter: {
 					...alter,
-					nameMap: finishedNameMap
+					nameMap: finishedNameMap,
 				},
 			});
 		} else {
@@ -165,16 +191,22 @@ ${alter.displayName}
 					displayName: alterNewName,
 				},
 			});
+			if (alter.fields["@/converter/pk"])
+				writeBack({
+					type: "alter",
+					id: alter.fields["@/converter/pk"],
+					change: {
+						displayName: alterNewName,
+					},
+					syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+				});
 		}
 
 		return await ctx.editResponse({
 			components: [
-				...new AlertView((await ctx.userTranslations())).successViewCustom(
-					(await ctx.userTranslations())
-						[se ? "DN_SUCCESS_SS" : "DN_SUCCESS"].replace(
-							"%alter%",
-							alter.username,
-						)
+				...new AlertView(await ctx.userTranslations()).successViewCustom(
+					(await ctx.userTranslations())[se ? "DN_SUCCESS_SS" : "DN_SUCCESS"]
+						.replace("%alter%", alter.username)
 						.replace("%new-display%", alterNewName)
 						.replace("%server%", (await ctx.guild())?.name ?? ""),
 				),

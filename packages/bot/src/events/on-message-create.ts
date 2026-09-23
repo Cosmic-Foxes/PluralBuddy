@@ -31,6 +31,7 @@ import { getWiderAutoProxy } from "@/lib/autoproxy-util";
 import { blockedChannel, blockedRole } from "@/lib/blocked";
 import { createError } from "@/lib/create-error";
 import { emojis } from "@/lib/emojis";
+import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { getLanguageByUserId } from "@/lib/lang";
 import { handleDMReply } from "@/lib/proxying/dm-replying";
@@ -100,12 +101,16 @@ export default createEvent({
 		if (message.author.bot === true) return;
 		if (startsWithPrefix(message)) return;
 
+		if (message.attachments.reduce((p, n) => p + n.size, 0) > 20_000_000) {
+			return;
+		}
+		
 		if (message.content === `<@${message.client.applicationId}>`) {
 			const locale = await getLanguageByUserId(message.author.id);
 			const guild = await getGuildFromId(message.guildId ?? "");
 
 			if (guild.getFeatures().disabledHelp) {
-				message.delete();
+				message.delete().catch((_) => null);
 
 				try {
 					await message.author.write({
@@ -255,6 +260,25 @@ export default createEvent({
 					alterId: Number(alter),
 					systemId: message.author.id,
 				});
+				if (
+					message.guildId &&
+					guild.getFeatures().requiresGuildTag &&
+					(((user.system?.displayTagMap ?? {})[message.guildId] ??
+						user.system.systemDisplayTag) === undefined ||
+						((user.system?.displayTagMap ?? {})[message.guildId] ??
+							user.system.systemDisplayTag) === null)
+				) {
+					const locale = await getLanguageByUserId(message.author.id);
+					endTimer(`proxy: bruteforce proxy (${message.id})`);
+					createProxyError(user, message, {
+						title: locale.DISPLAY_TAG_ENFORCE,
+						description: locale.DISPLAY_TAG_ENFORCE_DESC,
+						type: "EnforcedGuildTagRegulation",
+						setSystemTag: locale.ALTER_SET_TAG,
+					});
+
+					return;
+				}
 
 				if (fetchedAlter) {
 					const locale = await getLanguageByUserId(message.author.id);
@@ -326,7 +350,7 @@ export default createEvent({
 				delete indexingMessageMap[message.author.id];
 
 				clearTimeout(indexingTimeout);
-				if (indexingMessage !== null) indexingMessage.delete();
+				if (indexingMessage !== null) indexingMessage.delete().catch((_) => null);
 			};
 
 			// Only find the alters that we need
@@ -420,7 +444,13 @@ export default createEvent({
 									alterId: Number(user.system.alterIds[i]),
 								});
 
-					if (proxyTagValid(proxyTag, message)) {
+					if (
+						proxyTagValid(
+							proxyTag,
+							message,
+							getSystemFeatures(user.system).caseInsensitiveProxies,
+						)
+					) {
 						message.client.logger.info("Attempted to proxy: {proxyTag}", {
 							proxyTag,
 						});
@@ -439,6 +469,7 @@ export default createEvent({
 								title: locale.DISPLAY_TAG_ENFORCE,
 								description: locale.DISPLAY_TAG_ENFORCE_DESC,
 								type: "EnforcedGuildTagRegulation",
+								setSystemTag: locale.ALTER_SET_TAG,
 							});
 
 							removeFromMap();
@@ -448,7 +479,7 @@ export default createEvent({
 						// Only get more data about the alter after confirmation of proxy tag
 						if (!checkAlter) {
 							checkAlter = await alterCollection.findOne({
-								alterId: new Double(user.system.alterIds[i] ?? 3 ),
+								alterId: new Double(user.system.alterIds[i] ?? 3),
 							});
 						}
 
@@ -511,6 +542,25 @@ export default createEvent({
 					systemId: message.author.id,
 				});
 
+				if (
+					message.guildId &&
+					guild.getFeatures().requiresGuildTag &&
+					(((user.system?.displayTagMap ?? {})[message.guildId] ??
+						user.system.systemDisplayTag) === undefined ||
+						((user.system?.displayTagMap ?? {})[message.guildId] ??
+							user.system.systemDisplayTag) === null)
+				) {
+					const locale = await getLanguageByUserId(message.author.id);
+					endTimer(`proxy: bruteforce proxy (${message.id})`);
+					createProxyError(user, message, {
+						title: locale.DISPLAY_TAG_ENFORCE,
+						description: locale.DISPLAY_TAG_ENFORCE_DESC,
+						type: "EnforcedGuildTagRegulation",
+						setSystemTag: locale.ALTER_SET_TAG,
+					});
+
+					return;
+				}
 				if (fetchedAlter) {
 					const locale = await getLanguageByUserId(message.author.id);
 

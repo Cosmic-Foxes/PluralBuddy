@@ -1,22 +1,24 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import { DiscordSnowflake } from "@sapphire/snowflake";
+import { 
+	type CommandContext,Container, 
+	createStringOption,
+	Declare,
+	type OKFunction,
+	Options,SubCommand, TextDisplay, } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
+import z from "zod";
 import { getEmojiFromTagColor } from "@/lib/emojis";
+import { getSystemFeatures } from "@/lib/get-system-flags";
 import { mentionCommand } from "@/lib/mention-command";
+import { writeBack } from "@/lib/pk-sync-engine";
+import { getMaxTagPublicValue } from "@/lib/privacy-bitmask";
 import { tagCollection } from "@/mongodb";
 import { PTagObject, tagColors } from "@/types/tag";
 import { getUserById, writeUserById } from "@/types/user";
 import { AlertView } from "@/views/alert";
-import { DiscordSnowflake } from "@sapphire/snowflake";
-import { Container, SubCommand, TextDisplay } from "seyfert";
-import {
-	type CommandContext,
-	createStringOption,
-	Declare,
-	Options,
-	type OKFunction,
-} from "seyfert";
-import { MessageFlags } from "seyfert/lib/types";
-import z from "zod";
+import { w } from "@/webhooks";
 
 const options = {
 	color: createStringOption({
@@ -30,7 +32,7 @@ const options = {
 		description: "The display name for the tag.",
 		required: true,
 		max_length: 100,
-		min_length: 3
+		min_length: 3,
 	}),
 };
 
@@ -58,16 +60,18 @@ export default class CreateTagCommand extends SubCommand {
 		if (existingTag) {
 			return await ctx.editResponse({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorViewCustom(
-						(await ctx.userTranslations())
-							.TAG_ALREADY_EXISTS.replace("%display%", displayName),
+					...new AlertView(await ctx.userTranslations()).errorViewCustom(
+						(await ctx.userTranslations()).TAG_ALREADY_EXISTS.replace(
+							"%display%",
+							displayName,
+						),
 					),
 				],
 			});
 		}
 		if (user.system === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -75,7 +79,7 @@ export default class CreateTagCommand extends SubCommand {
 		}
 		if (user.system.tagIds.length >= 1000) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"TOO_MANY_TAGS",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -92,14 +96,16 @@ export default class CreateTagCommand extends SubCommand {
 			associatedAlters: [],
 
 			/** @see {@link TagProtectionFlags} */
-			public: 0,
+			public: getSystemFeatures(user.system).publicDefault
+				? getMaxTagPublicValue()
+				: 0,
 		});
 
 		if (tag.error) {
 			return await ctx.editResponse({
 				components: [
 					...new AlertView(
-						(await ctx.userTranslations()),
+						await ctx.userTranslations(),
 					).errorViewCustom(`There was an error while creating that tag:
 
 \`\`\`
@@ -119,21 +125,44 @@ ${z.prettifyError(tag.error)}
 
 		tagCollection.insertOne(tag.data);
 
+		writeBack({
+			type: "create-tag",
+			id: String(tag.data.tagId),
+			change: { ...tag.data, userId: user.userId },
+			syncConfig: user.syncConfiguration,
+		});
+
+		w(ctx.author.id, "tag.create", {
+			tag: tag.data,
+			type: "tag.create",
+			userId: ctx.author.id,
+		});
+
+
 		await ctx.editResponse({
 			components: [
-				...new AlertView((await ctx.userTranslations())).successViewCustom(
-					(await ctx.userTranslations())
-						.CREATE_NEW_TAG_DONE.replace("%command%", mentionCommand((await ctx.getDefaultPrefix()) ?? "pb;", "tag", ctx.message === undefined, tag.data.tagFriendlyName))
+				...new AlertView(await ctx.userTranslations()).successViewCustom(
+					(await ctx.userTranslations()).CREATE_NEW_TAG_DONE.replace(
+						"%command%",
+						mentionCommand(
+							(await ctx.getDefaultPrefix()) ?? "pb;",
+							"tag",
+							ctx.message === undefined,
+							tag.data.tagFriendlyName,
+						),
+					)
 						.replaceAll("%tag_name%", tag.data.tagFriendlyName)
 						.replace("%color_emoji%", getEmojiFromTagColor(color)),
 				),
-				...(tag.data.tagFriendlyName.includes(" ") ? [
-                    new Container()
-                        .setComponents(
-                            new TextDisplay()
-                                .setContent((await ctx.userTranslations()).TAG_SPACE_WARNING)
-                        )
-                ] : []),
+				...(tag.data.tagFriendlyName.includes(" ")
+					? [
+							new Container().setComponents(
+								new TextDisplay().setContent(
+									(await ctx.userTranslations()).TAG_SPACE_WARNING,
+								),
+							),
+						]
+					: []),
 			],
 		});
 	}

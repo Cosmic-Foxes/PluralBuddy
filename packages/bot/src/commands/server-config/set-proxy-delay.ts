@@ -37,17 +37,18 @@ export default class SetProxyDelay extends SubCommand {
 			{
 				$set: { proxyDelay: proxyDelay * 1000 },
 			},
-			{ upsert: true }
+			{ upsert: true },
 		);
-		ctx.client.cache.pguild.remove(guild.guildId)
+		ctx.client.cache.pguild.remove(guild.guildId);
 
 		return await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).successViewCustom(
-				((await ctx.userTranslations()))
-					.DELAY_CHANGED.replaceAll("%seconds%", String(proxyDelay))
-					.replaceAll("%ms%", String(proxyDelay * 1000)),
+			components: new AlertView(await ctx.userTranslations()).successViewCustom(
+				(await ctx.userTranslations()).DELAY_CHANGED.replaceAll(
+					"%seconds%",
+					String(proxyDelay),
+				).replaceAll("%ms%", String(proxyDelay * 1000)),
 			),
-            flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
+			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});
 	}
 }

@@ -138,7 +138,7 @@ ${json?.description ?? json?.["og:description"] ?? json?.["twitter:description"]
 		const hasFileAttachmentsFromMessage = fileAttachments.length > 0;
 		const isOnlyGifUrl =
 			(stringContents.startsWith("https://tenor.com") ||
-			stringContents.startsWith("https://klipy.com/gifs/")) &&
+				stringContents.startsWith("https://klipy.com/gifs/")) &&
 			stringContents.split(/\s+/).length === 1;
 		const hasTextContent =
 			stringContents.length > 0 &&
@@ -186,6 +186,6 @@ ${json?.description ?? json?.["og:description"] ?? json?.["twitter:description"]
 		});
 	}
 	for (const emoji of uploadedEmojis) {
-		emoji.delete();
+		emoji.delete().catch((_) => null);
 	}
 }

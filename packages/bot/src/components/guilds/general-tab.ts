@@ -19,15 +19,17 @@ export default class SetGuildPrefixes extends ComponentCommand {
 
 		return await ctx.interaction[ctx.isModal() ? "write" : "update"]({
 			components: [
-				...new ServerConfigView((await ctx.userTranslations())).topView(
+				...new ServerConfigView(await ctx.userTranslations()).topView(
 					"general",
 					pluralGuild.guildId,
 				),
-				...await new ServerConfigView((await ctx.userTranslations())).generalSettings(
+				...(await new ServerConfigView(
+					await ctx.userTranslations(),
+				).generalSettings(
 					pluralGuild,
 					(await ctx.getDefaultPrefix()) ?? "",
 					ctx.interaction?.message?.messageReference === undefined,
-				),
+				)),
 			],
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			allowed_mentions: { parse: [] },

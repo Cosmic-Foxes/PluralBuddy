@@ -20,22 +20,21 @@ export const helpPages = [
 		id: "01",
 		file: "help-page-01.md",
 	},
-    {
-        name: "Get Started",
-        id: "02",
-        file: "help-page-02.md"
-    },
+	{
+		name: "Get Started",
+		id: "02",
+		file: "help-page-02.md",
+	},
 	{
 		name: "Command List #1",
 		id: "03",
-		file: "help-page-03.md"
+		file: "help-page-03.md",
 	},
 	{
 		name: "Command List #2",
 		id: "04",
-		file: "help-page-04.md"
+		file: "help-page-04.md",
 	},
-
 ];
 
 @Declare({
@@ -48,11 +47,11 @@ export default class PluralBuddyHelpCommand extends Command {
 
 		if (guild.getFeatures().disabledHelp) {
 			if (ctx.isChat() && ctx.message) {
-				(ctx.message as Message).delete();
+				(ctx.message as Message).delete().catch(_ => null);
 
 				try {
 					await (ctx.message as Message).author.write({
-						components: new AlertView((await ctx.userTranslations())).errorView(
+						components: new AlertView(await ctx.userTranslations()).errorView(
 							"FEATURE_DISABLED_GUILD",
 						),
 						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -62,7 +61,7 @@ export default class PluralBuddyHelpCommand extends Command {
 			}
 
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"FEATURE_DISABLED_GUILD",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -93,9 +92,7 @@ export default class PluralBuddyHelpCommand extends Command {
 					),
 					new ActionRow().setComponents(
 						new Button()
-							.setCustomId(
-								"disabled"
-							)
+							.setCustomId("disabled")
 							.setDisabled(true)
 							.setLabel("Previous Page")
 							.setStyle(ButtonStyle.Primary),

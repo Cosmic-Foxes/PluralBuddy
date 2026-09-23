@@ -1,9 +1,18 @@
+import {
+	Button,
+	Container,
+	Separator as DressedSeparator,
+	Section,
+	TextDisplay,
+} from "@dressed/react";
 import { createRelativeLink } from "fumadocs-ui/mdx";
 import type { Metadata } from "next";
+import { unstable_cache } from "next/cache";
 import { notFound } from "next/navigation";
 import { after } from "next/server";
 import { PostHog } from "posthog-node";
 import { OpenAPIPage } from "@/components/api-page";
+import { DressedEmbedLayout } from "@/components/dressed-embed-layout";
 import { Feedback } from "@/components/feedback/client";
 import {
 	DocsBody,
@@ -12,15 +21,36 @@ import {
 	DocsTitle,
 } from "@/components/layouts/docs/page";
 import { Separator } from "@/components/ui/separator";
-import { openapi } from '@/lib/openapi';
+import { openapi } from "@/lib/openapi";
+import { api } from "@/lib/rpc";
 import { source } from "@/lib/source";
 import { getMDXComponents } from "@/mdx-components";
 
-export default async function Page(props: PageProps<"/[lang]/docs/[[...slug]]">) {
+const getDiscordCommandData = unstable_cache(
+	async ({ commandName }) =>
+		await (
+			await api.commands.$post({
+				json: { commandName },
+			})
+		).json(),
+	["commands"],
+	{
+		tags: ["commands"],
+		revalidate: 86400,
+	},
+);
+
+export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 	const params = await props.params;
 	const page = source.getPage(params.slug);
 	if (!page) notFound();
+	console.log(page.data.toc)
 
+	const commandData = page.data["_discord-embed-name"]
+		? await getDiscordCommandData({
+				commandName: page.data["_discord-embed-name"],
+			})
+		: null;
 	const MDX = page.data.body;
 
 	return (
@@ -31,6 +61,51 @@ export default async function Page(props: PageProps<"/[lang]/docs/[[...slug]]">)
 				style: "normal",
 			}}
 		>
+			{commandData && (
+				<DressedEmbedLayout>
+					<Container accent_color={0xfccee8}>
+						<Section
+							accessory={
+								<Button
+									url="https://gftl.fyi/discord"
+									label="Invite PluralBuddy"
+								/>
+							}
+						>
+							<TextDisplay>
+								## [**{page.data.title}**](https://pluralbuddy.app/docs/
+								{params.slug?.join("/")})
+							</TextDisplay>
+						</Section>
+
+						<DressedSeparator />
+
+						<TextDisplay>
+							{
+								page.data.body({
+									components: getMDXComponents({}),
+								}).props.children[0].props.children
+							}
+						</TextDisplay>
+
+						{commandData?.subcommands.length > 1 ? (
+							<>
+								<DressedSeparator />
+
+								<TextDisplay>
+									### Sub-commands {"\n"}
+									{commandData?.subcommands
+										.slice(1)
+										.map((v) => ` - </${v.name}:${v.id}> - ${v.description}`)
+										.join("\n")}
+								</TextDisplay>
+							</>
+						) : (
+							<TextDisplay>{commandData.mention}</TextDisplay>
+						)}
+					</Container>
+				</DressedEmbedLayout>
+			)}
 			<DocsTitle>{page.data.title}</DocsTitle>
 			<DocsDescription>{page.data.description}</DocsDescription>
 			<Separator />
@@ -41,7 +116,10 @@ export default async function Page(props: PageProps<"/[lang]/docs/[[...slug]]">)
 						a: createRelativeLink(source, page),
 
 						APIPage: async (props) => (
-							<OpenAPIPage {...await openapi.preloadOpenAPIPage(page)} {...props} />
+							<OpenAPIPage
+								{...(await openapi.preloadOpenAPIPage(page))}
+								{...props}
+							/>
 						),
 					})}
 				/>
@@ -80,7 +158,7 @@ export async function generateMetadata(props: {
 	const params = await props.params;
 	const page = source.getPage(params.slug);
 	if (!page) notFound();
-	const image = ['/og/docs', ...(params.slug ?? []), 'image.png'].join('/');
+	const image = ["/og/docs", ...(params.slug ?? []), "image.png"].join("/");
 
 	return {
 		title: page.data.title,
@@ -89,7 +167,7 @@ export async function generateMetadata(props: {
 			images: image,
 		},
 		twitter: {
-			card: 'summary_large_image',
+			card: "summary_large_image",
 			images: image,
 		},
 	};

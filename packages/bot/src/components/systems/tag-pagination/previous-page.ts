@@ -1,10 +1,14 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 import { ComponentCommand, type ComponentContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { AlertView } from "@/views/alert";
-import { alterPagination, SystemSettingsView, tagsPagination } from "@/views/system-settings";
+import {
+	alterPagination,
+	SystemSettingsView,
+	tagsPagination,
+} from "@/views/system-settings";
 export default class PreviousPage extends ComponentCommand {
 	componentType = "Button" as const;
 
@@ -15,7 +19,7 @@ export default class PreviousPage extends ComponentCommand {
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
-        await ctx.deferUpdate();
+		await ctx.deferUpdate();
 		const paginationToken =
 			InteractionIdentifier.Systems.Configuration.TagPagination.PreviousPage.substring(
 				ctx.customId,
@@ -25,17 +29,17 @@ export default class PreviousPage extends ComponentCommand {
 
 		if (user.system === undefined) {
 			return await ctx.followup({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
-		}   
+		}
 
 		if (corresponding === undefined) {
 			return await ctx.followup({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorView(
+					...new AlertView(await ctx.userTranslations()).errorView(
 						"ERROR_PAGINATION_TOO_OLD",
 					),
 				],
@@ -57,10 +61,10 @@ export default class PreviousPage extends ComponentCommand {
 
 		return await ctx.editResponse({
 			components: [
-				...(await new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(user.system)?.preferAccessiblity).tagsSettings(
-					user.system,
-					corresponding,
-				)),
+				...(await new SystemSettingsView(
+					await ctx.userTranslations(),
+					getSystemFeatures(user.system)?.preferAccessiblity,
+				).tagsSettings(user.system, corresponding)),
 			],
 		});
 	}

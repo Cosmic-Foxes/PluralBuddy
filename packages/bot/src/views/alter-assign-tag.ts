@@ -40,7 +40,9 @@ export class AlertAssignTagView extends TranslatedView {
 						.setEmoji(emojis.undo)
 						.setLabel(this.translations.OPTION_BACK)
 						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.Alters.GeneralSettings.create(alter?.alterId ?? "")
+							InteractionIdentifier.Systems.Configuration.Alters.GeneralSettings.create(
+								alter?.alterId ?? "",
+							),
 						)
 						.setStyle(ButtonStyle.Secondary),
 					new Button()
@@ -48,7 +50,7 @@ export class AlertAssignTagView extends TranslatedView {
 						.setCustomId(
 							InteractionIdentifier.Systems.Configuration.TagPagination.CreateNewTag.create(),
 						)
-						.setStyle(ButtonStyle.Primary)
+						.setStyle(ButtonStyle.Primary),
 				),
 			];
 		}
@@ -90,7 +92,10 @@ export class AlertAssignTagView extends TranslatedView {
 				.setColor(`#${getEmojiFromTagColor(pgObj.alter.color ?? "amber")}`)
 				.setComponents(
 					new TextDisplay().setContent(
-						this.translations.ASSIGN_TAG_HEADER.replace("{{ alterUsername }}", pgObj.alter.username)
+						this.translations.ASSIGN_TAG_HEADER.replace(
+							"{{ alterUsername }}",
+							pgObj.alter.username,
+						),
 					),
 					new Separator().setSpacing(Spacing.Large),
 					...alters.map((tag) => {
@@ -127,16 +132,26 @@ export class AlertAssignTagView extends TranslatedView {
 					}),
 					new Separator().setSpacing(Spacing.Large),
 					new TextDisplay().setContent(
-						this.translations.PAGINATION_BOTTOM_AAT
-							.replace("{{ page }}", String(pgObj.memoryPage))
-							.replace("{{ maxPage }}", String(Math.ceil((pgObj?.documentCount ?? 0) / tagsPerPage)))
+						this.translations.PAGINATION_BOTTOM_AAT.replace(
+							"{{ page }}",
+							String(pgObj.memoryPage),
+						)
+							.replace(
+								"{{ maxPage }}",
+								String(Math.ceil((pgObj?.documentCount ?? 0) / tagsPerPage)),
+							)
 							.replace("{{ alters }}", String(alters.length))
 							.replace("{{ maxAlters }}", String(pgObj.documentCount))
 							.replace("{{ time }}", String(Date.now() - time))
-							.replace("{{ possibleSearchQuery }}",
-								pgObj.searchQuery !== undefined ? this.translations.PAGINATION_SEARCH_QUERY
-									.replace("{{ query }}", pgObj.searchQuery) : ""
-							)
+							.replace(
+								"{{ possibleSearchQuery }}",
+								pgObj.searchQuery !== undefined
+									? this.translations.PAGINATION_SEARCH_QUERY.replace(
+											"{{ query }}",
+											pgObj.searchQuery,
+										)
+									: "",
+							),
 					),
 					new ActionRow().setComponents(
 						new Button()

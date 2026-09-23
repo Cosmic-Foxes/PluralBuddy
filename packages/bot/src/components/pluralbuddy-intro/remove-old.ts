@@ -39,40 +39,37 @@ export default class RemoveOldSystem extends ComponentCommand {
 						),
 					)
 					.setColor("#FF1717"),
-				new Container()
-					.setSpoiler(true)
-					.setComponents(
-						new ActionRow().setComponents(
-							new Button()
-								.setEmoji(emojis.settingsWhite)
-								.setStyle(ButtonStyle.Primary)
-								.setLabel((await ctx.userTranslations()).BACK_TO_SAFETY_BTN)
-								.setCustomId(
-									InteractionIdentifier.Systems.Configuration.GeneralTab.Index.create(),
-								),
-							new Button()
-								.setEmoji(emojis.circleQuestionWhite)
-								.setStyle(ButtonStyle.Danger)
-								.setLabel(
-									(await ctx.userTranslations()).CONFIRMATION_SYSTEM_DELETION_BTN,
-								)
-								.setCustomId(
-									InteractionIdentifier.Systems.DeleteSystem.create(),
-								),
-						),
-						new TextDisplay().setContent(
-							(await ctx.userTranslations())
-								.CONFIRMATION_SYSTEM_DELETION_PRIVACY.replace(
-									"%command%",
-									mentionCommand(
-										(await ctx.getDefaultPrefix()) ?? "pb;",
-										"system delete",
-										ctx.interaction.message.messageReference === undefined,
-										"-mi",
-									),
-								),
+				new Container().setSpoiler(true).setComponents(
+					new ActionRow().setComponents(
+						new Button()
+							.setEmoji(emojis.settingsWhite)
+							.setStyle(ButtonStyle.Primary)
+							.setLabel((await ctx.userTranslations()).BACK_TO_SAFETY_BTN)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.GeneralTab.Index.create(),
+							),
+						new Button()
+							.setEmoji(emojis.circleQuestionWhite)
+							.setStyle(ButtonStyle.Danger)
+							.setLabel(
+								(await ctx.userTranslations()).CONFIRMATION_SYSTEM_DELETION_BTN,
+							)
+							.setCustomId(InteractionIdentifier.Systems.DeleteSystem.create()),
+					),
+					new TextDisplay().setContent(
+						(
+							await ctx.userTranslations()
+						).CONFIRMATION_SYSTEM_DELETION_PRIVACY.replace(
+							"%command%",
+							mentionCommand(
+								(await ctx.getDefaultPrefix()) ?? "pb;",
+								"system delete",
+								ctx.interaction.message.messageReference === undefined,
+								"-mi",
+							),
 						),
 					),
+				),
 			],
 		});
 	}

@@ -22,6 +22,14 @@ export default function proxy(request: NextRequest, event: NextFetchEvent) {
 		// return;
 	}
 
+	if (request.nextUrl.origin === ("https://pb.giftedly.dev") && !new URL(request.url).pathname.startsWith("/api/")) {
+
+		return NextResponse.redirect(
+			new URL(`${process.env.BETTER_AUTH_URL}/${new URL(request.url).pathname + new URL(request.url).search}`),
+			308
+		);
+	}
+
 	return paraglideMiddleware(request, ({ request, locale }) => {
 		request.headers.set("x-paraglide-locale", locale);
 		request.headers.set("x-paraglide-request-url", request.url);

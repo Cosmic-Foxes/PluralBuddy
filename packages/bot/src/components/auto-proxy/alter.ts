@@ -26,7 +26,7 @@ export default class AlterAutoProxySelectMenu extends ComponentCommand {
 
 		if (guild === undefined) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"DN_ERROR_SE",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -35,7 +35,7 @@ export default class AlterAutoProxySelectMenu extends ComponentCommand {
 
 		if (system === undefined) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -51,7 +51,7 @@ export default class AlterAutoProxySelectMenu extends ComponentCommand {
 
 		if (alter === null) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -95,16 +95,17 @@ export default class AlterAutoProxySelectMenu extends ComponentCommand {
 		await sendAutoproxyOperationDM(
 			system,
 			guild,
-			(await ctx.userTranslations()),
+			await ctx.userTranslations(),
 			"discord",
 			"alter",
 		);
 
 		return await ctx.write({
-			components: new AlertView((await ctx.userTranslations())).successViewCustom(
-				((await ctx.userTranslations()))
-					.SET_AUTO_PROXY_SRV.replaceAll("%server_name%", guild?.name ?? "??")
-					.replaceAll("%mode%", "alter"),
+			components: new AlertView(await ctx.userTranslations()).successViewCustom(
+				(await ctx.userTranslations()).SET_AUTO_PROXY_SRV.replaceAll(
+					"%server_name%",
+					guild?.name ?? "??",
+				).replaceAll("%mode%", "alter"),
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});

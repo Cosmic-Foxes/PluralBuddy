@@ -40,7 +40,7 @@ export default class ViewRoleContainer extends SubCommand {
 
 		if (!guild.rolePreferences.some((c) => c.roleId === role.id)) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ROLE_NO_SPECIAL_CONFIG",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -90,7 +90,7 @@ export default class ViewRoleContainer extends SubCommand {
 									),
 						]
 					: []),
-                new Separator().setSpacing(Spacing.Small),
+				new Separator().setSpacing(Spacing.Small),
 				new ActionRow().setComponents(
 					new Button()
 						.setCustomId(
@@ -100,7 +100,7 @@ export default class ViewRoleContainer extends SubCommand {
 						)
 						.setStyle(ButtonStyle.Primary)
 						.setLabel("Configure Role Preference")
-                        .setEmoji(emojis.wrenchWhite),
+						.setEmoji(emojis.wrenchWhite),
 				),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

@@ -25,7 +25,7 @@ export default class CreateNewAlterBtn extends ComponentCommand {
 
 		if (user.system === undefined) {
 			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -34,7 +34,7 @@ export default class CreateNewAlterBtn extends ComponentCommand {
 
 		if (user.system.alterIds.length >= 2000) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"TOO_MANY_ALTERS",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -48,31 +48,39 @@ export default class CreateNewAlterBtn extends ComponentCommand {
 				)
 				.setTitle((await ctx.userTranslations()).CREATE_NEW_ALTER_DESCRIPTION)
 				.setComponents([
-					new TextDisplay().setContent((await ctx.userTranslations()).ALTER_INFORMATION),
+					new TextDisplay().setContent(
+						(await ctx.userTranslations()).ALTER_INFORMATION,
+					),
 					new Label()
 						.setLabel((await ctx.userTranslations()).ALTER_SET_USERNAME)
-						.setDescription((await ctx.userTranslations()).ALTER_SET_USERNAME_SPACES)
+						.setDescription(
+							(await ctx.userTranslations()).ALTER_SET_USERNAME_SPACES,
+						)
 						.setComponent(
 							new TextInput()
 								.setStyle(TextInputStyle.Short)
 								.setRequired(true)
-                                .setLength({ max: 20, min: 0 })
+								.setLength({ max: 20, min: 0 })
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterUsernameType.create(),
 								),
 						),
 					new Label()
-						.setLabel((await ctx.userTranslations()).ALTER_DISPLAY_NAME_FORM_LABEL)
+						.setLabel(
+							(await ctx.userTranslations()).ALTER_DISPLAY_NAME_FORM_LABEL,
+						)
 						.setComponent(
 							new TextInput()
 								.setStyle(TextInputStyle.Short)
 								.setRequired(true)
-                                .setLength({ max: 100, min: 0 })
+								.setLength({ max: 100, min: 0 })
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterDisplayNameType.create(),
 								),
 						),
-					new TextDisplay().setContent((await ctx.userTranslations()).ALTER_AFTER)
+					new TextDisplay().setContent(
+						(await ctx.userTranslations()).ALTER_AFTER,
+					),
 				]),
 		);
 	}

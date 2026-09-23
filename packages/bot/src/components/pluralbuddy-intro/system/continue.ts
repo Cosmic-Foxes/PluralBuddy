@@ -4,13 +4,13 @@ import {
 	ActionRow,
 	Button,
 	ComponentCommand,
+	type ComponentContext,
 	Container,
 	Label,
 	Modal,
 	ModalSubmitInteraction,
 	TextDisplay,
 	TextInput,
-	type ComponentContext,
 } from "seyfert";
 import { ButtonStyle, MessageFlags, TextInputStyle } from "seyfert/lib/types";
 import { emojis } from "@/lib/emojis";
@@ -33,27 +33,28 @@ export default class NameCNS extends ComponentCommand {
 
 	async run(ctx: ComponentContext<typeof this.componentType>) {
 		await ctx.update({
-			components: new LoadingView((await ctx.userTranslations())).loadingView(),
+			components: new LoadingView(await ctx.userTranslations()).loadingView(),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
 		const oldInteractionId =
 			InteractionIdentifier.Setup.Pagination.Page3.substring(ctx.customId)[0] ??
 			"";
-		const temporarySystem = createdSystems.get(oldInteractionId);
-		const server = await ctx.retrievePGuild();
+		const possibleSystem = createdSystems.get(oldInteractionId);
 		const user = await ctx.retrievePUser();
 
-		if (temporarySystem === undefined) {
+		if (possibleSystem === undefined) {
 			return ctx.write({
 				content: (await ctx.userTranslations()).ERROR_INTERACTION_TOO_OLD,
 				flags: MessageFlags.Ephemeral,
 			});
 		}
+		const { terminology, ...temporarySystem } = possibleSystem;
 
 		await writeUserById(ctx.author.id, {
 			userId: ctx.author.id,
 			blocked: false,
 			storagePrefix: user.storagePrefix,
+			terminology: terminology,
 			// @ts-ignore
 			system: {
 				associatedUserId: ctx.author.id,

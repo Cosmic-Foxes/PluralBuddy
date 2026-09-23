@@ -34,8 +34,8 @@ export default class SearchingRolePreferencesForm extends ModalCommand {
 		const guild = await ctx.retrievePGuild();
 		const nativeGuild = await ctx.guild();
 		const errors = guild.errorLog.filter((c) => {
-            if (type === undefined && userId === undefined && channelId === undefined)
-                return true;
+			if (type === undefined && userId === undefined && channelId === undefined)
+				return true;
 			if (type && c.type === type) return true;
 			if (userId && c.responsibleUserId === userId) return true;
 			if (channelId && c.responsibleChannelId === channelId) return true;
@@ -46,11 +46,11 @@ export default class SearchingRolePreferencesForm extends ModalCommand {
 
 		return await ctx.interaction.update({
 			components: [
-				...new ServerConfigView((await ctx.userTranslations())).topView(
+				...new ServerConfigView(await ctx.userTranslations()).topView(
 					"errors",
 					guild.guildId,
 				),
-				...new ServerConfigView((await ctx.userTranslations())).errorSettings(
+				...new ServerConfigView(await ctx.userTranslations()).errorSettings(
 					guild,
 					nativeGuild,
 					1,

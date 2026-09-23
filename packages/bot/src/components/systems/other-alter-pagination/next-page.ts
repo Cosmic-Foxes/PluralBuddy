@@ -8,7 +8,10 @@ import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { has } from "@/lib/privacy-bitmask";
 import { userCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
-import { otherAlterPagination, SystemSettingsView } from "@/views/system-settings";
+import {
+	otherAlterPagination,
+	SystemSettingsView,
+} from "@/views/system-settings";
 export default class NextPageAP extends ComponentCommand {
 	componentType = "Button" as const;
 
@@ -19,17 +22,19 @@ export default class NextPageAP extends ComponentCommand {
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
-        await ctx.deferUpdate();
+		await ctx.deferUpdate();
 		const paginationToken =
 			InteractionIdentifier.Systems.Configuration.OtherAlterPagination.NextPage.substring(
 				ctx.customId,
 			)[0];
-		const corresponding = otherAlterPagination.find((v) => v.id === paginationToken);
+		const corresponding = otherAlterPagination.find(
+			(v) => v.id === paginationToken,
+		);
 
 		if (corresponding === undefined) {
 			return await ctx.followup({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorView(
+					...new AlertView(await ctx.userTranslations()).errorView(
 						"ERROR_PAGINATION_TOO_OLD",
 					),
 				],
@@ -39,9 +44,12 @@ export default class NextPageAP extends ComponentCommand {
 
 		const user = await userCollection.findOne({ userId: corresponding.userId });
 
-		if (user?.system === undefined || !has(SystemProtectionFlags.ALTERS, user?.system?.public)) {
+		if (
+			user?.system === undefined ||
+			!has(SystemProtectionFlags.ALTERS, user?.system?.public)
+		) {
 			return await ctx.followup({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -60,10 +68,13 @@ export default class NextPageAP extends ComponentCommand {
 		// Re-add it to the array
 		otherAlterPagination.push(corresponding);
 
-        return await ctx.editResponse({
-            components: [
-                ...await new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(user.system)?.preferAccessiblity).otherAltersSettings(user.system, corresponding)
-            ]
-        })
+		return await ctx.editResponse({
+			components: [
+				...(await new SystemSettingsView(
+					await ctx.userTranslations(),
+					getSystemFeatures(user.system)?.preferAccessiblity,
+				).otherAltersSettings(user.system, corresponding)),
+			],
+		});
 	}
 }

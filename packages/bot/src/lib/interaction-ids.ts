@@ -241,6 +241,14 @@ export const InteractionIdentifier = {
 		},
 	},
 	Systems: {
+		Syncing: {
+			ApplyTranscript: createFromAdditionalArg(
+				"systems/syncing/apply-transcript",
+			),
+			ApplyTranscriptDestructively: createFromAdditionalArg(
+				"systems/syncing/apply-transcrip-d",
+			),
+		},
 		DeleteSystem: createStatic("systems/delete"),
 		DeleteSystemMedia: createStatic("systems/delete-media"),
 		ConfigurePublicProfile: createFromAdditionalArg(
@@ -251,8 +259,48 @@ export const InteractionIdentifier = {
 			PluralKit: createStatic("systems/external-export/pluralkit"),
 		},
 		Configuration: {
+			TerminologyTab: {
+				Index: createStatic("systems/config/terminology/index"),
+				EditNormalTerms: createStatic("systems/config/terminology/edit-normal-terms"),
+				EditNormalTermsForm: createStatic("systems/config/terminology/edit-normal-terms-form"),
+
+				EditPluralTerms: createStatic("systems/config/terminology/edit-plural-terms"),
+				EditPluralTermsForm: createStatic("systems/config/terminology/edit-plural-terms-form"),
+
+				EditCapitalTerms: createStatic("systems/config/terminology/edit-capital-terms"),
+				EditCapitalTermsForm: createStatic("systems/config/terminology/edit-capital-terms-form"),
+
+				Alter: createStatic("systems/config/terminology/alters"),
+				Tags: createStatic("systems/config/terminology/tags"),
+				ProxyTags: createStatic("systems/config/terminology/proxy-tags"),
+				System: createStatic("system/config/terminology/system"),
+				DisplayTag: createStatic("systems/config/terminology/display-tag"),
+
+				TemplatesSelect: createStatic("systems/config/terminology/templates")
+			},
 			ConfigureAlter: createFromAdditionalArg("systems/config/config-alter"),
 			ConfigureTag: createFromAdditionalArg("systems/config/config-tag"),
+
+			SyncPreferences: {
+				SyncManually: createStatic("systems/config/sync/manually"),
+				SyncManuallyForm: createStatic("systems/config/sync/form/manually"),
+				AutoSyncForm: createStatic("systems/config/sync/form/auto"),
+				WriteBackForm: createStatic("systems/config/sync/form/write-back"),
+
+				QuickSync: createStatic("systems/config/sync/quick"),
+				ToggleAutoSync: createStatic("systems/config/sync/auto"),
+				ToggleWriteback: createStatic("systems/config/sync/write-back"),
+
+				PluralKitToken: createStatic("systems/config/sync/token-input"),
+				StoreToken: createStatic("systems/config/sync/store-token"),
+				EnableAutoSync: createStatic(
+					"systems/config/sync/enable-auto-sync-input",
+				),
+				EnableWriteBackSync: createStatic(
+					"systems/config/sync/enable-write-back-input",
+				),
+				DestructiveSync: createStatic("systems/config/sync/destructive-input"),
+			},
 
 			Pagination: {
 				PageOne: createStatic("systems/config/page-1"),
@@ -281,11 +329,32 @@ export const InteractionIdentifier = {
 				TogglePreferAccessiblity: createStatic(
 					"systems/config/general/prefer-accessiblity",
 				),
+				ToggleLeftSidedTags: createStatic(
+					"systems/config/general/left-sided-tags",
+				),
+				ToggleCaseInsensitiveProxies: createStatic(
+					"systems/config/general/toggle-case-insensitive-proxies",
+				),
 			},
 			OtherAlterPagination: {
 				PreviousPage: createFromAdditionalArg("systems/config/oapg/previous"),
 				NextPage: createFromAdditionalArg("systems/config/oapg/next"),
 				Search: createFromAdditionalArg("systems/config/oapg/search"),
+			},
+
+			AlterPlainPagination: {
+				Page: createFromAdditionalArg(
+					"systems/config/alter-plain-pagination/page",
+				),
+				CustomPage: createFromAdditionalArg(
+					"systems/config/alter-plain-pagination/custom-page_",
+				),
+				CustomPageForm: createStatic(
+					"systems/config/alter-plain-pagination/custom-page-form",
+				),
+				CustomPageInput: createStatic(
+					"systems/config/alter-plain-pagination/custom-page-input",
+				),
 			},
 			AlterPagination: {
 				PreviousPage: createFromAdditionalArg("systems/config/apg/previous"),
@@ -403,7 +472,9 @@ export const InteractionIdentifier = {
 				ConfigureTagExternal: createFromAdditionalArg(
 					"systems/config/tags/configure-external",
 				),
-				AssureDeleteTag: createFromAdditionalArg("systems/config/tags/assure-delete-tag"),
+				AssureDeleteTag: createFromAdditionalArg(
+					"systems/config/tags/assure-delete-tag",
+				),
 				DeleteTag: createFromAdditionalArg("systems/config/tags/delete-tag"),
 
 				SetDisplayName: createFromAdditionalArg(
@@ -613,6 +684,7 @@ export const InteractionIdentifier = {
 			Name: createFromAdditionalArg("setup/create-new-system/name"),
 			Privacy: createFromAdditionalArg("setup/create-new-system/privacy"),
 			SystemTag: createFromAdditionalArg("setup/create-new-system/system-tag"),
+			Terminology: createFromAdditionalArg("setup/create-new-system/terminology")
 		},
 		FormSelection: {
 			NameType: createStatic("setup/create-new-system/type-form/name"),
@@ -629,6 +701,7 @@ export const InteractionIdentifier = {
 			ImportType: createStatic("setup/create-new-system/type-form/import"),
 			PkForm: createStatic("setup/create-new-system/set-form/pk-import"),
 			PkType: createStatic("setup/create-new-system/type-form/pk-import"),
+			PkTerminologyCheckboxType: createStatic("setup/create-new-system/type-form/pk-terms"),
 			PkRawTextType: createStatic(
 				"setup/create-new-system/type-form/pk-raw-text",
 			),

@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { ModalCommand, type ModalContext } from "seyfert";
 import { MessageFlags, TextInputStyle } from "seyfert/lib/types";
@@ -17,13 +17,15 @@ export default class SetPronounsButton extends ModalCommand {
 	}
 
 	override async run(ctx: ModalContext) {
-		let { system } = await ctx.retrievePUser()
+		let { system } = await ctx.retrievePUser();
 
 		if (system === undefined) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-			})
+				components: new AlertView(await ctx.userTranslations()).errorView(
+					"ERROR_SYSTEM_DOESNT_EXIST",
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
 		}
 
 		const newSystemDescription = ctx.interaction.getInputValue(
@@ -31,19 +33,27 @@ export default class SetPronounsButton extends ModalCommand {
 			true,
 		);
 
-		const newSystem = await createSystemOperation(system, {
-			systemDescription: newSystemDescription as string
-		}, (await ctx.userTranslations()), "discord")
+		const newSystem = await createSystemOperation(
+			system,
+			{
+				systemDescription: newSystemDescription as string,
+			},
+			await ctx.userTranslations(),
+			"discord",
+		);
 
 		system = newSystem;
 
 		return await ctx.interaction.update({
 			components: [
-				...new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(system)?.preferAccessiblity).topView(
-					"public-settings",
-					system.associatedUserId,
-				),
-				...new SystemSettingsView((await ctx.userTranslations()), getSystemFeatures(system)?.preferAccessiblity).publicProfile(
+				...new SystemSettingsView(
+					await ctx.userTranslations(),
+					getSystemFeatures(system)?.preferAccessiblity,
+				).topView("public-settings", system.associatedUserId),
+				...new SystemSettingsView(
+					await ctx.userTranslations(),
+					getSystemFeatures(system)?.preferAccessiblity,
+				).publicProfile(
 					system,
 					(await ctx.getDefaultPrefix()) ?? "",
 					ctx.interaction?.message?.messageReference === undefined,

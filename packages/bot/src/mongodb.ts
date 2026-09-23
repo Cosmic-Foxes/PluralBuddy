@@ -1,10 +1,12 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { type Collection, type Db, MongoClient } from "mongodb";
-import type {PAlterOperation, 
+import type {
+	PAlterOperation,
 	PExpressApplication,
 	PGuildError,
-	PIntegrationFront
+	PImportTranscript,
+	PIntegrationFront,
 } from "plurography";
 import { connectMongo } from "./lib/libby";
 import type { PAlter } from "./types/alter";
@@ -24,6 +26,7 @@ export let tagCollection: Collection<PTag>;
 export let operationCollection: Collection<POperation>;
 export let alterOperationCollection: Collection<PAlterOperation>;
 export let errorCollection: Collection<PGuildError>;
+export let importTranscriptCollection: Collection<PImportTranscript>;
 export let frontsCollection: Collection<PIntegrationFront>;
 export let messagesCollection: Collection<PMessage>;
 export let applicationsCollection: Collection<PExpressApplication>;
@@ -48,6 +51,10 @@ export async function createPeriodicExpirationDates() {
 	await errorCollection.createIndex(
 		{ createdAt: 1 },
 		{ expireAfterSeconds: 21600 },
+	);
+	await importTranscriptCollection.createIndex(
+		{ createdAt: 1 },
+		{ expireAfterSeconds: 1800 },
 	);
 
 	await tagCollection.createIndex(
@@ -77,6 +84,7 @@ export async function setupDatabases() {
 	analyticsCollection = mainDb.collection("analytics");
 	alterOperationCollection = mainDb.collection("alter-operations");
 	frontsCollection = mainDb.collection("fronts");
+	importTranscriptCollection = mainDb.collection("import-transcripts");
 
 	await createPeriodicExpirationDates();
 }

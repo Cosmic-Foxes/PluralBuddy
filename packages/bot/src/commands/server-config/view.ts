@@ -30,7 +30,7 @@ export default class ViewServerConfig extends SubCommand {
 		}
 
 		await ctx.deferReply(true);
-		
+
 		const pluralGuild = await ctx.retrievePGuild();
 
 		return await ctx.ephemeral(

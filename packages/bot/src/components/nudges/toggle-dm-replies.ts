@@ -5,17 +5,19 @@ import { NudgePreferences } from "@/views/nudge-preferences";
 import { ComponentCommand, ComponentContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
-
-
 export default class AddUserBlockListNudge extends ComponentCommand {
 	componentType = "Button" as const;
 
 	override filter(context: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Nudge.ToggleDMReplies.startsWith(context.customId);
+		return InteractionIdentifier.Nudge.ToggleDMReplies.startsWith(
+			context.customId,
+		);
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
-        const silent = InteractionIdentifier.Nudge.ToggleDMReplies.substring(ctx.customId)[0];
+		const silent = InteractionIdentifier.Nudge.ToggleDMReplies.substring(
+			ctx.customId,
+		)[0];
 		let user = await ctx.retrievePUser();
 
 		await writeUserById(user.userId, {
@@ -25,16 +27,19 @@ export default class AddUserBlockListNudge extends ComponentCommand {
 
 		user.nudging.dmReply = !user.nudging.dmReply;
 
-        if (silent === "true")
-            return await ctx.write({
-                components: new AlertView((await ctx.userTranslations())).successView("DISABLED_DM_REPLIES"),
-                flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
-            })
-        else
-		return await ctx.update({
-			components: new NudgePreferences((await ctx.userTranslations())).nudgePreferences(user),
-			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-		});
-        
-    }
+		if (silent === "true")
+			return await ctx.write({
+				components: new AlertView(await ctx.userTranslations()).successView(
+					"DISABLED_DM_REPLIES",
+				),
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+			});
+		else
+			return await ctx.update({
+				components: new NudgePreferences(
+					await ctx.userTranslations(),
+				).nudgePreferences(user),
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+			});
+	}
 }

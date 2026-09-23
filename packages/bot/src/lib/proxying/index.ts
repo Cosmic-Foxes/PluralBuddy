@@ -32,8 +32,11 @@ import type {
 } from "@/events/on-message-create";
 import { alterCollection, messagesCollection } from "@/mongodb";
 import { getGuildFromId, type PGuild } from "@/types/guild";
+import { getUserById } from "@/types/user";
+import { w } from "@/webhooks";
 import { createError } from "../create-error";
 import { emojis } from "../emojis";
+import { automaticallySync } from "../pk-sync-engine";
 import { processFileAttachments } from "./process-file-attachments";
 import { processUrlIntegrations } from "./process-url-attachments";
 
@@ -188,7 +191,7 @@ export async function proxy(
 												})
 												.setFooter({
 													text: "Unable to proxy this message",
-													iconUrl: "https://pb.giftedly.dev/image/pfp.png",
+													iconUrl: "https://pluralbuddy.app/image/pfp.png",
 												});
 										})(),
 									]
@@ -200,6 +203,19 @@ export async function proxy(
 					},
 				})
 				.then((sentMessage) => {
+					w(systemId, "message.create", {
+						message: {
+							messageId: sentMessage?.id ?? "0",
+							alterId,
+							systemId,
+							createdAt: new Date(),
+							guildId: message.guildId,
+							channelId: message.channelId,
+							referencedMessage: message.referencedMessage?.id,
+						},
+						type: "message.create",
+						userId: systemId
+					});
 					messagesCollection.insertOne({
 						messageId: sentMessage?.id ?? "0",
 						alterId,
@@ -333,7 +349,11 @@ export async function proxy(
 			client.cache.similarWebhookResource.remove(message.channelId);
 		}
 
-		await message.delete();
+		await message.delete().catch((_) => null).then(async () => {
+			const user = await getUserById(message.author.id);
+
+			await automaticallySync(user);
+		});;
 	}
 }
 
@@ -350,7 +370,6 @@ export const getModernComponentsMappings = (
 		components[1]?.data.type === ComponentType.MediaGallery
 	) {
 	}
-	console.log(fileComponents);
 	return components.length === 1 &&
 		components[0]?.data.type === ComponentType.TextDisplay
 		? {
@@ -366,22 +385,32 @@ export const getModernComponentsMappings = (
 					components[1]?.data.type === ComponentType.File)
 			? {
 					content:
-						components[0] !== undefined && ("content" in components[0].data)
+						components[0] !== undefined && "content" in components[0].data
 							? (components[0].data.content ?? "").startsWith("# <")
 								? (components[0].data.content ?? "").slice(1)
 								: components[0].data.content
-							: "_Failed to slice this message correctly._",
+							: "",
 					attachments: fileComponents
 						.filter((v, pos) => {
 							return fileComponents.indexOf(v) === pos;
 						})
 						.map((v, i) => ({ filename: v.name, id: String(i) })),
 				}
-			: {
-					components,
-					flags:
-						components.length !== 0
-							? MessageFlags.IsComponentsV2
-							: (0 as MessageFlags),
-				};
+			: components.length === 1 &&
+					components[0]?.data.type === ComponentType.File
+				? {
+						content: "",
+						attachments: fileComponents
+							.filter((v, pos) => {
+								return fileComponents.indexOf(v) === pos;
+							})
+							.map((v, i) => ({ filename: v.name, id: String(i) })),
+					}
+				: {
+						components,
+						flags:
+							components.length !== 0
+								? MessageFlags.IsComponentsV2
+								: (0 as MessageFlags),
+					};
 };

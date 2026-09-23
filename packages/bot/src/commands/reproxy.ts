@@ -1,42 +1,42 @@
-import { autocompleteAlters } from "@/lib/autocomplete-alters";
-import { getSimilarWebhooks, setLastLatchAlter } from "@/lib/proxying/util";
-import { alterCollection, messagesCollection } from "@/mongodb";
-import { AlertView } from "@/views/alert";
+import { getColor } from "colorthief";
 import {
 	ApplicationEmoji,
-	Message,
-	Section,
-	Separator,
-	Thumbnail,
-	type TopLevelBuilders,
-} from "seyfert";
-import {
 	AttachmentBuilder,
+	Command,
 	CommandContext,
 	Container,
 	createStringOption,
 	Declare,
+	IgnoreCommand,
 	MediaGallery,
+	Message,
 	Options,
+	Section,
+	Separator,
 	TextDisplay,
+	Thumbnail,
+	type TopLevelBuilders,
 } from "seyfert";
-import { Command, IgnoreCommand } from "seyfert";
 import {
-	ComponentType,
-	MessageFlags,
-	Spacing,
 	type APIContainerComponent,
 	type APIMediaGalleryComponent,
 	type APITextDisplayComponent,
+	ComponentType,
+	MessageFlags,
+	Spacing,
 } from "seyfert/lib/types";
-import { client } from "..";
-import { getGuildFromId } from "@/types/guild";
-import { getColor } from "colorthief";
-import { emojis } from "@/lib/emojis";
-import { createError } from "@/lib/create-error";
 import { pendingIgnoreDeletion } from "@/events/on-message-delete";
-import { w } from "@/webhooks";
+import { autocompleteAlters } from "@/lib/autocomplete-alters";
+import { createError } from "@/lib/create-error";
+import { emojis } from "@/lib/emojis";
+import { getModernComponentsMappings } from "@/lib/proxying";
 import { processEmojis } from "@/lib/proxying/process-emojis";
+import { getSimilarWebhooks, setLastLatchAlter } from "@/lib/proxying/util";
+import { alterCollection, messagesCollection } from "@/mongodb";
+import { getGuildFromId } from "@/types/guild";
+import { AlertView } from "@/views/alert";
+import { w } from "@/webhooks";
+import { client } from "..";
 
 const options = {
 	alter: createStringOption({
@@ -163,32 +163,28 @@ export default class ReproxyCommand extends Command {
 		webhook.messages
 			.write({
 				body: {
-					components: await Promise.all(originalMessage.components
-						.map((v) => v.toBuilder())
-						.filter((v) => v !== undefined)
-						.map(async (v) => {
-							if (v.data.type === ComponentType.TextDisplay && v.data.content) {
-								const processEmoji = await processEmojis(v.data.content);
-								processedEmojis.push(...processEmoji.emojis);
-								
-								(v as TextDisplay).setContent(processEmoji.newMessage)
-							}
-							return v;
-						})) as TopLevelBuilders[],
-					flags: MessageFlags.IsComponentsV2,
-					username: username.substring(0, 80),
+					...getModernComponentsMappings([
+						...(originalMessage.components.map((v) =>
+							v.toBuilder(),
+						) as TopLevelBuilders[]),
+						...(originalMessage.content !== ""
+							? [new TextDisplay().setContent(originalMessage.content)]
+							: []),
+					]),
 					allowed_mentions: { parse: [] },
+					attachments: originalMessage.attachments,
+					username: username.substring(0, 80),
 					avatar_url:
 						(alter.avatarUrlMap ?? {})[ctx.guildId ?? ""] ??
 						alter?.avatarUrl ??
 						undefined,
-					attachments: originalMessage.attachments,
 				},
 				query: {
 					wait: true,
 					...(parent === null ? {} : { thread_id: ctx.channelId }),
 				},
 			})
+			.catch((v) => console.error(v))
 			.then((sentMessage) => {
 				if (
 					(
@@ -197,7 +193,12 @@ export default class ReproxyCommand extends Command {
 						}
 					).autoproxyMode === "latch"
 				)
-					setLastLatchAlter(ctx.guildId ?? "", system, alter);
+					setLastLatchAlter(
+						ctx.guildId ?? "",
+						ctx.channelId ?? "",
+						system,
+						alter,
+					);
 
 				messagesCollection.replaceOne(
 					{ messageId: message.messageId },
@@ -212,7 +213,13 @@ export default class ReproxyCommand extends Command {
 				);
 
 				(async () => {
-					await Promise.all(processedEmojis.map(async c => await c.delete()))
+					await Promise.all(processedEmojis.map(async (c) => await c.delete()));
+
+					await webhook.messages.delete({
+						messageId,
+						query: parent !== null ? { thread_id: channel.id } : {},
+						reason: `Removed after user request of @${ctx.author.username} (${ctx.author.id})`,
+					});
 
 					const guild = await getGuildFromId(ctx.guildId ?? "");
 					const user = await client.users.fetch(ctx.author.id);
@@ -287,12 +294,6 @@ export default class ReproxyCommand extends Command {
 						);
 				})();
 			});
-
-		await webhook.messages.delete({
-			messageId,
-			query: parent !== null ? { thread_id: channel.id } : {},
-			reason: `Removed after user request of @${ctx.author.username} (${ctx.author.id})`,
-		});
 
 		return await ctx
 			.editResponse({

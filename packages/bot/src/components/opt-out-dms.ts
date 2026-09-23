@@ -12,34 +12,41 @@ export default class OptOutDMs extends ComponentCommand {
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
-        await ctx.deferReply(true);
+		await ctx.deferReply(true);
 		const { system } = await ctx.retrievePUser();
 
 		if (system === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
 
-        await userCollection.updateOne({ userId: system.associatedUserId }, {
-            $set: {
-                "system.systemOperationDM": !system.systemOperationDM
-            }
-        })
+		await userCollection.updateOne(
+			{ userId: system.associatedUserId },
+			{
+				$set: {
+					"system.systemOperationDM": !system.systemOperationDM,
+				},
+			},
+		);
 
-        if (system.systemOperationDM) {
-            return await ctx.editResponse({
-                components: new AlertView((await ctx.userTranslations())).successView("OPTED_IN_OF_DMS"),
-                flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
-            })
-        }
+		if (system.systemOperationDM) {
+			return await ctx.editResponse({
+				components: new AlertView(await ctx.userTranslations()).successView(
+					"OPTED_IN_OF_DMS",
+				),
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+			});
+		}
 
-        return await ctx.editResponse({
-            components: new AlertView((await ctx.userTranslations())).successView("OPTED_OUT_OF_DMS"),
-            flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
-        })
-    }
+		return await ctx.editResponse({
+			components: new AlertView(await ctx.userTranslations()).successView(
+				"OPTED_OUT_OF_DMS",
+			),
+			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+		});
+	}
 }

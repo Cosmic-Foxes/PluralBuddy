@@ -27,7 +27,7 @@ export const POST = createOAuthFunction<
 			return ctx.error({
 				type: "no-ai-ap-id",
 				friendly:
-					"There is no assigned AI/AP ID which is required to set a front. See https://pb.giftedly.dev/docs/pluralbuddy/ai-ap.",
+					"There is no assigned AI/AP ID which is required to set a front. See https://pluralbuddy.app/docs/pluralbuddy/ai-ap.",
 			});
 		}
 

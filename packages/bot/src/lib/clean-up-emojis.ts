@@ -5,7 +5,7 @@ export async function cleanUpCustomEmojis() {
     const deletableEmojis = emojis.filter(v => v.user.id === client.applicationId);
 
     for (const emoji of deletableEmojis)
-        await emoji.delete();
+        await emoji.delete().catch((_) => null);
 }
 
 

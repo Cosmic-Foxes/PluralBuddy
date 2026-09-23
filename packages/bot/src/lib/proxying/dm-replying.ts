@@ -1,11 +1,11 @@
-import { client } from "@/index";
-import { messagesCollection, userCollection } from "@/mongodb";
-import { Button, Container, Section, TextDisplay, type Message } from "seyfert";
+import { Button, Container, type Message, Section, TextDisplay } from "seyfert";
 import {
 	ButtonStyle,
 	MessageFlags,
 	PermissionFlagsBits,
 } from "seyfert/lib/types";
+import { client } from "@/index";
+import { messagesCollection, userCollection } from "@/mongodb";
 import { InteractionIdentifier } from "../interaction-ids";
 
 export async function handleDMReply(message: Message) {
@@ -17,6 +17,7 @@ export async function handleDMReply(message: Message) {
 	});
 
 	if (!messageObj) return;
+	if (messageObj.systemId === message.user.id) return;
 
 	const authorObj = await userCollection.findOne({
 		userId: messageObj.systemId,
@@ -30,8 +31,13 @@ export async function handleDMReply(message: Message) {
 		!((authorObj?.nudging ?? { dmReply: false }).dmReply ?? false)
 	)
 		return;
-    if (((authorObj?.nudging ?? { blockedUsers: [] as string[] }).blockedUsers ?? [] as string[]).includes(message.author.id))
-        return;
+	if (
+		(
+			(authorObj?.nudging ?? { blockedUsers: [] as string[] }).blockedUsers ??
+			([] as string[])
+		).includes(message.author.id)
+	)
+		return;
 
 	const memberPerms = await client.channels.memberPermissions(
 		message.channelId,

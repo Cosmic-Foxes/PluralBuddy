@@ -24,13 +24,12 @@ const options = {
 	alter: createStringOption({
 		description:
 			"Name of the alter to query. You can use `<user-id>/<alter>` for alters from other systems.",
-		required: true
+		required: true,
 	}),
 	public: createBooleanOption({
 		description: "Do you want to expose this publicly? (non-ephemeral)",
 		aliases: ["p"],
 		flag: true,
-
 	}),
 };
 
@@ -67,47 +66,53 @@ export default class SystemCommand extends Command {
 			});
 		} else {
 			try {
+				// Otherwise, query for current user's alters
+				query = Number.isNaN(Number.parseInt(alterName))
+					? ((await alterCollection.findOne({
+							username: alterName,
 
-			// Otherwise, query for current user's alters
-			query = Number.isNaN(Number.parseInt(alterName))
-				? ((await alterCollection.findOne({
-						username: alterName,
-
-						systemId,
-					})) ??
-					(await alterCollection.findOne({
-						username: { $regex: new RegExp(alterName, "i") },
-						systemId,
-					})))
-				: ((await alterCollection.findOne({
-						$or: [
-							{ username: { $regex: new RegExp(alterName, "i") } },
-							{ alterId: Number(alterName) },
-						],
-						systemId,
-					})) ??
-					(await alterCollection.findOne({
-						$or: [
-							{ username: { $regex: new RegExp(alterName, "i") } },
-							{ alterId: Number(alterName) },
-						],
-						systemId,
-					})));
-			} catch(_) {
-				return await ctx.ephemeral({
-					components: new AlertView((await ctx.userTranslations())).errorView("MONGO_REGEX_ERROR"),
-					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
-				}, undefined, undefined, ctx)
+							systemId,
+						})) ??
+						(await alterCollection.findOne({
+							username: { $regex: new RegExp(alterName, "i") },
+							systemId,
+						})))
+					: ((await alterCollection.findOne({
+							$or: [
+								{ username: { $regex: new RegExp(alterName, "i") } },
+								{ alterId: Number(alterName) },
+							],
+							systemId,
+						})) ??
+						(await alterCollection.findOne({
+							$or: [
+								{ username: { $regex: new RegExp(alterName, "i") } },
+								{ alterId: Number(alterName) },
+							],
+							systemId,
+						})));
+			} catch (_) {
+				return await ctx.ephemeral(
+					{
+						components: new AlertView(await ctx.userTranslations()).errorView(
+							"MONGO_REGEX_ERROR",
+						),
+						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+					},
+					undefined,
+					undefined,
+					ctx,
+				);
 			}
 		}
-		
+
 		const alter = await query;
 
 		if (alter === null && userAlterMatch) {
 			return await ctx.ephemeral(
 				{
 					components: [
-						...new AlertView((await ctx.userTranslations())).errorView(
+						...new AlertView(await ctx.userTranslations()).errorView(
 							"INVISIBLE_ALTER",
 						),
 					],
@@ -118,26 +123,30 @@ export default class SystemCommand extends Command {
 				},
 				true,
 				undefined,
-				ctx
+				ctx,
 			);
 		}
 
 		if (alter === null) {
-			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
-					"ERROR_ALTER_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			}, undefined, undefined, ctx);
+			return await ctx.ephemeral(
+				{
+					components: new AlertView(await ctx.userTranslations()).errorView(
+						"ERROR_ALTER_DOESNT_EXIST",
+					),
+					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				},
+				undefined,
+				undefined,
+				ctx,
+			);
 		}
 
 		return await ctx.ephemeral(
 			{
 				components: [
-					...(await new AlterView((await ctx.userTranslations())).alterProfileView(
-						alter,
-						alter.systemId !== ctx.author.id,
-					)),
+					...(await new AlterView(
+						await ctx.userTranslations(),
+					).alterProfileView(alter, alter.systemId !== ctx.author.id)),
 					...(publicMessage && alter.systemId === ctx.author.id
 						? [
 								new TextDisplay().setContent(
@@ -146,10 +155,12 @@ export default class SystemCommand extends Command {
 							]
 						: []),
 					...(!publicMessage && alter.systemId === ctx.author.id
-						? new AlterView((await ctx.userTranslations())).alterConfigureButton(alter)
+						? new AlterView(await ctx.userTranslations()).alterConfigureButton(
+								alter,
+							)
 						: []),
 					...(!publicMessage && alter.systemId === ctx.author.id
-						? new AlterView((await ctx.userTranslations())).alterProxyModes(
+						? new AlterView(await ctx.userTranslations()).alterProxyModes(
 								alter,
 								ctx.guildId,
 							)
@@ -162,7 +173,7 @@ export default class SystemCommand extends Command {
 			},
 			true,
 			undefined,
-			ctx
+			ctx,
 		);
 	}
 }

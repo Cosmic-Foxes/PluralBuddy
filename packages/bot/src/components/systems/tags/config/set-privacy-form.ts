@@ -10,6 +10,7 @@ import { TagView } from "@/views/tags";
 import { TagProtectionFlags } from "@/types/tag";
 import { combine } from "@/lib/privacy-bitmask";
 import { w } from "@/webhooks";
+import {writeBack} from "@/lib/pk-sync-engine.ts";
 
 export default class SetUsernameButton extends ModalCommand {
 	override filter(context: ModalContext) {
@@ -33,7 +34,7 @@ export default class SetUsernameButton extends ModalCommand {
 
 		if (tag === null) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_TAG_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -90,11 +91,21 @@ export default class SetUsernameButton extends ModalCommand {
 			type: "tag.update",
 			tag: {
 				...tag,
-				public: privacyFlag
+				public: privacyFlag,
 			},
 		});
 
-		tag =
+        if (tag.fields["@/converter/pk"])
+            writeBack({
+                type: "tag",
+                id: tag.fields["@/converter/pk"],
+                change: {
+                    public: privacyFlag,
+                },
+                syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+            });
+
+        tag =
 			(await tagCollection.findOne({
 				tagId,
 				systemId,
@@ -102,12 +113,12 @@ export default class SetUsernameButton extends ModalCommand {
 
 		return await ctx.interaction.update({
 			components: [
-				...new TagView((await ctx.userTranslations())).tagTopView(
+				...new TagView(await ctx.userTranslations()).tagTopView(
 					"general",
 					tag.tagId.toString(),
 					tag.tagFriendlyName,
 				),
-				...new TagView((await ctx.userTranslations())).tagGeneral(
+				...new TagView(await ctx.userTranslations()).tagGeneral(
 					tag,
 					(await ctx.getDefaultPrefix()) ?? "pb;",
 					ctx.interaction?.message?.messageReference === undefined,

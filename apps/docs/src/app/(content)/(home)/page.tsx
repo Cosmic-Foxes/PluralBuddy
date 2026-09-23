@@ -1,3 +1,4 @@
+import { ActionRow, Button, Container } from "@dressed/react";
 import { ParaglideMessage } from "@inlang/paraglide-js-react";
 import { Dithering } from "@paper-design/shaders-react";
 import { cva } from "class-variance-authority";
@@ -14,6 +15,7 @@ import { headers } from "next/headers";
 import Link from "next/link";
 import { JSX } from "react";
 import reactStringReplace from "react-string-replace";
+import { DressedEmbedLayout } from "@/components/dressed-embed-layout";
 import { SolarPicture } from "@/components/solar-picture";
 import { FlickeringGrid } from "@/components/ui/flickering-grid";
 import { Highlighter } from "@/components/ui/highlighter";
@@ -25,6 +27,7 @@ import { cn } from "@/lib/cn";
 import { correctSSRLocale } from "@/lib/correct-locale";
 import { m } from "@/paraglide/messages.js";
 import { getLocale, setLocale } from "@/paraglide/runtime";
+import { getRealisticAbout } from "@/server/get-realistic-about";
 import { DynamicHighligher, Hero } from "./page.client";
 
 // export const metadata: Metadata = {
@@ -53,48 +56,63 @@ const buttonVariants = cva(
 	},
 );
 
-
 export default async function HomePage() {
 	await correctSSRLocale();
 
 	return (
 		<div className="xl:pt-8 justify-center text-center flex-1 xl:mx-30 xl:border-x pb-[300px]">
+			<DressedEmbedLayout>
+				<Container accent_color={0xfccee8}>
+					{await getRealisticAbout()}
+					<ActionRow>
+						<Button url="https://gftl.fyi/invite" label="Invite PluralBuddy" />
+					</ActionRow>
+				</Container>
+			</DressedEmbedLayout>
 			<div className="xl:px-3">
 				<div className="relative flex h-[87vh] max-xl:h-screen xl:max-h-[850px] *:text-center border xl:rounded-2xl overflow-hidden mx-auto w-full max-w-[1400px] bg-origin-border">
 					<Hero />
 					<div className="flex flex-col z-2 px-4 size-full max-xl:!pt-32 md:p-12 max-md:items-center max-md:text-center ">
 						<h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-medium tracking-tighter text-balance text-center pb-5 fade-in animate-in">
-							<ParaglideMessage message={m["HomePage.title"]} inputs={{}} markup={{
-								headline: ({ children }) => (
-									<Highlighter
-										iterations={5}
-										action="circle"
-										color="#841B50"
-										padding={12}
-										animationDuration={2000}
-									>
-										<span className="text-primary">{children}</span>
-									</Highlighter>
-								),
-							}} />
+							<ParaglideMessage
+								message={m["HomePage.title"]}
+								inputs={{}}
+								markup={{
+									headline: ({ children }) => (
+										<Highlighter
+											iterations={5}
+											action="circle"
+											color="#841B50"
+											padding={12}
+											animationDuration={2000}
+										>
+											<span className="text-primary">{children}</span>
+										</Highlighter>
+									),
+								}}
+							/>
 						</h1>
 						<p className="text-base md:text-lg text-center text-muted-foreground font-medium text-balance leading-relaxed tracking-tight pb-3 fade-in animate-in">
-							<ParaglideMessage message={m["HomePage.desc"]} inputs={{}} markup={{
-								highlight: ({ children }) => (
-									<Highlighter
-										action="underline"
-										color="#841B50"
-										iterations={5}
-										animationDuration={2000}
-									>
+							<ParaglideMessage
+								message={m["HomePage.desc"]}
+								inputs={{}}
+								markup={{
+									highlight: ({ children }) => (
+										<Highlighter
+											action="underline"
+											color="#841B50"
+											iterations={5}
+											animationDuration={2000}
+										>
+											<span className="text-accent-foreground">{children}</span>
+										</Highlighter>
+									),
+									accent: ({ children }) => (
 										<span className="text-accent-foreground">{children}</span>
-									</Highlighter>
-								),
-								accent: ({ children }) => (
-									<span className="text-accent-foreground">{children}</span>
-								),
-								br: () => <br className="max-md:hidden" />,
-							}} />
+									),
+									br: () => <br className="max-md:hidden" />,
+								}}
+							/>
 						</p>
 						<span className="flex items-center justify-center gap-3 *:flex *:items-center *:text-xs *:justify-center *:gap-2 lg:mb-9 max-lg:hidden fade-in animate-in">
 							<span>
@@ -104,7 +122,7 @@ export default async function HomePage() {
 							</span>
 							<span>
 								<ShieldX className="text-primary" />
-								{m["HomePage.blocks_headline"]({}, {locale: getLocale()})}
+								{m["HomePage.blocks_headline"]({}, { locale: getLocale() })}
 							</span>
 							<span>
 								<Ampersands className="text-primary" />
@@ -139,16 +157,21 @@ export default async function HomePage() {
 							{m["HomePage.oss_headline"]()}
 						</h2>
 						<div className="flex items-center gap-2 justify-center">
-							<ParaglideMessage message={m["HomePage.oss_desc"]} inputs={{}} markup={{
-								github: ({ children }) => (
-									<Link
-										className="flex items-center gap-1 hover:underline text-primary underline-offset-4"
-										href="https://github.com/giftedl/PluralBuddy"
-									>
-										<GithubDark className="size-6 *:fill-primary" /> {children}
-									</Link>
-								),
-							}} />
+							<ParaglideMessage
+								message={m["HomePage.oss_desc"]}
+								inputs={{}}
+								markup={{
+									github: ({ children }) => (
+										<Link
+											className="flex items-center gap-1 hover:underline text-primary underline-offset-4"
+											href="https://github.com/giftedl/PluralBuddy"
+										>
+											<GithubDark className="size-6 *:fill-primary" />{" "}
+											{children}
+										</Link>
+									),
+								}}
+							/>
 						</div>
 						<div className="text-sm text-center justify-center mt-4 text-secondary-foreground max-w-[400px]">
 							{m["HomePage.oss_about"]()}
@@ -159,11 +182,14 @@ export default async function HomePage() {
 
 			<div className="py-16 border-t border-b mt-2">
 				<h1 className="text-3xl md:text-4xl font-medium tracking-tighter text-primary text-center text-balance pb-1">
-					<ParaglideMessage message={m["HomePage.optimized_headline"]} markup={{
-						highlighter: ({ children }) => (
-							<DynamicHighligher>{children as string}</DynamicHighligher>
-						),
-					}} />
+					<ParaglideMessage
+						message={m["HomePage.optimized_headline"]}
+						markup={{
+							highlighter: ({ children }) => (
+								<DynamicHighligher>{children as string}</DynamicHighligher>
+							),
+						}}
+					/>
 				</h1>
 				<p className="text-muted-foreground text-center text-balance font-medium">
 					{m["HomePage.optimized_desc"]()}
@@ -190,7 +216,10 @@ export default async function HomePage() {
 						{m["HomePage.identity_title"]()}
 					</div>
 					<div className="text-sm text-center mx-auto justify-center mt-4 text-secondary-foreground max-w-[400px] w-full">
-						<ParaglideMessage message={m["HomePage.identity_desc"]} markup={{ sup: ({ children }) => <sup>{children}</sup>, }} />
+						<ParaglideMessage
+							message={m["HomePage.identity_desc"]}
+							markup={{ sup: ({ children }) => <sup>{children}</sup> }}
+						/>
 					</div>
 				</span>
 				<span className="justify-center text-center rounded-2xl border align-middle inline-block h-full pt-9 pb-7">
@@ -230,7 +259,8 @@ export default async function HomePage() {
 							highlighter: ({ children }) => (
 								<DynamicHighligher>{children as string}</DynamicHighligher>
 							),
-						}} />
+						}}
+					/>
 				</h1>
 				<p className="text-muted-foreground text-center text-balance font-medium">
 					{m["HomePage.administrate_desc"]()}
@@ -274,12 +304,18 @@ export default async function HomePage() {
 			</span>
 			<div className="w-full h-[700px] bg-primary text-left max-lg:px-3 lg:px-24 py-16 relative">
 				<Ripple className="overflow-hidden" />
-				<h1 className="text-2xl font-medium z-10">{m["HomePage.get_started_title"]()}</h1>
+				<h1 className="text-2xl font-medium z-10">
+					{m["HomePage.get_started_title"]()}
+				</h1>
 				<div className="text-sm mt-4 text-secondary-foreground max-w-[400px] w-full">
-					<ParaglideMessage message={m["HomePage.get_started_desc"]} markup={{
-
-						mono: ({ children }) => <span className="font-mono">{children}</span>,
-					}} />
+					<ParaglideMessage
+						message={m["HomePage.get_started_desc"]}
+						markup={{
+							mono: ({ children }) => (
+								<span className="font-mono">{children}</span>
+							),
+						}}
+					/>
 				</div>
 
 				<Link
@@ -340,7 +376,9 @@ export default async function HomePage() {
 								<FooterItem link="/docs/pluralbuddy/get-started">
 									{m["FooterComponent.getting_started"]()}
 								</FooterItem>
-								<FooterItem link="/docs/pluralbuddy/">{m["FooterComponent.intro"]()}</FooterItem>
+								<FooterItem link="/docs/pluralbuddy/">
+									{m["FooterComponent.intro"]()}
+								</FooterItem>
 								<FooterItem link="/docs/pluralbuddy/get-started">
 									{m["FooterComponent.ctx_menu_actions"]()}
 								</FooterItem>

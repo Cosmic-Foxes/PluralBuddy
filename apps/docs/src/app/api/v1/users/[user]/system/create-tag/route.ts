@@ -1,9 +1,9 @@
-import { authenticateOAuth } from "@/lib/oauth";
-import { createOAuthFunction } from "@/server/wrapper";
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import { type NextRequest, NextResponse } from "next/server";
 import { type PTag, PTagObject, type PUser, tagColors } from "plurography";
 import z from "zod";
+import { authenticateOAuth } from "@/lib/oauth";
+import { createOAuthFunction } from "@/server/wrapper";
 
 const CreateTagParams = z.object({
 	color: z.enum(tagColors),

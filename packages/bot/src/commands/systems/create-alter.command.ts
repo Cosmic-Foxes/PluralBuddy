@@ -1,7 +1,11 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { DiscordSnowflake } from "@sapphire/snowflake";
-import { assetStringGeneration, type PTag } from "plurography";
+import {
+	AlterProtectionFlags,
+	assetStringGeneration,
+	type PTag,
+} from "plurography";
 import {
 	type CommandContext,
 	Container,
@@ -12,14 +16,18 @@ import {
 	type OKFunction,
 	type OnOptionsReturnObject,
 	Options,
-	Separator,SubCommand, 
-	TextDisplay
+	Separator,
+	SubCommand,
+	TextDisplay,
 } from "seyfert";
 import { MessageFlags, Spacing } from "seyfert/lib/types";
 import { Shortcut } from "yunaforseyfert";
 import z from "zod";
 import { getSpecificAutoProxy, getWiderAutoProxy } from "@/lib/autoproxy-util";
 import { emojis } from "@/lib/emojis";
+import { getSystemFeatures } from "@/lib/get-system-flags";
+import { writeBack } from "@/lib/pk-sync-engine";
+import { w } from "@/webhooks";
 import { alterCollection, tagCollection, userCollection } from "../../mongodb";
 import { PAlterObject } from "../../types/alter";
 import { getUserById, writeUserById } from "../../types/user";
@@ -156,7 +164,9 @@ export default class CreateAlterCommand extends SubCommand {
 			lastMessageTimestamp: null,
 			messageCount: 0,
 			alterMode: "webhook",
-			public: 0,
+			public: getSystemFeatures(user.system).publicDefault
+				? Object.keys(AlterProtectionFlags).reduce((prev, cur) => prev + cur)
+				: 0,
 			tagIds: assignableTag !== null ? [assignableTag.tagId] : [],
 		});
 
@@ -197,6 +207,12 @@ ${z.prettifyError(alter.error)}
 		});
 
 		await alterCollection.insertOne(alter.data);
+		writeBack({
+			type: "create-alter",
+			id: String(alter.data.alterId),
+			change: { ...alter.data, userId: ctx.author.id },
+			syncConfig: user.syncConfiguration,
+		});
 
 		const successMessage = async (done: boolean) =>
 			await ctx.editResponse({
@@ -216,28 +232,30 @@ ${z.prettifyError(alter.error)}
 							),
 							new Separator().setSpacing(Spacing.Large),
 							new TextDisplay().setContent(
-								not_empty([
-									(displayName ?? username) !== username
-										? `> - ${(await ctx.userTranslations()).CREATE_NEW_ALTER_DISPLAY_NAME.replace("{{ dn }}", displayName ?? username)}`
-										: "",
-									pronouns !== undefined
-										? `> - ${(await ctx.userTranslations()).CREATE_NEW_ALTER_PRONOUNS.replace("{{ pronouns }}", pronouns)}`
-										: "",
-									desc !== undefined
-										? `> - ${(await ctx.userTranslations()).CREATE_NEW_ALTER_DESC.replace("{{ description }}", desc.replaceAll("\n", "\n  >   - "))}`
-										: "",
-									assignableTag === null && assign !== undefined
-										? `> - ${emojis.x} ${(await ctx.userTranslations()).NO_SUCH_TAG_CANT_ASSIGN}`
-										: "",
-									assignableTag !== null && assign !== undefined
-										? `> - ${(await ctx.userTranslations()).CREATE_NEW_ALTER_ASSIGN.replace("{{ tag }}", assignableTag.tagFriendlyName)}`
-										: "",
-									now === true
-										? `> - ${!done ? `${emojis.loading}  ` : ""}${(await ctx.userTranslations()).CREATE_NEW_ALTER_NOW}`
-										: "",
-								]
-									.filter((v) => v !== "")
-									.join("\n")),
+								not_empty(
+									[
+										(displayName ?? username) !== username
+											? `> - ${(await ctx.userTranslations()).CREATE_NEW_ALTER_DISPLAY_NAME.replace("{{ dn }}", displayName ?? username)}`
+											: "",
+										pronouns !== undefined
+											? `> - ${(await ctx.userTranslations()).CREATE_NEW_ALTER_PRONOUNS.replace("{{ pronouns }}", pronouns)}`
+											: "",
+										desc !== undefined
+											? `> - ${(await ctx.userTranslations()).CREATE_NEW_ALTER_DESC.replace("{{ description }}", desc.replaceAll("\n", "\n  >   - "))}`
+											: "",
+										assignableTag === null && assign !== undefined
+											? `> - ${emojis.x} ${(await ctx.userTranslations()).NO_SUCH_TAG_CANT_ASSIGN}`
+											: "",
+										assignableTag !== null && assign !== undefined
+											? `> - ${(await ctx.userTranslations()).CREATE_NEW_ALTER_ASSIGN.replace("{{ tag }}", assignableTag.tagFriendlyName)}`
+											: "",
+										now === true
+											? `> - ${!done ? `${emojis.loading}  ` : ""}${(await ctx.userTranslations()).CREATE_NEW_ALTER_NOW}`
+											: "",
+									]
+										.filter((v) => v !== "")
+										.join("\n"),
+								),
 							),
 						),
 				],
@@ -272,18 +290,24 @@ ${z.prettifyError(alter.error)}
 								autoproxyMode: "latch",
 								autoproxyAlter: String(alter.data.alterId),
 								serverId: ctx.guildId ?? "@global",
-								lastLatchTimestamp: new Date()
+								lastLatchTimestamp: new Date(),
 							},
 						},
 					},
 				);
 			}
 
-			await successMessage(true)
+			await successMessage(true);
 		}
+
+		w(ctx.author.id, "alter.create", {
+			userId: ctx.author.id,
+			type: "alter.create",
+			alter: alter.data,
+		});
 	}
 }
 
 function not_empty(string: string) {
-	return string.trim().length === 0 ? " -- " : string
+	return string.trim().length === 0 ? " -- " : string;
 }

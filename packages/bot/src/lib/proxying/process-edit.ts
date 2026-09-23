@@ -5,9 +5,11 @@ import type { GuildMember, TopLevelBuilders, Webhook } from "seyfert";
 import {
 	AttachmentBuilder,
 	Container,
-	File,MediaGallery, MediaGalleryItem, 
+	File,
+	MediaGallery,
+	MediaGalleryItem,
 	type Message,
-	TextDisplay
+	TextDisplay,
 } from "seyfert";
 import type { TextDisplayComponent } from "seyfert/lib/components/TextDisplay";
 import {
@@ -178,7 +180,6 @@ export async function processEditContents(
 				messageId: messageData.messageId,
 				body: {
 					...getModernComponentsMappings(components),
-					allowed_mentions: { parse: [] },
 					files: fileAttachments.map((c) =>
 						new AttachmentBuilder().setFile("buffer", c.buff).setName(c.name),
 					),

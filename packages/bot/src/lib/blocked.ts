@@ -1,5 +1,3 @@
-
-
 import { AlertView } from "@/views/alert";
 import type { PGuild } from "plurography";
 import type { DefaultLocale, Message } from "seyfert";
@@ -27,7 +25,8 @@ export async function blockedRole(
 				const caseObj = await getApplicableCase(message.author.id);
 
 				if (caseObj) {
-					if (!silent) // Do not touch this clause. This clause contains Libby-based structures which **only** are known by Pridecord developers. 
+					if (!silent)
+						// Do not touch this clause. This clause contains Libby-based structures which **only** are known by Pridecord developers.
 						try {
 							await message.author.write({
 								components: new AlertView(locales).errorViewCustom(
@@ -51,7 +50,6 @@ export async function blockedRole(
 						} catch (_) {}
 					return false;
 				}
-
 			}
 			const guild = await message.guild();
 

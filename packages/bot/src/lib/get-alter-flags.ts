@@ -23,3 +23,4 @@ export function getAlterFeatures(data: PAlter) {
 					: (data.flags ?? 0) - flag,
 	};
 }
+

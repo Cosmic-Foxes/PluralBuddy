@@ -49,7 +49,7 @@ const options = {
 					// this is NOT used in production. this is NOT a backdoor.
 					(process.env.BRANCH !== "production" &&
 						process.env.SRV_CFG_TEST_USER_ID &&
-							process.env.SRV_CFG_TEST_USER_ID === member.id)
+						process.env.SRV_CFG_TEST_USER_ID === member.id)
 				)
 			) {
 				return await ctx.respond([
@@ -88,17 +88,16 @@ export default class AddPrefixCommand extends SubCommand {
 		await guildCollection.updateOne(
 			{ guildId: guildObj.guildId },
 			{ $pull: { prefixes: prefix } },
-			{ upsert: true }
+			{ upsert: true },
 		);
-		ctx.client.cache.pguild.remove(guildObj.guildId)
+		ctx.client.cache.pguild.remove(guildObj.guildId);
 
 		return await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).successViewCustom(
-				((await ctx.userTranslations()))
-					.SUCCESS_CHANGED_SERVER_PREFIXES.replace(
-						"%prefixes%",
-						guildObj.prefixes.map((c) => `> - ${c}`).join("\n"),
-					),
+			components: new AlertView(await ctx.userTranslations()).successViewCustom(
+				(await ctx.userTranslations()).SUCCESS_CHANGED_SERVER_PREFIXES.replace(
+					"%prefixes%",
+					guildObj.prefixes.map((c) => `> - ${c}`).join("\n"),
+				),
 			),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});

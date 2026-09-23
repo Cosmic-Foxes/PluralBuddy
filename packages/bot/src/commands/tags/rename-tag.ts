@@ -1,9 +1,5 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { SubCommand } from "seyfert";
-import { autocompleteAlters } from "@/lib/autocomplete-alters";
-import { alterCollection, tagCollection } from "@/mongodb";
-import { AlertView } from "@/views/alert";
 import {
 	type CommandContext,
 	Container,
@@ -11,10 +7,15 @@ import {
 	createStringOption,
 	Declare,
 	Options,
+	SubCommand,
 	TextDisplay,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { autocompleteAlters } from "@/lib/autocomplete-alters";
 import { autocompleteTags } from "@/lib/autocomplete-tags";
+import { writeBack } from "@/lib/pk-sync-engine";
+import { alterCollection, tagCollection } from "@/mongodb";
+import { AlertView } from "@/views/alert";
 import { w } from "@/webhooks";
 
 const options = {
@@ -52,12 +53,17 @@ export default class EditTagDisplayNameCommand extends SubCommand {
 		const tag = await query;
 
 		if (tag === null) {
-			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
-					"ERROR_TAG_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			}, undefined, undefined, ctx);
+			return await ctx.ephemeral(
+				{
+					components: new AlertView(await ctx.userTranslations()).errorView(
+						"ERROR_TAG_DOESNT_EXIST",
+					),
+					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				},
+				undefined,
+				undefined,
+				ctx,
+			);
 		}
 
 		if (tagFriendlyName === undefined) {
@@ -74,7 +80,7 @@ ${tag.tagFriendlyName ?? "⛔ Your tag has no display name."}
 				},
 				true,
 				undefined,
-				ctx
+				ctx,
 			);
 		}
 
@@ -87,15 +93,27 @@ ${tag.tagFriendlyName ?? "⛔ Your tag has no display name."}
 			type: "tag.update",
 			tag: {
 				...tag,
-				tagFriendlyName
+				tagFriendlyName,
 			},
 		});
 
+		if (tag.fields["@/converter/pk"])
+			writeBack({
+				type: "tag",
+				id: tag.fields["@/converter/pk"],
+				change: {
+					tagFriendlyName,
+				},
+				syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+			});
+
 		return await ctx.editResponse({
 			components: [
-				...new AlertView((await ctx.userTranslations())).successViewCustom(
-					(await ctx.userTranslations())
-						.TAG_RENAME_SUCCESS.replace("%tag%", tag.tagFriendlyName),
+				...new AlertView(await ctx.userTranslations()).successViewCustom(
+					(await ctx.userTranslations()).TAG_RENAME_SUCCESS.replace(
+						"%tag%",
+						tag.tagFriendlyName,
+					),
 				),
 			],
 			flags: MessageFlags.IsComponentsV2,

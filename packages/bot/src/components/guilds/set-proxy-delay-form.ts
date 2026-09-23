@@ -13,41 +13,47 @@ export default class SetProxyDelayForm extends ModalCommand {
 		);
 	}
 	override async run(ctx: ModalContext) {
-		const proxyDelay = Number(ctx.interaction.getInputValue(
-			InteractionIdentifier.Guilds.FormSelection.SetProxyDelaySelection.create(),
-            true
-		));
+		const proxyDelay = Number(
+			ctx.interaction.getInputValue(
+				InteractionIdentifier.Guilds.FormSelection.SetProxyDelaySelection.create(),
+				true,
+			),
+		);
 		const guild = await ctx.retrievePGuild();
 
-        if (Number.isNaN(proxyDelay) || proxyDelay > 2.5 || proxyDelay < 0) {
-            return await ctx.write({
-                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_INVALID_NUMBER"),
-                flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
-            })
-        }
+		if (Number.isNaN(proxyDelay) || proxyDelay > 2.5 || proxyDelay < 0) {
+			return await ctx.write({
+				components: new AlertView(await ctx.userTranslations()).errorView(
+					"ERROR_INVALID_NUMBER",
+				),
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+			});
+		}
 
 		await guildCollection.updateOne(
 			{ guildId: guild.guildId },
 			{
 				$set: { proxyDelay: proxyDelay * 1000 },
 			},
-			{ upsert: true }
+			{ upsert: true },
 		);
-		ctx.client.cache.pguild.remove(guild.guildId)
-        
-        guild.proxyDelay = proxyDelay * 1000;
+		ctx.client.cache.pguild.remove(guild.guildId);
+
+		guild.proxyDelay = proxyDelay * 1000;
 
 		return await ctx.interaction.update({
 			components: [
-				...new ServerConfigView((await ctx.userTranslations())).topView(
+				...new ServerConfigView(await ctx.userTranslations()).topView(
 					"general",
 					guild.guildId,
 				),
-				...await new ServerConfigView((await ctx.userTranslations())).generalSettings(
+				...(await new ServerConfigView(
+					await ctx.userTranslations(),
+				).generalSettings(
 					guild,
 					(await ctx.getDefaultPrefix()) ?? "",
 					ctx.interaction?.message?.messageReference === undefined,
-				),
+				)),
 			],
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			allowed_mentions: { parse: [] },

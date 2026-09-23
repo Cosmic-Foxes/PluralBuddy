@@ -22,19 +22,20 @@ export default class SetUsernameButton extends ComponentCommand {
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		const { system } = await ctx.retrievePUser()
+		const { system } = await ctx.retrievePUser();
 
 		if (system === undefined) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-			})
+				components: new AlertView(await ctx.userTranslations()).errorView(
+					"ERROR_SYSTEM_DOESNT_EXIST",
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
 		}
 
 		const form = new Modal()
 			.setCustomId(
-				InteractionIdentifier.Systems.Configuration.FormSelection.SystemPronounsForm.create(
-				),
+				InteractionIdentifier.Systems.Configuration.FormSelection.SystemPronounsForm.create(),
 			)
 			.setTitle((await ctx.userTranslations()).EDIT_SYSTEM_FORM_TITLE)
 			.addComponents([
