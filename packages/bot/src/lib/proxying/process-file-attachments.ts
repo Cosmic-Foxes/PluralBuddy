@@ -38,7 +38,7 @@ export async function processFileAttachments(
 					const mediaGallery = c.data as APIMediaGalleryComponent;
 
 					return mediaGallery.items.map((v) => {
-						return { ...v, ...v.media };
+						return { ...v, ...v.media, spoilered: v.spoiler ?? false };
 					});
 				}),
 		]) {
@@ -52,9 +52,11 @@ export async function processFileAttachments(
 							? attachment.filename
 							: `attachment-${assetStringGeneration(16)}.${attachment.content_type?.split("/")[1]}`,
 					spoilered:
-						"flags" in attachment
-							? ((attachment.flags ?? 0) & (1 << 3)) === 1 << 3
-							: false,
+						"spoilered" in attachment
+							? attachment.spoilered
+							: "flags" in attachment
+								? ((attachment.flags ?? 0) & (1 << 3)) !== 0
+								: false,
 				});
 			}
 		}
