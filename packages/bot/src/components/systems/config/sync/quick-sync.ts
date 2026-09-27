@@ -11,7 +11,7 @@ import { build, client, logger } from "@/index";
 import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { pk } from "@/lib/pk-api";
-import { runSandboxActions } from "@/lib/pk-sync-engine";
+import { clearProxyCacheIfNeeded, runSandboxActions } from "@/lib/pk-sync-engine";
 import { decryptToken } from "@/lib/pk-token-encryption";
 import { alterCollection, tagCollection, userCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
@@ -93,7 +93,7 @@ export default class QuickSync extends ComponentCommand {
 			}),
 		);
 
-		transcript.alters.update.forEach((v) => client.cache.alterProxy.remove(String(v.alterId)))
+		transcript.alters.update.forEach((v) => clearProxyCacheIfNeeded(v))
 
 		if (transcript.tags.add.length > 0)
 			await tagCollection.insertMany(transcript.tags.add);

@@ -12,6 +12,7 @@ import {
 	PTagObject,
 	type PUser,
 } from "plurography";
+import { Cache, CacheFrom } from "seyfert";
 import type z from "zod";
 import {
 	alterCollection,
@@ -475,9 +476,26 @@ export async function automaticallySync({
 			systemId: userId,
 		});
 
-	[...transcript.alters.update, ...transcript.alters.remove].forEach((v) => client.cache.alterProxy.remove(String(v.alterId)))
+	[...transcript.alters.update, ...transcript.alters.remove].forEach((v) => clearProxyCacheIfNeeded(v))
 
 	await userCollection.updateOne({ userId }, { $set: { "system": destructive ? transcript.system.destructive : transcript.system.nondestructive } })
 
 
+}
+
+export async function clearProxyCacheIfNeeded(alter: PAlter | { alterId: string, systemId: string }) {
+	if (!("proxyTags" in alter)) {
+		client.cache.alterProxy.remove(String(alter.alterId))
+		return;
+	}
+
+	client.cache.alterProxy.set(CacheFrom.Rest, String(alter.alterId),
+		{
+			pt: JSON.stringify(
+				alter.proxyTags.map((c) => ({
+					p: c.prefix,
+					s: c.suffix,
+				})),
+			),
+		},)
 }

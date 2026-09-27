@@ -9,6 +9,7 @@ import { ComponentHandler } from "seyfert/lib/components/handler";
 import { MessageFlags } from "seyfert/lib/types";
 import { client } from "@/index";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { clearProxyCacheIfNeeded } from "@/lib/pk-sync-engine";
 import {
 	alterCollection,
 	alterOperationCollection,
@@ -112,7 +113,7 @@ export default class SetPronounsButton extends ComponentCommand {
 			});
 
 
-		[...alterOperation.alters.remove, ...alterOperation.alters.update].forEach((v) => client.cache.alterProxy.remove(String(v.alterId)))
+		[...alterOperation.alters.remove, ...alterOperation.alters.update].forEach((v) => clearProxyCacheIfNeeded(v))
 
 
 		await ctx.interaction.editResponse({
