@@ -220,9 +220,6 @@ if (import.meta.main) {
 	client.logger.warn("Reminder: Starting MongoDB. If process hangs, make sure MongoDB is started.")
 	await setupMongoDB();
 	await setupDatabases();
-	setTimeout(() => {
-		throw new Error();
-	});
 
 	client.logger.info("MongoDB is loaded.");
 
