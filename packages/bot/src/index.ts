@@ -3,6 +3,7 @@
  *  - is licensed under MIT License.
  */
 
+import "./instrument"
 import { SeqTransport } from "@datalust/winston-seq";
 import { RedisAdapter } from "@slipher/redis-adapter";
 import { PostHog } from "posthog-node";
@@ -10,28 +11,22 @@ import {
 	ActionRow,
 	type AnyContext,
 	Button,
-	CacheFrom,
 	CheckboxGroup,
 	CheckboxGroupOption,
 	Client,
-	Container,
 	Label,
 	MemoryAdapter,
 	Modal,
 	TextDisplay,
 } from "seyfert";
-import type { ContainerComponent } from "seyfert/lib/components/Container";
 import type { CollectorInteraction } from "seyfert/lib/components/handler";
-import type { TextDisplayComponent } from "seyfert/lib/components/TextDisplay";
 import {
 	ActivityType,
 	ButtonStyle,
-	ComponentType,
 	MessageFlags,
 	PresenceUpdateStatus,
 } from "seyfert/lib/types";
 import winston from "winston";
-import { startStatisticalTimer } from "./analytics";
 import api from "./api";
 import { Pi18nCache } from "./cache/i18n";
 import { PGuildCache } from "./cache/plural-guild";
@@ -39,25 +34,21 @@ import { SimilarWebhookResource } from "./cache/similar-webhooks";
 import { StatisticResource } from "./cache/statistics";
 import { ProxyResource } from "./cache/system-proxy-tags";
 import { PTerminologyCache } from "./cache/terminology";
-import TagCommand from "./commands/tag";
 import {
 	PluralBuddyComponentErrorCommand,
 	PluralBuddyErrorCommand,
 	PluralBuddyModalErrorCommand,
 } from "./error-command";
-import { indexingMessageMap } from "./events/on-message-create";
 import { extendedContext } from "./extended-context";
 import PluralBuddyHandleCommand from "./handle-command";
 import { startEmojiCleanupTimer } from "./lib/clean-up-emojis";
 import { startIndexingCleanupTimer } from "./lib/cleanup-indexing";
 import { emojis } from "./lib/emojis";
-import { getSystemFeatures } from "./lib/get-system-flags";
 import { InteractionIdentifier } from "./lib/interaction-ids";
 import { initializeApplicationCommands } from "./lib/mention-command";
 import { middlewares } from "./middleware";
-import { mongoClient, setupDatabases, setupMongoDB } from "./mongodb";
+import { setupDatabases, setupMongoDB } from "./mongodb";
 import { defaultPrefixes, getGuildFromId } from "./types/guild";
-import type { SeyfertError } from "seyfert/lib/common";
 
 export const logger = process.env.SEQ_HOST
 	? winston.createLogger({
@@ -177,8 +168,8 @@ export const client = new Client({
 
 			return guild.prefixes ?? [];
 		},
-		reply: (ctx) => true,
-		deferReplyResponse: (ctx) => ({
+		reply: () => true,
+		deferReplyResponse: () => ({
 			components: [
 				new ActionRow().setComponents(
 					new Button()
@@ -226,8 +217,12 @@ if (import.meta.main) {
 		langs: { default: "en" },
 	});
 
+	client.logger.warn("Reminder: Starting MongoDB. If process hangs, make sure MongoDB is started.")
 	await setupMongoDB();
 	await setupDatabases();
+	setTimeout(() => {
+		throw new Error();
+	});
 
 	client.logger.info("MongoDB is loaded.");
 
