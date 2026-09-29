@@ -148,7 +148,7 @@ export async function proxy(
 
 		try {
 			webhook.messages
-				.write(log({
+				.write(({
 					body: {
 						...getModernComponentsMappings(components, [
 							...mediaFiles,
@@ -392,7 +392,7 @@ export const getModernComponentsMappings = (
 							? (components[0].data.content ?? "").slice(1)
 							: components[0].data.content
 						: "",
-				attachments: log(fileComponents
+				attachments: (fileComponents
 					.filter((v, pos) => {
 						return fileComponents.indexOf(v) === pos;
 					})
@@ -426,8 +426,3 @@ export const getModernComponentsMappings = (
 							: (0 as MessageFlags),
 				};
 };
-
-function log<V>(val: V): V {
-	console.log(JSON.stringify(val, null, 2))
-	return val;
-}
