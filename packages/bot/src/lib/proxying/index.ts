@@ -3,6 +3,7 @@
 import { getColor } from "colorthief";
 import {
 	type ApplicationEmoji,
+	Attachment,
 	AttachmentBuilder,
 	Container,
 	Embed,
@@ -147,7 +148,7 @@ export async function proxy(
 
 		try {
 			webhook.messages
-				.write({
+				.write(log({
 					body: {
 						...getModernComponentsMappings(components, [
 							...mediaFiles,
@@ -158,8 +159,9 @@ export async function proxy(
 						avatar_url: picture,
 						files: fileAttachments.map((c, i) =>
 							new AttachmentBuilder()
-								.setFile("buffer", c.buff)
-								.setName(`${c.name}`),
+								.setName(`${c.name}`)
+								.setSpoiler(c.spoilered)
+								.setFile("buffer", c.buff),
 						),
 						allowed_mentions:
 							message.referencedMessage &&
@@ -202,7 +204,7 @@ export async function proxy(
 						wait: true,
 						...(parent !== null ? { thread_id: channel.id } : {}),
 					},
-				})
+				}))
 				.then((sentMessage) => {
 					w(systemId, "message.create", {
 						message: {
@@ -386,25 +388,35 @@ export const getModernComponentsMappings = (
 			? {
 				content:
 					components[0] !== undefined && "content" in components[0].data
-						? (components[0].data.content ?? "").startsWith("# <")
+						? (components[0].data.content ?? "").startsWith("# <") 
 							? (components[0].data.content ?? "").slice(1)
 							: components[0].data.content
 						: "",
-				attachments: fileComponents
+				attachments: log(fileComponents
 					.filter((v, pos) => {
 						return fileComponents.indexOf(v) === pos;
 					})
-					.map((v, i) => ({ filename: v.name, id: String(i), flags: v.spoilered ? 1 << 3 : 0 })),
+					.map((v, i) => (
+						new AttachmentBuilder()
+							.setName(`${v.name}`)
+							.setSpoiler(v.spoilered)
+							.setFile("buffer", Buffer.from([]))
+							.toJSON()))),
 			}
 			: components.length === 1 &&
-				components[0]?.data.type === ComponentType.File
+				components[0]?.data.type === ComponentType.File || components[0]?.data.type === ComponentType.MediaGallery
 				? {
 					content: "",
 					attachments: fileComponents
 						.filter((v, pos) => {
 							return fileComponents.indexOf(v) === pos;
 						})
-						.map((v, i) => ({ filename: v.name, id: String(i), flags: v.spoilered ? 1 << 3 : 0 })),
+						.map((v, i) =>
+							new AttachmentBuilder()
+								.setName(`${v.name}`)
+								.setSpoiler(v.spoilered)
+								.setFile("buffer", Buffer.from([]))
+								.toJSON()),
 				}
 				: {
 					components,
@@ -414,3 +426,8 @@ export const getModernComponentsMappings = (
 							: (0 as MessageFlags),
 				};
 };
+
+function log<V>(val: V): V {
+	console.log(JSON.stringify(val, null, 2))
+	return val;
+}
