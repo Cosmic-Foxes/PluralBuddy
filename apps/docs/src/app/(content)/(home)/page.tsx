@@ -60,7 +60,7 @@ export default async function HomePage() {
 	await correctSSRLocale();
 
 	return (
-		<div className="xl:pt-8 justify-center text-center flex-1 xl:mx-30 xl:border-x pb-[300px]">
+		<div className="xl:pt-8 justify-center text-center flex-1 xl:mx-30 xl:border-x">
 			<DressedEmbedLayout>
 				<Container accent_color={0xfccee8}>
 					{await getRealisticAbout()}
@@ -69,278 +69,278 @@ export default async function HomePage() {
 					</ActionRow>
 				</Container>
 			</DressedEmbedLayout>
-			<div className="xl:px-3">
-				<div className="relative flex h-[87vh] max-xl:h-screen xl:max-h-[850px] *:text-center border xl:rounded-2xl overflow-hidden mx-auto w-full max-w-[1400px] bg-origin-border">
-					<Hero />
-					<div className="flex flex-col z-2 px-4 size-full max-xl:!pt-32 md:p-12 max-md:items-center max-md:text-center ">
-						<h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-medium tracking-tighter text-balance text-center pb-5 fade-in animate-in">
-							<ParaglideMessage
-								message={m["HomePage.title"]}
-								inputs={{}}
-								markup={{
-									headline: ({ children }) => (
-										<Highlighter
-											iterations={5}
-											action="circle"
-											color="#841B50"
-											padding={12}
-											animationDuration={2000}
-										>
-											<span className="text-primary">{children}</span>
-										</Highlighter>
-									),
-								}}
-							/>
-						</h1>
-						<p className="text-base md:text-lg text-center text-muted-foreground font-medium text-balance leading-relaxed tracking-tight pb-3 fade-in animate-in">
-							<ParaglideMessage
-								message={m["HomePage.desc"]}
-								inputs={{}}
-								markup={{
-									highlight: ({ children }) => (
-										<Highlighter
-											action="underline"
-											color="#841B50"
-											iterations={5}
-											animationDuration={2000}
-										>
+			<div className="overflow-clip z-1 relative bg-background rounded-b-3xl border-b">
+				<div className="xl:px-3">
+					<div className="relative flex h-[87vh] max-xl:h-screen xl:max-h-[850px] *:text-center border xl:rounded-2xl overflow-hidden mx-auto w-full max-w-[1400px] bg-origin-border">
+						<Hero />
+						<div className="flex flex-col z-2 px-4 size-full max-xl:!pt-32 md:p-12 max-md:items-center max-md:text-center ">
+							<h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-medium tracking-tighter text-balance text-center pb-5 fade-in animate-in">
+								<ParaglideMessage
+									message={m["HomePage.title"]}
+									inputs={{}}
+									markup={{
+										headline: ({ children }) => (
+											<Highlighter
+												iterations={5}
+												action="circle"
+												color="#841B50"
+												padding={12}
+												animationDuration={2000}
+											>
+												<span className="text-primary">{children}</span>
+											</Highlighter>
+										),
+									}}
+								/>
+							</h1>
+							<p className="text-base md:text-lg text-center text-muted-foreground font-medium text-balance leading-relaxed tracking-tight pb-3 fade-in animate-in">
+								<ParaglideMessage
+									message={m["HomePage.desc"]}
+									inputs={{}}
+									markup={{
+										highlight: ({ children }) => (
+											<Highlighter
+												action="underline"
+												color="#841B50"
+												iterations={5}
+												animationDuration={2000}
+											>
+												<span className="text-accent-foreground">{children}</span>
+											</Highlighter>
+										),
+										accent: ({ children }) => (
 											<span className="text-accent-foreground">{children}</span>
-										</Highlighter>
-									),
-									accent: ({ children }) => (
-										<span className="text-accent-foreground">{children}</span>
-									),
-									br: () => <br className="max-md:hidden" />,
-								}}
-							/>
-						</p>
-						<span className="flex items-center justify-center gap-3 *:flex *:items-center *:text-xs *:justify-center *:gap-2 lg:mb-9 max-lg:hidden fade-in animate-in">
-							<span>
-								<CloudLightningIcon className="text-primary" />
-								{m["HomePage.proxy_time_headline"]()}
-								<sup>1</sup>
+										),
+										br: () => <br className="max-md:hidden" />,
+									}}
+								/>
+							</p>
+							<span className="flex items-center justify-center gap-3 *:flex *:items-center *:text-xs *:justify-center *:gap-2 lg:mb-9 max-lg:hidden fade-in animate-in">
+								<span>
+									<CloudLightningIcon className="text-primary" />
+									{m["HomePage.proxy_time_headline"]()}
+									<sup>1</sup>
+								</span>
+								<span>
+									<ShieldX className="text-primary" />
+									{m["HomePage.blocks_headline"]({}, { locale: getLocale() })}
+								</span>
+								<span>
+									<Ampersands className="text-primary" />
+									{m["HomePage.developer_headline"]()}
+								</span>
 							</span>
-							<span>
-								<ShieldX className="text-primary" />
-								{m["HomePage.blocks_headline"]({}, { locale: getLocale() })}
-							</span>
-							<span>
-								<Ampersands className="text-primary" />
-								{m["HomePage.developer_headline"]()}
-							</span>
-						</span>
-						<div className="flex w-full items-center justify-center gap-4 flex-wrap pt-4 fade-in animate-in">
-							<Link
-								href="https://discord.com/oauth2/authorize?client_id=1436973163211657278&integration_type=0&scope=bot&permissions=671099904"
-								className={cn(
-									buttonVariants(),
-									"max-sm:text-sm items-center gap-2",
-								)}
-							>
-								<ExternalLink size={16} /> {m["HomePage.add_discord_btn"]()}
-							</Link>
-							<Link
-								href="/docs/pluralbuddy"
-								className={cn(
-									buttonVariants({ variant: "secondary" }),
-									"max-sm:text-sm items-center gap-2",
-								)}
-							>
-								{m["HomePage.docs_btn"]()}
-							</Link>
+							<div className="flex w-full items-center justify-center gap-4 flex-wrap pt-4 fade-in animate-in">
+								<Link
+									href="https://discord.com/oauth2/authorize?client_id=1436973163211657278&integration_type=0&scope=bot&permissions=671099904"
+									className={cn(
+										buttonVariants(),
+										"max-sm:text-sm items-center gap-2",
+									)}
+								>
+									<ExternalLink size={16} /> {m["HomePage.add_discord_btn"]()}
+								</Link>
+								<Link
+									href="/docs/pluralbuddy"
+									className={cn(
+										buttonVariants({ variant: "secondary" }),
+										"max-sm:text-sm items-center gap-2",
+									)}
+								>
+									{m["HomePage.docs_btn"]()}
+								</Link>
+							</div>
 						</div>
 					</div>
+					<span className="relative flex w-full border h-48 text-2xl bg-card max-w-fd-container xl:rounded-2xl xl:mt-2 items-center align-center justify-center gap-2 mx-auto">
+						<div className="z-2">
+							<h2 className="sm:text-md uppercase text-sm text-primary font-mono">
+								{m["HomePage.oss_headline"]()}
+							</h2>
+							<div className="flex items-center gap-2 justify-center">
+								<ParaglideMessage
+									message={m["HomePage.oss_desc"]}
+									inputs={{}}
+									markup={{
+										github: ({ children }) => (
+											<Link
+												className="flex items-center gap-1 hover:underline text-primary underline-offset-4"
+												href="https://github.com/giftedl/PluralBuddy"
+											>
+												<GithubDark className="size-6 *:fill-primary" />{" "}
+												{children}
+											</Link>
+										),
+									}}
+								/>
+							</div>
+							<div className="text-sm text-center justify-center mt-4 text-secondary-foreground max-w-[400px]">
+								{m["HomePage.oss_about"]()}
+							</div>
+						</div>
+					</span>
 				</div>
-				<span className="relative flex w-full border h-48 text-2xl bg-card max-w-fd-container xl:rounded-2xl xl:mt-2 items-center align-center justify-center gap-2 mx-auto">
-					<div className="z-2">
+
+				<div className="py-16 border-t border-b mt-2">
+					<h1 className="text-3xl md:text-4xl font-medium tracking-tighter text-primary text-center text-balance pb-1">
+						<ParaglideMessage
+							message={m["HomePage.optimized_headline"]}
+							markup={{
+								highlighter: ({ children }) => (
+									<DynamicHighligher>{children as string}</DynamicHighligher>
+								),
+							}}
+						/>
+					</h1>
+					<p className="text-muted-foreground text-center text-balance font-medium">
+						{m["HomePage.optimized_desc"]()}
+					</p>
+				</div>
+
+				<span className="grid lg:grid-cols-2 gap-2 my-3 xl:mx-3 *:max-lg:px-3 max-lg:mx-3 *:bg-card">
+					<span className="justify-center text-center rounded-2xl border align-middle inline-block h-full pt-9 pb-9">
 						<h2 className="sm:text-md uppercase text-sm text-primary font-mono">
-							{m["HomePage.oss_headline"]()}
+							{m["HomePage.instant_headline"]()}
 						</h2>
 						<div className="flex items-center gap-2 justify-center">
+							{m["HomePage.instant_title"]()}
+						</div>
+						<div className="text-sm text-center mx-auto justify-center mt-4 text-secondary-foreground max-w-[400px] w-full">
+							{m["HomePage.instant_desc"]()}
+						</div>
+					</span>
+					<span className="justify-center text-center rounded-2xl border align-middle inline-block h-full pt-9 pb-9">
+						<h2 className="sm:text-md uppercase text-sm text-primary font-mono">
+							{m["HomePage.identity_headline"]()}
+						</h2>
+						<div className="flex items-center gap-2 justify-center">
+							{m["HomePage.identity_title"]()}
+						</div>
+						<div className="text-sm text-center mx-auto justify-center mt-4 text-secondary-foreground max-w-[400px] w-full">
 							<ParaglideMessage
-								message={m["HomePage.oss_desc"]}
-								inputs={{}}
+								message={m["HomePage.identity_desc"]}
+								markup={{ sup: ({ children }) => <sup>{children}</sup> }}
+							/>
+						</div>
+					</span>
+					<span className="justify-center text-center rounded-2xl border align-middle inline-block h-full pt-9 pb-7">
+						<h2 className="sm:text-md uppercase text-sm text-primary font-mono">
+							{m["HomePage.quick_headline"]()}
+						</h2>
+						<div className="flex items-center gap-2 justify-center">
+							{m["HomePage.quick_title"]()}
+						</div>
+						<div className="text-sm text-center mx-auto justify-center mt-4 text-secondary-foreground max-w-[400px] w-full">
+							<ParaglideMessage
+								message={m["HomePage.quick_desc"]}
 								markup={{
-									github: ({ children }) => (
-										<Link
-											className="flex items-center gap-1 hover:underline text-primary underline-offset-4"
-											href="https://github.com/giftedl/PluralBuddy"
-										>
-											<GithubDark className="size-6 *:fill-primary" />{" "}
-											{children}
-										</Link>
-									),
+									sup: ({ children }) => <sup>{children}</sup>,
 								}}
 							/>
 						</div>
-						<div className="text-sm text-center justify-center mt-4 text-secondary-foreground max-w-[400px]">
-							{m["HomePage.oss_about"]()}
+					</span>
+					<span className="justify-center text-center rounded-2xl border align-middle inline-block h-full pt-7 pb-7">
+						<h2 className="sm:text-md uppercase text-sm text-primary font-mono">
+							{m["HomePage.components_headline"]()}
+						</h2>
+						<div className="flex items-center gap-2 justify-center">
+							{m["HomePage.components_title"]()}
 						</div>
-					</div>
+						<div className="text-sm text-center mx-auto justify-center mt-4 text-secondary-foreground max-w-[400px] w-full">
+							{m["HomePage.components_desc"]()}
+						</div>
+					</span>
 				</span>
-			</div>
 
-			<div className="py-16 border-t border-b mt-2">
-				<h1 className="text-3xl md:text-4xl font-medium tracking-tighter text-primary text-center text-balance pb-1">
-					<ParaglideMessage
-						message={m["HomePage.optimized_headline"]}
-						markup={{
-							highlighter: ({ children }) => (
-								<DynamicHighligher>{children as string}</DynamicHighligher>
-							),
-						}}
-					/>
-				</h1>
-				<p className="text-muted-foreground text-center text-balance font-medium">
-					{m["HomePage.optimized_desc"]()}
-				</p>
-			</div>
-
-			<span className="grid lg:grid-cols-2 gap-2 my-3 xl:mx-3 *:max-lg:px-3 max-lg:mx-3 *:bg-card">
-				<span className="justify-center text-center rounded-2xl border align-middle inline-block h-full pt-9 pb-9">
-					<h2 className="sm:text-md uppercase text-sm text-primary font-mono">
-						{m["HomePage.instant_headline"]()}
-					</h2>
-					<div className="flex items-center gap-2 justify-center">
-						{m["HomePage.instant_title"]()}
-					</div>
-					<div className="text-sm text-center mx-auto justify-center mt-4 text-secondary-foreground max-w-[400px] w-full">
-						{m["HomePage.instant_desc"]()}
-					</div>
-				</span>
-				<span className="justify-center text-center rounded-2xl border align-middle inline-block h-full pt-9 pb-9">
-					<h2 className="sm:text-md uppercase text-sm text-primary font-mono">
-						{m["HomePage.identity_headline"]()}
-					</h2>
-					<div className="flex items-center gap-2 justify-center">
-						{m["HomePage.identity_title"]()}
-					</div>
-					<div className="text-sm text-center mx-auto justify-center mt-4 text-secondary-foreground max-w-[400px] w-full">
+				<div className="py-16 border-t border-b mt-2">
+					<h1 className="text-3xl md:text-4xl font-medium tracking-tighter text-primary text-center text-balance pb-1">
 						<ParaglideMessage
-							message={m["HomePage.identity_desc"]}
-							markup={{ sup: ({ children }) => <sup>{children}</sup> }}
-						/>
-					</div>
-				</span>
-				<span className="justify-center text-center rounded-2xl border align-middle inline-block h-full pt-9 pb-7">
-					<h2 className="sm:text-md uppercase text-sm text-primary font-mono">
-						{m["HomePage.quick_headline"]()}
-					</h2>
-					<div className="flex items-center gap-2 justify-center">
-						{m["HomePage.quick_title"]()}
-					</div>
-					<div className="text-sm text-center mx-auto justify-center mt-4 text-secondary-foreground max-w-[400px] w-full">
-						<ParaglideMessage
-							message={m["HomePage.quick_desc"]}
+							message={m["HomePage.administrate_title"]}
 							markup={{
-								sup: ({ children }) => <sup>{children}</sup>,
+								highlighter: ({ children }) => (
+									<DynamicHighligher>{children as string}</DynamicHighligher>
+								),
+							}}
+						/>
+					</h1>
+					<p className="text-muted-foreground text-center text-balance font-medium">
+						{m["HomePage.administrate_desc"]()}
+					</p>
+				</div>
+
+				<span className="grid lg:grid-cols-2 gap-2 my-3 xl:mx-3 *:max-lg:px-3 max-lg:mx-3 *:bg-card">
+					<span className="justify-center text-center rounded-2xl border align-middle inline-block h-full pt-9 pb-9">
+						<h2 className="sm:text-md uppercase text-sm text-primary font-mono">
+							{m["HomePage.change_bot_headline"]()}
+						</h2>
+						<div className="flex items-center gap-2 justify-center">
+							{m["HomePage.change_bot_title"]()}
+						</div>
+						<div className="text-sm text-center mx-auto justify-center mt-4 text-secondary-foreground max-w-[400px] w-full">
+							{m["HomePage.change_bot_desc"]()}
+						</div>
+					</span>
+					<span className="justify-center text-center rounded-2xl border align-middle inline-block h-full pt-9 pb-9">
+						<h2 className="sm:text-md uppercase text-sm text-primary font-mono">
+							{m["HomePage.alter_containers_headline"]()}
+						</h2>
+						<div className="flex items-center gap-2 justify-center">
+							{m["HomePage.alter_containers_title"]()}
+						</div>
+						<div className="text-sm text-center mx-auto justify-center mt-4 text-secondary-foreground max-w-[400px] w-full">
+							{m["HomePage.alter_containers_desc"]()}
+						</div>
+					</span>
+					<span className="justify-center lg:col-span-2 text-center rounded-2xl border align-middle inline-block h-full pt-9 pb-7">
+						<h2 className="sm:text-md uppercase text-sm text-primary font-mono">
+							{m["HomePage.permissions_headline"]()}
+						</h2>
+						<div className="flex items-center gap-2 justify-center">
+							{m["HomePage.permissions_title"]()}
+						</div>
+						<div className="text-sm text-center mx-auto justify-center mt-4 text-secondary-foreground max-w-[400px] w-full">
+							{m["HomePage.permissions_desc"]()}
+						</div>
+					</span>
+				</span>
+				<div className="w-full h-[700px] bg-primary text-left max-lg:px-3 lg:px-24 py-16 relative">
+					<Ripple className="overflow-hidden" />
+					<h1 className="text-2xl font-medium z-10">
+						{m["HomePage.get_started_title"]()}
+					</h1>
+					<div className="text-sm mt-4 text-secondary-foreground max-w-[400px] w-full">
+						<ParaglideMessage
+							message={m["HomePage.get_started_desc"]}
+							markup={{
+								mono: ({ children }) => (
+									<span className="font-mono">{children}</span>
+								),
 							}}
 						/>
 					</div>
-				</span>
-				<span className="justify-center text-center rounded-2xl border align-middle inline-block h-full pt-7 pb-7">
-					<h2 className="sm:text-md uppercase text-sm text-primary font-mono">
-						{m["HomePage.components_headline"]()}
-					</h2>
-					<div className="flex items-center gap-2 justify-center">
-						{m["HomePage.components_title"]()}
-					</div>
-					<div className="text-sm text-center mx-auto justify-center mt-4 text-secondary-foreground max-w-[400px] w-full">
-						{m["HomePage.components_desc"]()}
-					</div>
-				</span>
-			</span>
 
-			<div className="py-16 border-t border-b mt-2">
-				<h1 className="text-3xl md:text-4xl font-medium tracking-tighter text-primary text-center text-balance pb-1">
-					<ParaglideMessage
-						message={m["HomePage.administrate_title"]}
-						markup={{
-							highlighter: ({ children }) => (
-								<DynamicHighligher>{children as string}</DynamicHighligher>
-							),
-						}}
-					/>
-				</h1>
-				<p className="text-muted-foreground text-center text-balance font-medium">
-					{m["HomePage.administrate_desc"]()}
-				</p>
-			</div>
-
-			<span className="grid lg:grid-cols-2 gap-2 my-3 xl:mx-3 *:max-lg:px-3 max-lg:mx-3 *:bg-card">
-				<span className="justify-center text-center rounded-2xl border align-middle inline-block h-full pt-9 pb-9">
-					<h2 className="sm:text-md uppercase text-sm text-primary font-mono">
-						{m["HomePage.change_bot_headline"]()}
-					</h2>
-					<div className="flex items-center gap-2 justify-center">
-						{m["HomePage.change_bot_title"]()}
-					</div>
-					<div className="text-sm text-center mx-auto justify-center mt-4 text-secondary-foreground max-w-[400px] w-full">
-						{m["HomePage.change_bot_desc"]()}
-					</div>
-				</span>
-				<span className="justify-center text-center rounded-2xl border align-middle inline-block h-full pt-9 pb-9">
-					<h2 className="sm:text-md uppercase text-sm text-primary font-mono">
-						{m["HomePage.alter_containers_headline"]()}
-					</h2>
-					<div className="flex items-center gap-2 justify-center">
-						{m["HomePage.alter_containers_title"]()}
-					</div>
-					<div className="text-sm text-center mx-auto justify-center mt-4 text-secondary-foreground max-w-[400px] w-full">
-						{m["HomePage.alter_containers_desc"]()}
-					</div>
-				</span>
-				<span className="justify-center lg:col-span-2 text-center rounded-2xl border align-middle inline-block h-full pt-9 pb-7">
-					<h2 className="sm:text-md uppercase text-sm text-primary font-mono">
-						{m["HomePage.permissions_headline"]()}
-					</h2>
-					<div className="flex items-center gap-2 justify-center">
-						{m["HomePage.permissions_title"]()}
-					</div>
-					<div className="text-sm text-center mx-auto justify-center mt-4 text-secondary-foreground max-w-[400px] w-full">
-						{m["HomePage.permissions_desc"]()}
-					</div>
-				</span>
-			</span>
-			<div className="w-full h-[700px] bg-primary text-left max-lg:px-3 lg:px-24 py-16 relative">
-				<Ripple className="overflow-hidden" />
-				<h1 className="text-2xl font-medium z-10">
-					{m["HomePage.get_started_title"]()}
-				</h1>
-				<div className="text-sm mt-4 text-secondary-foreground max-w-[400px] w-full">
-					<ParaglideMessage
-						message={m["HomePage.get_started_desc"]}
-						markup={{
-							mono: ({ children }) => (
-								<span className="font-mono">{children}</span>
-							),
-						}}
-					/>
+					<Link
+						href="https://discord.com/oauth2/authorize?client_id=1436973163211657278&integration_type=0&scope=bot&permissions=671099904"
+						className={cn(
+							buttonVariants({ variant: "secondary" }),
+							"max-sm:text-sm max-lg:w-[calc(100vw-24px)] items-center gap-2 w-1/3 mt-auto absolute bottom-[40px]",
+						)}
+					>
+						<ExternalLink size={16} /> {m["HomePage.add_discord_btn"]()}
+					</Link>
 				</div>
 
-				<Link
-					href="https://discord.com/oauth2/authorize?client_id=1436973163211657278&integration_type=0&scope=bot&permissions=671099904"
-					className={cn(
-						buttonVariants({ variant: "secondary" }),
-						"max-sm:text-sm max-lg:w-[calc(100vw-24px)] items-center gap-2 w-1/3 mt-auto absolute bottom-[40px]",
-					)}
-				>
-					<ExternalLink size={16} /> {m["HomePage.add_discord_btn"]()}
-				</Link>
+				<span className=" grid text-xs gap-2 mx-6 my-3 mt-25 py-10 bg-secondary rounded-2xl border px-4">
+					<span>
+						<sup>1</sup> {m["HomePage.sup_1"]()}
+					</span>
+					<span>
+						<sup>2</sup> {m["HomePage.sup_2"]()}
+					</span>
+				</span>
 			</div>
-
-			<span className=" grid text-xs gap-2 mx-6 my-3 mt-25 py-10 bg-secondary rounded-2xl border px-4">
-				<span>
-					<sup>1</sup> {m["HomePage.sup_1"]()}
-				</span>
-				<span>
-					<sup>2</sup> {m["HomePage.sup_2"]()}
-				</span>
-			</span>
-
-			<Separator className="w-full" />
-			<div className="absolute overflow-hidden">
-				<footer className="w-full pb-0 z-10 absolute flex flex-col md:flex-row md:items-center md:justify-between p-10">
+			<div className="overflow-hidden sticky bottom-0 z-0">
+				<footer className="w-full pb-0 absolute flex flex-col md:flex-row md:items-center md:justify-between p-10">
 					<div className="flex flex-col items-start justify-start gap-y-5 max-w-xs mx-0">
 						<span className="flex items-center gap-2">
 							<SolarPicture />
