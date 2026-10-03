@@ -269,6 +269,9 @@ const replaceTranslations = (
 	};
 	const clonedTranslations = cloneDeep(translations);
 
+	if (terminology === null)
+		terminology = terminologyDefaults
+
 	const replace = () =>
 		Object.keys(clonedTranslations).forEach((c: string) => {
 			const conflictingPlaceholders: Record<string, string> = {};
