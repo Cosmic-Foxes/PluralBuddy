@@ -808,5 +808,8 @@ PluralBuddy puede sincronizar los miembros de tu PluralKit de forma unidireccion
   EDIT_REACTING_TOP: `-# For future reference, you can reply to a message with \`{{ prefix }}edit\` to edit that message.
 	
 You are attempting to edit a message with the 📝 emoji. Please enter the contents of the new message contents with the button below.`,
-  EDIT_MESSAGE_BTN: "Edit Message"
+  EDIT_MESSAGE_BTN: "Edit Message",
+  PT_CREATE_NEW: "Create New Proxy Tag",
+  PT_DELETE: "Delete Proxy Tag",
+  PT_LIMIT: "-# You can create up to 6 proxy tags."
 };
