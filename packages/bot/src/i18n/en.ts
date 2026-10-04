@@ -238,6 +238,7 @@ PluralBuddy uses a **username/display name** system.
 	ALTER_SET_DESCRIPTION: "Set Description",
 	ALTER_SET_ORDER_STRING: "Set Order String",
 	ALTER_SET_PFP: "Set Profile Picture",
+	ALTER_CREATE_PFP_DESC: "(new!) Optional.",
 	ALTER_SET_PFP_SE: "Is server-specific",
 	ALTER_SET_PFP_SE_DESC:
 		"This profile picture will only be specific to this server.",
@@ -835,7 +836,7 @@ There is an example below of what an example proxy with this role would look lik
 		"Replace will replace existing data in your system with data. Does not make new system data.",
 	REPLACE_NAME: "Replace",
 	ADD_DESC:
-		"Add will add new tags and alters from another bot. Does not replace existing alter or tag data.",
+		"Add will add new tags and alters from another bot.",
 	ADD_NAME: "Add",
 	FULL_IMPORT_DESC:
 		"Full import mode will both replace existing alters and add new ones.",
