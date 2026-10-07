@@ -5,6 +5,7 @@
 
 import "./instrument"
 import { SeqTransport } from "@datalust/winston-seq";
+import * as Sentry from "@sentry/bun";
 import { RedisAdapter } from "@slipher/redis-adapter";
 import { PostHog } from "posthog-node";
 import {
@@ -19,6 +20,7 @@ import {
 	Modal,
 	TextDisplay,
 } from "seyfert";
+import { SeyfertError } from "seyfert/lib/common";
 import type { CollectorInteraction } from "seyfert/lib/components/handler";
 import {
 	ActivityType,
@@ -188,6 +190,12 @@ export const client = new Client({
 	context: extendedContext,
 	globalMiddlewares,
 });
+
+Error.captureStackTrace = (target) => {
+	if (target instanceof SeyfertError) {
+		Sentry.captureException(target)
+	}
+}
 
 if (import.meta.main) {
 	// @ts-ignore
