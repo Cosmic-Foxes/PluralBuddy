@@ -60,9 +60,7 @@ export class PluralBuddyErrorCommand extends PluralBuddyErrorCommandImpl {
 		);
 		context.client.logger.fatal(error);
 
-		const interactionId = Sentry.captureException(error, {
-			event_id: context.interaction?.id,
-		});
+		const interactionId = Sentry.captureException(error, );
 
 		await context.editOrReply({
 			components: [
@@ -96,9 +94,7 @@ export class PluralBuddyErrorCommand extends PluralBuddyErrorCommandImpl {
 			);
 			context.client.logger.fatal(error);
 
-			const interactionId = Sentry.captureException(error, {
-				event_id: context.interaction?.id,
-			});
+			const interactionId = Sentry.captureException(error,);
 
 			await context.editOrReply({
 				components: [
@@ -118,9 +114,6 @@ export class PluralBuddyErrorCommand extends PluralBuddyErrorCommandImpl {
 	) {
 		const interactionId = Sentry.captureException(
 			new Error(`Bot is missing permissions ${permissions.join(", ")}`),
-			{
-				event_id: context.interaction?.id,
-			},
 		);
 
 		await context.editOrReply({
@@ -167,9 +160,7 @@ export class PluralBuddyErrorCommand extends PluralBuddyErrorCommandImpl {
 		);
 		context.client.logger.fatal(error);
 
-		const interactionId = Sentry.captureException(error, {
-			event_id: context.interaction?.id,
-		});
+		const interactionId = Sentry.captureException(error, );
 
 		await context.editOrReply({
 			components: [
@@ -192,9 +183,7 @@ export class PluralBuddyComponentErrorCommand extends PluralBuddyErrorComponentC
 			context.client.logger.fatal(context.customId);
 			context.client.logger.fatal(error);
 
-			const interactionId = Sentry.captureException(error, {
-				event_id: context.interaction?.id,
-			});
+			const interactionId = Sentry.captureException(error,);
 
 			await context.editOrReply({
 				components: [
@@ -218,9 +207,7 @@ export class PluralBuddyComponentErrorCommand extends PluralBuddyErrorComponentC
 		context.client.logger.fatal(context.customId);
 		context.client.logger.fatal(error);
 
-		const interactionId = Sentry.captureException(error, {
-			event_id: context.interaction?.id,
-		});
+		const interactionId = Sentry.captureException(error, );
 
 		await context.editOrReply({
 			components: [
@@ -239,9 +226,7 @@ export class PluralBuddyComponentErrorCommand extends PluralBuddyErrorComponentC
 		context.client.logger.fatal(context.customId);
 		context.client.logger.fatal(error);
 
-		const interactionId = Sentry.captureException(error, {
-			event_id: context.interaction?.id,
-		});
+		const interactionId = Sentry.captureException(error, );
 
 		await context.editOrReply({
 			components: [
@@ -261,9 +246,7 @@ export class PluralBuddyModalErrorCommand extends PluralBuddyErrorModalCommandIm
 			context.client.logger.fatal(context.customId);
 			context.client.logger.fatal(error);
 
-			const interactionId = Sentry.captureException(error, {
-				event_id: context.interaction?.id,
-			});
+			const interactionId = Sentry.captureException(error,);
 
 			await context.editOrReply({
 				components: [
@@ -289,9 +272,7 @@ export class PluralBuddyModalErrorCommand extends PluralBuddyErrorModalCommandIm
 		context.client.logger.fatal(context.customId);
 		context.client.logger.fatal(error);
 
-		const interactionId = Sentry.captureException(error, {
-			event_id: context.interaction?.id,
-		});
+		const interactionId = Sentry.captureException(error, );
 
 		await context.editOrReply({
 			components: [
@@ -307,9 +288,7 @@ export class PluralBuddyModalErrorCommand extends PluralBuddyErrorModalCommandIm
 		context.client.logger.fatal(context.customId);
 		context.client.logger.fatal(error);
 
-		const interactionId = Sentry.captureException(error, {
-			event_id: context.interaction?.id,
-		});
+		const interactionId = Sentry.captureException(error, );
 
 		await context.editOrReply({
 			components: [
