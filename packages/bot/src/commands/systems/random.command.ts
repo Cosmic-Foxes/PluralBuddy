@@ -1,9 +1,5 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { alterCollection, tagCollection } from "@/mongodb";
-import { AlertView } from "@/views/alert";
-import { AlterView } from "@/views/alters";
-import { TagView } from "@/views/tags";
 import {
 	type CommandContext,
 	createBooleanOption,
@@ -12,11 +8,21 @@ import {
 	SubCommand,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { alterCollection, tagCollection } from "@/mongodb";
+import { AlertView } from "@/views/alert";
+import { AlterView } from "@/views/alters";
+import { TagView } from "@/views/tags";
 
 const options = {
 	"query-tags": createBooleanOption({
 		description: "Whether to include tags in the random selection.",
 		aliases: ["qt", "t"],
+		flag: true,
+	}),
+
+	public: createBooleanOption({
+		description: "Do you want to expose this publicly? (non-ephemeral)",
+		aliases: ["p"],
 		flag: true,
 	}),
 };
@@ -150,7 +156,7 @@ export default class RandomSystemCommand extends SubCommand {
 						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 						allowed_mentions: { parse: [] },
 					},
-					undefined,
+					true,
 					undefined,
 					ctx,
 				);
@@ -200,7 +206,7 @@ export default class RandomSystemCommand extends SubCommand {
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 				allowed_mentions: { parse: [] },
 			},
-			undefined,
+			true,
 			undefined,
 			ctx,
 		);
