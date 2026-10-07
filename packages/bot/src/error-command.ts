@@ -1,6 +1,7 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { DiscordSnowflake } from "@sapphire/snowflake";
+import * as Sentry from "@sentry/bun";
 import type {
 	Command,
 	CommandContext,
@@ -22,36 +23,6 @@ import {
 	PluralBuddyErrorModalCommandImpl,
 } from "./error-command-impl";
 import { AlertView } from "./views/alert";
-
-function capturePostHogException(
-	error: unknown,
-	{
-		interactionId,
-		guildId,
-		channelId,
-		user,
-	}: {
-		interactionId?: string | undefined;
-		guildId?: string | undefined;
-		channelId?: string | undefined;
-		// I don't set users for the Posthog exceptions since I want exceptions to be anonymous
-		user?: { username: string; id: string } | undefined;
-	},
-): string {
-	const requiredInteractionId =
-		interactionId ?? `c${DiscordSnowflake.generate()}`;
-
-	if (posthogClient)
-		posthogClient.captureException(error, user?.id ?? undefined, {
-			$set: user !== undefined ? { username: user.username } : {},
-
-			interactionId: requiredInteractionId,
-			guildId,
-			channelId,
-		});
-
-	return requiredInteractionId;
-}
 
 export class PluralBuddyErrorCommand extends PluralBuddyErrorCommandImpl {
 	override async onOptionsError(
@@ -89,10 +60,8 @@ export class PluralBuddyErrorCommand extends PluralBuddyErrorCommandImpl {
 		);
 		context.client.logger.fatal(error);
 
-		const interactionId = capturePostHogException(error, {
-			interactionId: context.interaction?.id,
-			guildId: context.guildId,
-			channelId: context.channelId,
+		const interactionId = Sentry.captureException(error, {
+			event_id: context.interaction?.id,
 		});
 
 		await context.editOrReply({
@@ -111,7 +80,7 @@ export class PluralBuddyErrorCommand extends PluralBuddyErrorCommandImpl {
 		command: Command | SubCommand | ContextMenuCommand,
 		error?: unknown,
 	) {
-		capturePostHogException(error, {});
+		Sentry.captureException(error, {});
 
 		client.logger.fatal(error);
 	}
@@ -127,10 +96,8 @@ export class PluralBuddyErrorCommand extends PluralBuddyErrorCommandImpl {
 			);
 			context.client.logger.fatal(error);
 
-			const interactionId = capturePostHogException(error, {
-				interactionId: context.interaction?.id,
-				guildId: context.guildId,
-				channelId: context.channelId,
+			const interactionId = Sentry.captureException(error, {
+				event_id: context.interaction?.id,
 			});
 
 			await context.editOrReply({
@@ -149,12 +116,10 @@ export class PluralBuddyErrorCommand extends PluralBuddyErrorCommandImpl {
 		context: MenuCommandContext<any, never> | CommandContext,
 		permissions: PermissionStrings,
 	) {
-		const interactionId = capturePostHogException(
+		const interactionId = Sentry.captureException(
 			new Error(`Bot is missing permissions ${permissions.join(", ")}`),
 			{
-				interactionId: context.interaction?.id,
-				guildId: context.guildId,
-				channelId: context.channelId,
+				event_id: context.interaction?.id,
 			},
 		);
 
@@ -202,10 +167,8 @@ export class PluralBuddyErrorCommand extends PluralBuddyErrorCommandImpl {
 		);
 		context.client.logger.fatal(error);
 
-		const interactionId = capturePostHogException(error, {
-			interactionId: context.interaction?.id,
-			guildId: context.guildId,
-			channelId: context.channelId,
+		const interactionId = Sentry.captureException(error, {
+			event_id: context.interaction?.id,
 		});
 
 		await context.editOrReply({
@@ -229,10 +192,8 @@ export class PluralBuddyComponentErrorCommand extends PluralBuddyErrorComponentC
 			context.client.logger.fatal(context.customId);
 			context.client.logger.fatal(error);
 
-			const interactionId = capturePostHogException(error, {
-				interactionId: context.interaction?.id,
-				guildId: context.guildId,
-				channelId: context.channelId,
+			const interactionId = Sentry.captureException(error, {
+				event_id: context.interaction?.id,
 			});
 
 			await context.editOrReply({
@@ -248,7 +209,7 @@ export class PluralBuddyComponentErrorCommand extends PluralBuddyErrorComponentC
 	}
 
 	override onInternalError(client: UsingClient, error?: unknown) {
-		capturePostHogException(error, {});
+		Sentry.captureException(error, {});
 
 		client.logger.fatal(error);
 	}
@@ -257,10 +218,8 @@ export class PluralBuddyComponentErrorCommand extends PluralBuddyErrorComponentC
 		context.client.logger.fatal(context.customId);
 		context.client.logger.fatal(error);
 
-		const interactionId = capturePostHogException(error, {
-			interactionId: context.interaction?.id,
-			guildId: context.guildId,
-			channelId: context.channelId,
+		const interactionId = Sentry.captureException(error, {
+			event_id: context.interaction?.id,
 		});
 
 		await context.editOrReply({
@@ -280,10 +239,8 @@ export class PluralBuddyComponentErrorCommand extends PluralBuddyErrorComponentC
 		context.client.logger.fatal(context.customId);
 		context.client.logger.fatal(error);
 
-		const interactionId = capturePostHogException(error, {
-			interactionId: context.interaction?.id,
-			guildId: context.guildId,
-			channelId: context.channelId,
+		const interactionId = Sentry.captureException(error, {
+			event_id: context.interaction?.id,
 		});
 
 		await context.editOrReply({
@@ -304,10 +261,8 @@ export class PluralBuddyModalErrorCommand extends PluralBuddyErrorModalCommandIm
 			context.client.logger.fatal(context.customId);
 			context.client.logger.fatal(error);
 
-			const interactionId = capturePostHogException(error, {
-				interactionId: context.interaction?.id,
-				guildId: context.guildId,
-				channelId: context.channelId,
+			const interactionId = Sentry.captureException(error, {
+				event_id: context.interaction?.id,
 			});
 
 			await context.editOrReply({
@@ -323,7 +278,7 @@ export class PluralBuddyModalErrorCommand extends PluralBuddyErrorModalCommandIm
 	}
 
 	override onInternalError(client: UsingClient, error?: unknown) {
-		capturePostHogException(error, {});
+		Sentry.captureException(error, {});
 
 		client.logger.fatal(error);
 	}
@@ -334,10 +289,8 @@ export class PluralBuddyModalErrorCommand extends PluralBuddyErrorModalCommandIm
 		context.client.logger.fatal(context.customId);
 		context.client.logger.fatal(error);
 
-		const interactionId = capturePostHogException(error, {
-			interactionId: context.interaction?.id,
-			guildId: context.guildId,
-			channelId: context.channelId,
+		const interactionId = Sentry.captureException(error, {
+			event_id: context.interaction?.id,
 		});
 
 		await context.editOrReply({
@@ -354,10 +307,8 @@ export class PluralBuddyModalErrorCommand extends PluralBuddyErrorModalCommandIm
 		context.client.logger.fatal(context.customId);
 		context.client.logger.fatal(error);
 
-		const interactionId = capturePostHogException(error, {
-			interactionId: context.interaction?.id,
-			guildId: context.guildId,
-			channelId: context.channelId,
+		const interactionId = Sentry.captureException(error, {
+			event_id: context.interaction?.id,
 		});
 
 		await context.editOrReply({
