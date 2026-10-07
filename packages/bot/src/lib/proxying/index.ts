@@ -1,5 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import { addBreadcrumb, captureEvent } from "@sentry/bun";
 import { getColor } from "colorthief";
 import {
 	type ApplicationEmoji,
@@ -144,7 +145,11 @@ export async function proxy(
 	if (await message.fetch().catch(() => null)) {
 		// Send the message with file attachments included
 
-		console.log();
+		addBreadcrumb({
+			category: "proxying",
+			message: `Attempting to proxy message ID: ${message.id}`,
+			level: "info"
+		})
 
 		try {
 			webhook.messages
