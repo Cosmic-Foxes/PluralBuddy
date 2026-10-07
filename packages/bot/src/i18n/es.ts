@@ -174,7 +174,7 @@ PluralBuddy usa un sistema de **nombre de usuario/nombre para mostrar**.
   ALTER_SET_DESCRIPTION: "Establecer descripción",
   ALTER_SET_ORDER_STRING: "Establecer cadena de pedido",
   ALTER_SET_PFP: "Establecer foto de perfil",
-  ALTER_CREATE_PFP_DESC: "(new!) Optional.",
+  ALTER_CREATE_PFP_DESC: "(¡nuevo!) Opcional.",
   ALTER_SET_PFP_SE: "Es específico de un servidor",
   ALTER_SET_PFP_SE_DESC: "Esta foto de perfil solo se utilizará específicamente en este servidor.",
   ALTER_SET_TAG: "Establecer etiqueta del sistema",
@@ -295,6 +295,7 @@ PluralBuddy usa un sistema de **nombre de usuario/nombre para mostrar**.
 
 **Traducido en Crowdin**
 -# 🇩🇪 Traducciones al alemán por @mira.mizuki (gracias, amigo/a)
+-# 🇪🇸 Traducciones al español de @cosmic.rainbow.
 
 -# **ENLACES**
 > -# %github% [GitHub](https://github.com) · %docs% [Documentación](https://pluralbuddy.app)
@@ -634,7 +635,7 @@ Tu perfil público es cómo se ve tu sistema para otros usuarios cuando identifi
   IMPORT_SETTINGS_DESC: `Importar desde otro bot te permite reemplazar o agregar datos provenientes de tus otros bots, o hacer una combinación de ambos.`,
   REPLACE_DESC: "Reemplazar sustituirá los datos existentes en tu sistema con los datos nuevos. No crea un nuevo sistema.",
   REPLACE_NAME: "Reemplazar",
-  ADD_DESC: "Add will add new tags and alters from another bot.",
+  ADD_DESC: "Add añadirá nuevas etiquetas y alters provenientes de otro bot.",
   ADD_NAME: "Agregar",
   FULL_IMPORT_DESC: "El modo de importación completa reemplazará los alters existentes y agregará los nuevos.",
   FULL_IMPORT_NAME: "Importación completa",
@@ -805,11 +806,11 @@ PluralBuddy puede sincronizar los miembros de tu PluralKit de forma unidireccion
   USE_PLURALKIT_TERMINOLOGY_TITLE: "Usar Terminología al estilo PluralKit (¡nuevo!)",
   USE_PLURALKIT_TERMINOLOGY_DESC: "Utilice una terminología similar a la representada en PluralKit (es decir, miembro, grupo).",
   ALTER_TAG_COUNT_TOO_HIGH: "-# Esta importación no se puede realizar de forma destructiva y/o no destructiva debido a que el recuento de Alter o etiquetas combinado con la transcripción es demasiado alto.",
-  EDIT_REACTING_TOP: `-# For future reference, you can reply to a message with \`{{ prefix }}edit\` to edit that message.
-	
-You are attempting to edit a message with the 📝 emoji. Please enter the contents of the new message contents with the button below.`,
-  EDIT_MESSAGE_BTN: "Edit Message",
-  PT_CREATE_NEW: "Create New Proxy Tag",
-  PT_DELETE: "Delete Proxy Tag",
-  PT_LIMIT: "-# You can create up to 6 proxy tags."
+  EDIT_REACTING_TOP: `Para futuras ocasiones, puedes responder a un mensaje con \`{{ prefix }}edit\` para editarlo.
+
+Estás intentando editar un mensaje marcado con el emoji 📝. Por favor, introduce el contenido del nuevo mensaje usando el botón de abajo.`,
+  EDIT_MESSAGE_BTN: "Editar mensaje",
+  PT_CREATE_NEW: "Crear nueva etiqueta de proxy",
+  PT_DELETE: "Eliminar etiqueta de proxy",
+  PT_LIMIT: "-# Puedes crear hasta 6 etiquetas proxy."
 };
