@@ -4,10 +4,13 @@ import {
 	type CommandContext,
 	createBooleanOption,
 	Declare,
+	Message,
 	Options,
 	SubCommand,
+	TextDisplay,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { emojis } from "@/lib/emojis";
 import { alterCollection, tagCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import { AlterView } from "@/views/alters";
@@ -38,7 +41,13 @@ export default class RandomSystemCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
 		await ctx.deferReply(true);
 		const user = await ctx.retrievePUser();
-		const { "query-tags": queryTags } = ctx.options;
+		const { "query-tags": queryTags, public: publicMode } = ctx.options;
+
+		const publicMessage = publicMode
+			? publicMode
+			: (ctx.message as unknown) instanceof Message
+				? (ctx.message as unknown as Message).content.endsWith("-p")
+				: publicMode;
 
 		if (user.system === undefined) {
 			return await ctx.editResponse({
@@ -112,7 +121,9 @@ export default class RandomSystemCommand extends SubCommand {
 									)
 								: []),
 						],
-						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+						flags:
+							MessageFlags.IsComponentsV2 +
+							(ctx.options.public !== true ? MessageFlags.Ephemeral : 0),
 						allowed_mentions: { parse: [] },
 					},
 					true,
@@ -145,15 +156,28 @@ export default class RandomSystemCommand extends SubCommand {
 								alterQuery,
 								alterQuery.systemId !== ctx.author.id,
 							)),
-							...new AlterView(
-								await ctx.userTranslations(),
-							).alterConfigureButton(alterQuery),
-							...new AlterView(await ctx.userTranslations()).alterProxyModes(
-								alterQuery,
-								ctx.guildId,
-							),
+							...(publicMessage && alterQuery.systemId === ctx.author.id
+								? [
+										new TextDisplay().setContent(
+											`-#  ${emojis.lineRight} Some options were hidden because this message is in public mode.`,
+										),
+									]
+								: []),
+							...(!publicMessage && alterQuery.systemId === ctx.author.id
+								? new AlterView(
+										await ctx.userTranslations(),
+									).alterConfigureButton(alterQuery)
+								: []),
+							...(!publicMessage && alterQuery.systemId === ctx.author.id
+								? new AlterView(await ctx.userTranslations()).alterProxyModes(
+										alterQuery,
+										ctx.guildId,
+									)
+								: []),
 						],
-						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+						flags:
+							MessageFlags.IsComponentsV2 +
+							(ctx.options.public !== true ? MessageFlags.Ephemeral : 0),
 						allowed_mentions: { parse: [] },
 					},
 					true,
@@ -195,15 +219,28 @@ export default class RandomSystemCommand extends SubCommand {
 						alterQuery,
 						alterQuery.systemId !== ctx.author.id,
 					)),
-					...new AlterView(await ctx.userTranslations()).alterConfigureButton(
-						alterQuery,
-					),
-					...new AlterView(await ctx.userTranslations()).alterProxyModes(
-						alterQuery,
-						ctx.guildId,
-					),
+					...(publicMessage && alterQuery.systemId === ctx.author.id
+						? [
+								new TextDisplay().setContent(
+									`-#  ${emojis.lineRight} Some options were hidden because this message is in public mode.`,
+								),
+							]
+						: []),
+					...(!publicMessage && alterQuery.systemId === ctx.author.id
+						? new AlterView(await ctx.userTranslations()).alterConfigureButton(
+								alterQuery,
+							)
+						: []),
+					...(!publicMessage && alterQuery.systemId === ctx.author.id
+						? new AlterView(await ctx.userTranslations()).alterProxyModes(
+								alterQuery,
+								ctx.guildId,
+							)
+						: []),
 				],
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+				flags:
+					MessageFlags.IsComponentsV2 +
+					(ctx.options.public !== true ? MessageFlags.Ephemeral : 0),
 				allowed_mentions: { parse: [] },
 			},
 			true,
