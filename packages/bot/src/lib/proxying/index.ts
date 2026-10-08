@@ -148,12 +148,25 @@ export async function proxy(
 		addBreadcrumb({
 			category: "proxying",
 			message: `Attempting to proxy message ID: ${message.id}`,
-			level: "info"
-		})
+			level: "info",
+		});
+
+		const isNativelyMentioning =
+			message.referencedMessage &&
+			message.mentions.users
+				.map((v) => v.id)
+				.includes(message.referencedMessage.author.id);
+		const pingMode = guild.pingMode ?? "unaffected";
+		const isToMention =
+			pingMode === "unaffected"
+				? isNativelyMentioning
+				: pingMode === "opposite"
+					? !isNativelyMentioning
+					: pingMode === "always-on";
 
 		try {
 			webhook.messages
-				.write(({
+				.write({
 					body: {
 						...getModernComponentsMappings(components, [
 							...mediaFiles,
@@ -168,48 +181,44 @@ export async function proxy(
 								.setSpoiler(c.spoilered)
 								.setFile("buffer", c.buff),
 						),
-						allowed_mentions:
-							message.referencedMessage &&
-								!message.mentions.users
-									.map((v) => v.id)
-									.includes(message.referencedMessage.author.id)
-								? {
-									parse: [],
-								}
-								: {
+						allowed_mentions: isToMention
+							? {
 									parse: ["users"],
+								}
+							: {
+									parse: [],
 								},
 						embeds:
 							components.length === 0
 								? [
-									await (async () => {
-										const author = await client.users.fetch(systemId, true);
+										await (async () => {
+											const author = await client.users.fetch(systemId, true);
 
-										return new Embed()
-											.setDescription(
-												"This message was unable to be rendered using Components V2 components. This message is not proxy-able.",
-											)
-											.setColor("Red")
-											.setTitle(
-												`${emojis.x}   Unable to render this message.`,
-											)
-											.setAuthor({
-												name: author.name,
-												iconUrl: author.avatarURL(),
-											})
-											.setFooter({
-												text: "Unable to proxy this message",
-												iconUrl: "https://pluralbuddy.app/image/pfp.png",
-											});
-									})(),
-								]
+											return new Embed()
+												.setDescription(
+													"This message was unable to be rendered using Components V2 components. This message is not proxy-able.",
+												)
+												.setColor("Red")
+												.setTitle(
+													`${emojis.x}   Unable to render this message.`,
+												)
+												.setAuthor({
+													name: author.name,
+													iconUrl: author.avatarURL(),
+												})
+												.setFooter({
+													text: "Unable to proxy this message",
+													iconUrl: "https://pluralbuddy.app/image/pfp.png",
+												});
+										})(),
+									]
 								: [],
 					},
 					query: {
 						wait: true,
 						...(parent !== null ? { thread_id: channel.id } : {}),
 					},
-				}))
+				})
 				.then((sentMessage) => {
 					w(systemId, "message.create", {
 						message: {
@@ -222,7 +231,7 @@ export async function proxy(
 							referencedMessage: message.referencedMessage?.id,
 						},
 						type: "message.create",
-						userId: systemId
+						userId: systemId,
 					});
 					messagesCollection.insertOne({
 						messageId: sentMessage?.id ?? "0",
@@ -254,7 +263,7 @@ export async function proxy(
 								).arrayBuffer();
 
 								color = (await getColor(image))?.hex() ?? "Green";
-							} catch (_) { }
+							} catch (_) {}
 
 							await client.messages
 								.write(guild.logChannel, {
@@ -275,32 +284,33 @@ export async function proxy(
 													.setAccessory(
 														new Thumbnail().setMedia(
 															(alter?.avatarUrlMap ?? {})[
-															sentMessage?.guildId ?? ""
+																sentMessage?.guildId ?? ""
 															] ??
-															alter?.avatarUrl ??
-															"https://cdn.discordapp.com/embed/avatars/0.png",
+																alter?.avatarUrl ??
+																"https://cdn.discordapp.com/embed/avatars/0.png",
 														),
 													),
 												new Separator().setSpacing(Spacing.Large),
 												new TextDisplay().setContent(`-# Sent by system/user \`${systemId}\`, by alter \`${alterId}\`
 -# Mention: @${user.username} (<@${systemId}>)
--# Alter Mention: @${alter?.username} (${alter?.nameMap.find((c) => c.server === guild.guildId)?.name ?? alter?.username})${message.messageReference !== undefined
+-# Alter Mention: @${alter?.username} (${alter?.nameMap.find((c) => c.server === guild.guildId)?.name ?? alter?.username})${
+													message.messageReference !== undefined
 														? `
 -# Reply: https://discord.com/channels/${message.messageReference.guildId ?? "@me"}/${message.messageReference.channelId}/${message.messageReference.messageId}`
 														: ""
-													}
+												}
 -# Proxied message as: \`${message.id}\` → \`${sentMessage?.id ?? "Unknown"}\`
 -# Sent at: <t:${Math.floor(Date.now() / 1000)}:f>`),
 												...(message.referencedMessage
 													? [
-														new Separator(),
-														new TextDisplay().setContent(
-															"-# **REFERENCED MESSAGE**",
-														),
-														new TextDisplay().setContent(`-# Message author: <@${message.referencedMessage.author.id}>
+															new Separator(),
+															new TextDisplay().setContent(
+																"-# **REFERENCED MESSAGE**",
+															),
+															new TextDisplay().setContent(`-# Message author: <@${message.referencedMessage.author.id}>
 -# Message ID: [${message.referencedMessage.id}](https://discord.com/channels/${message.guildId ?? "@me"}/${message.channelId}/${message.referencedMessage.id})
 -# Message contents: ${message.referencedMessage.content.slice(0, 1000)}`),
-													]
+														]
 													: []),
 											)
 											.setColor(color as `#${string}` | "Green"),
@@ -356,11 +366,14 @@ export async function proxy(
 			client.cache.similarWebhookResource.remove(message.channelId);
 		}
 
-		await message.delete().catch((_) => null).then(async () => {
-			const user = await getUserById(message.author.id);
+		await message
+			.delete()
+			.catch((_) => null)
+			.then(async () => {
+				const user = await getUserById(message.author.id);
 
-			await automaticallySync(user);
-		});;
+				await automaticallySync(user);
+			});
 	}
 }
 
@@ -380,38 +393,23 @@ export const getModernComponentsMappings = (
 	return components.length === 1 &&
 		components[0]?.data.type === ComponentType.TextDisplay
 		? {
-			content:
-				"content" in components[0].data
-					? components[0].data.content?.startsWith("# <")
-						? components[0].data.content.slice(1)
-						: components[0].data.content
-					: "_Failed to slice this message correctly._",
-		}
-		: components.length === 2 &&
-			(components[1]?.data.type === ComponentType.MediaGallery ||
-				components[1]?.data.type === ComponentType.File)
-			? {
 				content:
-					components[0] !== undefined && "content" in components[0].data
-						? (components[0].data.content ?? "").startsWith("# <") 
-							? (components[0].data.content ?? "").slice(1)
+					"content" in components[0].data
+						? components[0].data.content?.startsWith("# <")
+							? components[0].data.content.slice(1)
 							: components[0].data.content
-						: "",
-				attachments: (fileComponents
-					.filter((v, pos) => {
-						return fileComponents.indexOf(v) === pos;
-					})
-					.map((v, i) => (
-						new AttachmentBuilder()
-							.setName(`${v.name}`)
-							.setSpoiler(v.spoilered)
-							.setFile("buffer", Buffer.from([]))
-							.toJSON()))),
+						: "_Failed to slice this message correctly._",
 			}
-			: components.length === 1 &&
-				components[0]?.data.type === ComponentType.File || components[0]?.data.type === ComponentType.MediaGallery
-				? {
-					content: "",
+		: components.length === 2 &&
+				(components[1]?.data.type === ComponentType.MediaGallery ||
+					components[1]?.data.type === ComponentType.File)
+			? {
+					content:
+						components[0] !== undefined && "content" in components[0].data
+							? (components[0].data.content ?? "").startsWith("# <")
+								? (components[0].data.content ?? "").slice(1)
+								: components[0].data.content
+							: "",
 					attachments: fileComponents
 						.filter((v, pos) => {
 							return fileComponents.indexOf(v) === pos;
@@ -421,13 +419,31 @@ export const getModernComponentsMappings = (
 								.setName(`${v.name}`)
 								.setSpoiler(v.spoilered)
 								.setFile("buffer", Buffer.from([]))
-								.toJSON()),
+								.toJSON(),
+						),
 				}
+			: (components.length === 1 &&
+						components[0]?.data.type === ComponentType.File) ||
+					components[0]?.data.type === ComponentType.MediaGallery
+				? {
+						content: "",
+						attachments: fileComponents
+							.filter((v, pos) => {
+								return fileComponents.indexOf(v) === pos;
+							})
+							.map((v, i) =>
+								new AttachmentBuilder()
+									.setName(`${v.name}`)
+									.setSpoiler(v.spoilered)
+									.setFile("buffer", Buffer.from([]))
+									.toJSON(),
+							),
+					}
 				: {
-					components,
-					flags:
-						components.length !== 0
-							? MessageFlags.IsComponentsV2
-							: (0 as MessageFlags),
-				};
+						components,
+						flags:
+							components.length !== 0
+								? MessageFlags.IsComponentsV2
+								: (0 as MessageFlags),
+					};
 };
