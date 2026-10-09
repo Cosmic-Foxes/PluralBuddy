@@ -62,7 +62,7 @@ SimplyPlural has been discontinued.`,
   IMPORT_TOKEN_DESCRIPTION: "SimplyPlural Token",
   CREATE_NEW_SYS_DESCRIPTION: "Create New System",
   PLURALBUDDY_IMPORT_ERROR_TOO_LARGE: "2j – Importing files cannot be larger than 2MB. Please contact support if you are genuinely trying to import a system larger than 2MB.",
-  ERROR_ATTACHMENT_TOO_LARGE: "2j – Uncompressed images must be under 5MB. (After compression, images can only be 1MB.)",
+  ERROR_ATTACHMENT_TOO_LARGE: "2j – Attachments for banners or profile pictures cannot be larger than 1MB.",
   CREATE_NEW_ALTER_DESCRIPTION: "Create New Alter",
   CREATE_NEW_TAG_DESCRIPTION: "Create New Tag",
   PLURALBUDDY_IMPORT_ERROR_INVALID_JSON: "2k – The file you imported is not valid JSON.",
@@ -110,7 +110,7 @@ SimplyPlural has been discontinued.`,
   CREATE_NEW_TAG_DONE: "Successfully created  %color_emoji% **%tag_name%**  in your system. Use %command% for more details.",
   TAG_SPACE_WARNING: "Since this tag has **spaces** in it, some commands may require you put the display name in quotes to be parsed correctly. Additionally, you can just use application commands instead.",
   TAG_ALREADY_EXISTS: "You already have a tag named **%display%** in your system.",
-  CONFIRMATION_SYSTEM_DELETION: "# :warning: __YOU ARE ABOUT TO DELETE YOUR SYSTEM__ :warning:\n**This action __CANNOT__ be undone by PluralBuddy Support**, or by yourself in any capacity at ANY date in the future. __This will delete ALL system data, including tags, alters, and other assets from your system__.\n\n> **Pro tip:** If you need to simply disable proxying for all alters, it may be better to **disable** the system instead.",
+  CONFIRMATION_SYSTEM_DELETION: "# :warning: __YOU ARE ABOUT TO DELETE YOUR SYSTEM__ :warning:\n**This action __CANNOT__ be undone by PluralBuddy Support**, or by yourself in any capacity at ANY date in the future. __This will delete ALL system data, including tags, alters, and other assets from your system__.\n\n> **Pro tip:** If you need to simply disable proxying for all alters, it may be better to **disable** the system intead.",
   CONFIRMATION_SYSTEM_DELETION_PRIVACY: "-# As per [PluralBuddy's Privacy Policy](https://gftl.fyi/privacy), this action will delete all data related to your system, **except** for system banners and profile pictures. Those can be deleted by using %command%'s `media-included` flag.",
   CONFIRMATION_SYSTEM_DELETION_BTN: "I acknowledge this is a permanent action, continue",
   BACK_TO_SAFETY_BTN: "No, go back to safety",
@@ -174,6 +174,7 @@ PluralBuddy uses a **username/display name** system.
   ALTER_SET_DESCRIPTION: "Set Description",
   ALTER_SET_ORDER_STRING: "Set Order String",
   ALTER_SET_PFP: "Set Profile Picture",
+  ALTER_CREATE_PFP_DESC: "(new!) Optional.",
   ALTER_SET_PFP_SE: "Is server-specific",
   ALTER_SET_PFP_SE_DESC: "This profile picture will only be specific to this server.",
   ALTER_SET_TAG: "Set System Tag",
@@ -289,11 +290,12 @@ PluralBuddy uses a **username/display name** system.
 -# Developed all major parts of PluralBuddy
 
 **OSS Contributions** - [PluralBuddy is MIT licensed](https://github.com/giftedl/PluralBuddy/blob/main/LICENSE)
--# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco)
+-# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco), [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.)
 -# Docs: [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.), [@Stjernesys](https://github.com/Stjernesys) (@thatskymaridelrosynthia)
 
 **Translated on Crowdin**
 -# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
+-# 🇪🇸 Spanish translations by @cosmic.rainbow.
 
 -# **LINKS**
 > -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pluralbuddy.app)
@@ -359,8 +361,8 @@ PluralBuddy uses a **username/display name** system.
   LATCH_DELAY_INVALID: "Latch delays cannot be longer than 10 hours, or be an invalid input. ",
   MANAGER_ALREADY_EXISTS: "That manager role is already on the manager role list.",
   SUCCESS_REMOVE_MANAGER_ROLE: "%item% has been removed from the manager role list successfully.",
-  REQUIRE_TAG_ENABLED: "All systems will now be required to enable display tags in order to proxy.",
-  REQUIRE_TAG_DISABLED: "All systems will no longer be required to enable display tags to proxy.",
+  REQUIRE_TAG_ENABLED: "All systems will now be required to enable system tags in order to proxy.",
+  REQUIRE_TAG_DISABLED: "All systems will no longer be required to enable system tags to proxy.",
   ERROR_DOESNT_EXIST: "That error doesn't exist. Has it already been cleared?",
   FEATURE_DISABLED_GUILD: "That feature is disabled on this guild.",
   FEATURE_DISABLED_CHANNEL: "This channel is disabled from using PluralBuddy.",
@@ -468,7 +470,7 @@ ${emojis.reply} This is not a full list of information in PluralBuddy's policies
 -# To view your description in full, run: {{ mention }}`,
   DELETE_TAG_DESC: "Deleting your tag will permanently remove it from all alters that its associated with, and this system.",
   PUBLIC_PROFILE_COLOR_DESC: "Setting a color for an alter shows that color for their rank container along with their public profile.",
-  PUBLIC_PROFILE_SYSTEM_TAG_DESC: `You can set a system tag for your system. System tags can be at maximum 75 characters long.
+  PUBLIC_PROFILE_SYSTEM_TAG_DESC: `You can set a system tag for your system. System descriptions can be at maximum 75 characters long.
 -# {{ systemName }}'s system tag is: {{ displayTag }}`,
   ALTER_TOP_VIEW: `-# @{{ alterUsername }} • ID: \`{{ alterId }}\``,
   GENERAL_LABEL: "General",
@@ -589,7 +591,7 @@ There is an example below of what an example proxy with this role would look lik
   TERMINOLOGY_DESC: `Terminology is the way that PluralBuddy refers to your system, and the terms that are used inside of it. All terms currently have a character limit of 15 characters. **Terms besides the default terminology are currently English-only.**`,
   TEMPLATE_TERMINOLOGY_DESC: `You can reset your terminology with a specific template below.`,
   SYSTEM_NAME_BTN: "Set System Name",
-  SYSTEM_NAME_DESC: "The title of your system is the first thing that identifies your system and appears on the overlying structure to all of your system members. They must be at least 3 characters long and shorter than 20 characters long.",
+  SYSTEM_NAME_DESC: "The title of your system is the first thing that identifies your system and is the appears on the overlying structure to all of your system members. They must be at least 3 characters long and shorter than 20 characters long.",
   SYSTEM_NICKNAME_FORMAT_BTN: "Set Nickname Format",
   SYSTEM_NICKNAME_FORMAT_DESC: "The nickname format value is how your nickname is laid out when an alter uses the *Nickname* proxy mode. By default, its just the alters username, however you can customize that.",
   SYSTEM_PRIVACY_BTN: "Set System Privacy",
@@ -623,7 +625,7 @@ There is an example below of what an example proxy with this role would look lik
   IMPORT_SETTINGS_DESC: `Importing from another bot allows you to replace or add data from your other bots, or do both as a combination.`,
   REPLACE_DESC: "Replace will replace existing data in your system with data. Does not make new system data.",
   REPLACE_NAME: "Replace",
-  ADD_DESC: "Add will add new tags and alters from another bot. Does not replace existing alter or tag data.",
+  ADD_DESC: "Add will add new tags and alters from another bot.",
   ADD_NAME: "Add",
   FULL_IMPORT_DESC: "Full import mode will both replace existing alters and add new ones.",
   FULL_IMPORT_NAME: "Full Import",
@@ -640,7 +642,7 @@ There is an example below of what an example proxy with this role would look lik
   LINK_SUPPORT: "Support",
   LINK_DOCS: "Docs",
   DISPLAY_TAG_ENFORCE: "Display Tag Enforcement Policy",
-  DISPLAY_TAG_ENFORCE_DESC: "This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by using the button on the right.",
+  DISPLAY_TAG_ENFORCE_DESC: "This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by going into `pb;system config` -> \"Public Profile\".",
   NO_DM_CHANNELS: "You cannot proxy inside of DM channels. Sorry!",
   NOTIFIED_1: "-# You were notified of this action due to your association with your PluralBuddy alter.",
   NOTIFIED_2: "-# Developed as open-source software @ [pluralbuddy.app](<https://pluralbuddy.app>)",
@@ -689,7 +691,7 @@ Your system is using the front state of **{{ mode }}**.`,
   PROVIDER_NOT_FOUND: `That auto-proxy provider was not found, or you didn't authorize with the [\`system:ai-ap\`](https://pluralbuddy.app/docs/pluralbuddy/ai-ap) scope. Contact the developer of this integration if you believe this is incorrect.
 	
 -# Integration: \`{{ id }}\``,
-  AP_INVALID_SYNTAX: `Invalid autoproxy mode, alter or provider \`{{ mode }}\`.
+  AP_INVALID_SYNTAX: `Invalid autoproxy mode or provider \`{{ mode }}\`.
 
 **Auto-proxy Usage:**
 \`pb;autoproxy [off|latch|alter|status|clear-latch|{{ aiap }}]\``,
@@ -750,8 +752,11 @@ Actions to the right (destructive actions) will only be applied if you hit **App
 -# Please note that PluralKit errors are only in English.`,
   PREPARING_WRITE: "Preparing to write to database...",
   DELETING_ALTERS_STAGE: "Deleting operated alters...",
+  DELETING_TAGS_STAGE: "Deleting operated tags...",
   CREATING_ALTERS_STAGE: "Creating operated alters...",
+  CREATING_TAGS_STAGE: "Creating operated tags...",
   UPDATING_ALTERS_STAGE: "Updating alter of {{ maxAlters }}...",
+  UPDATING_TAGS_STAGE: "Updating tag of {{ maxTags }}...",
   CLEANING_UP: "Cleaning up...",
   DONE_SYNCING: "Sucessfully finished alter transcript operation `{{ id }}`.",
   SYNC_PREF_TITLE: `## Sync Preferences
@@ -790,5 +795,12 @@ PluralBuddy can sync your PluralKit members either one-way or two-way, automatic
   SUCCESSFULLY_APPLIED_TEMPLATE: "Successfully applied that template!",
   USE_PLURALKIT_TERMINOLOGY_TITLE: "Use PluralKit-style Terminology (new!)",
   USE_PLURALKIT_TERMINOLOGY_DESC: "Use terminology similar to represented in PluralKit (ie. member, group).",
-  ALTER_TAG_COUNT_TOO_HIGH: "-# This import cannot be done destructive and/or non-destructively due to the alter or tag count combined with the transcript being too high."
+  ALTER_TAG_COUNT_TOO_HIGH: "-# This import cannot be done destructive and/or non-destructively due to the alter or tag count combined with the transcript being too high.",
+  EDIT_REACTING_TOP: `-# For future reference, you can reply to a message with \`{{ prefix }}edit\` to edit that message.
+	
+You are attempting to edit a message with the 📝 emoji. Please enter the contents of the new message contents with the button below.`,
+  EDIT_MESSAGE_BTN: "Edit Message",
+  PT_CREATE_NEW: "Create New Proxy Tag",
+  PT_DELETE: "Delete Proxy Tag",
+  PT_LIMIT: "-# You can create up to 6 proxy tags."
 };
