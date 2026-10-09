@@ -180,7 +180,6 @@ export async function processEditContents(
 				messageId: messageData.messageId,
 				body: {
 					...getModernComponentsMappings(components),
-					allowed_mentions: { parse: [] },
 					files: fileAttachments.map((c) =>
 						new AttachmentBuilder().setFile("buffer", c.buff).setName(c.name),
 					),

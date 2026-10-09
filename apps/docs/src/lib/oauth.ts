@@ -8,6 +8,7 @@ import { verifyAccessToken } from "better-auth/oauth2";
 export async function authenticateOAuth(
 	request: NextRequest,
 	requiredScopes: string[],
+	origin: string | undefined = process.env.BETTER_AUTH_URL,
 	mongoClient?: MongoClient
 ): Promise<
 	| { response: NextResponse }
@@ -44,9 +45,9 @@ export async function authenticateOAuth(
 	const token = await verifyAccessToken(accessToken, {
 		verifyOptions: {
 			issuer: `${process.env.BETTER_AUTH_URL}/api/auth`,
-			audience: process.env.BETTER_AUTH_URL ?? "",
+			audience: origin ?? ""
 		},
-		jwksUrl: `${process.env.BETTER_AUTH_URL}/api/auth/jwks`,
+		jwksUrl: `${origin}/api/auth/jwks`,
 	}).catch((e) => {
 		if (e?.body?.code === "INVALID_SCOPE_SYSTEMREAD")
 			return {

@@ -19,8 +19,8 @@ export const register = (registry: OpenAPIRegistry) => {
 		description: "OAuth 2.1 authentication",
 		flows: {
 			authorizationCode: {
-				authorizationUrl: "https://pb.giftedly.dev/api/auth/oauth2/authorize",
-				tokenUrl: "https://pb.giftedly.dev/api/auth/oauth2/token",
+				authorizationUrl: "https://pluralbuddy.app/api/auth/oauth2/authorize",
+				tokenUrl: "https://pluralbuddy.app/api/auth/oauth2/token",
 				scopes: {
 					profile: "Read profile",
 					openid: "Read user ID",
@@ -38,8 +38,8 @@ export const register = (registry: OpenAPIRegistry) => {
 				},
 			},
 			clientCredentials: {
-				authorizationUrl: "https://pb.giftedly.dev/api/auth/oauth2/authorize",
-				tokenUrl: "https://pb.giftedly.dev/api/auth/oauth2/token",
+				authorizationUrl: "https://pluralbuddy.app/api/auth/oauth2/authorize",
+				tokenUrl: "https://pluralbuddy.app/api/auth/oauth2/token",
 				scopes: {
 					profile: "Read profile",
 					openid: "Read user ID",

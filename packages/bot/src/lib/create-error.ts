@@ -63,7 +63,7 @@ export async function createError(
 									)
 									.setAccessory(
 										new Thumbnail().setMedia(
-											"https://pb.giftedly.dev/image/pfp.png",
+											"https://pluralbuddy.app/image/pfp.png",
 										),
 									),
 								new Separator().setSpacing(Spacing.Large),

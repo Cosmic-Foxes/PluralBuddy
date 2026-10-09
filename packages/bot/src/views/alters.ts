@@ -104,7 +104,7 @@ ${this.translations.ID_SMALL_PROFILE}\`${alter.alterId.toString()}\``);
 							new Thumbnail()
 								.setMedia(
 									alter.avatarUrl === ""
-										? "https://pb.giftedly.dev/image/pfp.png"
+										? "https://pluralbuddy.app/image/pfp.png"
 										: alter.avatarUrl,
 								)
 								.setDescription(
@@ -121,7 +121,7 @@ ${this.translations.ID_SMALL_PROFILE}\`${alter.alterId.toString()}\``);
 							new MediaGalleryItem()
 								.setMedia(
 									alter.banner === ""
-										? "https://pb.giftedly.dev/image/pfp.png"
+										? "https://pluralbuddy.app/image/pfp.png"
 										: alter.banner,
 								)
 								.setDescription(
@@ -159,7 +159,7 @@ ${this.translations.ID_SMALL_PROFILE}\`${alter.alterId.toString()}\``);
 									),
 								)
 								.setStyle(ButtonStyle.Danger)
-								.setLabel("Delete Proxy Tag"),
+								.setLabel(this.translations.PT_DELETE),
 						)
 						.setComponents(
 							new TextDisplay().setContent(`${v.prefix}*text*${v.suffix}`),
@@ -174,10 +174,10 @@ ${this.translations.ID_SMALL_PROFILE}\`${alter.alterId.toString()}\``);
 							),
 						)
 						.setStyle(ButtonStyle.Primary)
-						.setLabel("Create New Proxy Tag")
+						.setLabel(this.translations.PT_CREATE_NEW)
 						.setDisabled(alter.proxyTags.length >= 7),
 				),
-				new TextDisplay().setContent("-# You can create up to 6 proxy tags."),
+				new TextDisplay().setContent(this.translations.PT_LIMIT),
 			),
 		];
 	}

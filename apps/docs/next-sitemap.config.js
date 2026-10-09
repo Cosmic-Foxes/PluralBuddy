@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-    siteUrl: process.env.SITE_URL || 'https://pb.giftedly.dev',
+    siteUrl: process.env.SITE_URL || 'https://pluralbuddy.app',
     generateRobotsTxt: true, // (optional)
     // ...other options
 }

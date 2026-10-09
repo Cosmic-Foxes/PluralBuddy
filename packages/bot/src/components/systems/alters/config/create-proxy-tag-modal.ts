@@ -114,10 +114,10 @@ export default class CreateProxyTagModal extends ModalCommand {
 			},
 		});
 
-		if (alter.fields["@/converter/pk"])
+		if ((alter.fields ?? {})["@/converter/pk"] !== undefined)
 			writeBack({
 				type: "alter",
-				id: alter.fields["@/converter/pk"],
+				id: alter.fields["@/converter/pk"] ?? "??",
 				change: {
 					proxyTags: [
 						...alter.proxyTags,

@@ -102,8 +102,8 @@ export function createOAuthFunction<
 	) => {
 		const db = await clientPromise;
 		await db.connect();
-		
-		const oauthResponse = await authenticateOAuth(request, options.scopes, db);
+
+		const oauthResponse = await authenticateOAuth(request, options.scopes, new URL(request.url).origin, db);
 		const [botDb, webDb] = [
 			db.db(`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`),
 			db.db(`${process.env.ENV}-pluralbuddy-app`),

@@ -7,11 +7,14 @@ import {
 } from "seyfert";
 import { ComponentHandler } from "seyfert/lib/components/handler";
 import { MessageFlags } from "seyfert/lib/types";
+import { client } from "@/index";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { clearProxyCacheIfNeeded } from "@/lib/pk-sync-engine";
 import {
 	alterCollection,
 	alterOperationCollection,
 	importTranscriptCollection,
+	tagCollection,
 	userCollection,
 } from "@/mongodb";
 import { AlertView } from "@/views/alert";
@@ -93,14 +96,46 @@ export default class SetPronounsButton extends ComponentCommand {
 			}),
 		);
 
+		alterOperation.alters.update.forEach((v) => clearProxyCacheIfNeeded(v))
+
+		await ctx.interaction.editResponse({
+			components: new LoadingView(
+				await ctx.userTranslations(),
+			).loadingViewCustom((await ctx.userTranslations()).CREATING_TAGS_STAGE),
+			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+		});
+
+		if (alterOperation.tags.add.length > 0)
+			await tagCollection.insertMany(alterOperation.tags.add);
+
 		await ctx.interaction.editResponse({
 			components: new LoadingView(
 				await ctx.userTranslations(),
 			).loadingViewCustom(
-				(await ctx.userTranslations()).CLEANING_UP.replace(
-					"{{ maxAlters }}",
-					String(alterOperation.alters.update.length ?? 0),
+				(await ctx.userTranslations()).UPDATING_TAGS_STAGE.replace(
+					"{{ maxTags }}",
+					String(alterOperation.tags.update.length ?? 0),
 				),
+			),
+			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+		});
+
+		await Promise.all(
+			alterOperation.tags.update.map(async (element) => {
+				await tagCollection.replaceOne(
+					{ tagId: element.tagId, systemId: element.systemId },
+					element,
+				);
+			}),
+		);
+
+		await userCollection.updateOne({ userId: ctx.author.id }, { $set: { "system": alterOperation.system.nondestructive } })
+
+		await ctx.interaction.editResponse({
+			components: new LoadingView(
+				await ctx.userTranslations(),
+			).loadingViewCustom(
+				(await ctx.userTranslations()).CLEANING_UP,
 			),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});

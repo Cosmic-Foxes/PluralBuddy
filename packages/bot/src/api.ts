@@ -88,7 +88,7 @@ export const clientRoutes = app
 			return json({
 				mention: mentionCommand("pb;", commandName, true),
 				subcommands: loadedApplicationCommands.filter((v) =>
-					v.name.startsWith(commandName),
+					v.name.startsWith(`${commandName} `),
 				),
 			});
 		},
@@ -232,7 +232,7 @@ export const clientRoutes = app
 		zValidator(
 			"json",
 			z.object({
-				type: z.enum(["terminology", "statistic", "similarWebhookResource", "pguild", "i18n"]),
+				type: z.enum(["terminology", "statistic", "similarWebhookResource", "pguild", "i18n", 'alterProxy']),
 				key: z.string(),
 			}),
 		),

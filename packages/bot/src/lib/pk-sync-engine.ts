@@ -12,6 +12,7 @@ import {
 	PTagObject,
 	type PUser,
 } from "plurography";
+import { Cache, CacheFrom } from "seyfert";
 import type z from "zod";
 import {
 	alterCollection,
@@ -19,6 +20,7 @@ import {
 	tagCollection,
 	userCollection,
 } from "@/mongodb";
+import { client, logger } from "..";
 import { hexToBuffer } from "./hex-buffer-operation";
 import { pk } from "./pk-api";
 import { decryptToken } from "./pk-token-encryption";
@@ -66,8 +68,11 @@ export function runSandboxActions({
 		systemDisplayTag:
 			systemParsed.tag ?? pluralbuddy.system.systemDisplayTag ?? undefined,
 	};
+	logger?.info("parsed system")
 
 	const usernames = pluralbuddy.alters.map((c) => c.username);
+	const displayNames = pluralbuddy.alters.map((c) => c.displayName);
+	const existingPkIds = pluralbuddy.alters.map(c => (c.fields ?? {})["@/converter/pk"] ?? "")
 	const pkUsernames = pluralkit.members.map((c) => c.name);
 	const converter = new PluralKitConverter();
 
@@ -79,7 +84,7 @@ export function runSandboxActions({
 		.filter(
 			(c) =>
 				!(
-					usernames.includes(c.display_name ?? "") || usernames.includes(c.name)
+					existingPkIds.includes(c.uuid) || displayNames.includes(c.display_name ?? "") || usernames.includes(c.name)
 				),
 		)
 		.forEach((c, i) => creationAlters.push(converter.toAlter(c, i, authorId)));
@@ -87,11 +92,11 @@ export function runSandboxActions({
 	pluralkit.members
 		.filter(
 			(c) =>
-				usernames.includes(c.display_name ?? "") || usernames.includes(c.name),
+				existingPkIds.includes(c.uuid) || displayNames.includes(c.display_name ?? "") || usernames.includes(c.name)
 		)
 		.forEach((v, i) => {
 			const possibleAlter = pluralbuddy.alters.find(
-				(c) => c.username === v.display_name || c.username === v.name,
+				(c) => (c.fields ?? {})["@/converter/pk"] === v.uuid || c.displayName === v.display_name || c.username === v.name,
 			);
 			const newAlter = converter._syncUpdateAlter(v, i);
 
@@ -139,7 +144,7 @@ export function runSandboxActions({
 					tagFriendlyNames.includes(c.display_name ?? "") ||
 					tagFriendlyNames.includes(c.name)
 				),
-		)
+		).filter(v => v !== undefined)
 		.forEach((c, i) => creationTags.push(converter.toTag(c, i, authorId)));
 
 	pluralkit.groups
@@ -221,15 +226,15 @@ export function runSandboxActions({
 function sortObject(
 	obj:
 		| Record<
-				string,
-				| string
-				| number
-				| unknown[]
-				| Record<string, string | undefined>
-				| Date
-				| undefined
-				| null
-		  >
+			string,
+			| string
+			| number
+			| unknown[]
+			| Record<string, string | undefined>
+			| Date
+			| undefined
+			| null
+		>
 		| Date
 		| unknown[],
 ) {
@@ -249,29 +254,29 @@ function sortObject(
 }
 
 export type WriteBackArguments = (
-		| {
-				type: "system";
-				id: "@me";
-				change: Partial<PSystem>;
-		  }
-		| {
-				type: "alter" | "create-alter";
-				/**  The PluralKit ID of the member. */
-				id: string;
-				change: Partial<PAlter> & { userId?: string };
-		  }
-		| {
-				type: "tag" | "create-tag";
-				/**  The PluralKit ID of the group. */
-				id: string;
-				change: Partial<PTag> & { userId?: string };
-		  }
-		| {
-				type: "member-group-relationship";
-				id: string;
-				change: { groupId: string; type: "add" | "remove" };
-		  }
-	) & { syncConfig: PUser["syncConfiguration"] };
+	| {
+		type: "system";
+		id: "@me";
+		change: Partial<PSystem>;
+	}
+	| {
+		type: "alter" | "create-alter";
+		/**  The PluralKit ID of the member. */
+		id: string;
+		change: Partial<PAlter> & { userId?: string };
+	}
+	| {
+		type: "tag" | "create-tag";
+		/**  The PluralKit ID of the group. */
+		id: string;
+		change: Partial<PTag> & { userId?: string };
+	}
+	| {
+		type: "member-group-relationship";
+		id: string;
+		change: { groupId: string; type: "add" | "remove" };
+	}
+) & { syncConfig: PUser["syncConfiguration"] };
 
 export async function writeBack({
 	type,
@@ -386,8 +391,8 @@ export async function automaticallySync({
 		!syncConfiguration.pluralkit.token ||
 		!systemPB ||
 		Date.now() -
-			(syncConfiguration.pluralkit.lastSynced ?? new Date()).valueOf() <
-			1800000
+		(syncConfiguration.pluralkit.lastSynced ?? new Date()).valueOf() <
+		1800000
 	) {
 		return;
 	}
@@ -448,4 +453,49 @@ export async function automaticallySync({
 			},
 			systemId: userId,
 		});
+
+
+	if (transcript.tags.add.length > 0)
+		await tagCollection.insertMany(transcript.tags.add);
+
+
+	await Promise.all(
+		transcript.tags.update.map(async (element) => {
+			await tagCollection.replaceOne(
+				{ tagId: element.tagId, systemId: element.systemId },
+				element,
+			);
+		}),
+	);
+
+	if (transcript.tags.remove.length > 0 && destructive)
+		await tagCollection.deleteMany({
+			tagId: {
+				$in: transcript.tags.remove.map((v) => v.tagId),
+			},
+			systemId: userId,
+		});
+
+	[...transcript.alters.update, ...transcript.alters.remove].forEach((v) => clearProxyCacheIfNeeded(v))
+
+	await userCollection.updateOne({ userId }, { $set: { "system": destructive ? transcript.system.destructive : transcript.system.nondestructive } })
+
+
+}
+
+export async function clearProxyCacheIfNeeded(alter: PAlter | { alterId: string, systemId: string }) {
+	if (!("proxyTags" in alter)) {
+		client.cache.alterProxy.remove(String(alter.alterId))
+		return;
+	}
+
+	client.cache.alterProxy.set(CacheFrom.Rest, String(alter.alterId),
+		{
+			pt: JSON.stringify(
+				alter.proxyTags.map((c) => ({
+					p: c.prefix,
+					s: c.suffix,
+				})),
+			),
+		},)
 }

@@ -8,7 +8,7 @@ import type { Octokit } from "octokit";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { ActionRow, Button, Container, Separator, TextDisplay } from "seyfert";
 
-const statusUrl = "https://internal-pb.giftedly.dev";
+const statusUrl = "https://internal-pluralbuddy.app";
 
 export const { api } = hc<ClientType>(statusUrl, {
 	headers: {

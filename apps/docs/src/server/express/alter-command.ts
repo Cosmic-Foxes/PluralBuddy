@@ -45,7 +45,7 @@ export async function interaction(
 						.setAccentColor(11993088)
 						.addTextDisplayComponents(
 							new TextDisplayBuilder().setContent(
-								`You are not the owner of this alter or this alter doesn't exist anymore.\n-# PluralBuddy Express • Alter: \`${applicationObj.alterId}\` • [PluralBuddy](<https://pb.giftedly.dev>)`,
+								`You are not the owner of this alter or this alter doesn't exist anymore.\n-# PluralBuddy Express • Alter: \`${applicationObj.alterId}\` • [PluralBuddy](<https://pluralbuddy.app>)`,
 							),
 						)
 						.toJSON(),

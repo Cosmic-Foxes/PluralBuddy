@@ -20,7 +20,7 @@ const document = generator.generateDocument({
 	info: { title: "PluralBuddy API", version: "1.0.2" },
 	servers: [
 		{
-			url: "https://pb.giftedly.dev/api",
+			url: "https://pluralbuddy.app/api",
 		},
 	],
 	security: [

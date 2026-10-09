@@ -22,6 +22,6 @@ export default {
 			return Response.redirect(`https://img.pb.giftedly.dev/${pathname.slice(3)}`, 308);
 		}
 
-		return Response.redirect(`https://pb.giftedly.dev/${pathname}`, 308);
+		return Response.redirect(`https://pluralbuddy.app/${pathname}`, 308);
 	},
 } satisfies ExportedHandler<Env>;

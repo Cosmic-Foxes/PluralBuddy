@@ -101,6 +101,10 @@ export default createEvent({
 		if (message.author.bot === true) return;
 		if (startsWithPrefix(message)) return;
 
+		if (message.attachments.reduce((p, n) => p + n.size, 0) > 20_000_000) {
+			return;
+		}
+		
 		if (message.content === `<@${message.client.applicationId}>`) {
 			const locale = await getLanguageByUserId(message.author.id);
 			const guild = await getGuildFromId(message.guildId ?? "");

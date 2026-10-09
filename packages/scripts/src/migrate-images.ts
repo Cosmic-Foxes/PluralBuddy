@@ -29,14 +29,14 @@ await alters.aggregate([
 				$replaceOne: {
 					input: "$avatarUrl",
 					find: "https://pluralbuddy.giftedly.dev/p/",
-					replacement: "https://img.pb.giftedly.dev/",
+					replacement: "https://img.pluralbuddy.app/",
 				},
 			},
 			banner: {
 				$replaceOne: {
 					input: "$banner",
 					find: "https://pluralbuddy.giftedly.dev/p/",
-					replacement: "https://img.pb.giftedly.dev/",
+					replacement: "https://img.pluralbuddy.app/",
 				},
 			},
 		},
@@ -66,14 +66,14 @@ await users.aggregate([
 				$replaceOne: {
 					input: "$avatarUrl",
 					find: "https://pluralbuddy.giftedly.dev/p/",
-					replacement: "https://img.pb.giftedly.dev/",
+					replacement: "https://img.pluralbuddy.app/",
 				},
 			},
 			banner: {
 				$replaceOne: {
 					input: "$banner",
 					find: "https://pluralbuddy.giftedly.dev/p/",
-					replacement: "https://img.pb.giftedly.dev/",
+					replacement: "https://img.pluralbuddy.app/",
 				},
 			},
 		},

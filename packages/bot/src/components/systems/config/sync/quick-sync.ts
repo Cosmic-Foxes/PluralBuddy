@@ -7,11 +7,11 @@ import {
 import { ComponentCommand, ComponentContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import type { z } from "zod";
-import { build } from "@/index";
+import { build, client, logger } from "@/index";
 import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { pk } from "@/lib/pk-api";
-import { runSandboxActions } from "@/lib/pk-sync-engine";
+import { clearProxyCacheIfNeeded, runSandboxActions } from "@/lib/pk-sync-engine";
 import { decryptToken } from "@/lib/pk-token-encryption";
 import { alterCollection, tagCollection, userCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
@@ -43,9 +43,9 @@ export default class QuickSync extends ComponentCommand {
 			syncConfiguration?.pluralkit?.token === undefined
 				? null
 				: await decryptToken(
-						syncConfiguration.pluralkit.token.i,
-						syncConfiguration.pluralkit.token.v,
-					);
+					syncConfiguration.pluralkit.token.i,
+					syncConfiguration.pluralkit.token.v,
+				);
 
 		if (!token) return await ctx.deferUpdate();
 
@@ -62,6 +62,7 @@ export default class QuickSync extends ComponentCommand {
 		const system = await pk(token).systemsCollection.findOne({ userId: "@me" });
 		const members = await pk(token).membersCollection.find({ userId: "@me" });
 		const groups = await pk(token).groupsCollection.find({ userId: "@me" });
+		logger?.info("found pk objects")
 
 		const alters = await alterCollection
 			.find({ systemId: ctx.author.id })
@@ -91,6 +92,22 @@ export default class QuickSync extends ComponentCommand {
 				);
 			}),
 		);
+
+		transcript.alters.update.forEach((v) => clearProxyCacheIfNeeded(v))
+
+		if (transcript.tags.add.length > 0)
+			await tagCollection.insertMany(transcript.tags.add);
+
+		await Promise.all(
+			transcript.tags.update.map(async (element) => {
+				await tagCollection.replaceOne(
+					{ tagId: element.tagId, systemId: element.systemId },
+					element,
+				);
+			}),
+		);
+
+		await userCollection.updateOne({ userId: ctx.author.id }, { $set: { "system": transcript.system.nondestructive } })
 
 		await userCollection.updateOne(
 			{ userId: ctx.author.id },

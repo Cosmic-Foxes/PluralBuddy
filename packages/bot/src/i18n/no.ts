@@ -300,88 +300,116 @@ PluralBuddy uses a **username/display name** system.
 -# **LINKS**
 > -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pluralbuddy.app)
 > -# [Terms of Service](<https://pluralbuddy.app/docs/policies/terms>) · [Privacy Policy](<https://pluralbuddy.app/docs/policies/privacy>)`,
-  TAG_ASSIGN_ALTER: "Assign Tag",
-  SET_AUTO_PROXY_SRV: "Successfully set proxy mode to **%mode%** for your system in **%server_name%**.",
-  SET_AUTO_PROXY_GLOBAL: "Successfully set proxy mode to **%mode%** for your system everywhere.",
-  SET_AUTO_PROXY_CUSTOM: "Successfully changed control of your proxy mode to **%app%** in **%server_name%**. **%app%** will be able to control your front state until you disable this auto proxy mode.",
-  SET_AUTO_PROXY_CUSTOM_GLOBAL: "Successfully changed control of your proxy mode to **%app%** everywhere. **%app%** will be able to control your front state until you disable this auto proxy mode.",
-  SET_AUTO_PROXY_DMS: "Successfully set proxy mode to **%mode%** for your system in that server.",
-  TAG_ALREADY_ASSIGNED: "**%tag%** has already been assigned to **@%alter%.",
-  ASSIGNED_TAG: "**%tag%** has been successfully assigned to **@%alter%**.",
-  FORBIDDEN: "You do not have permission on this server to do this action.",
-  ERROR_FAILED_TO_UPLOAD_TO_GCP: "2d – Failed to upload the image to Google Cloud Platform. Please try again later.",
-  DN_ERROR_SE: "2e – You cannot use this command in DM's.",
-  SYSTEM_SET_NAME: "Successfully changed the name of your system to %name%",
-  SYSTEM_SET_LATCH_DELAY: "Successfully changed the latch delay to %delay%. Latch alters will be cleared after that time period.",
-  SYSTEM_SET_PRONOUNS: "Successfully changed the pronouns of your system to %pronouns%",
-  SYSTEM_SET_SYSTEM_TAG: "Successfully changed the system tag of your system to %tag%",
-  OPERATION_SYSTEM_SET_SYSTEM_TAG: "Changed the system tag of your system to %tag%",
-  OPERATION_AVATAR: "Set system avatar to a **[new image](<%link%>)**.",
-  OPERATION_AVATAR_UNDEFINED: "Reset system avatar",
-  OPERATION_BANNER: "Set system banner to a **[new image](<%link%>)**.",
-  OPERATION_BANNER_UNDEFINED: "Reset system banner",
-  OPERATION_DESCRIPTION: "Set system description to:\n > %description%",
-  OPERATION_PRONOUNS: "Set system pronouns to %pronouns%.",
-  OPERATION_LATCH_DELAY: "Set latch delay to %delay%.",
-  OPERATION_FALLBACK: "Set \`%property%\` to \`%value%\`",
-  OPERATION_SYSTEM_TOGGLE_PROXY_TAGS: "Toggled proxy tags on the system.",
-  OPERATION_SYSTEM_TOGGLE_PRONOUNS: "Toggled displaying pronouns on the system.",
-  OPERATION_SYSTEM_TOGGLE_TYPING_STATUS: "Toggled typing status on the system.",
-  OPERATION_SYSTEM_PREFER_ACCESSIBLITY: "Toggled prefer accessiblity mode on the system.",
-  OPERATION_FLIPPED_DT: "Toggled left side display tags on the system.",
-  OPERATION_FLIPPED_CASE_INSENS_PROXIES: "Toggled case insensitive proxying on this system.",
-  OPERATION_FLIPPED_PUBLIC_DEFAULT: "Toggled public defaulting on this system.",
-  EDIT_MESSAGE: "Editing message",
-  MESSAGE_CONTENTS: "New Message Contents",
-  BLOCKLIST_USER: "Blocklist User ID",
-  NUDGE_BLOCKLIST: "Nudge Blocklist",
-  SUCCESSFULLY_REMOVED_MESSAGE: "Successfully deleted that message.",
-  SUCCESSFULLY_EDITED_MESSAGE: "Successfully edited [that message](<%message%>).",
-  NUDGE_SNOOZE: "Permanently snooze nudges",
-  BLOCK_SNOOZE: "Block this user from nudging you",
-  ERROR_OWN_MESSAGE: "2c – You do not own this message or this wasn't sent by PluralBuddy.",
-  NOT_RECENT_ENOUGH: "2z – You do not have a message in this channel recent enough in this channel __**or**__ the message you replied to isn't valid anymore.",
-  DISABLE_NUDGING_DONE: "Successfully disabled nudging for yourself.",
-  USER_CANNOT_BE_NUDGED: "2aa – This user cannot be nudged.",
-  USER_ALREADY_BLOCKED: "2ab – This user has already been blocked.",
-  USER_NOT_BLOCKED: "2ac – This user hasn't been blocked yet.",
-  SUCCESSFULLY_BLOCKED: "Successfully blocked that user.",
-  MESSAGE_NOT_MINE: "2af – This message isn't mine.",
-  DATA_DOESNT_EXIST: "2ae – The alter or system associated with the message doesn't exist anymore. (?)",
-  INSUFFICIENT_DATA_SIZE: "2ad – There is not a sufficient amount of resources under your user context to continue with this operation.",
-  INSUFFICIENT_USER_PERMISSIONS: "2ag – You do not have permission to edit this information.",
-  SUCCESS_CHANGED_SERVER_PREFIXES: "This server now has the following prefixes: \n%prefixes%",
-  SUCCESS_ADD_ITEM_BLOCKED: "%item% has been blocked successfully.",
-  SUCCESS_REMOVE_ITEM_BLOCKED: "%item% has been unblocked successfully.",
-  SUCCESS_CHANGED_SERVER_BLOCKS: "This server now has the following block configuration: \n%block_items%",
-  PREFIX_ALREADY_EXISTS: "That prefix already exists or there is a duplicate in the array.",
-  BLOCK_ALREADY_EXISTS: "That role or channel is already blocked.",
-  SUCCESS_ADD_MANAGER_ROLE: "%item% has been added to the manager role list successfully.",
-  SUCCESS_CHANGED_MANAGER_BLOCKS: "This server now has the following manager role configuration: \n%manager_roles%",
-  LATCH_DELAY_INVALID: "Latch delays cannot be longer than 10 hours, or be an invalid input. ",
-  MANAGER_ALREADY_EXISTS: "That manager role is already on the manager role list.",
-  SUCCESS_REMOVE_MANAGER_ROLE: "%item% has been removed from the manager role list successfully.",
-  REQUIRE_TAG_ENABLED: "All systems will now be required to enable system tags in order to proxy.",
-  REQUIRE_TAG_DISABLED: "All systems will no longer be required to enable system tags to proxy.",
-  ERROR_DOESNT_EXIST: "That error doesn't exist. Has it already been cleared?",
-  FEATURE_DISABLED_GUILD: "That feature is disabled on this guild.",
-  FEATURE_DISABLED_CHANNEL: "This channel is disabled from using PluralBuddy.",
-  LOGGING_CHANNEL_SET: "Successfuly set that channel as a logging channel for this guild.",
-  ROLE_PREFERENCE_ALREADY_EXISTS: "That role preference already exists.",
-  ROLE_PREFERENCE_DOESNT_EXIST: "That role preference doesn't exist.",
-  ROLE_PREFERENCE_SEARCH: "Searching Roles",
-  REPROXIED_MESSAGE: "Successfully reproxied the message.",
-  ERRORS_SEARCH: "Searching Errors",
-  ROLE_CONTENTS: "Role Container Contents",
-  ROLE_COLOR: "Role Container Color",
-  ROLE_LOCATION: "Role Container Location",
-  FORM_ROLE_CONFIG: "Editing Role Configuration",
-  DELAY_CHANGED: "The server proxy delay has been updated to %seconds% seconds (%ms%ms).",
-  ROLE_NO_SPECIAL_CONFIG: "This role doesn't have a special configuration.",
-  SET_CONTAINERS_CONTENT: "Successfully set/cleared the role container <@&%role%>'s content. Above is a preview of the new role container.",
-  SET_CONTAINERS_COLOR: "Successfully set/cleared the role container <@&%role%>'s color. Above is a preview of the new role container.",
-  SET_CONTAINERS_LOCATION: "Successfully set/cleared the role container <@&%role%>'s location. Above is a preview of the new role container.",
-  DISABLED_FEATURE: `Successfully disabled that feature.
+	TAG_ASSIGN_ALTER: "Assign Tag",
+	SET_AUTO_PROXY_SRV:
+		"Successfully set proxy mode to **%mode%** for your system in **%server_name%**.",
+	SET_AUTO_PROXY_GLOBAL:
+		"Successfully set proxy mode to **%mode%** for your system everywhere.",
+	SET_AUTO_PROXY_CUSTOM:
+		"Successfully changed control of your proxy mode to **%app%** in **%server_name%**. **%app%** will be able to control your front state until you disable this auto proxy mode.",
+	SET_AUTO_PROXY_CUSTOM_GLOBAL:
+		"Successfully changed control of your proxy mode to **%app%** everywhere. **%app%** will be able to control your front state until you disable this auto proxy mode.",
+	SET_AUTO_PROXY_DMS:
+		"Successfully set proxy mode to **%mode%** for your system in that server.",
+	TAG_ALREADY_ASSIGNED: "**%tag%** has already been assigned to **@%alter%.",
+	ASSIGNED_TAG: "**%tag%** has been successfully assigned to **@%alter%**.",
+	FORBIDDEN: "You do not have permission on this server to do this action.",
+	ERROR_FAILED_TO_UPLOAD_TO_GCP:
+		"2d – Failed to upload the image to Google Cloud Platform. Please try again later.",
+	DN_ERROR_SE: "2e – You cannot use this command in DM's.",
+	SYSTEM_SET_NAME: "Successfully changed the name of your system to %name%",
+	SYSTEM_SET_LATCH_DELAY:
+		"Successfully changed the latch delay to %delay%. Latch alters will be cleared after that time period.",
+	SYSTEM_SET_PRONOUNS:
+		"Successfully changed the pronouns of your system to %pronouns%",
+	SYSTEM_SET_SYSTEM_TAG:
+		"Successfully changed the system tag of your system to %tag%",
+	OPERATION_SYSTEM_SET_SYSTEM_TAG:
+		"Changed the system tag of your system to %tag%",
+	OPERATION_AVATAR: "Set system avatar to a **[new image](<%link%>)**.",
+	OPERATION_AVATAR_UNDEFINED: "Reset system avatar",
+	OPERATION_BANNER: "Set system banner to a **[new image](<%link%>)**.",
+	OPERATION_BANNER_UNDEFINED: "Reset system banner",
+	OPERATION_DESCRIPTION: "Set system description to:\n > %description%",
+	OPERATION_PRONOUNS: "Set system pronouns to %pronouns%.",
+	OPERATION_LATCH_DELAY: "Set latch delay to %delay%.",
+	OPERATION_FALLBACK: "Set \`%property%\` to \`%value%\`",
+	OPERATION_SYSTEM_TOGGLE_PROXY_TAGS: "Toggled proxy tags on the system.",
+	OPERATION_SYSTEM_TOGGLE_PRONOUNS:
+		"Toggled displaying pronouns on the system.",
+	OPERATION_SYSTEM_TOGGLE_TYPING_STATUS: "Toggled typing status on the system.",
+	EDIT_MESSAGE: "Editing message",
+	MESSAGE_CONTENTS: "New Message Contents",
+	BLOCKLIST_USER: "Blocklist User ID",
+	NUDGE_BLOCKLIST: "Nudge Blocklist",
+	SUCCESSFULLY_REMOVED_MESSAGE: "Successfully deleted that message.",
+	SUCCESSFULLY_EDITED_MESSAGE:
+		"Successfully edited [that message](<%message%>).",
+	NUDGE_SNOOZE: "Permanently snooze nudges",
+	BLOCK_SNOOZE: "Block this user from nudging you",
+	ERROR_OWN_MESSAGE:
+		"2c – You do not own this message or this wasn't sent by PluralBuddy.",
+	NOT_RECENT_ENOUGH:
+		"2z – You do not have a message in this channel recent enough in this channel __**or**__ the message you replied to isn't valid anymore.",
+	DISABLE_NUDGING_DONE: "Successfully disabled nudging for yourself.",
+	USER_CANNOT_BE_NUDGED: "2aa – This user cannot be nudged.",
+	USER_ALREADY_BLOCKED: "2ab – This user has already been blocked.",
+	USER_NOT_BLOCKED: "2ac – This user hasn't been blocked yet.",
+	SUCCESSFULLY_BLOCKED: "Successfully blocked that user.",
+	MESSAGE_NOT_MINE: "2af – This message isn't mine.",
+	DATA_DOESNT_EXIST:
+		"2ae – The alter or system associated with the message doesn't exist anymore. (?)",
+	INSUFFICIENT_DATA_SIZE:
+		"2ad – There is not a sufficient amount of resources under your user context to continue with this operation.",
+	INSUFFICIENT_USER_PERMISSIONS:
+		"2ag – You do not have permission to edit this information.",
+	SUCCESS_CHANGED_SERVER_PREFIXES:
+		"This server now has the following prefixes: \n%prefixes%",
+	SUCCESS_ADD_ITEM_BLOCKED: "%item% has been blocked successfully.",
+	SUCCESS_REMOVE_ITEM_BLOCKED: "%item% has been unblocked successfully.",
+	SUCCESS_CHANGED_SERVER_BLOCKS:
+		"This server now has the following block configuration: \n%block_items%",
+	PREFIX_ALREADY_EXISTS:
+		"That prefix already exists or there is a duplicate in the array.",
+	BLOCK_ALREADY_EXISTS: "That role or channel is already blocked.",
+	SUCCESS_ADD_MANAGER_ROLE:
+		"%item% has been added to the manager role list successfully.",
+	SUCCESS_CHANGED_MANAGER_BLOCKS:
+		"This server now has the following manager role configuration: \n%manager_roles%",
+	LATCH_DELAY_INVALID:
+		"Latch delays cannot be longer than 10 hours, or be an invalid input. ",
+	MANAGER_ALREADY_EXISTS:
+		"That manager role is already on the manager role list.",
+	SUCCESS_REMOVE_MANAGER_ROLE:
+		"%item% has been removed from the manager role list successfully.",
+	REQUIRE_TAG_ENABLED:
+		"All systems will now be required to enable system tags in order to proxy.",
+	REQUIRE_TAG_DISABLED:
+		"All systems will no longer be required to enable system tags to proxy.",
+	ERROR_DOESNT_EXIST: "That error doesn't exist. Has it already been cleared?",
+	FEATURE_DISABLED_GUILD: "That feature is disabled on this guild.",
+	FEATURE_DISABLED_CHANNEL: "This channel is disabled from using PluralBuddy.",
+	LOGGING_CHANNEL_SET:
+		"Successfuly set that channel as a logging channel for this guild.",
+	ROLE_PREFERENCE_ALREADY_EXISTS: "That role preference already exists.",
+	ROLE_PREFERENCE_DOESNT_EXIST: "That role preference doesn't exist.",
+	ROLE_PREFERENCE_SEARCH: "Searching Roles",
+	REPROXIED_MESSAGE: "Successfully reproxied the message.",
+	ERRORS_SEARCH: "Searching Errors",
+	ROLE_CONTENTS: "Role Container Contents",
+	ROLE_COLOR: "Role Container Color",
+	ROLE_LOCATION: "Role Container Location",
+	FORM_ROLE_CONFIG: "Editing Role Configuration",
+	DELAY_CHANGED:
+		"The server proxy delay has been updated to %seconds% seconds (%ms%ms).",
+	ROLE_NO_SPECIAL_CONFIG: "This role doesn't have a special configuration.",
+	SET_CONTAINERS_CONTENT:
+		"Successfully set/cleared the role container <@&%role%>'s content. Above is a preview of the new role container.",
+	SET_CONTAINERS_COLOR:
+		"Successfully set/cleared the role container <@&%role%>'s color. Above is a preview of the new role container.",
+	SET_CONTAINERS_LOCATION:
+		"Successfully set/cleared the role container <@&%role%>'s location. Above is a preview of the new role container.",
+	DISABLED_FEATURE: `Successfully disabled that feature.
 
 **%name%**
 > %description%`,
@@ -413,10 +441,10 @@ PluralBuddy uses a **username/display name** system.
 > - *Alter Mode*: All messages sent from this system will proxy on this alter. Proxy tags added to the end of your message will mean nothing, as all messages will proxy with this alter regardless of proxy tags.
 > - *Latch Mode*: The alter from the last proxied messages featuring proxy tags will be selected for future messages. A starting alter is not required, however can be set.
 > - *Off*: Using proxy tags will proxy an alter, otherwise a normal message is sent.`,
-  REQUIRED_SERVER_PROXY: "You must be in a server to proxy",
-  SELECT_DEFAULT_PROXY: "Select a proxy mode",
-  POLICY_MODAL_TITLE: "Welcome to PluralBuddy!",
-  POLICY_MODAL_DESCRIPTION: `${emojis.clockCheck} Hello, welcome to PluralBuddy for Discord! In order for us to keep PluralBuddy a safe bot, we require that you agree to our [Privacy Policy](https://pluralbuddy.app/en/docs/policies/privacy) & [Terms of Service](https://pluralbuddy.app/en/docs/policies/terms) to use PluralBuddy.
+	REQUIRED_SERVER_PROXY: "You must be in a server to proxy",
+	SELECT_DEFAULT_PROXY: "Select a proxy mode",
+	POLICY_MODAL_TITLE: "Welcome to PluralBuddy!",
+	POLICY_MODAL_DESCRIPTION: `${emojis.clockCheck} Hello, welcome to PluralBuddy for Discord! In order for us to keep PluralBuddy a safe bot, we require that you agree to our [Privacy Policy](https://pluralbuddy.app/en/docs/policies/privacy) & [Terms of Service](https://pluralbuddy.app/en/docs/policies/terms) to use PluralBuddy.
 
 -# - NSFW content is not tolerated on PluralBuddy. NSFW will result in an instant block. Be careful with the content you upload.
 -# - While PluralBuddy is a **private-first** bot from a user perspective, however due to the nature of centralized Discord bots, all system-related data you provide PluralBuddy is able to be seen by developers.
@@ -683,12 +711,12 @@ Hit the button to the right to open this alter in the dashboard.`,
 Your system is currently auto proxying in **{{ mode }}**.`,
   INTEGRATION_AP: `### Auto-Proxy Status
 Your system is using the front state of **{{ mode }}**.`,
-  NO_STATUS_AP: `You are not currently auto proxying on that scope.`,
-  NO_ALTER_AP: `Your auto proxy is not currently attached to an alter.`,
-  DISABLED_SERVER: `This server is disabled from proxying.`,
-  AP_AS: "-# **AUTO-PROXYING AS:**",
-  AP_INTEGRATION_AS: "-# **{{ provider }} FRONTING AS:**",
-  PROVIDER_NOT_FOUND: `That auto-proxy provider was not found, or you didn't authorize with the [\`system:ai-ap\`](https://pluralbuddy.app/docs/pluralbuddy/ai-ap) scope. Contact the developer of this integration if you believe this is incorrect.
+	NO_STATUS_AP: `You are not currently auto proxying on that scope.`,
+	NO_ALTER_AP: `Your auto proxy is not currently attached to an alter.`,
+	DISABLED_SERVER: `This server is disabled from proxying.`,
+	AP_AS: "-# **AUTO-PROXYING AS:**",
+	AP_INTEGRATION_AS: "-# **{{ provider }} FRONTING AS:**",
+	PROVIDER_NOT_FOUND: `That auto-proxy provider was not found, or you didn't authorize with the [\`system:ai-ap\`](https://pluralbuddy.app/docs/pluralbuddy/ai-ap) scope. Contact the developer of this integration if you believe this is incorrect.
 	
 -# Integration: \`{{ id }}\``,
   AP_INVALID_SYNTAX: `Invalid autoproxy mode or provider \`{{ mode }}\`.
