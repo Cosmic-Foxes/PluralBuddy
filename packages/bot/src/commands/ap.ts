@@ -126,6 +126,10 @@ export default class AutoProxyCommand extends Command {
 
 			(ctx as CommandContext<typeof customOptions>).options.provider =
 				consent?.clientId ?? "";
+			const scope = parseScope(args.split(" ").slice(1).join(" "));
+
+			if (scope !== undefined)
+				(ctx as CommandContext<typeof customOptions>).options.scope = scope;
 
 			return await runCustomProviderCommand(
 				ctx as CommandContext<typeof customOptions>,
