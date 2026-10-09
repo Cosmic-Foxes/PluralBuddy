@@ -40,9 +40,9 @@ export const POST = createOAuthFunction<
 			);
 		}
 
-		const { fields, tagIds, proxyTags, ...omittedData } = await ctx.body();
+		const { fields, tagIds, ...omittedData } = await ctx.body();
 
-		if (!isEqual(proxyTags, alterObj.proxyTags)) {
+		if (!isEqual(omittedData.proxyTags, alterObj.proxyTags)) {
 			await api.cache.$delete({
 				json: { type: "alterProxy", key: String(alterObj.alterId) },
 			});
