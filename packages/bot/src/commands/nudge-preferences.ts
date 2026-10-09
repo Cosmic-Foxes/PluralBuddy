@@ -18,7 +18,7 @@ export default class NudgePreferencesCommand extends Command {
 		await ctx.deferReply(true);
 		let user = await ctx.retrievePUser();
 
-		// Database migration (12/04/25)
+		
 		if (user.nudging === undefined) {
 			await userCollection.updateOne(
 				{ userId: user.userId },
@@ -27,20 +27,20 @@ export default class NudgePreferencesCommand extends Command {
 						nudging: {
 							blockedUsers: [],
 							currentlyEnabled: true,
-							dmReply: false,
+							dmReply: false,       
+							serverReplying: false,  
 						},
 					},
 				},
 			);
 
-			// Set user in memory
 			user.nudging = {
 				blockedUsers: [],
 				currentlyEnabled: true,
 				dmReply: false,
+				serverReplying: false,
 			};
 		}
-		// End database migration
 
 		return await ctx.ephemeral(
 			{
