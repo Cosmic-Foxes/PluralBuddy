@@ -1,52 +1,82 @@
-import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { writeUserById } from "@/types/user";
-import { AlertView } from "@/views/alert";
-import { NudgePreferences } from "@/views/nudge-preferences";
-import { ComponentCommand, ComponentContext } from "seyfert";
-import { MessageFlags } from "seyfert/lib/types";
+import { Button, Container, type Message, Section, TextDisplay } from "seyfert";
+import {
+	ButtonStyle,
+	MessageFlags,
+	PermissionFlagsBits,
+} from "seyfert/lib/types";
+import { client } from "@/index";
+import { messagesCollection, userCollection } from "@/mongodb";
+import { InteractionIdentifier } from "../interaction-ids";
 
-export default class AddUserBlockListNudge extends ComponentCommand {
-	componentType = "Button" as const;
+export async function handleServerReply(message: Message) {
+	if (!message.guildId) return;
+	if (!message.referencedMessage) return;
 
-	override filter(context: ComponentContext<typeof this.componentType>) {
-		// Note: Update this if you rename ToggleDMReplies in your InteractionIdentifier mapping
-		return InteractionIdentifier.Nudge.ToggleServerReplies.startsWith(
-			context.customId,
-		);
-	}
+	const messageObj = await messagesCollection.findOne({
+		messageId: message.referencedMessage.id,
+	});
 
-	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		const silent = InteractionIdentifier.Nudge.ToggleDMReplies.substring(
-			ctx.customId,
-		)[0];
-		let user = await ctx.retrievePUser();
-		const silentMode = Boolean(silent.toLowerCase());
-		// Update database property to serverReplying
-		await writeUserById(user.userId, {
-			...user,
-			nudging: { 
-				...user.nudging, 
-				serverReplying: !(user.nudging.serverReplying ?? false) 
-			},
-		});
+	if (!messageObj) return;
+	if (messageObj.systemId === message.user.id) return;
 
-		// Reflect the state change in the local object variable
-		user.nudging.serverReplying = !(user.nudging.serverReplying ?? false);
+	const authorObj = await userCollection.findOne({
+		userId: messageObj.systemId,
+	});
+	const authorMember = await client.members
+		.fetch(message.guildId, messageObj.systemId)
+		.catch(() => null);
 
-		if (silentMode)
-			return await ctx.write({
-				// Update string key to reflect your new server reply context if necessary
-				components: new AlertView(await ctx.userTranslations()).successView(
-					"DISABLED_SERVER_REPLIES",
-				),
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			});
-		else
-			return await ctx.update({
-				components: new NudgePreferences(
-					await ctx.userTranslations(),
-				).nudgePreferences(user),
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			});
-	}
+	if (
+		!authorMember ||
+		!((authorObj?.nudging ?? { serverReplying: false }).serverReplying ?? false)
+	)
+		return;
+	if (
+		(
+			(authorObj?.nudging ?? { blockedUsers: [] as string[] }).blockedUsers ??
+			([] as string[])
+		).includes(message.author.id)
+	)
+		return;
+
+	const memberPerms = await client.channels.memberPermissions(
+		message.channelId,
+		authorMember,
+		true,
+	);
+
+	if (
+		!memberPerms.has([
+			PermissionFlagsBits.ViewChannel,
+			PermissionFlagsBits.ReadMessageHistory,
+		])
+	)
+		return;
+
+	try {
+		await message
+			.reply({
+				components: [
+					new Container().setComponents(
+						new Section()
+							.setComponents(
+								new TextDisplay().setContent(
+									`<@${messageObj.systemId}>, <@${message.author.id}> replied to you here. [Message Link](<https://discord.com{message.guildId}/${message.channelId}/${message.id}>)`,
+								),
+							)
+							.setAccessory(
+								new Button()
+									.setStyle(ButtonStyle.Danger)
+									.setLabel("Disable replies")
+									.setCustomId(
+										InteractionIdentifier.Nudge.ToggleServerReplies.create("true"),
+									),
+							),
+					),
+				],
+				flags: MessageFlags.IsComponentsV2,
+				allowed_mentions: { users: [messageObj.systemId] }, 
+			})
+			.catch(() => null);
+	} catch (_) {}
 }
