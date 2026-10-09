@@ -9,18 +9,17 @@ export default class AddUserBlockListNudge extends ComponentCommand {
 	componentType = "Button" as const;
 
 	override filter(context: ComponentContext<typeof this.componentType>) {
-		// Note: Update this if you rename ToggleDMReplies in your InteractionIdentifier mapping
 		return InteractionIdentifier.Nudge.ToggleServerReplies.startsWith(
 			context.customId,
 		);
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		const silent = InteractionIdentifier.Nudge.ToggleDMReplies.substring(
+		const silent = InteractionIdentifier.Nudge.ToggleServerReplies.substring(
 			ctx.customId,
 		)[0];
 		let user = await ctx.retrievePUser();
-
+		const silentMode = Boolean(silent.toLowerCase());
 		// Update database property to serverReplying
 		await writeUserById(user.userId, {
 			...user,
@@ -33,7 +32,7 @@ export default class AddUserBlockListNudge extends ComponentCommand {
 		// Reflect the state change in the local object variable
 		user.nudging.serverReplying = !(user.nudging.serverReplying ?? false);
 
-		if (silent === "true")
+		if (silentMode)
 			return await ctx.write({
 				// Update string key to reflect your new server reply context if necessary
 				components: new AlertView(await ctx.userTranslations()).successView(
