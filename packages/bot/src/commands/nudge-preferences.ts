@@ -18,7 +18,7 @@ export default class NudgePreferencesCommand extends Command {
 		await ctx.deferReply(true);
 		let user = await ctx.retrievePUser();
 
-		
+		// Database migration (12/04/25)
 		if (user.nudging === undefined) {
 			await userCollection.updateOne(
 				{ userId: user.userId },
