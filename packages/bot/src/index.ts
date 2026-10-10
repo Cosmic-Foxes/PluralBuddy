@@ -44,7 +44,6 @@ import {
 	PluralBuddyModalErrorCommand,
 } from "./error-command";
 import { extendedContext } from "./extended-context";
-import PluralBuddyHandleCommand from "./handle-command";
 import { startEmojiCleanupTimer } from "./lib/clean-up-emojis";
 import { startIndexingCleanupTimer } from "./lib/cleanup-indexing";
 import { emojis } from "./lib/emojis";
