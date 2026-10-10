@@ -240,17 +240,17 @@ export async function processEditContents(
 													),
 												),
 											new Separator().setSpacing(Spacing.Large),
-											new TextDisplay().setContent(`-# Sent by system/user \`${messageData.systemId}\`, by alter \`${messageData.alterId}\`
-				-# **Sent as an edit.**
-				-# Mention: @${message.user.username} (<@${messageData.systemId}>)
-				-# Alter Mention: @${alter?.username} (${alter?.nameMap.find((c) => c.server === guild.guildId)?.name ?? alter?.username})${
-					message.messageReference !== undefined
-						? `
-				-# Reply: https://discord.com/channels/${message.messageReference.guildId ?? "@me"}/${message.messageReference.channelId}/${message.messageReference.messageId}`
-						: ""
-				}
-				-# Proxied message as: \`${message.id}\` → \`${sentMessage?.id ?? "Unknown"}\`
-				-# Sent at: <t:${Math.floor(Date.now() / 1000)}:f>`),
+											new TextDisplay().setContent(`-# **Sent as an edit.**
+-# Sent by system/user \`${messageData.systemId}\`, by alter \`${messageData.alterId}\`
+-# Mention: @${message.user.username} (<@${messageData.systemId}>)
+-# Alter Mention: @${alter?.username} (${alter?.nameMap.find((c) => c.server === guild.guildId)?.name ?? alter?.username})${
+												message.messageReference !== undefined
+													? `
+-# Reply: https://discord.com/channels/${message.messageReference.guildId ?? "@me"}/${message.messageReference.channelId}/${message.messageReference.messageId}`
+													: ""
+											}
+-# Proxied message as: \`${message.id}\` → \`${sentMessage?.id ?? "Unknown"}\`
+-# Sent at: <t:${Math.floor(Date.now() / 1000)}:f>`),
 											...(message.referencedMessage
 												? [
 														new Separator(),
@@ -258,8 +258,8 @@ export async function processEditContents(
 															"-# **REFERENCED MESSAGE**",
 														),
 														new TextDisplay().setContent(`-# Message author: <@${message.referencedMessage.author.id}>
-				-# Message ID: [${message.referencedMessage.id}](https://discord.com/channels/${message.guildId ?? "@me"}/${message.channelId}/${message.referencedMessage.id})
-				-# Message contents: ${message.referencedMessage.content.slice(0, 1000)}`),
+-# Message ID: [${message.referencedMessage.id}](https://discord.com/channels/${message.guildId ?? "@me"}/${message.channelId}/${message.referencedMessage.id})
+-# Message contents: ${message.referencedMessage.content.slice(0, 1000)}`),
 													]
 												: []),
 										)

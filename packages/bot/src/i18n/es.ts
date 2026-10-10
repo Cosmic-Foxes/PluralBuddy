@@ -508,7 +508,7 @@ Tu perfil público es cómo se ve tu alter para otros usuarios cuando identifica
   PUBLIC_PROFILE_COLOR_DESC: "Establecer un color para un alter muestra ese color en su contenedor de rango y en su perfil público.",
   PUBLIC_PROFILE_SYSTEM_TAG_DESC: `Puedes establecer una etiqueta de sistema para tu sistema. Las descripciones de sistema pueden tener un máximo de 75 caracteres.
 -# La etiqueta del sistema {{ systemName }} es: {{ displayTag }}`,
-  ALTER_TOP_VIEW: `-# @{{ alterUsername }}> • ID: `{{ alterId }}\``,
+  ALTER_TOP_VIEW: `-# @{{ alterUsername }}> • ID: \`{{ alterId }}\``,
   GENERAL_LABEL: "General",
   TERMINOLOGY_LABEL: "Terminología",
   EDIT_TERMINOLOGY_LABEL: "Edición de la terminología",
