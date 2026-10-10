@@ -15,7 +15,9 @@ import {
 	CheckboxGroup,
 	CheckboxGroupOption,
 	Client,
+	definePlugins,
 	Label,
+	LimitedCollection,
 	MemoryAdapter,
 	Modal,
 	TextDisplay,
@@ -50,6 +52,7 @@ import { InteractionIdentifier } from "./lib/interaction-ids";
 import { initializeApplicationCommands } from "./lib/mention-command";
 import { middlewares } from "./middleware";
 import { setupDatabases, setupMongoDB } from "./mongodb";
+import { yunaForSeyfert } from "./plugins/yunaforseyfert";
 import { defaultPrefixes, getGuildFromId } from "./types/guild";
 
 export const logger = process.env.SEQ_HOST
@@ -185,6 +188,7 @@ export const client = new Client({
 		}),
 		defaults: new PluralBuddyErrorCommand(),
 	},
+	plugins: definePlugins(yunaForSeyfert()),
 	components: { defaults: new PluralBuddyComponentErrorCommand() },
 	modals: { defaults: new PluralBuddyModalErrorCommand() },
 	context: extendedContext,
@@ -214,7 +218,6 @@ if (import.meta.main) {
 
 	client.setServices({
 		middlewares: middlewares,
-		handleCommand: PluralBuddyHandleCommand,
 		cache: {
 			disabledCache: { messages: true },
 			adapter:
