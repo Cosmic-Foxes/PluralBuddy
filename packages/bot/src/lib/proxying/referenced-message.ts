@@ -2,7 +2,7 @@ import type { Message } from "seyfert/lib/structures";
 import { ComponentType } from "seyfert/lib/types";
 import { emojis } from "@/lib/emojis";
 import { alterCollection, messagesCollection } from "@/mongodb";
-import { cacheSystemMap } from "./server-replying";
+import { cacheSystemMap } from "./dm-replying";
 
 const replifyContents = (contents: string) =>
 	contents
@@ -66,9 +66,11 @@ export async function getReferencedMessageString(
 			}
 
 			if (alter !== null) {
-				const possiblyCachedSystem = cacheSystemMap[alter.systemId];
+				const possiblyCachedSystem = cacheSystemMap[message.id];
+				console.log("grabbing", message.id)
 
-				if (possiblyCachedSystem.nudging.serverReplying) {
+				console.log(possiblyCachedSystem)
+				if (possiblyCachedSystem && possiblyCachedSystem.nudging.serverReplying) {
 					userString = `@${alter.username} (<@${possiblyCachedSystem.userId}>)`;
 				} else {
 					userString = `@${alter.username}`;
