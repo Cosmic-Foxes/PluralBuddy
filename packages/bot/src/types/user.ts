@@ -8,9 +8,17 @@ export { defaultUserStructure, type PUser, PUserObject } from "plurography";
 export const terminologyMemoryCache: Record<string, string> = {};
 
 export async function getUserById(id: string): Promise<PUser> {
-	return (
-		(await userCollection.findOne({ userId: id })) ?? defaultUserStructure(id)
-	);
+	const user = await userCollection.findOne({ userId: id });
+	const defaultNudgingStructure = {
+		blockedUsers: [],
+		currentlyEnabled: true,
+		dmReply: false,
+		...(user?.nudging ?? {}),
+	};
+
+	return user
+		? { ...user, nudging: defaultNudgingStructure }
+		: defaultUserStructure(id);
 }
 
 export async function writeUserById(id: string, userObj: PUser) {
