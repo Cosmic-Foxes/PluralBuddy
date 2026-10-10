@@ -175,7 +175,7 @@ await fetch(
 						The questions asked about PluralBuddy the most.
 					</p>
 				</div>
-				<Accordion type="single">
+				<Accordion type="multiple">
 					<AccordionItem value="what-is-pluralbuddy" id="what-is-pluralbuddy">
 						<AccordionTrigger>What is PluralBuddy?</AccordionTrigger>
 						<AccordionContent className="h-full text-left">
