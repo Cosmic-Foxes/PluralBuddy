@@ -23,6 +23,7 @@ import {
 import type {
 	InteractionCreateBodyRequest,
 	InteractionMessageUpdateBodyRequest,
+	MessageWebhookCreateBodyRequest,
 } from "seyfert/lib/common";
 import {
 	type APIInteraction,
@@ -47,6 +48,7 @@ export const extendedContext = extendContext((interaction) => {
 		afterSendTask?: (actions: {
 			editMessage: (body: InteractionCreateBodyRequest) => void;
 			reply?: (body: InteractionCreateBodyRequest) => void;
+			followup?: (body: MessageWebhookCreateBodyRequest) => void;
 		}) => void,
 		ctx?: CommandContext,
 	) => {
@@ -62,6 +64,7 @@ export const extendedContext = extendContext((interaction) => {
 					afterSendTask({
 						reply: writtenMessage?.write,
 						editMessage: interaction.editResponse,
+						followup: interaction.followup,
 					});
 				return writtenMessage;
 			}
@@ -124,6 +127,7 @@ export const extendedContext = extendContext((interaction) => {
 								reply: interaction.message?.reply,
 								editMessage: (body: InteractionCreateBodyRequest) =>
 									modal.editMessage("@original", body),
+								followup: modal.followup,
 							});
 
 						return writtenMessage;
@@ -143,12 +147,12 @@ export const extendedContext = extendContext((interaction) => {
 				if (i.isButton()) {
 					message.delete().catch((_) => null);
 					const writtenMessage = await i.write(body, true);
-
 					if (afterSendTask)
 						afterSendTask({
 							reply: interaction.message?.reply,
 							editMessage: (body: InteractionCreateBodyRequest) =>
 								i.editMessage("@original", body),
+							followup: (body) => client.interactions.followup(i.token, body),
 						});
 
 					return writtenMessage;
@@ -164,6 +168,7 @@ export const extendedContext = extendContext((interaction) => {
 			afterSendTask({
 				editMessage: (body: InteractionCreateBodyRequest) =>
 					interaction.editMessage("@original", body),
+				followup: (body) => client.interactions.followup(interaction.token, body),
 			});
 
 		return writtenMessage;
