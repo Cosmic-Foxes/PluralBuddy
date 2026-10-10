@@ -4,15 +4,14 @@ import {
 	ActionRow,
 	Button,
 	ComponentCommand,
-	TextDisplay,
-	type ComponentContext,
+	type ComponentContext,Container, 
+	TextDisplay
 } from "seyfert";
+import { ButtonStyle } from "seyfert/lib/types";
+import { mentionCommand } from "@/lib/mention-command";
+import { emojis } from "../../lib/emojis";
 import { InteractionIdentifier } from "../../lib/interaction-ids";
 import { AlertView } from "../../views/alert";
-import { ButtonStyle } from "seyfert/lib/types";
-import { emojis } from "../../lib/emojis";
-import { Container } from "seyfert";
-import { mentionCommand } from "@/lib/mention-command";
 
 export default class RemoveOldSystem extends ComponentCommand {
 	componentType = "Button" as const;
@@ -30,7 +29,7 @@ export default class RemoveOldSystem extends ComponentCommand {
 				),
 			],
 		});
-		return await ctx.editResponse({
+		return await ctx.editOrReply({
 			components: [
 				new Container()
 					.setComponents(
