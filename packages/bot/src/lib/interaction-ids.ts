@@ -110,6 +110,7 @@ export const InteractionIdentifier = {
 		RemoveBlock: createStatic("nudge/remove"),
 		AddBlock: createStatic("nudge/add"),
 		ToggleDMReplies: createFromAdditionalArg("nudge/toggle-dm-replies"),
+		ToggleServerReplies: createFromAdditionalArg("nudge/toggle-server-replies"),
 
 		RemoveNudgeForm: createStatic("nudge/set-form/remove"),
 		RemoveNudgeType: createStatic("nudge/type-form/remove"),

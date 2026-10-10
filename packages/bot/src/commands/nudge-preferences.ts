@@ -27,20 +27,20 @@ export default class NudgePreferencesCommand extends Command {
 						nudging: {
 							blockedUsers: [],
 							currentlyEnabled: true,
-							dmReply: false,
+							dmReply: false,       
+							serverReplying: false,  
 						},
 					},
 				},
 			);
 
-			// Set user in memory
 			user.nudging = {
 				blockedUsers: [],
 				currentlyEnabled: true,
 				dmReply: false,
+				serverReplying: false,
 			};
 		}
-		// End database migration
 
 		return await ctx.ephemeral(
 			{

@@ -18,11 +18,13 @@ export const PUserObject = z.object({
 			blockedUsers: z.string().array(),
 			currentlyEnabled: z.boolean(),
 			dmReply: z.boolean().default(false),
+			serverReplying: z.boolean().default(false),
 		})
 		.default({
 			blockedUsers: [],
 			currentlyEnabled: true,
 			dmReply: false,
+			serverReplying: false,
 		}),
     terminology: PTerminology,
 	syncConfiguration: z.record(
@@ -48,7 +50,8 @@ export const defaultUserStructure = (userId: string) => {
         nudging: {
             blockedUsers: [],
             currentlyEnabled: true,
-            dmReply: false
+            dmReply: false,
+			serverReplying: false
         }
     } satisfies PUser
 }
