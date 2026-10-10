@@ -100,7 +100,7 @@ export function MarketingHomeServerSection() {
 							Make staff members
 						</h1>
 						<h1 className="tracking-tighter text-2xl font-light">
-							stand out when proxying
+							stand out when proxying.
 						</h1>
 
 						<p className="text-muted-foreground mt-2">
