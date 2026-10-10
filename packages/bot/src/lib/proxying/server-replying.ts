@@ -1,3 +1,4 @@
+import type { PUser } from "plurography";
 import { Button, Container, type Message, Section, TextDisplay } from "seyfert";
 import {
 	ButtonStyle,
@@ -7,6 +8,9 @@ import {
 import { client } from "@/index";
 import { messagesCollection, userCollection } from "@/mongodb";
 import { InteractionIdentifier } from "../interaction-ids";
+
+/** initial message ID -> user */
+export const cacheSystemMap: Record<string, PUser> = {};
 
 export async function handleServerReply(message: Message) {
 	if (!message.guildId) return;
@@ -22,6 +26,9 @@ export async function handleServerReply(message: Message) {
 	const authorObj = await userCollection.findOne({
 		userId: messageObj.systemId,
 	});
+
+	if (authorObj)
+		cacheSystemMap[message.id as string] = authorObj;
 	const authorMember = await client.members
 		.fetch(message.guildId, messageObj.systemId)
 		.catch(() => null);
