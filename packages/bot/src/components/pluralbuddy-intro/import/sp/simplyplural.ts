@@ -19,7 +19,7 @@ export default class PluralBuddyIntroNextPage extends ComponentCommand {
 
 	async run(ctx: ComponentContext<typeof this.componentType>) {
 		await ctx.deferUpdate();
-		return await ctx.editResponse({
+		return await ctx.editOrReply({
 			components: [
 				...new PluralBuddyIntro(
 					await ctx.userTranslations(),

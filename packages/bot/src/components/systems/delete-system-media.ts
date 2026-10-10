@@ -36,7 +36,7 @@ export default class DeleteSystemButton extends ComponentCommand {
 		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
@@ -61,7 +61,7 @@ export default class DeleteSystemButton extends ComponentCommand {
 		await alterCollection.deleteMany({ systemId: ctx.author.id });
 		await tagCollection.deleteMany({ systemId: ctx.author.id });
 
-		return await ctx.editResponse({
+		return await ctx.editOrReply({
 			components: new AlertView(await ctx.userTranslations()).successView(
 				"SYSTEM_DELETION_MEDIA_FINISHED",
 			),

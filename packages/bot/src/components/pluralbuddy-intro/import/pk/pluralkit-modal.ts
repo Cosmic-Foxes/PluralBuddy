@@ -65,7 +65,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 
 			const MAX_FILE_SIZE = 2 * 1024 * 1024;
 			if (file[0].size > MAX_FILE_SIZE) {
-				return await ctx.editResponse({
+				return await ctx.editOrReply({
 					components: [
 						...new AlertView(await ctx.userTranslations()).errorView(
 							"PLURALBUDDY_IMPORT_ERROR_TOO_LARGE",
@@ -90,7 +90,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		try {
 			JSON.parse(fileData);
 		} catch (error) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: [
 					...new AlertView(await ctx.userTranslations()).errorView(
 						"PLURALBUDDY_IMPORT_ERROR_INVALID_JSON",
@@ -110,7 +110,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		const parsed = PluralKitSystem.safeParse(JSON.parse(fileData));
 
 		if (parsed.error) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: [
 					...new AlertView(await ctx.userTranslations()).errorViewCustom(
 						(await ctx.userTranslations()).PLURALBUDDY_IMPORT_ERROR.replace(
@@ -157,7 +157,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		} satisfies PSystem);
 
 		if (newSystem.error) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: [
 					...new AlertView(await ctx.userTranslations()).errorViewCustom(
 						(await ctx.userTranslations()).PLURALBUDDY_IMPORT_ERROR.replace(
@@ -350,7 +350,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 			});
 		}
 
-		return await ctx.editResponse({
+		return await ctx.editOrReply({
 			components: [
 				...new AlertView(
 					await ctx.userTranslations(),

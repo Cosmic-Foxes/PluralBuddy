@@ -58,7 +58,7 @@ export default class SetPronounsButton extends ComponentCommand {
 		});
 
 		if (!id || !alterOperation) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_ALTER_OPERATION_DOESNT_EXIST",
 				),
