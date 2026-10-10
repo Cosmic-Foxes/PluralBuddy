@@ -102,7 +102,9 @@ export function MarketingHomeUserSection() {
 				</Card>
 				<Card className="pb-0!">
 					<CardContent className="text-left max-h-85 overflow-hidden max-lg:max-h-140">
-						<h1 className="text-2xl text-primary font-bold">
+						<h1
+							className="text-2xl text-primary font-bold"
+						>
 							Let everyone know
 						</h1>
 						<h1 className="tracking-tighter text-2xl font-light">
