@@ -19,7 +19,6 @@ export async function handleDMReply(message: Message) {
 	const messageObj = await messagesCollection.findOne({
 		messageId: message.messageReference.messageId,
 	});
-	console.log("ae");
 
 	if (!messageObj) return;
 	if (messageObj.systemId === message.user.id) return;
@@ -27,7 +26,6 @@ export async function handleDMReply(message: Message) {
 	const authorObj = await userCollection.findOne({
 		userId: messageObj.systemId,
 	});
-	console.log("caching", message.id);
 	if (authorObj)
 		cacheSystemMap[message.id as string] = authorObj;
 	const authorMember = await client.members
@@ -36,7 +34,7 @@ export async function handleDMReply(message: Message) {
 
 	if (
 		!authorMember ||
-		!((authorObj?.nudging ?? { serverReplying: false }).serverReplying ?? false)
+		!((authorObj?.nudging ?? { dmReply: false }).dmReply ?? false)
 	)
 		return;
 	if (
@@ -46,6 +44,7 @@ export async function handleDMReply(message: Message) {
 		).includes(message.author.id)
 	)
 		return;
+
 
 	const memberPerms = await client.channels.memberPermissions(
 		message.channelId,
