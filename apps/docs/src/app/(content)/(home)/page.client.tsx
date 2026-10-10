@@ -53,7 +53,7 @@ export function Hero() {
 			offsetY={-1.2}
 			rotation={5}
 			shape="dots"
-			speed={0.2}
+			speed={0.01}
 			scale={1.25}
 			minPixelRatio={1}
 			maxPixelCount={1920 * 1080}
@@ -421,7 +421,8 @@ export function ShiftingComponentsBox() {
 				shape="warp"
 				type="4x4"
 				size={4}
-				speed={0.5}
+				
+				speed={0.005}
 				className="max-w-full absolute z-0 top-0 w-full h-full max-h-full rounded-lg"
 			/>
 			<div className="absolute z-10 w-full pr-7">
