@@ -67,9 +67,6 @@ export async function getReferencedMessageString(
 
 			if (alter !== null) {
 				const possiblyCachedSystem = cacheSystemMap[message.id];
-				console.log("grabbing", message.id)
-
-				console.log(possiblyCachedSystem)
 				if (possiblyCachedSystem && possiblyCachedSystem.nudging.serverReplying) {
 					userString = `@${alter.username} (<@${possiblyCachedSystem.userId}>)`;
 				} else {
