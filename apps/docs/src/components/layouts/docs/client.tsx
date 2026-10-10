@@ -6,7 +6,7 @@ import Link from 'fumadocs-core/link';
 import { type ComponentProps, createContext, type FC, use, useMemo } from 'react';
 import type { LinkItemType } from '@/components/layouts/shared';
 import { cn } from '@/lib/cn';
-import { useIsScrollTop } from '@/lib/use-is-scroll-top';
+import { useIsScrollTop } from '@/lib/hooks/use-is-scroll-top';
 import {
   type BaseSlots,
   type BaseSlotsProps,

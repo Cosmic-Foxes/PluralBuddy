@@ -21,8 +21,8 @@ import { LinkItem, type LinkItemType } from '@/components/layouts/shared';
 import { buttonVariants } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/fuma-collapsible';
 import { cn } from '@/lib/cn';
+import { useIsScrollTop } from '@/lib/hooks/use-is-scroll-top';
 import { mergeRefs } from '@/lib/merge-refs';
-import { useIsScrollTop } from '@/lib/use-is-scroll-top';
 import { AuthComponents } from '../../docs/auth-components';
 import { useHomeLayout } from '..';
 

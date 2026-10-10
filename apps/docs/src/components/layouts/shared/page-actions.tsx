@@ -6,7 +6,7 @@ import { type ComponentProps, useMemo, useState } from 'react';
 import { buttonVariants } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/cn';
-import { useCopyButton } from '@/lib/use-copy-button';
+import { useCopyButton } from '@/lib/hooks/use-copy-button';
 
 const cache = new Map<string, Promise<string>>();
 

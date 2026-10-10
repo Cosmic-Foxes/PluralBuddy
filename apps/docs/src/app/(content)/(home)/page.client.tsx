@@ -36,6 +36,7 @@ import { Button } from "@/components/ui/shadcn-button";
 import { Spinner } from "@/components/ui/spinner";
 import { GithubDark } from "@/components/ui/svgs/githubDark";
 import { GithubLight } from "@/components/ui/svgs/githubLight";
+import { useHover } from "@/lib/hooks/use-hover";
 
 export function Hero() {
 	const { resolvedTheme } = useTheme();
@@ -361,6 +362,7 @@ export function ShiftingComponentsBox() {
 		return newState;
 	};
 	const [scope, animate] = useAnimate();
+	const hovering = useHover(outlyingComp);
 	const startAnimation = useCallback(() => {
 		const state = fallbackIfOverUnder(currentState + 1);
 		animate(
@@ -398,13 +400,19 @@ export function ShiftingComponentsBox() {
 	}, [isInView]);
 
 	useEffect(() => {
-		if (isInView && !userControlled && !isAnimating) {
+		if (hovering) {
+			startAnimation();
+		}
+	}, [hovering]);
+
+	useEffect(() => {
+		if (isInView && hovering && !userControlled && !isAnimating) {
 			const timeoutId = setTimeout(() => {
 				startAnimation();
 			}, 2700);
 			return () => clearTimeout(timeoutId);
 		}
-	}, [isInView, isAnimating, userControlled, startAnimation]);
+	}, [hovering, isInView, isAnimating, userControlled, startAnimation]);
 
 	const shiftAnimation = {
 		initial: {
@@ -436,7 +444,7 @@ export function ShiftingComponentsBox() {
 					shape="warp"
 					type="4x4"
 					size={4}
-					speed={0.005}
+					speed={hovering ? 0.005 : 0}
 					className="max-w-full absolute z-0 top-0 w-full h-full max-h-full rounded-lg"
 				/>
 			)}
@@ -647,6 +655,8 @@ export function BillingualLanguageBox() {
 	const [state, setState] = useState("es");
 	const [userControlled, setUserControlled] = useState(false);
 	const [isAnimating, setIsAnimating] = useState(false);
+	const outlyingComp = useRef<HTMLDivElement>(null);
+	const hovering = useHover(outlyingComp);
 
 	const nullifyNum = (c: number) => {
 		if (Object.keys(languagesPossible)[c] === undefined) return null;
@@ -664,16 +674,20 @@ export function BillingualLanguageBox() {
 	}, [state]);
 
 	useEffect(() => {
-		if (!userControlled && !isAnimating) {
+		if (hovering) startAnimation();
+	}, [hovering]);
+
+	useEffect(() => {
+		if (hovering && !userControlled && !isAnimating) {
 			const timeoutId = setTimeout(() => {
 				startAnimation();
 			}, 2000);
 			return () => clearTimeout(timeoutId);
 		}
-	}, [isAnimating, userControlled, startAnimation]);
+	}, [hovering, isAnimating, userControlled, startAnimation]);
 
 	return (
-		<div className="border rounded-lg bg-crust rounded-b-none border-b-none mt-2 relative max-h-[200px]">
+		<div className="border rounded-lg bg-crust rounded-b-none border-b-none mt-2 relative max-h-[200px]" ref={outlyingComp}>
 			<div className="bottom-2.5 absolute justify-center mx-auto w-fit left-0 right-0 z-30 flex items-center gap-1">
 				{Object.entries(languagesPossible).map(([k, v]) => (
 					<Button
