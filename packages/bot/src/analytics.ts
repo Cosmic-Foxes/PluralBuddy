@@ -1,3 +1,4 @@
+import { collectDefaultMetrics } from "@prometheus-io/client"
 import { CacheFrom } from "seyfert";
 import { client } from ".";
 import {
@@ -9,6 +10,8 @@ import {
 	userCollection,
 } from "./mongodb";
 import type { PAnalytics } from "./types/analytics";
+
+collectDefaultMetrics();
 
 export let latencyDataPoints: number[] = [];
 

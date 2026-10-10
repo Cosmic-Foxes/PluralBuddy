@@ -19,6 +19,7 @@
 		"@crowdin/crowdin-api-client": "^1.54.0",
 		"@datalust/winston-seq": "^3.0.1",
 		"@hono/zod-validator": "^0.7.6",
+		"@prometheus-io/client": "^0.16.1",
 		"@sapphire/snowflake": "^3.5.5",
 		"@sentry/bun": "^11.0.0",
 		"@slipher/redis-adapter": "^0.0.6",

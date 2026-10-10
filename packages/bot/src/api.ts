@@ -1,5 +1,6 @@
 import { styleText } from "node:util";
 import { zValidator } from "@hono/zod-validator";
+import { register } from "@prometheus-io/client";
 import { Hono } from "hono";
 import { trimTrailingSlash } from "hono/trailing-slash";
 import { type ImportStage, PSystemObject } from "plurography";
@@ -48,9 +49,9 @@ app.use("/api/*", async (ctx, next) => {
 	const timeStart = new Date();
 
 	await next();
-	
+
 	console.log(
-		`${styleText("gray", "[API]")} ${ctx.req.method} ${ctx.req.path} ${styleText(ctx.res.status >= 400 ? 'red' : 'green', ctx.res.status.toString())} in ${new Date().getMilliseconds() - timeStart.getMilliseconds()}ms`,
+		`${styleText("gray", "[API]")} ${ctx.req.method} ${ctx.req.path} ${styleText(ctx.res.status >= 400 ? "red" : "green", ctx.res.status.toString())} in ${new Date().getMilliseconds() - timeStart.getMilliseconds()}ms`,
 	);
 });
 app.use(trimTrailingSlash());
@@ -227,12 +228,28 @@ export const clientRoutes = app
 				.map((v) => v.path),
 		}),
 	)
+	.get("/metrics", async (c) => {
+		try {
+			c.header("Content-Type", register.contentType);
+			return c.text(await register.metrics());
+		} catch (err) {
+			c.status(500)
+			return c.json({ error: "error while getting metrics" })
+		}
+	})
 	.delete(
 		"/api/cache",
 		zValidator(
 			"json",
 			z.object({
-				type: z.enum(["terminology", "statistic", "similarWebhookResource", "pguild", "i18n", 'alterProxy']),
+				type: z.enum([
+					"terminology",
+					"statistic",
+					"similarWebhookResource",
+					"pguild",
+					"i18n",
+					"alterProxy",
+				]),
 				key: z.string(),
 			}),
 		),
