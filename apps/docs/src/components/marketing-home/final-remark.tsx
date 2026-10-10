@@ -10,7 +10,7 @@ import { buttonVariants } from "./hero";
 
 export function FinalRemark() {
 	return (
-		<div className="relative flex z-0 pt-30 h-[60vh] text-left xl:max-h-212.5 xl:rounded-b-2xl overflow-hidden w-full max-w-350 bg-origin-border">
+		<div className="relative flex z-0 pt-30 h-[60vh] text-left xl:max-h-212.5 xl:rounded-b-2xl overflow-hidden w-full bg-origin-border">
 			<Hero />
 			<div className="flex flex-col z-2 px-4 size-full max-xl:pt-32! md:p-12 ">
 				<h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-center tracking-tighter text-balance pb-5 fade-in animate-in font-[Mona_Sans]">
