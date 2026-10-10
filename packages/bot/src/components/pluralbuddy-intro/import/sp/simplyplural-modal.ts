@@ -100,6 +100,8 @@ export default class PluralBuddyImportModal extends ModalCommand {
 			public: 0,
 			subAccounts: [],
 			disabled: false,
+			flags: 0,
+			disabledGuilds: []
 		} satisfies PSystem);
 
 		if (newSystem.error) {
