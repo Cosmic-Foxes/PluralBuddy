@@ -100,9 +100,9 @@ export function MarketingHomeMoreSection() {
 						</p>
 
 						<div className="border rounded-lg mt-4 max-w-full relative h-[300px] max-lg:h-[350px]">
-							<div className="overflow-hidden rounded-t-lg absolute max-w-full z-0">
+							{/* <div className="overflow-hidden rounded-t-lg absolute max-w-full z-0">
 								<ProxyingBackgroundEffect />
-							</div>
+							</div> */}
 							<div className="m-4 absolute z-10 rounded-lg h-full w-[calc(100%-30px)] backdrop-blur-xl bg-crust/60 p-4">
 								<RandomIdsVisualization />
 							</div>
