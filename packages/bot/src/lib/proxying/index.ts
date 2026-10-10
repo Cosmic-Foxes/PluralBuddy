@@ -162,10 +162,12 @@ export async function proxy(
 		});
 
 		const isNativelyMentioning =
-			message.referencedMessage &&
-			message.mentions.users
-				.map((v) => v.id)
-				.includes(message.referencedMessage.author.id);
+			message.webhookId !== undefined
+				? true
+				: message.referencedMessage &&
+					message.mentions.users
+						.map((v) => v.id)
+						.includes(message.referencedMessage.author.id);
 		const pingMode = guild.pingMode ?? "unaffected";
 		const isToMention =
 			pingMode === "unaffected"
