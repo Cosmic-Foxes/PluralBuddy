@@ -1,17 +1,28 @@
-import type { BundledLanguage } from "shiki";
-import { codeToHtml } from "shiki";
+"use client";
+import { useTheme } from "next-themes";
+import { Fragment, JSX, useEffect, useLayoutEffect, useState } from "react";
+import { highlight } from "./shared-shiki";
 
-interface Props {
+export function CodeBlock({
+	initial,
+	children,
+	className,
+}: {
+	initial?: JSX.Element;
 	children: string;
-	lang: BundledLanguage;
-    className: string
-}
+	className?: string;
+}) {
+	const [nodes, setNodes] = useState(initial);
+	const { resolvedTheme } = useTheme();
 
-export async function CodeBlock(props: Props) {
-	const out = await codeToHtml(props.children, {
-		lang: props.lang,
-		theme: "catppuccin-mocha",
-	});
+	useEffect(() => {
+		console.log(resolvedTheme);
+		void highlight(
+			children,
+			"ts",
+			resolvedTheme === "dark" ? "catppuccin-mocha" : "catppuccin-latte",
+		).then(setNodes);
+	}, [children, resolvedTheme]);
 
-	return <div dangerouslySetInnerHTML={{ __html: out }} className={props.className} />;
+	return nodes ? <div className={className}>{nodes}</div> : <p>Loading...</p>;
 }

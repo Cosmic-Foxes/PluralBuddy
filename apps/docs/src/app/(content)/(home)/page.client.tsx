@@ -39,26 +39,38 @@ import { GithubLight } from "@/components/ui/svgs/githubLight";
 
 export function Hero() {
 	const { resolvedTheme } = useTheme();
+	const ref = useRef<HTMLDivElement>(null);
+	const inView = useInView(ref);
+	const [speed, setSpeed] = useState(0);
+
+	useEffect(() => {
+		if (inView) setSpeed(0.01);
+		else setSpeed(0);
+	}, [inView]);
 
 	return (
-		<GrainGradient
-			width={1280}
-			height={720}
-			colors={["#89b4fa", "#0080ff"]}
-			colorBack={resolvedTheme === "dark" ? "#1e1e2e" : "#ffffff"}
-			softness={1}
-			intensity={0.5}
-			noise={0}
-			offsetX={-0.5}
-			offsetY={-1.2}
-			rotation={5}
-			shape="dots"
-			speed={0.01}
-			scale={1.25}
-			minPixelRatio={1}
-			maxPixelCount={1920 * 1080}
-			className="absolute w-full h-full inset-0 animate-fd-fade-in xl:mx-60 duration-3000 fade-in rounded-sm blur-[128px]"
-		/>
+		<div ref={ref}>
+			{speed !== 0 && (
+				<GrainGradient
+					width={1280}
+					height={720}
+					colors={["#89b4fa", "#0080ff"]}
+					colorBack={resolvedTheme === "dark" ? "#1e1e2e" : "#ffffff"}
+					softness={1}
+					intensity={0.5}
+					noise={0}
+					offsetX={-0.5}
+					offsetY={-1.2}
+					rotation={5}
+					shape="dots"
+					speed={speed}
+					scale={1.25}
+					minPixelRatio={1}
+					maxPixelCount={1920 * 1080}
+					className="absolute w-full h-full inset-0 animate-fd-fade-in xl:mx-60 duration-3000 fade-in rounded-sm blur-[128px]"
+				/>
+			)}
+		</div>
 	);
 }
 
@@ -240,6 +252,7 @@ export function ShiftingText() {
 
 	const [currentWord, setCurrentWord] = useState(possibleStates[0]);
 	const [isAnimating, setIsAnimating] = useState<boolean>(false);
+	const isInView = useInView(localRef);
 
 	const startAnimation = useCallback(() => {
 		const word =
@@ -250,13 +263,13 @@ export function ShiftingText() {
 	}, [currentWord]);
 
 	useEffect(() => {
-		if (!isAnimating) {
+		if (isInView && !isAnimating) {
 			const timeoutId = setTimeout(() => {
 				startAnimation();
 			}, duration);
 			return () => clearTimeout(timeoutId);
 		}
-	}, [isAnimating, startAnimation]);
+	}, [isInView, isAnimating, startAnimation]);
 
 	return (
 		<span ref={localRef}>
@@ -335,7 +348,8 @@ export function ShiftingComponentsBox() {
 	const [userControlled, setUserControlled] = useState<boolean>(false);
 	const { resolvedTheme } = useTheme();
 
-	const progressBarProgress = useMotionValue("0px");
+	const outlyingComp = useRef<HTMLDivElement>(null);
+	const isInView = useInView(outlyingComp);
 
 	const fallbackIfOverUnder = (newState: number) => {
 		if (newState === -1) {
@@ -367,30 +381,30 @@ export function ShiftingComponentsBox() {
 	}, [currentState]);
 
 	useEffect(() => {
-		animate(
-			scope.current,
-			{ width: "0%" },
-			{ ease: [0.37, 0, 0.63, 1], duration: 0.5 },
-		).then(() =>
+		if (isInView)
 			animate(
 				scope.current,
-				{
-					width: "100%",
-				},
-				{ ease: [0.4, 0, 0.2, 1], duration: 2, delay: 0.2 },
-			),
-		);
-
-	}, [])
+				{ width: "0%" },
+				{ ease: [0.37, 0, 0.63, 1], duration: 0.5 },
+			).then(() =>
+				animate(
+					scope.current,
+					{
+						width: "100%",
+					},
+					{ ease: [0.4, 0, 0.2, 1], duration: 2, delay: 0.2 },
+				),
+			);
+	}, [isInView]);
 
 	useEffect(() => {
-		if (!userControlled && !isAnimating) {
+		if (isInView && !userControlled && !isAnimating) {
 			const timeoutId = setTimeout(() => {
 				startAnimation();
 			}, 2700);
 			return () => clearTimeout(timeoutId);
 		}
-	}, [isAnimating, userControlled, startAnimation]);
+	}, [isInView, isAnimating, userControlled, startAnimation]);
 
 	const shiftAnimation = {
 		initial: {
@@ -412,19 +426,20 @@ export function ShiftingComponentsBox() {
 	};
 
 	return (
-		<div className="relative w-full h-full">
-			<Dithering
-				width={1280}
-				height={720}
-				colorBack={resolvedTheme === "dark" ? "#1e1e2e" : "#dce0e8"}
-				colorFront="#89b4fa"
-				shape="warp"
-				type="4x4"
-				size={4}
-				
-				speed={0.005}
-				className="max-w-full absolute z-0 top-0 w-full h-full max-h-full rounded-lg"
-			/>
+		<div className="relative w-full h-full" ref={outlyingComp}>
+			{isInView && (
+				<Dithering
+					width={1280}
+					height={720}
+					colorBack={resolvedTheme === "dark" ? "#1e1e2e" : "#dce0e8"}
+					colorFront="#89b4fa"
+					shape="warp"
+					type="4x4"
+					size={4}
+					speed={0.005}
+					className="max-w-full absolute z-0 top-0 w-full h-full max-h-full rounded-lg"
+				/>
+			)}
 			<div className="absolute z-10 w-full pr-7">
 				<div className="w-full m-3 bg-crust/70 rounded-xl p-1 flex justify-between items-center">
 					<Button

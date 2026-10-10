@@ -15,9 +15,10 @@ import {
 	AccordionTrigger,
 } from "../ui/accordion";
 import { Card, CardContent } from "../ui/card";
+import { highlight } from "./shared-shiki";
 import { CodeBlock } from "./shiki";
 
-export function MarketingHomeMoreSection() {
+export async function MarketingHomeMoreSection() {
 	return (
 		<section className="w-full pt-50">
 			<div
@@ -131,9 +132,25 @@ export function MarketingHomeMoreSection() {
 							!
 						</p>
 						<div className="border rounded-lg relative mt-4 max-w-full bg-crust h-full max-lg:h-[350px] text-xs">
-							<div className="pointer-events-none bg-[linear-gradient(to_bottom,transparent,var(--mantle)_50%)] w-full h-full absolute z-20" />
+							<div className="pointer-events-none bg-[linear-gradient(to_bottom,transparent,var(--mantle)_50%)] w-full h-full absolute z-20 *:bg-crust! absolute pt-4 *:rounded-t-lg max-w-full overflow-x-auto h-full" />
 							<CodeBlock
-								lang="ts"
+								initial={
+									await highlight(
+										`import { PAlter } from "plurography";
+const api = "https://pluralbuddy.app/api"
+
+await fetch(
+	\`\${api}/v1/users/@me/system/create-alter\`,
+	{
+		headers: {
+			Authorization: "Bearer xxx",
+		}
+	}
+)`,
+										"ts",
+										"catppuccin-latte",
+									)
+								}
 								className="*:bg-crust! absolute pt-4 *:rounded-t-lg max-w-full overflow-x-auto h-full"
 							>{`import { PAlter } from "plurography";
 const api = "https://pluralbuddy.app/api"
