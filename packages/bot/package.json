@@ -18,6 +18,7 @@
 	"dependencies": {
 		"@crowdin/crowdin-api-client": "^1.54.0",
 		"@datalust/winston-seq": "^3.0.1",
+		"@hono/prometheus": "^1.0.3",
 		"@hono/zod-validator": "^0.7.6",
 		"@prometheus-io/client": "^0.16.1",
 		"@sapphire/snowflake": "^3.5.5",
