@@ -331,7 +331,7 @@ await fetch(
 			</div>
 			<div className=" mt-15 text-center">
 				<Link
-					href="/docs"
+					href="/docs/pluralbuddy"
 					className="text-primary flex items-center gap-1 mx-auto justify-center text-sm"
 				>
 					Missing something?
