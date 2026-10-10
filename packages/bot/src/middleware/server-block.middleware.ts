@@ -1,10 +1,10 @@
+import { PGuildObject } from "plurography";
+import { Command, ComponentContext, createMiddleware, Message, SubCommand } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
 import { emojis } from "@/lib/emojis";
 import { getApplicableCase } from "@/lib/libby";
 import { getGuildFromId } from "@/types/guild";
 import { AlertView } from "@/views/alert";
-import { PGuildObject } from "plurography";
-import { Command, createMiddleware, Message, SubCommand } from "seyfert";
-import { MessageFlags } from "seyfert/lib/types";
 
 export const serverBlock = createMiddleware<void>(async (middle) => {
 	if (!middle.context.guildId) return middle.next();
@@ -49,7 +49,7 @@ export const serverBlock = createMiddleware<void>(async (middle) => {
 				blockedRoles.includes(c.id),
 			)
 		) {
-			if (ctx.isChat() && ctx.message) {
+			if (ctx instanceof ComponentContext && ctx.message) {
 				(ctx.message as Message).delete().catch((_) => null);
 
 				if (
@@ -81,7 +81,7 @@ export const serverBlock = createMiddleware<void>(async (middle) => {
 							});
 						} catch (_) {}
 
-						return await middle.pass();
+						return await middle.stop();
 					}
 				}
 
@@ -98,7 +98,7 @@ export const serverBlock = createMiddleware<void>(async (middle) => {
 						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 					});
 				} catch (_) {}
-				return await middle.pass();
+				return await middle.stop();
 			}
 		}
 

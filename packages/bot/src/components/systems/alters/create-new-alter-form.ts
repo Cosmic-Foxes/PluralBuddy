@@ -84,14 +84,14 @@ export default class CreateNewAlterForm extends ModalCommand {
 				);
 			} catch (error) {
 				if (error instanceof FileTooBigException)
-					return await ctx.editResponse({
+					return await ctx.editOrReply({
 						components: new AlertView(await ctx.userTranslations()).errorView(
 							"AFTER_COMPRESSION_TOO_BIG",
 						),
 						flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 					});
 				// ctx.client.logger.fatal(error);
-				return await ctx.editResponse({
+				return await ctx.editOrReply({
 					components: new AlertView(await ctx.userTranslations()).errorView(
 						"ERROR_FAILED_TO_UPLOAD_TO_GCP",
 					),

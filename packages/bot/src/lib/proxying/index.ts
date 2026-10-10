@@ -411,10 +411,6 @@ export const getModernComponentsMappings = (
 				.url ?? ""
 		).startsWith("https://media.discordapp.net/stickers/");
 
-	console.log(
-		((components[0].toJSON() as MediaGalleryComponent).items ?? [])[0]?.media
-			.url ?? "",
-	);
 	return components.length === 1 &&
 		components[0]?.data.type === ComponentType.TextDisplay
 		? {

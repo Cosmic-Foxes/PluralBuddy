@@ -62,7 +62,7 @@ export default class NameCNS extends ComponentCommand {
 			},
 		});
 
-		return await ctx.editResponse({
+		return await ctx.editOrReply({
 			components: [
 				...new AlertView(await ctx.userTranslations()).successViewCustom(
 					(await ctx.userTranslations()).CREATING_NEW_SYSTEM_SUCCESS.replaceAll(
