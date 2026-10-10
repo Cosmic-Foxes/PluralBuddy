@@ -68,7 +68,12 @@ export async function getReferencedMessageString(
 			if (alter !== null) {
 				const possiblyCachedSystem = cacheSystemMap[alter.systemId];
 
-				userString = `@${alter?.username}`;
+				if (possiblyCachedSystem.nudging.serverReplying) {
+					userString = `@${alter.username} (<@${possiblyCachedSystem.userId}>)`;
+				} else {
+					userString = `@${alter.username}`;
+				}
+				
 				messageString = `[${
 					replifyContents(contents) === ""
 						? "Jump to message"
@@ -80,5 +85,5 @@ export async function getReferencedMessageString(
 		}
 	}
 
-	return `-# ${emojis.reply}  Replying to ${userString}: ${messageString}`;
+	return `-# ${emojis.reply} Replying to ${userString}: ${messageString}`;
 }
