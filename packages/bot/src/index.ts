@@ -91,8 +91,7 @@ process.on("unhandledRejection", async (reason, promise) => {
 	});
 });
 
-const server = serve(api)
-console.log(`http server listening on :${server.port}`)
+
 
 export const posthogClient =
 	process.env.POSTHOG_API_KEY === undefined
@@ -143,6 +142,8 @@ Error.captureStackTrace = (target) => {
 }
 
 if (import.meta.main) {
+const server = serve(api)
+console.log(`http server listening on :${server.port}`)
 	// @ts-ignore
 	// if (logger) client.logger = {...client.logger, info: logger.info, warn: logger.warn, fatal: logger.error};
 
