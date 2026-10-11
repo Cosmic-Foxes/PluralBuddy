@@ -194,8 +194,7 @@ export async function proxy(
 									.setName(`${c.name}`)
 									.setSpoiler(c.spoilered)
 									.setFile("buffer", c.buff),
-							),
-							...stickerItems,
+							)
 						],
 						allowed_mentions: isToMention
 							? {
@@ -410,9 +409,15 @@ export const getModernComponentsMappings = (
 	const isSticker = (i: number) =>
 		components[i]?.data.type === ComponentType.MediaGallery &&
 		(
-			((components[i].toJSON() as MediaGalleryComponent).items ?? [])[i]?.media
+			((components[i].toJSON() as MediaGalleryComponent).items ?? [])[0]?.media
 				.url ?? ""
 		).startsWith("https://media.discordapp.net/stickers/");
+	const stickerURLs = [isSticker(0)].map((v, i) => {
+		if (v)
+			return ((components[i]?.toJSON() as MediaGalleryComponent).items ?? [])[0]
+				?.media.url;
+		return "";
+	}).filter(v => v !== undefined).join("\n");
 
 	return components.length === 1 &&
 		components[0]?.data.type === ComponentType.TextDisplay
@@ -429,21 +434,13 @@ export const getModernComponentsMappings = (
 					components[1]?.data.type === ComponentType.File)
 			? {
 					content:
-						components[0] !== undefined && "content" in components[0].data
+						((components[0] !== undefined && "content" in components[0].data
 							? (components[0].data.content ?? "").startsWith("# <")
 								? (components[0].data.content ?? "").slice(1)
 								: components[0].data.content
-							: "",
+							: "") ?? "") + stickerURLs,
 					attachments: isSticker(1)
-						? [
-								new AttachmentBuilder()
-									.setFile(
-										"url",
-										((components[1].toJSON() as MediaGalleryComponent).items ??
-											[])[1]?.media.url ?? "",
-									)
-									.toJSON(),
-							]
+						? []
 						: fileComponents
 								.filter((v, pos) => {
 									return fileComponents.indexOf(v) === pos;
@@ -460,17 +457,9 @@ export const getModernComponentsMappings = (
 					(components[0]?.data.type === ComponentType.File ||
 						components[0]?.data.type === ComponentType.MediaGallery)
 				? {
-						content: "",
+						content: stickerURLs,
 						attachments: isSticker(0)
-							? [
-									new AttachmentBuilder()
-										.setFile(
-											"url",
-											((components[0].toJSON() as MediaGalleryComponent)
-												.items ?? [])[0]?.media.url ?? "",
-										)
-										.toJSON(),
-								]
+							? []
 							: fileComponents
 									.filter((v, pos) => {
 										return fileComponents.indexOf(v) === pos;

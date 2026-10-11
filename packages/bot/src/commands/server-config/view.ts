@@ -1,7 +1,3 @@
-import { policyModal } from "@/index";
-import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { AlertView } from "@/views/alert";
-import { ServerConfigView } from "@/views/server-cfg";
 import {
 	CommandContext,
 	Declare,
@@ -10,6 +6,10 @@ import {
 	SubCommand,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { policyModal } from "@/policyModal";
+import { AlertView } from "@/views/alert";
+import { ServerConfigView } from "@/views/server-cfg";
 
 @Declare({
 	name: "view",

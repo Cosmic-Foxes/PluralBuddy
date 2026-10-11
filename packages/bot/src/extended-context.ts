@@ -30,11 +30,12 @@ import {
 	ButtonStyle,
 	MessageFlags,
 } from "seyfert/lib/types";
-import { client, policyModal } from ".";
+import { client } from ".";
 import { emojis } from "./lib/emojis";
 import { InteractionIdentifier } from "./lib/interaction-ids";
 import { getLanguageByUserId, langMemoryCache } from "./lib/lang";
 import { userCollection } from "./mongodb";
+import { policyModal } from "./policyModal";
 import { defaultPrefixes, getGuildFromId, PGuildObject } from "./types/guild";
 import { getUserById, terminologyMemoryCache } from "./types/user";
 import { LoadingView } from "./views/loading";

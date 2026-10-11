@@ -25,7 +25,7 @@ import {
 	type RESTPostAPIWebhookWithTokenJSONBody,
 	type RESTPostAPIWebhookWithTokenQuery,
 } from "seyfert/lib/types";
-import { latencyDataPoints } from "@/analytics";
+import { discordApiLatency } from "@/analytics";
 import { helpPages } from "@/commands/help";
 import { getWiderAutoProxy } from "@/lib/autoproxy-util";
 import { blockedChannel, blockedRole } from "@/lib/blocked";
@@ -91,7 +91,7 @@ export type PWebhook = {
 export default createEvent({
 	data: { name: "messageCreate", once: false },
 	run: async (message: Message) => {
-		latencyDataPoints.push(
+		discordApiLatency.observe(
 			Date.now() -
 				// @ts-ignore
 				message.createdTimestamp,

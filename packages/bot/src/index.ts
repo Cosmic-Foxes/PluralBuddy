@@ -7,23 +7,17 @@ import "./instrument"
 import { SeqTransport } from "@datalust/winston-seq";
 import * as Sentry from "@sentry/bun";
 import { RedisAdapter } from "@slipher/redis-adapter";
+import { serve } from "bun";
 import { PostHog } from "posthog-node";
 import {
 	ActionRow,
-	type AnyContext,
 	Button,
-	CheckboxGroup,
-	CheckboxGroupOption,
 	Client,
 	definePlugins,
-	Label,
 	LimitedCollection,
 	MemoryAdapter,
-	Modal,
-	TextDisplay,
 } from "seyfert";
 import { SeyfertError } from "seyfert/lib/common";
-import type { CollectorInteraction } from "seyfert/lib/components/handler";
 import {
 	ActivityType,
 	ButtonStyle,
@@ -47,7 +41,6 @@ import { extendedContext } from "./extended-context";
 import { startEmojiCleanupTimer } from "./lib/clean-up-emojis";
 import { startIndexingCleanupTimer } from "./lib/cleanup-indexing";
 import { emojis } from "./lib/emojis";
-import { InteractionIdentifier } from "./lib/interaction-ids";
 import { initializeApplicationCommands } from "./lib/mention-command";
 import { middlewares } from "./middleware";
 import { setupDatabases, setupMongoDB } from "./mongodb";
@@ -90,60 +83,6 @@ const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"serverBlock",
 ];
 
-export const policyModal = async (
-	ctx: AnyContext | CollectorInteraction,
-	nextPage: string,
-) =>
-	new Modal()
-		.setTitle(
-			("userTranslations" in ctx
-				? await ctx.userTranslations()
-				: client.t("en").get()
-			).POLICY_MODAL_TITLE,
-		)
-		.setCustomId(InteractionIdentifier.PolicyForm.create(nextPage))
-		.setComponents([
-			new TextDisplay().setContent(
-				("userTranslations" in ctx
-					? await ctx.userTranslations()
-					: client.t("en").get()
-				).POLICY_MODAL_DESCRIPTION,
-			),
-			new Label()
-				.setLabel(
-					("userTranslations" in ctx
-						? await ctx.userTranslations()
-						: client.t("en").get()
-					).POLICY_MODAL_CONFIRMATION,
-				)
-				.setComponent(
-					new CheckboxGroup()
-						.setRequired(true)
-						.setCustomId(InteractionIdentifier.PolicyFormAcceptance.create())
-						.setSelectionLimit({ max: 2, min: 2 })
-						.setOptions([
-							new CheckboxGroupOption({
-								value: "acceptance",
-								label: ("userTranslations" in ctx
-									? await ctx.userTranslations()
-									: client.t("en").get()
-								).POLICY_MODAL_DETAIL,
-							}),
-							new CheckboxGroupOption({
-								value: "block-acceptance",
-								label: ("userTranslations" in ctx
-									? await ctx.userTranslations()
-									: client.t("en").get()
-								).POLICY_MODAL_BLOCK_DETAIL,
-								description: ("userTranslations" in ctx
-									? await ctx.userTranslations()
-									: client.t("en").get()
-								).POLICY_MODAL_BLOCK_DESC,
-							}),
-						]),
-				),
-		]);
-
 process.on("unhandledRejection", async (reason, promise) => {
 	logger?.error("Unhandled rejection, can continue");
 	logger?.error(`Reason: {reason}, Promise: {promise}`, {
@@ -151,6 +90,9 @@ process.on("unhandledRejection", async (reason, promise) => {
 		promise,
 	});
 });
+
+const server = serve(api)
+console.log(`http server listening on :${server.port}`)
 
 export const posthogClient =
 	process.env.POSTHOG_API_KEY === undefined
@@ -308,6 +250,3 @@ export async function startTesting() {
 	});
 }
 
-// API
-export type { ClientType } from "./api-types";
-export default api;
