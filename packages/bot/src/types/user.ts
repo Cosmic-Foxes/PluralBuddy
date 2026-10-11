@@ -15,7 +15,7 @@ export async function getUserById(id: string): Promise<PUser> {
 	const user = await userCollection.findOne({ userId: id });
 
 	return user
-		? { ...user, nudging: defaultNudgingStructure() }
+		? { ...user, nudging: {...defaultNudgingStructure(), ...user.nudging} }
 		: defaultUserStructure(id);
 }
 
