@@ -194,7 +194,12 @@ export async function proxy(
 									.setName(`${c.name}`)
 									.setSpoiler(c.spoilered)
 									.setFile("buffer", c.buff),
-							)
+							),
+							...(components.length === 2 &&
+							(components[1]?.data.type === ComponentType.MediaGallery ||
+								components[1]?.data.type === ComponentType.File)
+								? stickerItems
+								: []),
 						],
 						allowed_mentions: isToMention
 							? {
@@ -412,12 +417,15 @@ export const getModernComponentsMappings = (
 			((components[i].toJSON() as MediaGalleryComponent).items ?? [])[0]?.media
 				.url ?? ""
 		).startsWith("https://media.discordapp.net/stickers/");
-	const stickerURLs = [isSticker(0)].map((v, i) => {
-		if (v)
-			return ((components[i]?.toJSON() as MediaGalleryComponent).items ?? [])[0]
-				?.media.url;
-		return "";
-	}).filter(v => v !== undefined).join("\n");
+	const stickerURLs = [isSticker(0)]
+		.map((v, i) => {
+			if (v)
+				return ((components[i]?.toJSON() as MediaGalleryComponent).items ??
+					[])[0]?.media.url;
+			return "";
+		})
+		.filter((v) => v !== undefined)
+		.join("\n");
 
 	return components.length === 1 &&
 		components[0]?.data.type === ComponentType.TextDisplay
