@@ -48,6 +48,6 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/giftedl/pluralbuddy:latest
+            ghcr.io/giftedl/pluralbuddy/bot:latest
             ghcr.io/giftedl/pluralbuddy/bot:${{ needs.commit-hash.outputs.commit_hash }}
           build-args: GIT_COMMIT=${{ github.sha }}
