@@ -74,7 +74,7 @@ jobs:
 
       - name: Add remote server to known_hosts
         run: |
-          ssh-keyscan ${{ secrets.DOCKER_USER }}@${{ secrets.DOCKER_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -t rsa ${{ secrets.DOCKER_HOST }} >> ~/.ssh/known_hosts
 
       - name: Replace infra files & build compose
         id: vars
