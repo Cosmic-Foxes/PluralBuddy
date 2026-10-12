@@ -1,15 +1,6 @@
 name: pluralbuddy
 version: "3"
 services:
-  diun:
-    image: crazymax/diun:latest
-    volumes:
-      - "./data:/data"
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      - "./diun.yml:/diun.yml"
-    environment:
-      - "DIUN_WATCH_SCHEDULE=* * * * *"
-    restart: always
   redis:
     image: redis:latest
     container_name: my-redis
