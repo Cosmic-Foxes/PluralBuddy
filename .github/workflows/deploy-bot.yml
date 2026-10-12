@@ -57,9 +57,7 @@ jobs:
       - name: Tailscale
         uses: tailscale/github-action@v4
         with:
-          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-          audience: ${{ secrets.TS_AUDIENCE }}
-          tags: tag:ci
+          authkey: ${{ secrets.TS_AUTHKEY }}
       - name: 'Stack Deploy'
         uses: cssnr/stack-deploy-action@v1
         with:
