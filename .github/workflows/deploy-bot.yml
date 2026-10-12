@@ -10,6 +10,15 @@ permissions:
   packages: write
 
 jobs:
+  commit-hash:
+    runs-on: ubuntu-latest
+    outputs:
+      commit_hash: ${{ steps.get_commit.outputs.commit_hash }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get commit hash
+        id: get_commit
+        run: echo "::set-output name=commit_hash::$(git rev-parse HEAD)"
   build-and-push-image:
     runs-on: ubuntu-latest
     steps:
