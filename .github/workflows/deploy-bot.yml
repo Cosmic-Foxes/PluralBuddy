@@ -20,6 +20,8 @@ jobs:
         id: get_commit
         run: echo "::set-output name=commit_hash::$(git rev-parse HEAD)"
   build-and-push-image:
+    needs: 
+      - commit-hash
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
