@@ -67,10 +67,6 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.DOCKER_SSH_KEY }}
 
-      - name: Add remote server to known_hosts
-        run: |
-          ssh-keyscan ${{ secrets.DOCKER_USER }}@${{ secrets.DOCKER_HOST }} >> ~/.ssh/known_hosts
-
       - name: Replace infra files & build compose
         id: vars
         run: |
