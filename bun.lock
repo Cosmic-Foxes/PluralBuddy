@@ -273,6 +273,7 @@
     "packages/tests": {
       "name": "tests",
       "dependencies": {
+        "@slipher/testing": "^1.0.0",
         "bot": "workspace:*",
         "dotenv": "^17.4.2",
         "seyfert": "^4.3.0",
@@ -1001,6 +1002,8 @@
     "@sindresorhus/merge-streams": ["@sindresorhus/merge-streams@4.0.0", "", {}, "sha512-tlqY9xq5ukxTUZBmoOp+m61cqwQD5pHJtFY3Mn8CA8ps6yghLH/Hw8UPdqg4OLmFW3IFlcXnQNmo/dh8HzXYIQ=="],
 
     "@slipher/redis-adapter": ["@slipher/redis-adapter@0.0.6", "", { "dependencies": { "@redis/client": "^5.10.0", "seyfert": "4.1.0" } }, "sha512-ADjc10a6EP5JTgI63andnLbJkMkrcr8YmOV/pxadvcol50feEvahsGS2YENlgHiDkOFZ0c038qmlM6KFxDIp6w=="],
+
+    "@slipher/testing": ["@slipher/testing@1.0.0", "", { "peerDependencies": { "seyfert": ">=5.0.0" } }, "sha512-hgyCcK+LQ582K6TdDua1VdJ9saP626KiLFCQR9++H2TD3gaSR9/aAr9u/57C33cG0ZRspN9OMO0X0vpgvcaJKA=="],
 
     "@so-ric/colorspace": ["@so-ric/colorspace@1.1.6", "", { "dependencies": { "color": "^5.0.2", "text-hex": "1.0.x" } }, "sha512-/KiKkpHNOBgkFJwu9sh48LkHSMYGyuTcSFK/qMBdnOAlrRJzRSXAOFB5qwzaVQuDl8wAvHVMkaASQDReTahxuw=="],
 
