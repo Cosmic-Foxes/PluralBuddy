@@ -53,6 +53,9 @@ jobs:
           build-args: GIT_COMMIT=${{ github.sha }} 
   deploy:
     runs-on: ubuntu-latest
+    needs: 
+      - commit-hash
+      - build-and-push-image
     permissions:
       id-token: write
     steps:
@@ -68,6 +71,10 @@ jobs:
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.DOCKER_SSH_KEY }}
+
+      - name: Add remote server to known_hosts
+        run: |
+          ssh-keyscan ${{ secrets.DOCKER_USER }}@${{ secrets.DOCKER_HOST }} >> ~/.ssh/known_hosts
 
       - name: Replace infra files & build compose
         id: vars
