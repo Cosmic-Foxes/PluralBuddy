@@ -23,6 +23,8 @@ jobs:
     needs: 
       - commit-hash
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -45,5 +47,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/pluralbuddy/bot:${{ needs.commit-hash.outputs.commit_hash }}
+          tags: ghcr.io/giftedl/pluralbuddy/bot:${{ needs.commit-hash.outputs.commit_hash }}
       
