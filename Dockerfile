@@ -25,6 +25,9 @@ COPY packages/tests/src packages/tests/src/
 RUN bun install
 # RUN cd packages/tests && bun test
 
+ARG GIT_COMMIT
+ENV SOURCE_COMMIT=$GIT_COMMIT
+
 # run the app
 USER bun
 EXPOSE 8080

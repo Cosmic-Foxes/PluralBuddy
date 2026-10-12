@@ -48,4 +48,24 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/giftedl/pluralbuddy/bot:${{ needs.commit-hash.outputs.commit_hash }}
-      
+          build-args: GIT_COMMIT=${{ github.sha }}
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - name: Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          audience: ${{ secrets.TS_AUDIENCE }}
+          tags: tag:ci
+      - name: 'Stack Deploy'
+        uses: cssnr/stack-deploy-action@v1
+        with:
+          name: 'pluralbuddy'
+          file: 'infra/compose.yaml'
+          host: ${{ secrets.DOCKER_HOST }}
+          user: ${{ secrets.DOCKER_USER }}
+          ssh_key: ${{ secrets.DOCKER_SSH_KEY }} # not needed with pass
+          mode: compose

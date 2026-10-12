@@ -1,0 +1,6 @@
+# The 'curb' is the extra resources that PluralBuddy could need, for autodeploying, etc.
+
+name: pluralbuddy-curb
+version: "3"
+services:
+  
