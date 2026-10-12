@@ -5,6 +5,8 @@ import {
 	Guild,
 	Section,
 	Separator,
+	StringSelectMenu,
+	StringSelectOption,
 	TextDisplay,
 } from "seyfert";
 import { TranslatedView } from "./translated-view";
@@ -323,6 +325,36 @@ export class ServerConfigView extends TranslatedView {
 							).replace("{{ delayMs }}", String(guild.proxyDelay ?? 0)),
 						),
 					),
+				new TextDisplay().setContent(
+					this.translations.SRV_CFG_PING_MODE,
+				),
+				new ActionRow().setComponents(
+					new StringSelectMenu()
+						.setCustomId(
+							InteractionIdentifier.Guilds.GeneralTab.SetPingMode.create(),
+						)
+						.setOptions([
+							new StringSelectOption()
+								.setLabel("Preserve original behavior")
+								.setValue("unaffected")
+								.setDefault(
+									(guild.pingMode ?? "unaffected") === "unaffected",
+								),
+							new StringSelectOption()
+								.setLabel("Always ping")
+								.setValue("always-on")
+								.setDefault(guild.pingMode === "always-on"),
+							new StringSelectOption()
+								.setLabel("Never ping")
+								.setValue("always-off")
+								.setDefault(guild.pingMode === "always-off"),
+							new StringSelectOption()
+								.setLabel("Reverse original behavior")
+								.setValue("opposite")
+								.setDefault(guild.pingMode === "opposite"),
+						])
+						.setValuesLength({ min: 1, max: 1 }),
+				),
 			),
 		];
 	}
