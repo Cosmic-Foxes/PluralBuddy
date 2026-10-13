@@ -55,7 +55,7 @@ jobs:
   build-and-push-image:
     needs: 
       - commit-hash
-    runs-on: macos-latest
+    runs-on: ubuntu-24.04-arm
     permissions:
       packages: write
     steps:
