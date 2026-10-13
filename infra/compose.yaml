@@ -2,7 +2,7 @@ name: pluralbuddy
 version: "3"
 services:
   redis:
-    image: redis:latest
+    image: redis:7.2
     env_file: ".env"
     container_name: my-redis
     ports:
@@ -51,5 +51,5 @@ services:
       - CROWDIN_FILE_ID=${CROWDIN_FILE_ID}
 
 volumes:
-  redis-data-sfx87qgyqks6reh7nvjxe1ud:
+  pluralbuddy_redis-data-sfx87qgyqks6reh7nvjxe1ud:
     driver: local
