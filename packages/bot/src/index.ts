@@ -91,6 +91,7 @@ process.on("unhandledRejection", async (reason, promise) => {
 	});
 });
 
+export type { ClientType } from "./api-types";
 
 
 export const posthogClient =
