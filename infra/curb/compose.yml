@@ -10,7 +10,7 @@ services:
     environment:
       - GF_PATHS_CONFIG=/var/lib/grafana/grafana.ini
     ports:
-      - '3000:3000'
+      - '3000:80'
     volumes:
       - grafana-storage:/var/lib/grafana
 
