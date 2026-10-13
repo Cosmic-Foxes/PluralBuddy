@@ -6,6 +6,10 @@ on:
     branches:
       - main
       - gh-deploying
+    paths:
+      - packages/bot/**
+      - packages/plurography/**
+      - infra/**
 
 permissions:
   packages: write
@@ -96,7 +100,7 @@ jobs:
         if: github.ref != 'refs/heads/main'
         with:
           context: .
-          push: true
+          push: false
           tags: |
             ghcr.io/${{ env.REPO }}/bot:latest-${{ github.head_ref }}
             ghcr.io/${{ env.REPO }}/bot:${{ needs.commit-hash.outputs.commit_hash }}
