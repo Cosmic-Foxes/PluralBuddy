@@ -6,6 +6,7 @@ import {
 	CommandContext,
 	Container,
 	createStringOption,
+	createBooleanOption,
 	Declare,
 	IgnoreCommand,
 	MediaGallery,
@@ -33,6 +34,7 @@ import { getModernComponentsMappings } from "@/lib/proxying";
 import { processEmojis } from "@/lib/proxying/process-emojis";
 import { getSimilarWebhooks, setLastLatchAlter } from "@/lib/proxying/util";
 import { alterCollection, messagesCollection } from "@/mongodb";
+import { getSystemFeatures } from "@/lib/get-system-flags";
 import { getGuildFromId } from "@/types/guild";
 import { AlertView } from "@/views/alert";
 import { w } from "@/webhooks";
@@ -44,6 +46,10 @@ const options = {
 		autocomplete: autocompleteAlters,
 		required: true,
 	}),
+	changelatch: createBooleanOption({
+		description: "Change whether the latched alter changes",
+		required: false,
+	})
 };
 
 @Declare({
@@ -57,7 +63,7 @@ export default class ReproxyCommand extends Command {
 	override async run(ctx: CommandContext<typeof options>) {
 		await ctx.deferReply(true);
 		const { system } = await ctx.retrievePUser();
-		const { alter: alterName } = ctx.options;
+		const { alter: alterName, changelatch } = ctx.options;
 
 		const systemId = ctx.author.id;
 
@@ -66,9 +72,9 @@ export default class ReproxyCommand extends Command {
 			(await (Number.isNaN(Number.parseInt(alterName))
 				? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
 				: alterCollection.findOne({
-						$or: [{ username: alterName }, { alterId: Number(alterName) }],
-						systemId,
-					})));
+					$or: [{ username: alterName }, { alterId: Number(alterName) }],
+					systemId,
+				})));
 
 		if (system === undefined) {
 			return await ctx.ephemeral(
@@ -154,7 +160,11 @@ export default class ReproxyCommand extends Command {
 
 		const webhook = similarWebhooks[0];
 
-		const username = `${alter.nameMap.find((c) => c.server === ctx.guildId)?.name ?? alter?.displayName ?? ""} ${(system?.displayTagMap ?? {})[ctx.guildId ?? ""] ?? system?.systemDisplayTag ?? ""}`;
+		const displayName = alter.nameMap.find((c) => c.server === ctx.guildId)?.name ?? alter.displayName ?? "";
+		const pronouns = getSystemFeatures(system).includePronouns && alter.pronouns ? ` (${alter.pronouns})` : "";
+		const tag = (system.displayTagMap ?? {})[ctx.guildId] ?? system.systemDisplayTag ?? "";
+
+		const username = `${displayName}${pronouns} ${tag}`;
 
 		pendingIgnoreDeletion.push(message.messageId);
 
@@ -193,12 +203,14 @@ export default class ReproxyCommand extends Command {
 						}
 					).autoproxyMode === "latch"
 				)
-					setLastLatchAlter(
-						ctx.guildId ?? "",
-						ctx.channelId ?? "",
-						system,
-						alter,
-					);
+					if (changelatch !== false) {
+						setLastLatchAlter(
+							ctx.guildId ?? "",
+							ctx.channelId ?? "",
+							system,
+							alter,
+						);
+					}
 
 				messagesCollection.replaceOne(
 					{ messageId: message.messageId },
@@ -244,7 +256,7 @@ export default class ReproxyCommand extends Command {
 						).arrayBuffer();
 
 						color = (await getColor(image))?.hex() ?? "Green";
-					} catch (_) {}
+					} catch (_) { }
 
 					if (!guild.logChannel) return;
 
@@ -267,7 +279,7 @@ export default class ReproxyCommand extends Command {
 											.setAccessory(
 												new Thumbnail().setMedia(
 													alter?.avatarUrl ??
-														"https://cdn.discordapp.com/embed/avatars/0.png",
+													"https://cdn.discordapp.com/embed/avatars/0.png",
 												),
 											),
 										new Separator().setSpacing(Spacing.Large),
