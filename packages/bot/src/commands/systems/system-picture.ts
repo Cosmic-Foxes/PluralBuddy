@@ -125,6 +125,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 						),
 						flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 					});
+				console.error(error)
 				return await ctx.editResponse({
 					components: new AlertView(await ctx.userTranslations()).errorView(
 						"ERROR_FAILED_TO_UPLOAD_TO_GCP",
