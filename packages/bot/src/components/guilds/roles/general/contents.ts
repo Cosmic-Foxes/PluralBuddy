@@ -27,8 +27,10 @@ export default class RoleGeneralContentsButton extends ComponentCommand {
 
 		if (!roleId) throw new Error("no role");
 
-        const guild = await ctx.retrievePGuild();
-        const role = guild.rolePreferences.find(c => c.roleId === roleId) ?? { containerContents: "" }
+		const guild = await ctx.retrievePGuild();
+		const role = guild.rolePreferences.find((c) => c.roleId === roleId) ?? {
+			containerContents: "",
+		};
 
 		return await ctx.modal(
 			new Modal()
@@ -45,7 +47,7 @@ export default class RoleGeneralContentsButton extends ComponentCommand {
 							new TextInput()
 								.setStyle(TextInputStyle.Paragraph)
 								.setRequired(false)
-                                .setValue(role.containerContents ?? "")
+								.setValue(role.containerContents ?? "")
 								.setCustomId(
 									InteractionIdentifier.Guilds.FormSelection.ChangeRoleContentsSelection.create(),
 								),

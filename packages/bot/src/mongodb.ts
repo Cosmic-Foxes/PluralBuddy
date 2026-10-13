@@ -1,20 +1,21 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { type Collection, type Db, MongoClient } from "mongodb";
-import type { PGuild } from "./types/guild";
-import type { PUser } from "./types/user";
-import type { PAlter } from "./types/alter";
-import type { POperation } from "./types/operation";
-import type { PMessage } from "./types/message";
-import type { PTag } from "./types/tag";
 import type {
+	PAlterOperation,
 	PExpressApplication,
 	PGuildError,
+	PImportTranscript,
 	PIntegrationFront,
 } from "plurography";
-import type { PAlterOperation } from "plurography";
 import { connectMongo } from "./lib/libby";
+import type { PAlter } from "./types/alter";
 import type { PAnalytics } from "./types/analytics";
+import type { PGuild } from "./types/guild";
+import type { PMessage } from "./types/message";
+import type { POperation } from "./types/operation";
+import type { PTag } from "./types/tag";
+import type { PUser } from "./types/user";
 
 export let mongoClient: MongoClient;
 export let mainDb: Db;
@@ -25,6 +26,7 @@ export let tagCollection: Collection<PTag>;
 export let operationCollection: Collection<POperation>;
 export let alterOperationCollection: Collection<PAlterOperation>;
 export let errorCollection: Collection<PGuildError>;
+export let importTranscriptCollection: Collection<PImportTranscript>;
 export let frontsCollection: Collection<PIntegrationFront>;
 export let messagesCollection: Collection<PMessage>;
 export let applicationsCollection: Collection<PExpressApplication>;
@@ -50,6 +52,10 @@ export async function createPeriodicExpirationDates() {
 		{ createdAt: 1 },
 		{ expireAfterSeconds: 21600 },
 	);
+	await importTranscriptCollection.createIndex(
+		{ createdAt: 1 },
+		{ expireAfterSeconds: 1800 },
+	);
 
 	await tagCollection.createIndex(
 		{ tagFriendlyName: 1 },
@@ -60,15 +66,8 @@ export async function createPeriodicExpirationDates() {
 			},
 		},
 	);
-	await alterCollection.createIndex(
-		{ displayName: 1 },
-		{
-			collation: {
-				locale: "en",
-				strength: 2,
-			},
-		},
-	);
+
+	await alterCollection.createIndex({ username: "text" });
 }
 
 export async function setupDatabases() {
@@ -85,6 +84,7 @@ export async function setupDatabases() {
 	analyticsCollection = mainDb.collection("analytics");
 	alterOperationCollection = mainDb.collection("alter-operations");
 	frontsCollection = mainDb.collection("fronts");
+	importTranscriptCollection = mainDb.collection("import-transcripts");
 
 	await createPeriodicExpirationDates();
 }

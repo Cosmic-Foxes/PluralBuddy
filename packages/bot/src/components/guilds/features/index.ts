@@ -14,24 +14,24 @@ export default class ViewErrorsTab extends ComponentCommand {
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
-        const pluralGuild = await ctx.retrievePGuild();
-        const nativeGuild = await ctx.guild()
-        
-        if (!nativeGuild) throw new Error("What.")
+		const pluralGuild = await ctx.retrievePGuild();
+		const nativeGuild = await ctx.guild();
+
+		if (!nativeGuild) throw new Error("What.");
 
 		return await ctx.update({
 			components: [
-				...new ServerConfigView((await ctx.userTranslations())).topView(
+				...new ServerConfigView(await ctx.userTranslations()).topView(
 					"features",
 					pluralGuild.guildId,
 				),
-				...new ServerConfigView((await ctx.userTranslations())).featuresTab(
+				...new ServerConfigView(await ctx.userTranslations()).featuresTab(
 					pluralGuild,
-					nativeGuild
+					nativeGuild,
 				),
 			],
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			allowed_mentions: { parse: [] },
 		});
-    }
+	}
 }

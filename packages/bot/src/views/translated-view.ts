@@ -3,10 +3,14 @@
 import type { DefaultLocale } from "seyfert";
 
 export class TranslatedView {
-    translations: DefaultLocale;
+	translations: DefaultLocale;
+	preferAccessiblity: boolean;
 
-    constructor(translations: DefaultLocale) {
-        this.translations = translations;
-    }
-    
+	constructor(
+		translations: DefaultLocale,
+		preferAccessiblity: boolean = false,
+	) {
+		this.translations = translations;
+		this.preferAccessiblity = preferAccessiblity;
+	}
 }

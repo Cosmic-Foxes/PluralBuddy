@@ -1,5 +1,6 @@
+import { OAuthClient } from "@better-auth/oauth-provider";
 import { MongoClient, ObjectId } from "mongodb";
-import { baseProcedure, createTRPCRouter } from "../init";
+import { headers } from "next/headers";
 import {
 	PAlter,
 	PAlterOperation,
@@ -9,12 +10,11 @@ import {
 	PTag,
 	PUser,
 } from "plurography";
-import { getDiscordIdBySessionId } from "@/lib/discord-id";
 import z from "zod";
-import { OAuthClient } from "@better-auth/oauth-provider";
 import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
-import { deleteAttachment, getGcpAccessToken } from "../gcp";
+import { getDiscordIdBySessionId } from "@/lib/discord-id";
+import { baseProcedure, createTRPCRouter } from "../init";
+import { deleteS3AssetPrefix } from "../object-storage";
 
 export const AccountRouter = createTRPCRouter({
 	getAccountSettings: baseProcedure.query(async ({ ctx }) => {
@@ -121,7 +121,6 @@ export const AccountRouter = createTRPCRouter({
 			`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
 		);
 		const discordId = await getDiscordIdBySessionId(session.user.id);
-		const gcpAccessToken = await getGcpAccessToken();
 
 		const accounts = db.collection("account");
 		const oauthClient = db.collection("oauthClient");
@@ -157,8 +156,12 @@ export const AccountRouter = createTRPCRouter({
 			systemOperations.deleteMany({ "oldSystem.associatedUserId": discordId }),
 		]);
 
-		if (systemUser?.storagePrefix)
-			await deleteAttachment(systemUser?.storagePrefix, gcpAccessToken);
+		try {
+			if (systemUser?.storagePrefix)
+				await deleteS3AssetPrefix(systemUser?.storagePrefix);
+		} catch (e) {
+			console.warn("error while deleting attachments", e);
+		}
 
 		return { success: true };
 	}),

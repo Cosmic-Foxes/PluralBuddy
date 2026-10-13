@@ -1,17 +1,20 @@
 import {
+	type RemarkFeedbackBlockOptions,
+	remarkFeedbackBlock,
+} from "fumadocs-core/mdx-plugins/remark-feedback-block";
+import { loader } from "fumadocs-core/source";
+import { pageSchema } from "fumadocs-core/source/schema";
+import {
 	defineConfig,
 	frontmatterSchema,
 	metaSchema,
 } from "fumadocs-mdx/config";
 import { defineDocs } from "fumadocs-mdx/macro";
-import {
-	remarkFeedbackBlock,
-	type RemarkFeedbackBlockOptions,
-} from "fumadocs-core/mdx-plugins/remark-feedback-block";
 import { openapiPlugin } from "fumadocs-openapi/server";
-import { loader } from "fumadocs-core/source";
 import { icons } from "lucide-react";
+
 import { createElement } from "react";
+import { z } from "zod";
 
 export const docsImageRoute = "/og/docs";
 
@@ -19,6 +22,11 @@ export const docsImageRoute = "/og/docs";
 // see https://fumadocs.dev/docs/mdx/collections
 export const docs = defineDocs({
 	dir: "content/docs",
+	docs: {
+		schema: pageSchema.extend({
+			["_discord-embed-name"]: z.string().optional()
+		})
+	},
 });
 
 export default defineConfig({

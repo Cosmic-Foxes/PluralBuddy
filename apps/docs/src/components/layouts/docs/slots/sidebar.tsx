@@ -25,9 +25,9 @@ const itemVariants = cva(
   {
     variants: {
       variant: {
-        link: 'transition-colors hover:bg-fd-accent/50 hover:text-fd-accent-foreground/80 hover:transition-none data-[active=true]:bg-fd-primary/10 data-[active=true]:text-fd-primary data-[active=true]:hover:transition-colors',
+        link: 'transition-colors hover:bg-accent/50 hover:text-accent-foreground/80 hover:transition-none data-[active=true]:bg-fd-primary/10 data-[active=true]:text-fd-primary data-[active=true]:hover:transition-colors',
         button:
-          'transition-colors hover:bg-fd-accent/50 hover:text-fd-accent-foreground/80 hover:transition-none',
+          'transition-colors hover:bg-accent/50 hover:text-accent-foreground/80 hover:transition-none',
       },
       highlight: {
         true: "data-[active=true]:before:content-[''] data-[active=true]:before:bg-fd-primary data-[active=true]:before:absolute data-[active=true]:before:w-px data-[active=true]:before:inset-y-2.5 data-[active=true]:before:inset-s-2.5",
@@ -106,14 +106,15 @@ export function Sidebar({ footer, banner, collapsible = true, components, ...res
         </div>
         {viewport}
         {(slots.languageSelect || iconLinks.length > 0 || slots.themeSwitch || footer) && (
-          <div className="flex flex-col p-4 pt-2">
+          <div className="flex flex-col p-4 pt-2 grid gap-2">
             {slots.languageSelect && (
               <slots.languageSelect.root
                 variant="secondary"
                 className="text-fd-muted-foreground text-start justify-start bg-fd-secondary/50 mb-2"
               >
+                <div className='flex items-center gap-2'>
                 <Languages className="size-4.5" />
-                <slots.languageSelect.text />
+                  <slots.languageSelect.text /></div>
                 <ChevronDown className="ms-auto size-3.5" />
               </slots.languageSelect.root>
             )}
@@ -160,8 +161,10 @@ export function Sidebar({ footer, banner, collapsible = true, components, ...res
             </div>
             {slots.languageSelect && (
               <slots.languageSelect.root>
+                <div 
+                className='flex items-center gap-1'>
                 <Languages className="size-4.5" />
-                <slots.languageSelect.text />
+                  <slots.languageSelect.text /></div>
               </slots.languageSelect.root>
             )}
             {slots.themeSwitch && <slots.themeSwitch className="p-0" />}
@@ -439,7 +442,7 @@ function SidebarTabsDropdown({
         <PopoverTrigger
           {...props}
           className={cn(
-            'flex items-center gap-2 rounded-lg p-2 border bg-fd-secondary/50 text-start text-fd-secondary-foreground transition-colors hover:bg-fd-accent data-[popup-open]:bg-fd-accent data-[popup-open]:text-fd-accent-foreground',
+            'flex items-center gap-2 rounded-lg p-2 border bg-fd-secondary/50 text-start text-fd-secondary-foreground transition-colors hover:bg-accent data-[popup-open]:bg-accent data-[popup-open]:text-accent-foreground',
             props.className,
           )}
         >
@@ -459,7 +462,7 @@ function SidebarTabsDropdown({
               onClick={onClick}
               {...item.props}
               className={cn(
-                'flex items-center gap-2 rounded-lg p-1.5 hover:bg-fd-accent hover:text-fd-accent-foreground',
+                'flex items-center gap-2 rounded-lg p-1.5 hover:bg-accent hover:text-accent-foreground',
                 item.props?.className,
               )}
             >

@@ -1,3 +1,4 @@
+import { DiscordSnowflake } from "@sapphire/snowflake";
 import {
 	ActionRow,
 	Button,
@@ -6,15 +7,14 @@ import {
 	Separator,
 	TextDisplay,
 } from "seyfert";
+import { ButtonStyle, Spacing } from "seyfert/lib/types";
+import { emojis, getEmojiFromTagColor } from "@/lib/emojis";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { tagCollection } from "@/mongodb";
+import type { PAlter } from "@/types/alter";
+import type { PSystem } from "@/types/system";
 import { AlertView } from "./alert";
 import { TranslatedView } from "./translated-view";
-import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { ButtonStyle, Spacing } from "seyfert/lib/types";
-import { tagCollection } from "@/mongodb";
-import { DiscordSnowflake } from "@sapphire/snowflake";
-import type { PSystem } from "@/types/system";
-import { emojis, getEmojiFromTagColor } from "@/lib/emojis";
-import type { PAlter } from "@/types/alter";
 
 export const assignTagPagination: {
 	id: string;
@@ -40,7 +40,9 @@ export class AlertAssignTagView extends TranslatedView {
 						.setEmoji(emojis.undo)
 						.setLabel(this.translations.OPTION_BACK)
 						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.Alters.GeneralSettings.create(alter?.alterId ?? "")
+							InteractionIdentifier.Systems.Configuration.Alters.GeneralSettings.create(
+								alter?.alterId ?? "",
+							),
 						)
 						.setStyle(ButtonStyle.Secondary),
 					new Button()
@@ -48,7 +50,7 @@ export class AlertAssignTagView extends TranslatedView {
 						.setCustomId(
 							InteractionIdentifier.Systems.Configuration.TagPagination.CreateNewTag.create(),
 						)
-						.setStyle(ButtonStyle.Primary)
+						.setStyle(ButtonStyle.Primary),
 				),
 			];
 		}
@@ -90,7 +92,10 @@ export class AlertAssignTagView extends TranslatedView {
 				.setColor(`#${getEmojiFromTagColor(pgObj.alter.color ?? "amber")}`)
 				.setComponents(
 					new TextDisplay().setContent(
-						this.translations.ASSIGN_TAG_HEADER.replace("{{ alterUsername }}", pgObj.alter.username)
+						this.translations.ASSIGN_TAG_HEADER.replace(
+							"{{ alterUsername }}",
+							pgObj.alter.username,
+						),
 					),
 					new Separator().setSpacing(Spacing.Large),
 					...alters.map((tag) => {
@@ -100,7 +105,7 @@ export class AlertAssignTagView extends TranslatedView {
 									.setLabel(
 										pgObj.alter.tagIds.includes(tag.tagId)
 											? this.translations.UNASSIGN_TAG
-											: this.translations.ASSIGNED_TAG,
+											: this.translations.ASSIGN_TAG,
 									)
 									.setCustomId(
 										InteractionIdentifier.Systems.Configuration.AlterAssignPagination.ToggleAssign.create(
@@ -127,16 +132,26 @@ export class AlertAssignTagView extends TranslatedView {
 					}),
 					new Separator().setSpacing(Spacing.Large),
 					new TextDisplay().setContent(
-						this.translations.PAGINATION_BOTTOM_AAT
-							.replace("{{ page }}", String(pgObj.memoryPage))
-							.replace("{{ maxPage }}", String(Math.ceil((pgObj?.documentCount ?? 0) / tagsPerPage)))
+						this.translations.PAGINATION_BOTTOM_AAT.replace(
+							"{{ page }}",
+							String(pgObj.memoryPage),
+						)
+							.replace(
+								"{{ maxPage }}",
+								String(Math.ceil((pgObj?.documentCount ?? 0) / tagsPerPage)),
+							)
 							.replace("{{ alters }}", String(alters.length))
 							.replace("{{ maxAlters }}", String(pgObj.documentCount))
 							.replace("{{ time }}", String(Date.now() - time))
-							.replace("{{ possibleSearchQuery }}",
-								pgObj.searchQuery !== undefined ? this.translations.PAGINATION_SEARCH_QUERY
-									.replace("{{ query }}", pgObj.searchQuery) : ""
-							)
+							.replace(
+								"{{ possibleSearchQuery }}",
+								pgObj.searchQuery !== undefined
+									? this.translations.PAGINATION_SEARCH_QUERY.replace(
+											"{{ query }}",
+											pgObj.searchQuery,
+										)
+									: "",
+							),
 					),
 					new ActionRow().setComponents(
 						new Button()

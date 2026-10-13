@@ -9,7 +9,7 @@ export default createEvent({
 	data: { name: "messageDelete", once: false },
 	run: async (message) => {
 		if (!pendingIgnoreDeletion.includes(message.id))
-			await messagesCollection.findOneAndDelete({ messageId: message.id});
+			await messagesCollection.findOneAndDelete({ messageId: message.id });
 
 		const referencedMessages = await messagesCollection
 			.find({
@@ -17,8 +17,9 @@ export default createEvent({
 			})
 			.toArray();
 
-		const channel = await client.channels.fetch(message.channelId)
-		const parent = ("parentId" in channel && channel.isThread()) ? channel.parentId : null;
+		const channel = await client.channels.fetch(message.channelId);
+		const parent =
+			"parentId" in channel && channel.isThread() ? channel.parentId : null;
 
 		const similarWebhooks = await getSimilarWebhooks(parent ?? channel.id);
 
@@ -38,10 +39,10 @@ export default createEvent({
 				webhook.messages.edit({
 					messageId: nativeMessage.id,
 					body: {
-                        // @ts-ignore
+						// @ts-ignore
 						components: nativeMessage.components.slice(1),
 					},
-					query: parent !== null ? { thread_id: channel.id } : {}
+					query: parent !== null ? { thread_id: channel.id } : {},
 				});
 			} catch (_) {}
 		}

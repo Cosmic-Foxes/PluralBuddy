@@ -7,6 +7,7 @@ import { MessageFlags, TextInputStyle } from "seyfert/lib/types";
 import { alterCollection } from "@/mongodb";
 import { AlterView } from "@/views/alters";
 import { w } from "@/webhooks";
+import { writeBack } from "@/lib/pk-sync-engine.ts";
 
 export default class SetUsernameButton extends ModalCommand {
 	override filter(context: ModalContext) {
@@ -30,7 +31,7 @@ export default class SetUsernameButton extends ModalCommand {
 
 		if (alter === null) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -44,7 +45,7 @@ export default class SetUsernameButton extends ModalCommand {
 
 		if (!/^#[0-9A-F]{6}$/i.test(newAlterColor)) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_INVALID_COLOR",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -64,9 +65,19 @@ export default class SetUsernameButton extends ModalCommand {
 			type: "alter.update",
 			alter: {
 				...alter,
-				color: newAlterColor as string
+				color: newAlterColor as string,
 			},
 		});
+
+		if (alter.fields["@/converter/pk"])
+			writeBack({
+				type: "alter",
+				id: alter.fields["@/converter/pk"],
+				change: {
+					color: newAlterColor as string,
+				},
+				syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+			});
 
 		alter =
 			(await alterCollection.findOne({
@@ -76,12 +87,12 @@ export default class SetUsernameButton extends ModalCommand {
 
 		return await ctx.interaction.update({
 			components: [
-				...new AlterView((await ctx.userTranslations())).alterTopView(
+				...new AlterView(await ctx.userTranslations()).alterTopView(
 					"public-settings",
 					alter.alterId.toString(),
 					alter.username,
 				),
-				...new AlterView((await ctx.userTranslations())).altersPublicView(
+				...new AlterView(await ctx.userTranslations()).altersPublicView(
 					alter,
 					(await ctx.guild()) ?? { name: "", id: "" },
 					(await ctx.getDefaultPrefix()) ?? "",

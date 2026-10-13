@@ -50,20 +50,21 @@ export default class ViewRoleContainer extends SubCommand {
 			(c) => c.roleId === role.id,
 		);
 
-		if (color === "role")
-			color = `#${role.color.toString(16)}`;
+		if (color === "role") color = `#${role.color.toString(16)}`;
 		else if (color && !/^#?[0-9a-fA-F]{6}$/.test(color ?? "")) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView("ERROR_INVALID_COLOR"),
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
-			})
+				components: new AlertView(await ctx.userTranslations()).errorView(
+					"ERROR_INVALID_COLOR",
+				),
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+			});
 		}
 
 		if (preferenceAlreadyExists)
 			await guildCollection.updateOne(
 				{ guildId: guild.guildId, "rolePreferences.roleId": role.id },
 				{ $set: { "rolePreferences.$.containerColor": color } },
-				{ upsert: true }
+				{ upsert: true },
 			);
 		else
 			await guildCollection.updateOne(
@@ -73,9 +74,9 @@ export default class ViewRoleContainer extends SubCommand {
 						rolePreferences: { roleId: role.id, containerColor: color },
 					},
 				},
-				{ upsert: true }
+				{ upsert: true },
 			);
-		ctx.client.cache.pguild.remove(guild.guildId)
+		ctx.client.cache.pguild.remove(guild.guildId);
 
 		guild.rolePreferences = [
 			...guild.rolePreferences.filter((c) => c.roleId !== role.id),
@@ -123,9 +124,11 @@ export default class ViewRoleContainer extends SubCommand {
 						]
 					: []),
 				new Separator().setSpacing(Spacing.Small),
-				...new AlertView((await ctx.userTranslations())).successViewCustom(
-					(await ctx.userTranslations())
-						.SET_CONTAINERS_COLOR.replace("%role%", role.id),
+				...new AlertView(await ctx.userTranslations()).successViewCustom(
+					(await ctx.userTranslations()).SET_CONTAINERS_COLOR.replace(
+						"%role%",
+						role.id,
+					),
 				),
 				new ActionRow().setComponents(
 					new Button()

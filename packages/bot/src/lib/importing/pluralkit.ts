@@ -1,18 +1,18 @@
-import z from "zod";
-import { ImportEntry, ImportOutput } from ".";
+import { DiscordSnowflake } from "@sapphire/snowflake";
 import {
 	AlterProtectionFlags,
+	type PAlter,
 	PAlterObject,
 	PluralKitSystem,
+	type PTag,
 	PTagObject,
 	TagProtectionFlags,
-	type PAlter,
-	type PTag,
 } from "plurography";
-import { DiscordSnowflake } from "@sapphire/snowflake";
-import { combine } from "../privacy-bitmask";
+import z from "zod";
 import { alterCollection, tagCollection, userCollection } from "@/mongodb";
+import { combine } from "../privacy-bitmask";
 import { createRandomId } from "../random-id";
+import { ImportEntry, ImportOutput } from ".";
 
 const PluralKitImportEntry = z.object({
 	existing: ImportEntry,
@@ -106,7 +106,9 @@ export async function replace(
 									: []),
 							],
 						),
-						avatarUrlMap: {}
+						avatarUrlMap: {},
+						flags: 0,
+						fields: {}
 					} satisfies PAlter),
 					originalPkId: member.id,
 				},
@@ -159,6 +161,7 @@ export async function replace(
 								: []),
 						],
 					),
+					fields: {}, 
 				} satisfies PTag),
 		)
 		.filter((res) => res !== false);
@@ -260,7 +263,9 @@ export async function add(
 									: []),
 							],
 						),
-						avatarUrlMap: {}
+						avatarUrlMap: {},
+						flags: 0,
+						fields: {}
 					} satisfies PAlter),
 					originalPkId: member.id,
 				},
@@ -304,17 +309,16 @@ export async function add(
 							: []),
 					],
 				),
-				fields: {}
+				fields: {},
 			} satisfies PTag),
 		)
 		.filter((v) => v.data !== undefined)
 		.map((v) => v.data);
 
-
-		if ((newAlters.length + input.existing.alters.length) >= 2000)
-			throw new Error("Too many alters")
-		if ((newTags.length + input.existing.tags.length) >= 1000)
-			throw new Error("Too many tags")
+	if (newAlters.length + input.existing.alters.length >= 2000)
+		throw new Error("Too many alters");
+	if (newTags.length + input.existing.tags.length >= 1000)
+		throw new Error("Too many tags");
 
 	if (newTags.length > 0) await tagCollection.insertMany(newTags);
 
@@ -394,7 +398,9 @@ export async function deleteM(
 		},
 		{
 			$pull: {
-				"system.alterIds": { $each: pendingDeletedAlters.map((v) => v.alterId) },
+				"system.alterIds": {
+					$each: pendingDeletedAlters.map((v) => v.alterId),
+				},
 				"system.tagIds": { $each: pendingDeletedTags.map((v) => v.tagId) },
 			},
 		},

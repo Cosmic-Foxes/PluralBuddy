@@ -28,10 +28,12 @@ export default class SetGuildPrefixes extends ComponentCommand {
 					new Label()
 						.setComponent(
 							new TextInput()
-                                .setStyle(TextInputStyle.Short)
-                                .setValue(guild.prefixes.join(","))
-                                .setRequired(true)
-                                .setCustomId(InteractionIdentifier.Guilds.FormSelection.SetPrefixesSelection.create()),
+								.setStyle(TextInputStyle.Short)
+								.setValue(guild.prefixes.join(","))
+								.setRequired(true)
+								.setCustomId(
+									InteractionIdentifier.Guilds.FormSelection.SetPrefixesSelection.create(),
+								),
 						)
 						.setLabel("Prefixes")
 						.setDescription("Prefixes are separated by commas."),

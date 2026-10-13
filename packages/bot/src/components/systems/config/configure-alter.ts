@@ -1,10 +1,10 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 import { ComponentCommand, User, type ComponentContext } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { alterCollection } from "@/mongodb";
-import { MessageFlags } from "seyfert/lib/types";
-import { AlterView } from "@/views/alters";
 import { AlertView } from "@/views/alert";
+import { AlterView } from "@/views/alters";
 
 export default class ConfigureAlter extends ComponentCommand {
 	componentType = "Button" as const;
@@ -29,22 +29,25 @@ export default class ConfigureAlter extends ComponentCommand {
 		const alter = await query;
 
 		if (alter === null) {
-			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+			return await ctx.editOrReply({
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
 
-		return await ctx.editResponse({
+		return await ctx.editOrReply({
 			components: [
-				...new AlterView((await ctx.userTranslations())).alterTopView(
+				...new AlterView(await ctx.userTranslations()).alterTopView(
 					"general",
 					alter.alterId.toString(),
 					alter.username,
 				),
-				...await new AlterView((await ctx.userTranslations())).alterGeneralView(alter,  ctx.guildId),
+				...(await new AlterView(await ctx.userTranslations()).alterGeneralView(
+					alter,
+					ctx.guildId,
+				)),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});

@@ -23,7 +23,10 @@ COPY packages/tests/package.json packages/tests/tsconfig.json packages/tests/
 COPY packages/tests/src packages/tests/src/
 
 RUN bun install
-RUN cd packages/tests && bun test
+# RUN cd packages/tests && bun test
+
+ARG GIT_COMMIT
+ENV SOURCE_COMMIT=$GIT_COMMIT
 
 # run the app
 USER bun

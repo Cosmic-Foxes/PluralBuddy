@@ -1,4 +1,3 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 // biome-ignore lint/suspicious/noExplicitAny: buh?
 export class InteractionObj<K extends (...args: any[]) => string> {
@@ -99,6 +98,8 @@ export const InteractionIdentifier = {
 	EditMenu: {
 		EditContextForm: createFromAdditionalArg("edit/set-form/context"),
 		EditContextType: createStatic("edit/type-form/context"),
+
+		EditMessageReaction: createFromAdditionalArg("edit/reaction"),
 	},
 	Nudge: {
 		Snooze: createStatic("nudge/snooze"),
@@ -108,6 +109,7 @@ export const InteractionIdentifier = {
 		RemoveBlock: createStatic("nudge/remove"),
 		AddBlock: createStatic("nudge/add"),
 		ToggleDMReplies: createFromAdditionalArg("nudge/toggle-dm-replies"),
+		ToggleServerReplies: createFromAdditionalArg("nudge/toggle-server-replies"),
 
 		RemoveNudgeForm: createStatic("nudge/set-form/remove"),
 		RemoveNudgeType: createStatic("nudge/type-form/remove"),
@@ -124,11 +126,14 @@ export const InteractionIdentifier = {
 			AddBlockRole: createStatic("guilds/general/blocked/add-role"),
 			AddBlockChannel: createStatic("guilds/general/blocked/add-channel"),
 			AddBlockCategory: createStatic("guilds/general/blocked/add-category"),
-			RemoveBlockCategory: createStatic("guilds/general/blocked/remove-category"),
+			RemoveBlockCategory: createStatic(
+				"guilds/general/blocked/remove-category",
+			),
 			AddManagers: createStatic("guilds/general/add-manager"),
 			ToggleSystemTagRequirement: createStatic(
 				"guilds/general/toggle-system-tag",
 			),
+			SetPingMode: createStatic("guilds/general/set-ping-mode"),
 		},
 		RolesTab: {
 			Index: createStatic("guilds/roles/index"),
@@ -167,27 +172,22 @@ export const InteractionIdentifier = {
 			AddBlockRoleForm: createStatic("guilds/form/add-blocked-role-form"),
 			AddBlockRoleSelection: createStatic("guilds/form/add-blocked-role"),
 
-			AddBlockChannelForm: createStatic(
-				"guilds/form/add-blocked-channel-form",
-			),
-			AddBlockChannelSelection: createStatic(
-				"guilds/form/add-blocked-channel",
-			),
-			
+			AddBlockChannelForm: createStatic("guilds/form/add-blocked-channel-form"),
+			AddBlockChannelSelection: createStatic("guilds/form/add-blocked-channel"),
+
 			AddBlockCategoryForm: createStatic(
 				"guilds/form/add-blocked-category-form",
 			),
 			AddBlockCategorySelection: createStatic(
 				"guilds/form/add-blocked-category",
 			),
-			
+
 			RemoveBlockCategoryForm: createStatic(
 				"guilds/form/remove-blocked-category-form",
 			),
 			RemoveBlockCategorySelection: createStatic(
 				"guilds/form/remove-blocked-category",
 			),
-
 
 			AddManagersForm: createStatic("guilds/form/add-managers-form"),
 			AddManagersSelection: createStatic("guilds/form/add-managers-selection"),
@@ -244,6 +244,14 @@ export const InteractionIdentifier = {
 		},
 	},
 	Systems: {
+		Syncing: {
+			ApplyTranscript: createFromAdditionalArg(
+				"systems/syncing/apply-transcript",
+			),
+			ApplyTranscriptDestructively: createFromAdditionalArg(
+				"systems/syncing/apply-transcrip-d",
+			),
+		},
 		DeleteSystem: createStatic("systems/delete"),
 		DeleteSystemMedia: createStatic("systems/delete-media"),
 		ConfigurePublicProfile: createFromAdditionalArg(
@@ -251,15 +259,68 @@ export const InteractionIdentifier = {
 		),
 		ExternalExporting: {
 			Selector: createStatic("systems/external-export/selector"),
-			PluralKit: createStatic("systems/external-export/pluralkit")
+			PluralKit: createStatic("systems/external-export/pluralkit"),
 		},
 		Configuration: {
+			TerminologyTab: {
+				Index: createStatic("systems/config/terminology/index"),
+				EditNormalTerms: createStatic(
+					"systems/config/terminology/edit-normal-terms",
+				),
+				EditNormalTermsForm: createStatic(
+					"systems/config/terminology/edit-normal-terms-form",
+				),
+
+				EditPluralTerms: createStatic(
+					"systems/config/terminology/edit-plural-terms",
+				),
+				EditPluralTermsForm: createStatic(
+					"systems/config/terminology/edit-plural-terms-form",
+				),
+
+				EditCapitalTerms: createStatic(
+					"systems/config/terminology/edit-capital-terms",
+				),
+				EditCapitalTermsForm: createStatic(
+					"systems/config/terminology/edit-capital-terms-form",
+				),
+
+				Alter: createStatic("systems/config/terminology/alters"),
+				Tags: createStatic("systems/config/terminology/tags"),
+				ProxyTags: createStatic("systems/config/terminology/proxy-tags"),
+				System: createStatic("system/config/terminology/system"),
+				DisplayTag: createStatic("systems/config/terminology/display-tag"),
+
+				TemplatesSelect: createStatic("systems/config/terminology/templates"),
+			},
 			ConfigureAlter: createFromAdditionalArg("systems/config/config-alter"),
 			ConfigureTag: createFromAdditionalArg("systems/config/config-tag"),
+
+			SyncPreferences: {
+				SyncManually: createStatic("systems/config/sync/manually"),
+				SyncManuallyForm: createStatic("systems/config/sync/form/manually"),
+				AutoSyncForm: createStatic("systems/config/sync/form/auto"),
+				WriteBackForm: createStatic("systems/config/sync/form/write-back"),
+
+				QuickSync: createStatic("systems/config/sync/quick"),
+				ToggleAutoSync: createStatic("systems/config/sync/auto"),
+				ToggleWriteback: createStatic("systems/config/sync/write-back"),
+
+				PluralKitToken: createStatic("systems/config/sync/token-input"),
+				StoreToken: createStatic("systems/config/sync/store-token"),
+				EnableAutoSync: createStatic(
+					"systems/config/sync/enable-auto-sync-input",
+				),
+				EnableWriteBackSync: createStatic(
+					"systems/config/sync/enable-write-back-input",
+				),
+				DestructiveSync: createStatic("systems/config/sync/destructive-input"),
+			},
 
 			Pagination: {
 				PageOne: createStatic("systems/config/page-1"),
 				PageTwo: createStatic("systems/config/page-2"),
+				PageThree: createStatic("systems/config/page-3"),
 			},
 
 			GeneralTab: {
@@ -271,13 +332,44 @@ export const InteractionIdentifier = {
 				SetPrivacy: createStatic("systems/config/general/set-privacy"),
 				ExportSystem: createStatic("systems/config/general/export"),
 				ImportSystem: createStatic("systems/config/general/import"),
-				ToggleIncludeProxyTags: createStatic("systems/config/general/include-proxy-tags"),
-				ToggleIncludePronouns: createStatic("systems/config/general/include-pronouns")
+				ToggleIncludeProxyTags: createStatic(
+					"systems/config/general/include-proxy-tags",
+				),
+				ToggleIncludePronouns: createStatic(
+					"systems/config/general/include-pronouns",
+				),
+				ToggleTypingStatus: createStatic(
+					"systems/config/general/toggle-typing-status",
+				),
+				TogglePreferAccessiblity: createStatic(
+					"systems/config/general/prefer-accessiblity",
+				),
+				ToggleLeftSidedTags: createStatic(
+					"systems/config/general/left-sided-tags",
+				),
+				ToggleCaseInsensitiveProxies: createStatic(
+					"systems/config/general/toggle-case-insensitive-proxies",
+				),
 			},
 			OtherAlterPagination: {
 				PreviousPage: createFromAdditionalArg("systems/config/oapg/previous"),
 				NextPage: createFromAdditionalArg("systems/config/oapg/next"),
 				Search: createFromAdditionalArg("systems/config/oapg/search"),
+			},
+
+			AlterPlainPagination: {
+				Page: createFromAdditionalArg(
+					"systems/config/alter-plain-pagination/page",
+				),
+				CustomPage: createFromAdditionalArg(
+					"systems/config/alter-plain-pagination/custom-page_",
+				),
+				CustomPageForm: createStatic(
+					"systems/config/alter-plain-pagination/custom-page-form",
+				),
+				CustomPageInput: createStatic(
+					"systems/config/alter-plain-pagination/custom-page-input",
+				),
 			},
 			AlterPagination: {
 				PreviousPage: createFromAdditionalArg("systems/config/apg/previous"),
@@ -349,7 +441,12 @@ export const InteractionIdentifier = {
 				SetAlterColor: createFromAdditionalArg(
 					"systems/config/alters/set-alter-color",
 				),
-				DeleteAlter: createFromAdditionalArg("systems/config/alters/delete-alter"),
+				DeleteAlter: createFromAdditionalArg(
+					"systems/config/alters/delete-alter",
+				),
+				ToggleKeepProxyTags: createFromAdditionalArg(
+					"systems/config/alters/keep-proxy-tags",
+				),
 
 				ProxyMode: {
 					GoBack: createFromAdditionalArg(
@@ -390,6 +487,10 @@ export const InteractionIdentifier = {
 				ConfigureTagExternal: createFromAdditionalArg(
 					"systems/config/tags/configure-external",
 				),
+				AssureDeleteTag: createFromAdditionalArg(
+					"systems/config/tags/assure-delete-tag",
+				),
+				DeleteTag: createFromAdditionalArg("systems/config/tags/delete-tag"),
 
 				SetDisplayName: createFromAdditionalArg(
 					"systems/config/tags/set-display",
@@ -398,6 +499,9 @@ export const InteractionIdentifier = {
 				SetPrivacy: createFromAdditionalArg("systems/config/tags/set-privacy"),
 				SetDescription: createFromAdditionalArg(
 					"systems/config/tags/set-description",
+				),
+				SetOrderString: createFromAdditionalArg(
+					"systems/config/tags/set-order",
 				),
 				AssignAlter: createFromAdditionalArg(
 					"systems/config/tags/assign-alter",
@@ -491,9 +595,13 @@ export const InteractionIdentifier = {
 					TagDisplayNameForm: createFromAdditionalArg(
 						"systems/config/set-form/tag/set-display-name",
 					),
-					TagColorType: createStatic(
-						"systems/config/type-form/tag/set-color",
+					TagOrderStringType: createStatic(
+						"systems/config/type-form/tag/set-order-string",
 					),
+					TagOrderStringForm: createFromAdditionalArg(
+						"systems/config/set-form/tag/set-order-string",
+					),
+					TagColorType: createStatic("systems/config/type-form/tag/set-color"),
 					TagColorForm: createFromAdditionalArg(
 						"systems/config/set-form/tag/set-color",
 					),
@@ -547,7 +655,9 @@ export const InteractionIdentifier = {
 						"systems/config/set-form/alters/set-pfp",
 					),
 					AlterPFPType: createStatic("systems/config/type-form/alters/set-pfp"),
-					AlterServerSpecificType: createStatic("systems/config/type-form/alters/set-se"),
+					AlterServerSpecificType: createStatic(
+						"systems/config/type-form/alters/set-se",
+					),
 					AlterBannerForm: createFromAdditionalArg(
 						"systems/config/set-form/alters/set-banner",
 					),
@@ -589,6 +699,9 @@ export const InteractionIdentifier = {
 			Name: createFromAdditionalArg("setup/create-new-system/name"),
 			Privacy: createFromAdditionalArg("setup/create-new-system/privacy"),
 			SystemTag: createFromAdditionalArg("setup/create-new-system/system-tag"),
+			Terminology: createFromAdditionalArg(
+				"setup/create-new-system/terminology",
+			),
 		},
 		FormSelection: {
 			NameType: createStatic("setup/create-new-system/type-form/name"),
@@ -605,11 +718,14 @@ export const InteractionIdentifier = {
 			ImportType: createStatic("setup/create-new-system/type-form/import"),
 			PkForm: createStatic("setup/create-new-system/set-form/pk-import"),
 			PkType: createStatic("setup/create-new-system/type-form/pk-import"),
+			PkTerminologyCheckboxType: createStatic(
+				"setup/create-new-system/type-form/pk-terms",
+			),
 			PkRawTextType: createStatic(
 				"setup/create-new-system/type-form/pk-raw-text",
 			),
 			SpToken: createStatic("setup/create-new-system/set-form/sp-token"),
-			SpTokenForm: createStatic("setup/create-new-system/type-form/sp-token")
+			SpTokenForm: createStatic("setup/create-new-system/type-form/sp-token"),
 		},
 		PluralKitImport: {
 			UploadAttachment: createStatic("setup/pk-import/upload"),
@@ -621,8 +737,8 @@ export const InteractionIdentifier = {
 			PluralKit: createStatic("setup/import-select/pluralkit"),
 			Tupperbox: createStatic("setup/import-select/tupperbox"),
 			PluralBuddy: createStatic("setup/import-select/pluralbuddy"),
-			SimplyPlural: createStatic("setup/import-select/simplyplural")
+			SimplyPlural: createStatic("setup/import-select/simplyplural"),
 		},
 	},
-	SnoozeDMs: createStatic("snooze-dms")
+	SnoozeDMs: createStatic("snooze-dms"),
 };

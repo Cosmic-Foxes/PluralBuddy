@@ -5,6 +5,8 @@ import {
 	Guild,
 	Section,
 	Separator,
+	StringSelectMenu,
+	StringSelectOption,
 	TextDisplay,
 } from "seyfert";
 import { TranslatedView } from "./translated-view";
@@ -323,6 +325,36 @@ export class ServerConfigView extends TranslatedView {
 							).replace("{{ delayMs }}", String(guild.proxyDelay ?? 0)),
 						),
 					),
+				new TextDisplay().setContent(
+					this.translations.SRV_CFG_PING_MODE,
+				),
+				new ActionRow().setComponents(
+					new StringSelectMenu()
+						.setCustomId(
+							InteractionIdentifier.Guilds.GeneralTab.SetPingMode.create(),
+						)
+						.setOptions([
+							new StringSelectOption()
+								.setLabel("Preserve original behavior")
+								.setValue("unaffected")
+								.setDefault(
+									(guild.pingMode ?? "unaffected") === "unaffected",
+								),
+							new StringSelectOption()
+								.setLabel("Always ping")
+								.setValue("always-on")
+								.setDefault(guild.pingMode === "always-on"),
+							new StringSelectOption()
+								.setLabel("Never ping")
+								.setValue("always-off")
+								.setDefault(guild.pingMode === "always-off"),
+							new StringSelectOption()
+								.setLabel("Reverse original behavior")
+								.setValue("opposite")
+								.setDefault(guild.pingMode === "opposite"),
+						])
+						.setValuesLength({ min: 1, max: 1 }),
+				),
 			),
 		];
 	}
@@ -573,7 +605,10 @@ export class ServerConfigView extends TranslatedView {
 		return [
 			new Container().setComponents(
 				new TextDisplay().setContent(
-					this.translations.ROLE_TOP.replaceAll("{{ roleId }}", roleData.roleId)
+					this.translations.ROLE_TOP.replaceAll(
+						"{{ roleId }}",
+						roleData.roleId,
+					),
 				),
 				new ActionRow().setComponents(
 					new Button()
@@ -584,7 +619,12 @@ export class ServerConfigView extends TranslatedView {
 				),
 			),
 			new Container().setComponents(
-				new TextDisplay().setContent(this.translations.ROLE_CONFIG_TITLE.replace("{{ roleId }}", roleData.roleId)),
+				new TextDisplay().setContent(
+					this.translations.ROLE_CONFIG_TITLE.replace(
+						"{{ roleId }}",
+						roleData.roleId,
+					),
+				),
 				new Separator().setSpacing(Spacing.Large),
 				new Section()
 					.setAccessory(
@@ -598,7 +638,9 @@ export class ServerConfigView extends TranslatedView {
 							.setStyle(ButtonStyle.Primary),
 					)
 					.setComponents(
-						new TextDisplay().setContent(this.translations.ROLE_CONTAINER_CONTENTS_DESC),
+						new TextDisplay().setContent(
+							this.translations.ROLE_CONTAINER_CONTENTS_DESC,
+						),
 					),
 				new Section()
 					.setAccessory(
@@ -612,7 +654,9 @@ export class ServerConfigView extends TranslatedView {
 							.setStyle(ButtonStyle.Primary),
 					)
 					.setComponents(
-						new TextDisplay().setContent(this.translations.ROLE_CONTAINER_COLOR_DESC),
+						new TextDisplay().setContent(
+							this.translations.ROLE_CONTAINER_COLOR_DESC,
+						),
 					),
 				new Section()
 					.setAccessory(
@@ -626,16 +670,14 @@ export class ServerConfigView extends TranslatedView {
 							.setStyle(ButtonStyle.Primary),
 					)
 					.setComponents(
-						new TextDisplay().setContent(this.translations.ROLE_CONTAINER_LOCATION_DESC),
+						new TextDisplay().setContent(
+							this.translations.ROLE_CONTAINER_LOCATION_DESC,
+						),
 					),
 			),
 			new Separator().setSpacing(Spacing.Large),
 			...(roleData.containerContents === undefined
-				? [
-						new TextDisplay().setContent(
-							this.translations.CONTENTS_EMPTY
-						),
-					]
+				? [new TextDisplay().setContent(this.translations.CONTENTS_EMPTY)]
 				: []),
 			...(roleData.containerContents !== undefined &&
 			(roleData.containerLocation === "top" ||

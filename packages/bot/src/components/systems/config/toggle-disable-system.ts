@@ -1,10 +1,11 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 import { ComponentCommand, type ComponentContext } from "seyfert";
-import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { AlertView } from "@/views/alert";
 import { MessageFlags } from "seyfert/lib/types";
-import { userCollection } from "@/mongodb";
+import { getSystemFeatures } from "@/lib/get-system-flags";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { createSystemOperation } from "@/lib/system-operation";
+import { userCollection } from "@/mongodb";
+import { AlertView } from "@/views/alert";
 import { SystemSettingsView } from "@/views/system-settings";
 
 export default class ToggleDisableSystemButton extends ComponentCommand {
@@ -20,8 +21,8 @@ export default class ToggleDisableSystemButton extends ComponentCommand {
 		const { system } = await ctx.retrievePUser();
 
 		if (system === undefined) {
-			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+			return await ctx.editOrReply({
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -31,23 +32,22 @@ export default class ToggleDisableSystemButton extends ComponentCommand {
 		await createSystemOperation(
 			system,
 			{ disabled: !system.disabled },
-			(await ctx.userTranslations()),
+			await ctx.userTranslations(),
 			"discord",
 		);
 
-        system.disabled = !system.disabled;
+		system.disabled = !system.disabled;
 
 		return await ctx.update({
 			components: [
-				...new SystemSettingsView((await ctx.userTranslations())).topView(
-					"general",
-					system.associatedUserId,
-				),
-				...(await new SystemSettingsView((await ctx.userTranslations())).generalSettings(
-					system,
-					ctx.guildId,
-					2
-				)),
+				...new SystemSettingsView(
+					await ctx.userTranslations(),
+					getSystemFeatures(system)?.preferAccessiblity,
+				).topView("general", system.associatedUserId),
+				...(await new SystemSettingsView(
+					await ctx.userTranslations(),
+					getSystemFeatures(system)?.preferAccessiblity,
+				).generalSettings(system, ctx.guildId, 3)),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});

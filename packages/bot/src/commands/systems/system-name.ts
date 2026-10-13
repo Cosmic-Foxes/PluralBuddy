@@ -13,9 +13,9 @@ import { MessageFlags } from "seyfert/lib/types";
 const options = {
 	"new-name": createStringOption({
 		description: "The new name to set as the system",
-        max_length: 20,
-        min_length: 3,
-        required: true
+		max_length: 20,
+		min_length: 3,
+		required: true,
 	}),
 };
 
@@ -33,7 +33,7 @@ export default class NameSetSystemCommand extends SubCommand {
 
 		if (user.system === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -45,13 +45,13 @@ export default class NameSetSystemCommand extends SubCommand {
 			{
 				systemName: newSystemName as string,
 			},
-			(await ctx.userTranslations()),
+			await ctx.userTranslations(),
 			"discord",
 		);
 
 		if (updatedSystem === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -59,8 +59,11 @@ export default class NameSetSystemCommand extends SubCommand {
 		}
 
 		await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).successViewCustom(
-				(await ctx.userTranslations()).SYSTEM_SET_NAME.replace("%name%", newSystemName),
+			components: new AlertView(await ctx.userTranslations()).successViewCustom(
+				(await ctx.userTranslations()).SYSTEM_SET_NAME.replace(
+					"%name%",
+					newSystemName,
+				),
 			),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});

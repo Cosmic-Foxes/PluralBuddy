@@ -1,6 +1,6 @@
-import { PSystemObject } from "@/pluralbuddy/system";
 import type { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
 import z from "zod";
+import { PSystemObject } from "@/pluralbuddy/system";
 import { UnauthorizedSchema } from "../utils";
 
 export const register = (registry: OpenAPIRegistry) =>

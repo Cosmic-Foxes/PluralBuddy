@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 import { ComponentCommand, type ComponentContext } from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { userCollection } from "@/mongodb";
@@ -19,13 +19,18 @@ export default class DisableNudgingButton extends ComponentCommand {
 
 		await writeUserById(user.userId, {
 			...user,
-			nudging: { ...user.nudging, currentlyEnabled: !user.nudging.currentlyEnabled },
+			nudging: {
+				...user.nudging,
+				currentlyEnabled: !user.nudging.currentlyEnabled,
+			},
 		});
 
 		user.nudging.currentlyEnabled = !user.nudging.currentlyEnabled;
 
 		return await ctx.update({
-			components: new NudgePreferences((await ctx.userTranslations())).nudgePreferences(user),
+			components: new NudgePreferences(
+				await ctx.userTranslations(),
+			).nudgePreferences(user),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});
 	}

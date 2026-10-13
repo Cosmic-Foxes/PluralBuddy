@@ -7,6 +7,7 @@ import { MessageFlags, TextInputStyle } from "seyfert/lib/types";
 import { alterCollection } from "@/mongodb";
 import { AlterView } from "@/views/alters";
 import { w } from "@/webhooks";
+import { writeBack } from "@/lib/pk-sync-engine.ts";
 
 export default class SetUsernameButton extends ModalCommand {
 	override filter(context: ModalContext) {

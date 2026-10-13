@@ -22,24 +22,26 @@ import {
 	type: ApplicationCommandType.Message,
 	name: `${process.env.BRANCH === "canary" ? "Canary " : ""}Nudge Author`,
 	contexts: ["BotDM", "Guild", "PrivateChannel"],
-	integrationTypes: [ "GuildInstall", "UserInstall" ]
+	integrationTypes: ["GuildInstall", "UserInstall"],
 })
 export default class DeleteMessageContextMenuCommand extends ContextMenuCommand {
 	override async run(ctx: MenuCommandContext<MessageCommandInteraction>) {
 		const messageId = ctx.target.id;
 		const message = await messagesCollection.findOne({ messageId });
-		const guild = await ctx.retrievePGuild()
+		const guild = await ctx.retrievePGuild();
 
-        if (guild.getFeatures().disabledNudging) {
-            return await ctx.write({
-                components: new AlertView((await ctx.userTranslations())).errorView("FEATURE_DISABLED_GUILD"),
-                flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
-            })
-        }
+		if (guild.getFeatures().disabledNudging) {
+			return await ctx.write({
+				components: new AlertView(await ctx.userTranslations()).errorView(
+					"FEATURE_DISABLED_GUILD",
+				),
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+			});
+		}
 
 		if (message === null) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_OWN_MESSAGE",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -48,17 +50,17 @@ export default class DeleteMessageContextMenuCommand extends ContextMenuCommand 
 		const user = await userCollection.findOne({ userId: message.systemId });
 
 		if (user && user?.nudging)
-		if (
-			!user?.nudging.currentlyEnabled ||
-			user.nudging.blockedUsers.includes(ctx.author.id)
-		) {
-			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
-					"USER_CANNOT_BE_NUDGED",
-				),
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			});
-		}
+			if (
+				!user?.nudging.currentlyEnabled ||
+				user.nudging.blockedUsers.includes(ctx.author.id)
+			) {
+				return await ctx.write({
+					components: new AlertView(await ctx.userTranslations()).errorView(
+						"USER_CANNOT_BE_NUDGED",
+					),
+					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+				});
+			}
 
 		const alter = await alterCollection.findOne({ alterId: message.alterId });
 
@@ -79,7 +81,7 @@ export default class DeleteMessageContextMenuCommand extends ContextMenuCommand 
 						.setStyle(ButtonStyle.Secondary),
 				),
 			],
-			allowed_mentions: { parse: ["users" ]}
+			allowed_mentions: { parse: ["users"] },
 		});
 	}
 }

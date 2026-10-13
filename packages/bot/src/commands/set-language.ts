@@ -1,19 +1,19 @@
-import { emojis } from "@/lib/emojis";
-import { langMemoryCache } from "@/lib/lang";
-import { userCollection } from "@/mongodb";
-import { writeUserById } from "@/types/user";
-import { AlertView } from "@/views/alert";
 import CrowdinApi from "@crowdin/crowdin-api-client";
 import {
 	Command,
+	type CommandContext,
 	Container,
 	createStringOption,
 	Declare,
 	Options,
 	TextDisplay,
-	type CommandContext,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { emojis } from "@/lib/emojis";
+import { langMemoryCache } from "@/lib/lang";
+import { userCollection } from "@/mongodb";
+import { writeUserById } from "@/types/user";
+import { AlertView } from "@/views/alert";
 
 const getFlagEmoji = (countryCode: string) => {
 	const codePoints = countryCode
@@ -39,7 +39,7 @@ const options = {
 			return await ctx.respond([
 				{ name: `${getFlagEmoji("US")} English - source`, value: "en" },
 				...progress.data.map((v) => ({
-					name: `${getFlagEmoji(v.data.language.twoLettersCode)} ${v.data.language.name} - ${v.data.approvalProgress}% translated`,
+					name: `${getFlagEmoji(v.data.language.twoLettersCode.replace("ja", "jp"))} ${v.data.language.name} - ${v.data.approvalProgress}% translated`,
 					value: v.data.language.twoLettersCode,
 				})),
 			]);
@@ -66,10 +66,12 @@ export default class SetupCommand extends Command {
 			token: process.env.CROWDIN_API_KEY ?? "",
 		});
 
-		const progress = await translationStatusApi.getFileProgress(
-			Number(process.env.CROWDIN_PROJ_ID ?? ""),
-			Number(process.env.CROWDIN_FILE_ID ?? ""),
-		).catch(v => null);
+		const progress = await translationStatusApi
+			.getFileProgress(
+				Number(process.env.CROWDIN_PROJ_ID ?? ""),
+				Number(process.env.CROWDIN_FILE_ID ?? ""),
+			)
+			.catch((v) => null);
 
 		if (!language) {
 			return await ctx.ephemeral(
@@ -85,7 +87,7 @@ export default class SetupCommand extends Command {
 										"{{ languages }}",
 										[
 											`> - ${getFlagEmoji("US")} English - source`,
-											...(progress ?? {data: []}).data.map(
+											...(progress ?? { data: [] }).data.map(
 												(v) =>
 													`> - ${getFlagEmoji(v.data.language.twoLettersCode)} ${v.data.language.name} - ${v.data.approvalProgress}% translated`,
 											),
@@ -115,11 +117,14 @@ export default class SetupCommand extends Command {
 			components: new AlertView(locale).successViewCustom(
 				locale.SET_LANGUAGE_TO.replace(
 					"{{ language }}",
-					!progress ? language : progress.data.find((v) => v.data.language.twoLettersCode === language)
-						?.data.language.name ?? "Unknown",
+					!progress
+						? language
+						: (progress.data.find(
+								(v) => v.data.language.twoLettersCode === language,
+							)?.data.language.name ?? "Unknown"),
 				),
 			),
-            flags: MessageFlags.IsComponentsV2
+			flags: MessageFlags.IsComponentsV2,
 		});
 	}
 }

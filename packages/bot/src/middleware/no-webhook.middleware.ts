@@ -1,6 +1,6 @@
 import { createMiddleware } from "seyfert";
-import { ChannelType } from 'seyfert/lib/types';
- 
+import { ChannelType } from "seyfert/lib/types";
+
 export const noWebhookMiddleware = createMiddleware<void>((middle) => {
 	if (!middle.context.guildId) return middle.next();
 	if (middle.context.author.bot === true)

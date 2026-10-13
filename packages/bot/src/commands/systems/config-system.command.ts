@@ -1,8 +1,9 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { type CommandContext, Declare, SubCommand } from "seyfert";
-import { AlertView } from "../../views/alert";
 import { MessageFlags } from "seyfert/lib/types";
+import { getSystemFeatures } from "@/lib/get-system-flags";
+import { AlertView } from "../../views/alert";
 import { SystemSettingsView } from "../../views/system-settings";
 
 @Declare({
@@ -19,7 +20,7 @@ export default class SystemConfigCommand extends SubCommand {
 		if (user.system === undefined) {
 			return await ctx.ephemeral(
 				{
-					components: new AlertView((await ctx.userTranslations())).errorView(
+					components: new AlertView(await ctx.userTranslations()).errorView(
 						"ERROR_SYSTEM_DOESNT_EXIST",
 					),
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -33,15 +34,14 @@ export default class SystemConfigCommand extends SubCommand {
 		return await ctx.ephemeral(
 			{
 				components: [
-					...new SystemSettingsView((await ctx.userTranslations())).topView(
-						"general",
-						user.system.associatedUserId,
-					),
-					...(await new SystemSettingsView((await ctx.userTranslations())).generalSettings(
-						user.system,
-						ctx.guildId,
-						1
-					)),
+					...new SystemSettingsView(
+						await ctx.userTranslations(),
+						getSystemFeatures(user.system)?.preferAccessiblity,
+					).topView("general", user.system.associatedUserId),
+					...(await new SystemSettingsView(
+						await ctx.userTranslations(),
+						getSystemFeatures(user.system)?.preferAccessiblity,
+					).generalSettings(user.system, ctx.guildId, 1)),
 				],
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			},

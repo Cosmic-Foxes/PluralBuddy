@@ -11,6 +11,6 @@ export default class DisabledOption extends ComponentCommand {
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
-        ctx.deferUpdate();
+		ctx.deferUpdate();
 	}
 }

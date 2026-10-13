@@ -1,13 +1,17 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
-import { ComponentCommand, type ComponentContext } from "seyfert";
-import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { otherAlterPagination, SystemSettingsView } from "@/views/system-settings";
-import { MessageFlags } from "seyfert/lib/types";
-import { AlertView } from "@/views/alert";
+
 import { SystemProtectionFlags } from "plurography";
+import { ComponentCommand, type ComponentContext } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
+import { getSystemFeatures } from "@/lib/get-system-flags";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { has } from "@/lib/privacy-bitmask";
 import { userCollection } from "@/mongodb";
-
+import { AlertView } from "@/views/alert";
+import {
+	otherAlterPagination,
+	SystemSettingsView,
+} from "@/views/system-settings";
 export default class PreviousPage extends ComponentCommand {
 	componentType = "Button" as const;
 
@@ -22,12 +26,14 @@ export default class PreviousPage extends ComponentCommand {
 			InteractionIdentifier.Systems.Configuration.OtherAlterPagination.PreviousPage.substring(
 				ctx.customId,
 			)[0];
-		const corresponding = otherAlterPagination.find((v) => v.id === paginationToken);
+		const corresponding = otherAlterPagination.find(
+			(v) => v.id === paginationToken,
+		);
 
 		if (corresponding === undefined) {
 			return await ctx.write({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorView(
+					...new AlertView(await ctx.userTranslations()).errorView(
 						"ERROR_PAGINATION_TOO_OLD",
 					),
 				],
@@ -37,9 +43,12 @@ export default class PreviousPage extends ComponentCommand {
 
 		const user = await userCollection.findOne({ userId: corresponding.userId });
 
-		if (user?.system === undefined || !has(SystemProtectionFlags.ALTERS, user?.system?.public)) {
+		if (
+			user?.system === undefined ||
+			!has(SystemProtectionFlags.ALTERS, user?.system?.public)
+		) {
 			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -60,10 +69,10 @@ export default class PreviousPage extends ComponentCommand {
 
 		return await ctx.update({
 			components: [
-				...(await new SystemSettingsView((await ctx.userTranslations())).otherAltersSettings(
-					user.system,
-					corresponding,
-				)),
+				...(await new SystemSettingsView(
+					await ctx.userTranslations(),
+					getSystemFeatures(user.system)?.preferAccessiblity,
+				).otherAltersSettings(user.system, corresponding)),
 			],
 		});
 	}

@@ -11,12 +11,12 @@ import {
 	TextDisplay,
 	Thumbnail,
 } from "seyfert";
-import { TranslatedView } from "./translated-view";
-import { SystemProtectionFlags, type PSystem } from "../types/system";
 import { ButtonStyle } from "seyfert/lib/types";
-import { InteractionIdentifier } from "../lib/interaction-ids";
-import { emojis } from "../lib/emojis";
 import { has } from "@/lib/privacy-bitmask";
+import { emojis } from "../lib/emojis";
+import { InteractionIdentifier } from "../lib/interaction-ids";
+import { type PSystem, SystemProtectionFlags } from "../types/system";
+import { TranslatedView } from "./translated-view";
 
 export class SystemView extends TranslatedView {
 	systemProfileView(system: PSystem, external?: boolean) {
@@ -46,31 +46,45 @@ ${tagsDisplayable ? `${this.translations.TAGS_PROFILE_LABEL}${(system.tagIds as 
 ${this.translations.OWNED_BY_PROFILE}<@${system.associatedUserId}> (${system.associatedUserId})`,
 		);
 
+		console.log('avatar: \'', system.systemAvatar, "'")
+
 		return [
 			new Container().setComponents(
 				system.systemAvatar !== null &&
 					system.systemAvatar !== undefined &&
+					system.systemAvatar.replaceAll(" ", "") !== "" &&
 					avatarDisplayable
 					? new Section()
 							.setAccessory(
 								new Thumbnail()
 									.setMedia(
 										system.systemAvatar === ""
-											? "https://pb.giftedly.dev/image/pfp.png"
+											? "https://pluralbuddy.app/image/pfp.png"
 											: system.systemAvatar,
 									)
-									.setDescription(this.translations.ALT_AVATAR.replace("{{ alter }}", system.associatedUserId)),
+									.setDescription(
+										this.translations.ALT_AVATAR.replace(
+											"{{ alter }}",
+											system.associatedUserId,
+										),
+									),
 							)
 							.setComponents(innerComponents)
 					: innerComponents,
 				...(system.systemBanner !== null &&
 				system.systemBanner !== undefined &&
+				system.systemBanner.replaceAll(" ", "") !== "" &&
 				bannerDisplayable
 					? [
 							new MediaGallery().setItems(
 								new MediaGalleryItem()
 									.setMedia(system.systemBanner)
-									.setDescription(this.translations.ALT_BANNER.replace("{{ alter }}", system.associatedUserId)),
+									.setDescription(
+										this.translations.ALT_BANNER.replace(
+											"{{ alter }}",
+											system.associatedUserId,
+										),
+									),
 							),
 						]
 					: []),

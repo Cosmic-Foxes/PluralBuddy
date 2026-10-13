@@ -8,39 +8,48 @@ import { MessageFlags } from "seyfert/lib/types";
 import { AlterView } from "../../../views/alters";
 
 export default class GeneralButton extends ComponentCommand {
-    componentType = 'Button' as const;
-    
-    override filter(context: ComponentContext<typeof this.componentType>) {
-        return InteractionIdentifier.Systems.Configuration.Alters.GeneralSettings.startsWith(context.customId)
-    }
+	componentType = "Button" as const;
 
-    override async run(ctx: ComponentContext<typeof this.componentType>) {
-        
-        
-		const alterId = InteractionIdentifier.Systems.Configuration.Alters.GeneralSettings.substring(
-            ctx.customId,
-        )[0];
+	override filter(context: ComponentContext<typeof this.componentType>) {
+		return InteractionIdentifier.Systems.Configuration.Alters.GeneralSettings.startsWith(
+			context.customId,
+		);
+	}
 
-        const systemId = ctx.author.id;
-        const query = alterCollection.findOne({
+	override async run(ctx: ComponentContext<typeof this.componentType>) {
+		const alterId =
+			InteractionIdentifier.Systems.Configuration.Alters.GeneralSettings.substring(
+				ctx.customId,
+			)[0];
+
+		const systemId = ctx.author.id;
+		const query = alterCollection.findOne({
 			$and: [{ alterId: Number(alterId) }, { systemId }],
-        });
-        const alter = await query;
+		});
+		const alter = await query;
 
-        if (alter === null) {
-            return await ctx.write({
-                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_ALTER_DOESNT_EXIST"),
-                flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-            })
-        }
+		if (alter === null) {
+			return await ctx.write({
+				components: new AlertView(await ctx.userTranslations()).errorView(
+					"ERROR_ALTER_DOESNT_EXIST",
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
+		}
 
-        return await ctx.update({
-            components: [
-                ...new AlterView((await ctx.userTranslations())).alterTopView("general", alter.alterId.toString(), alter.username),
-                ...await new AlterView((await ctx.userTranslations())).alterGeneralView(alter, ctx.guildId)
-            ],
-            flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
-
-        })
-    }
+		return await ctx.update({
+			components: [
+				...new AlterView(await ctx.userTranslations()).alterTopView(
+					"general",
+					alter.alterId.toString(),
+					alter.username,
+				),
+				...(await new AlterView(await ctx.userTranslations()).alterGeneralView(
+					alter,
+					ctx.guildId,
+				)),
+			],
+			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+		});
+	}
 }

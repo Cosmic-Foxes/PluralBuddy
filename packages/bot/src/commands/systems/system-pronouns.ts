@@ -13,7 +13,7 @@ import { MessageFlags } from "seyfert/lib/types";
 const options = {
 	"new-pronouns": createStringOption({
 		description: "The new pronouns to set for the system",
-        max_length: 100
+		max_length: 100,
 	}),
 };
 
@@ -31,7 +31,7 @@ export default class NameSetSystemCommand extends SubCommand {
 
 		if (user.system === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -41,15 +41,15 @@ export default class NameSetSystemCommand extends SubCommand {
 		const updatedSystem = await createSystemOperation(
 			user.system,
 			{
-				systemPronouns: newSystemPronouns as string ?? null,
+				systemPronouns: (newSystemPronouns as string) ?? null,
 			},
-			(await ctx.userTranslations()),
+			await ctx.userTranslations(),
 			"discord",
 		);
 
 		if (updatedSystem === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -57,8 +57,11 @@ export default class NameSetSystemCommand extends SubCommand {
 		}
 
 		await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).successViewCustom(
-				(await ctx.userTranslations()).SYSTEM_SET_PRONOUNS.replace("%pronouns%", newSystemPronouns ?? "_Unset_"),
+			components: new AlertView(await ctx.userTranslations()).successViewCustom(
+				(await ctx.userTranslations()).SYSTEM_SET_PRONOUNS.replace(
+					"%pronouns%",
+					newSystemPronouns ?? "_Unset_",
+				),
 			),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});

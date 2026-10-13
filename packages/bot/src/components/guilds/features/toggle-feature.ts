@@ -15,42 +15,44 @@ export default class ToggleFeatureFlag extends ComponentCommand {
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
+		const featureFlag =
+			InteractionIdentifier.Guilds.FeaturesTab.ToggleFeature.substring(
+				ctx.customId,
+			)[0];
 
-        const featureFlag = InteractionIdentifier.Guilds.FeaturesTab.ToggleFeature.substring(ctx.customId)[0]
+		if (!featureFlag) throw new Error("No feature flag.");
 
-        if (!featureFlag) throw new Error("No feature flag.")
-
-        // @ts-ignore
-        const flagParsed = GuildFlags[featureFlag];
+		// @ts-ignore
+		const flagParsed = GuildFlags[featureFlag];
 
 		const guildObj = await ctx.retrievePGuild();
-        const nativeGuild = await ctx.guild()
-        const newValue = !guildObj.getFeatures().has(flagParsed);
+		const nativeGuild = await ctx.guild();
+		const newValue = !guildObj.getFeatures().has(flagParsed);
 
 		guildObj.flags = guildObj.getFeatures().bool(flagParsed, newValue);
 
-        if (!nativeGuild) throw new Error("What.")
+		if (!nativeGuild) throw new Error("What.");
 
 		await guildCollection.updateOne(
 			{ guildId: ctx.guildId },
 			{ $set: { flags: guildObj.flags } },
 			{ upsert: true },
 		);
-		ctx.client.cache.pguild.remove(guildObj.guildId)
+		ctx.client.cache.pguild.remove(guildObj.guildId);
 
 		return await ctx.interaction.update({
 			components: [
-				...new ServerConfigView((await ctx.userTranslations())).topView(
+				...new ServerConfigView(await ctx.userTranslations()).topView(
 					"features",
 					guildObj.guildId,
 				),
-				...new ServerConfigView((await ctx.userTranslations())).featuresTab(
+				...new ServerConfigView(await ctx.userTranslations()).featuresTab(
 					PGuildObject.parse(guildObj),
-                    nativeGuild
+					nativeGuild,
 				),
 			],
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			allowed_mentions: { parse: [] },
 		});
-    }
+	}
 }

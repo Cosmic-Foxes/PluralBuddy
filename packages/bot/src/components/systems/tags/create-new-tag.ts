@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 import {
 	ComponentCommand,
 	Label,
@@ -26,7 +26,7 @@ export default class CreateNewAlterBtn extends ComponentCommand {
 
 		if (user.system === undefined) {
 			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -55,9 +55,11 @@ export default class CreateNewAlterBtn extends ComponentCommand {
 						.setLabel((await ctx.userTranslations()).TAG_COLOR_FORM_LABEL)
 						.setComponent(
 							new StringSelectMenu()
-								.setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagColorType.create())
-								.setOptions(tagColorSelection((await ctx.userTranslations())))
-						)
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagColorType.create(),
+								)
+								.setOptions(tagColorSelection(await ctx.userTranslations())),
+						),
 				]),
 		);
 	}

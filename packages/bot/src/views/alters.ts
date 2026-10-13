@@ -1,6 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import type { PGuild } from "plurography";
+import { AlterFlags, type PGuild } from "plurography";
 import {
 	ActionRow,
 	Button,
@@ -41,8 +41,7 @@ export class AlterView extends TranslatedView {
 		return {
 			data: await tagCollection
 				.find({ associatedAlters: alter.alterId.toString().toString() })
-				.limit(5)
-				.sort({ tagFriendlyName: 1 })
+				.sort({ orderString: 1, tagFriendlyName: 1 })
 				.toArray(),
 			count: alter.tagIds.length,
 		};
@@ -78,7 +77,13 @@ export class AlterView extends TranslatedView {
 		if (tagsDisplayable) {
 			const { data, count } = await this.getTags(alter);
 
-			tags = data;
+			tags = data
+				.sort((a, b) => {
+					const k1 = a.orderString === undefined ? 0 : 1;
+					const k2 = b.orderString === undefined ? 0 : 2;
+					return k2 - k1;
+				})
+				.slice(0, 5);
 			tagCount = count;
 		}
 
@@ -99,7 +104,7 @@ ${this.translations.ID_SMALL_PROFILE}\`${alter.alterId.toString()}\``);
 							new Thumbnail()
 								.setMedia(
 									alter.avatarUrl === ""
-										? "https://pb.giftedly.dev/image/pfp.png"
+										? "https://pluralbuddy.app/image/pfp.png"
 										: alter.avatarUrl,
 								)
 								.setDescription(
@@ -116,7 +121,7 @@ ${this.translations.ID_SMALL_PROFILE}\`${alter.alterId.toString()}\``);
 							new MediaGalleryItem()
 								.setMedia(
 									alter.banner === ""
-										? "https://pb.giftedly.dev/image/pfp.png"
+										? "https://pluralbuddy.app/image/pfp.png"
 										: alter.banner,
 								)
 								.setDescription(
@@ -154,7 +159,7 @@ ${this.translations.ID_SMALL_PROFILE}\`${alter.alterId.toString()}\``);
 									),
 								)
 								.setStyle(ButtonStyle.Danger)
-								.setLabel("Delete Proxy Tag"),
+								.setLabel(this.translations.PT_DELETE),
 						)
 						.setComponents(
 							new TextDisplay().setContent(`${v.prefix}*text*${v.suffix}`),
@@ -169,10 +174,10 @@ ${this.translations.ID_SMALL_PROFILE}\`${alter.alterId.toString()}\``);
 							),
 						)
 						.setStyle(ButtonStyle.Primary)
-						.setLabel("Create New Proxy Tag")
+						.setLabel(this.translations.PT_CREATE_NEW)
 						.setDisabled(alter.proxyTags.length >= 7),
 				),
-				new TextDisplay().setContent("-# You can create up to 6 proxy tags."),
+				new TextDisplay().setContent(this.translations.PT_LIMIT),
 			),
 		];
 	}
@@ -180,6 +185,8 @@ ${this.translations.ID_SMALL_PROFILE}\`${alter.alterId.toString()}\``);
 	async alterGeneralView(alter: PAlter, guildId: string | undefined) {
 		const user = await getUserById(alter.systemId);
 		const system = user.system;
+		const keepProxyTags =
+			((alter.flags ?? 0) & AlterFlags.PROXY_TAGS_KEPT) === 0;
 
 		return [
 			new Container()
@@ -296,9 +303,7 @@ ${system == null || system.systemAutoproxy.some((a) => a.serverId === guildId &&
 										),
 									)
 									.setLabel(this.translations.ALTER_AP_NAME)
-									.setDescription(
-										this.translations.ALTER_AP_DESC,
-									)
+									.setDescription(this.translations.ALTER_AP_DESC)
 									.setDefault(
 										system?.systemAutoproxy.some(
 											(a) =>
@@ -321,6 +326,27 @@ ${system == null || system.systemAutoproxy.some((a) => a.serverId === guildId &&
 									),
 							]),
 					),
+					new Separator(),
+					new Section()
+						.addComponents(
+							new TextDisplay().setContent(
+								this.translations.KEEP_PROXY_TAGS_ALTER_DESC,
+							),
+						)
+						.setAccessory(
+							new Button()
+								.setStyle(ButtonStyle.Secondary)
+								.setLabel(
+									keepProxyTags
+										? this.translations.KEEP_PROXY_TAGS_ALTER_BTN_E
+										: this.translations.KEEP_PROXY_TAGS_ALTER_BTN_D,
+								)
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.Alters.ToggleKeepProxyTags.create(
+										alter.alterId.toString(),
+									),
+								),
+						),
 					new Separator(),
 					new Section()
 						.addComponents(
@@ -695,9 +721,7 @@ ${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alterUsername).
 								),
 							)
 							.setLabel(this.translations.LATCH_NAME)
-							.setDescription(
-								this.translations.LATCH_DESC,
-							),
+							.setDescription(this.translations.LATCH_DESC),
 						new StringSelectOption()
 							.setValue(
 								InteractionIdentifier.Selection.AutoProxyModes.Alter.create(
@@ -705,9 +729,7 @@ ${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alterUsername).
 								),
 							)
 							.setLabel(this.translations.ALTER_NAME)
-							.setDescription(
-								this.translations.ALTER_DESC,
-							),
+							.setDescription(this.translations.ALTER_DESC),
 						new StringSelectOption()
 							.setValue(
 								InteractionIdentifier.Selection.AutoProxyModes.Off.create(),

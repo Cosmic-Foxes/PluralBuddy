@@ -16,20 +16,22 @@ export default class GoToPageButton extends ComponentCommand {
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
 		const pluralGuild = await ctx.retrievePGuild();
 		const nativeGuild = await ctx.guild();
-        const page = InteractionIdentifier.Guilds.RolesTab.GoToPage.substring(ctx.customId)[0];
+		const page = InteractionIdentifier.Guilds.RolesTab.GoToPage.substring(
+			ctx.customId,
+		)[0];
 
 		if (!nativeGuild) throw new Error("What.");
 
 		return await ctx.update({
 			components: [
-				...new ServerConfigView((await ctx.userTranslations())).topView(
+				...new ServerConfigView(await ctx.userTranslations()).topView(
 					"roles",
 					pluralGuild.guildId,
 				),
-				...new ServerConfigView((await ctx.userTranslations())).rolesTab(
+				...new ServerConfigView(await ctx.userTranslations()).rolesTab(
 					pluralGuild,
 					nativeGuild,
-                    Number(page ?? "1")
+					Number(page ?? "1"),
 				),
 			],
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,

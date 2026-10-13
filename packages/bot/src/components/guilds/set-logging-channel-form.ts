@@ -21,32 +21,32 @@ export default class GuildPrefixesForm extends ModalCommand {
 
 	override async run(ctx: ModalContext) {
 		const guildObj = await ctx.retrievePGuild();
-		const newChannel = (
-			ctx.interaction.getChannels(
-				InteractionIdentifier.Guilds.FormSelection.LoggingChannelSelection.create(),
-			) as AllChannels[] | undefined
-		);
+		const newChannel = ctx.interaction.getChannels(
+			InteractionIdentifier.Guilds.FormSelection.LoggingChannelSelection.create(),
+		) as AllChannels[] | undefined;
 
 		guildObj.logChannel = (newChannel ?? [undefined])[0]?.id;
 
 		await guildCollection.updateOne(
 			{ guildId: ctx.guildId },
-			{ $set: { logChannel: (newChannel ?? [undefined])[0]?.id }},
+			{ $set: { logChannel: (newChannel ?? [undefined])[0]?.id } },
 			{ upsert: true },
 		);
-		ctx.client.cache.pguild.remove(guildObj.guildId)
+		ctx.client.cache.pguild.remove(guildObj.guildId);
 
 		return await ctx.interaction.update({
 			components: [
-				...new ServerConfigView((await ctx.userTranslations())).topView(
+				...new ServerConfigView(await ctx.userTranslations()).topView(
 					"general",
 					guildObj.guildId,
 				),
-				...await new ServerConfigView((await ctx.userTranslations())).generalSettings(
+				...(await new ServerConfigView(
+					await ctx.userTranslations(),
+				).generalSettings(
 					guildObj,
 					(await ctx.getDefaultPrefix()) ?? "",
 					ctx.interaction?.message?.messageReference === undefined,
-				),
+				)),
 			],
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			allowed_mentions: { parse: [] },

@@ -1,34 +1,41 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 import { ComponentCommand, type ComponentContext } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
+import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { AlertView } from "@/views/alert";
-import { MessageFlags } from "seyfert/lib/types";
 import { SystemSettingsView } from "@/views/system-settings";
 
 export default class AlterTab extends ComponentCommand {
-   componentType = 'Button' as const;
-   
-    override filter(context: ComponentContext<typeof this.componentType>) {
-       return InteractionIdentifier.Systems.Configuration.Alters.Index.equals(context.customId)
-    }
+	componentType = "Button" as const;
 
-    override async run(ctx: ComponentContext<typeof this.componentType>) {
-        await ctx.deferUpdate();
-        const user = await ctx.retrievePUser();
+	override filter(context: ComponentContext<typeof this.componentType>) {
+		return InteractionIdentifier.Systems.Configuration.Alters.Index.equals(
+			context.customId,
+		);
+	}
 
-        if (user.system === undefined) {
-            return await ctx.followup({
-                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
-                flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-            })
-        }
+	override async run(ctx: ComponentContext<typeof this.componentType>) {
+		await ctx.deferUpdate();
+		const user = await ctx.retrievePUser();
 
-        return await ctx.editResponse({
-            components: [
-                ...await new SystemSettingsView((await ctx.userTranslations())).altersSettings(user.system)
+		if (user.system === undefined) {
+			return await ctx.followup({
+				components: new AlertView(await ctx.userTranslations()).errorView(
+					"ERROR_SYSTEM_DOESNT_EXIST",
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
+		}
 
-            ],
-            flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-        })
-    }
+		return await ctx.editOrReply({
+			components: [
+				...(await new SystemSettingsView(
+					await ctx.userTranslations(),
+					getSystemFeatures(user.system)?.preferAccessiblity,
+				).altersSettings(user.system)),
+			],
+			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+		});
+	}
 }

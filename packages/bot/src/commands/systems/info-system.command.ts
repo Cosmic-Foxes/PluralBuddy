@@ -26,27 +26,33 @@ const options = {
 @Options(options)
 export default class SystemInfoCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
-		await ctx.deferReply(true);
+		const isEphemeral = ctx.options.public !== true;
+		await ctx.deferReply(isEphemeral);
 		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
-			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
-					"ERROR_SYSTEM_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			}, undefined, undefined, ctx);
+			return await ctx.ephemeral(
+				{
+					components: new AlertView(await ctx.userTranslations()).errorView(
+						"ERROR_SYSTEM_DOESNT_EXIST",
+					),
+					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				},
+				undefined,
+				undefined,
+				ctx,
+			);
 		}
 
 		return ctx.ephemeral(
 			{
 				components: [
-					...new SystemView((await ctx.userTranslations())).systemProfileView(
+					...new SystemView(await ctx.userTranslations()).systemProfileView(
 						user.system,
 
 						user.system.associatedUserId !== ctx.author.id,
 					),
-					...new SystemView((await ctx.userTranslations())).systemConfigureButton(
+					...new SystemView(await ctx.userTranslations()).systemConfigureButton(
 						user.system,
 					),
 				],
@@ -57,7 +63,8 @@ export default class SystemInfoCommand extends SubCommand {
 				allowed_mentions: { parse: [] },
 			},
 			true,
-			undefined,ctx
+			undefined,
+			ctx,
 		);
 	}
 }

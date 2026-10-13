@@ -17,7 +17,7 @@ const options = {
 	channel: createChannelOption({
 		description: "The channel to use for logging.",
 		required: true,
-        channel_types: [ ChannelType.GuildText ]
+		channel_types: [ChannelType.GuildText],
 	}),
 };
 
@@ -41,13 +41,13 @@ export default class SetLogChannel extends SubCommand {
 					logChannel: channel.id,
 				},
 			},
-			{ upsert: true }
+			{ upsert: true },
 		);
 
-		ctx.client.cache.pguild.remove(pluralGuild.guildId)
+		ctx.client.cache.pguild.remove(pluralGuild.guildId);
 
 		return await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).successView(
+			components: new AlertView(await ctx.userTranslations()).successView(
 				"LOGGING_CHANNEL_SET",
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,

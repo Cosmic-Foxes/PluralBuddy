@@ -1,12 +1,13 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { ComponentCommand, type ComponentContext } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
+import { writeBack } from "@/lib/pk-sync-engine";
+import { w } from "@/webhooks";
 import { InteractionIdentifier } from "../../../../lib/interaction-ids";
 import { alterCollection } from "../../../../mongodb";
 import { AlertView } from "../../../../views/alert";
-import { MessageFlags } from "seyfert/lib/types";
 import { AlterView } from "../../../../views/alters";
-import { w } from "@/webhooks";
 
 export default class DeleteProxyTag extends ComponentCommand {
 	componentType = "Button" as const;
@@ -58,12 +59,19 @@ export default class DeleteProxyTag extends ComponentCommand {
 			type: "alter.update",
 			alter: {
 				...alter,
-				proxyTags: [
-					...alter.proxyTags.filter(v => v.id !== proxyTag),
-				],
+				proxyTags: [...alter.proxyTags.filter((v) => v.id !== proxyTag)],
 			},
 		});
 
+		if (alter.fields["@/converter/pk"])
+			writeBack({
+				type: "alter",
+				id: alter.fields["@/converter/pk"],
+				change: {
+					proxyTags: [...alter.proxyTags.filter((v) => v.id !== proxyTag)],
+				},
+				syncConfig: (await context.retrievePUser()).syncConfiguration,
+			});
 
 		alter =
 			(await alterCollection.findOne({
@@ -79,7 +87,9 @@ export default class DeleteProxyTag extends ComponentCommand {
 					alter.alterId.toString(),
 					alter.username,
 				),
-				...new AlterView(await context.userTranslations()).alterProxyTagsView(alter),
+				...new AlterView(await context.userTranslations()).alterProxyTagsView(
+					alter,
+				),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});

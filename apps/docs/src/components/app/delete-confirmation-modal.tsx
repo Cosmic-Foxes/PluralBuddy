@@ -1,4 +1,7 @@
+import { useMediaQuery } from "fumadocs-core/utils/use-media-query";
+import { Trash } from "lucide-react";
 import { JSX, ReactNode, useState } from "react";
+import { m } from "@/paraglide/messages";
 import {
 	Dialog,
 	DialogContent,
@@ -6,13 +9,10 @@ import {
 	DialogFooter,
 	DialogTitle,
 } from "../ui/dialog";
+import { Drawer, DrawerContent, DrawerDescription, DrawerFooter, DrawerTitle } from "../ui/drawer";
 import { Input } from "../ui/input";
 import { Button } from "../ui/shadcn-button";
-import { Trash } from "lucide-react";
 import { Spinner } from "../ui/spinner";
-import { useTranslations } from "next-intl";
-import { useMediaQuery } from "fumadocs-core/utils/use-media-query";
-import { Drawer, DrawerContent, DrawerDescription, DrawerFooter, DrawerTitle } from "../ui/drawer";
 
 export function DeleteConfirmationModal({
 	open,
@@ -31,7 +31,6 @@ export function DeleteConfirmationModal({
 }) {
 	const [loading, setLoading] = useState(false);
 	const [value, setValue] = useState("");
-	const t = useTranslations("DeleteComponent");
 	const isDesktop = useMediaQuery("(min-width: 768px)");
 
 	if (isDesktop)
@@ -42,7 +41,7 @@ export function DeleteConfirmationModal({
 				<DialogDescription>{description}</DialogDescription>
 					<Input
 						className="w-full"
-						placeholder={t("placeholder", {
+						placeholder={m["DeleteComponent.placeholder"]( {
 							requiredDeletionText,
 						})}
                         value={value}
@@ -59,7 +58,7 @@ export function DeleteConfirmationModal({
 						}}
 						disabled={value !== requiredDeletionText || loading}
 					>
-						{loading ? <Spinner /> : <Trash />} {t("btn_label")}
+						{loading ? <Spinner /> : <Trash />} {m["DeleteComponent.btn_label"]()}
 					</Button>
 				</DialogFooter>
 			</DialogContent>
@@ -72,7 +71,7 @@ export function DeleteConfirmationModal({
 				<DrawerDescription>{description}</DrawerDescription>
 					<Input
 						className="w-full"
-						placeholder={t("placeholder", {
+						placeholder={m["DeleteComponent.placeholder"]({
 							requiredDeletionText,
 						})}
                         value={value}
@@ -89,7 +88,7 @@ export function DeleteConfirmationModal({
 						}}
 						disabled={value !== requiredDeletionText || loading}
 					>
-						{loading ? <Spinner /> : <Trash />} {t("btn_label")}
+						{loading ? <Spinner /> : <Trash />} {m["DeleteComponent.btn_label"]()}
 					</Button>
 				</DrawerFooter>
 			</DrawerContent>

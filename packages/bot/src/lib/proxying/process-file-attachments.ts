@@ -14,7 +14,11 @@ export async function processFileAttachments(
 	fileAttachments: Array<{ buff: Buffer; spoilered: boolean; name: string }>;
 	hasTextContent: boolean;
 }> {
-	const fileAttachments: Array<{ buff: Buffer; spoilered: boolean; name: string }> = [];
+	const fileAttachments: Array<{
+		buff: Buffer;
+		spoilered: boolean;
+		name: string;
+	}> = [];
 	const userPerms = await client.channels.memberPermissions(
 		message.channelId,
 		await client.members.fetch(
@@ -38,7 +42,7 @@ export async function processFileAttachments(
 					});
 				}),
 		]) {
-			console.log(attachment)
+			console.log(attachment);
 			if (attachment.url.startsWith("https://cdn.discordapp.com")) {
 				const arrBuff = await (await fetch(attachment.url)).arrayBuffer();
 				fileAttachments.push({
@@ -47,7 +51,10 @@ export async function processFileAttachments(
 						"filename" in attachment
 							? attachment.filename
 							: `attachment-${assetStringGeneration(16)}.${attachment.content_type?.split("/")[1]}`,
-					spoilered: ("flags" in attachment) ? (((attachment.flags ?? 0) & (1 << 3)) === (1 << 3)) : false
+					spoilered:
+						"flags" in attachment
+							? ((attachment.flags ?? 0) & (1 << 3)) === 1 << 3
+							: false,
 				});
 			}
 		}

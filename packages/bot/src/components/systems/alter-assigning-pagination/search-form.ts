@@ -32,7 +32,7 @@ export default class SearchFormModal extends ModalCommand {
 
 		if (user.system === undefined) {
 			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -42,7 +42,7 @@ export default class SearchFormModal extends ModalCommand {
 		if (corresponding === undefined) {
 			return await ctx.write({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorView(
+					...new AlertView(await ctx.userTranslations()).errorView(
 						"ERROR_ASSIGN_PAGINATION_TOO_OLD",
 					),
 				],
@@ -59,24 +59,22 @@ export default class SearchFormModal extends ModalCommand {
 		// Increment its page
 		corresponding.searchQuery = searchQuery as string;
 
-        const documentCount = await tagCollection.countDocuments({
-            systemId: user.system.associatedUserId,
-            tagFriendlyName: { $regex: searchQuery as string },
-        });
+		const documentCount = await tagCollection.countDocuments({
+			systemId: user.system.associatedUserId,
+			tagFriendlyName: { $regex: searchQuery as string },
+		});
 
-        corresponding.documentCount = documentCount;
-        corresponding.memoryPage = 1;
+		corresponding.documentCount = documentCount;
+		corresponding.memoryPage = 1;
 
 		// Re-add it to the array
 		assignTagPagination.push(corresponding);
 
 		return await ctx.interaction.update({
 			components: [
-				...(await new AlertAssignTagView((await ctx.userTranslations())).alterAssignTag(
-					user.system,
-					undefined,
-					corresponding,
-				)),
+				...(await new AlertAssignTagView(
+					await ctx.userTranslations(),
+				).alterAssignTag(user.system, undefined, corresponding)),
 			],
 		});
 	}

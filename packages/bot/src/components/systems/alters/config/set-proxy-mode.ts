@@ -7,39 +7,46 @@ import { AlertView } from "@/views/alert";
 import { AlterView } from "@/views/alters";
 
 export default class SetProxyMode extends ComponentCommand {
-   componentType = 'Button' as const;
-   
-   override filter(context: ComponentContext<typeof this.componentType>) {
-       return InteractionIdentifier.Systems.Configuration.Alters.SetProxyMode.startsWith(context.customId)
-   }
+	componentType = "Button" as const;
 
-   override async run(context: ComponentContext<typeof this.componentType>) {
+	override filter(context: ComponentContext<typeof this.componentType>) {
+		return InteractionIdentifier.Systems.Configuration.Alters.SetProxyMode.startsWith(
+			context.customId,
+		);
+	}
+
+	override async run(context: ComponentContext<typeof this.componentType>) {
 		const alterId =
-            InteractionIdentifier.Systems.Configuration.Alters.SetProxyMode.substring(
-                context.customId,
-            )[0];
+			InteractionIdentifier.Systems.Configuration.Alters.SetProxyMode.substring(
+				context.customId,
+			)[0];
 
-        const systemId = context.author.id;
-        const query = alterCollection.findOne({
+		const systemId = context.author.id;
+		const query = alterCollection.findOne({
 			$and: [{ alterId: Number(alterId) }, { systemId }],
-        });
-        const alter = await query;
-        const guild = await context.retrievePGuild();
+		});
+		const alter = await query;
+		const guild = await context.retrievePGuild();
 
-        if (alter === null) {
-            return await context.write({
-                components: new AlertView(await context.userTranslations()).errorView(
-                    "ERROR_ALTER_DOESNT_EXIST",
-                ),
-                flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-            });
-        }
+		if (alter === null) {
+			return await context.write({
+				components: new AlertView(await context.userTranslations()).errorView(
+					"ERROR_ALTER_DOESNT_EXIST",
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
+		}
 
-        return await context.update({
-            components: [
-                ...new AlterView(await context.userTranslations()).altersSetMode(alter.username, alter.alterId, alter.alterMode, guild)
-            ],
-            flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
-        })
-   }
+		return await context.update({
+			components: [
+				...new AlterView(await context.userTranslations()).altersSetMode(
+					alter.username,
+					alter.alterId,
+					alter.alterMode,
+					guild,
+				),
+			],
+			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+		});
+	}
 }

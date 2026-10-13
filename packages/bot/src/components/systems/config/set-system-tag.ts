@@ -1,7 +1,13 @@
-import { ComponentCommand, Label, Modal, TextInput, type ComponentContext } from "seyfert";
+import {
+	ComponentCommand,
+	type ComponentContext,
+	Label,
+	Modal,
+	TextInput,
+} from "seyfert";
+import { MessageFlags, TextInputStyle } from "seyfert/lib/types";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { AlertView } from "@/views/alert";
-import { MessageFlags, TextInputStyle } from "seyfert/lib/types";
 
 export default class SetSystemTag extends ComponentCommand {
 	componentType = "Button" as const;
@@ -17,7 +23,7 @@ export default class SetSystemTag extends ComponentCommand {
 
 		if (user.system === undefined) {
 			return await ctx.interaction.update({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -41,14 +47,22 @@ export default class SetSystemTag extends ComponentCommand {
 									)
 									.setLength({ min: 1, max: 2000 })
 									.setRequired(true)
-							: new TextInput()
-									.setStyle(TextInputStyle.Paragraph)
-									.setCustomId(
-										InteractionIdentifier.Systems.Configuration.FormSelection.SystemTagType.create(),
-									)
-									.setLength({ min: 1, max: 2000 })
-									.setRequired(true)
-									.setValue(user.system.systemDisplayTag),
+							: !user.system.systemDisplayTag
+								? new TextInput()
+										.setStyle(TextInputStyle.Paragraph)
+										.setCustomId(
+											InteractionIdentifier.Systems.Configuration.FormSelection.SystemTagType.create(),
+										)
+										.setLength({ min: 1, max: 2000 })
+										.setRequired(true)
+								: new TextInput()
+										.setStyle(TextInputStyle.Paragraph)
+										.setCustomId(
+											InteractionIdentifier.Systems.Configuration.FormSelection.SystemTagType.create(),
+										)
+										.setLength({ min: 1, max: 2000 })
+										.setRequired(true)
+										.setValue(user.system.systemDisplayTag),
 					),
 			]);
 

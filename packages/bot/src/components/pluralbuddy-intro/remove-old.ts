@@ -4,15 +4,14 @@ import {
 	ActionRow,
 	Button,
 	ComponentCommand,
-	TextDisplay,
-	type ComponentContext,
+	type ComponentContext,Container, 
+	TextDisplay
 } from "seyfert";
+import { ButtonStyle } from "seyfert/lib/types";
+import { mentionCommand } from "@/lib/mention-command";
+import { emojis } from "../../lib/emojis";
 import { InteractionIdentifier } from "../../lib/interaction-ids";
 import { AlertView } from "../../views/alert";
-import { ButtonStyle } from "seyfert/lib/types";
-import { emojis } from "../../lib/emojis";
-import { Container } from "seyfert";
-import { mentionCommand } from "@/lib/mention-command";
 
 export default class RemoveOldSystem extends ComponentCommand {
 	componentType = "Button" as const;
@@ -30,7 +29,7 @@ export default class RemoveOldSystem extends ComponentCommand {
 				),
 			],
 		});
-		return await ctx.editResponse({
+		return await ctx.editOrReply({
 			components: [
 				new Container()
 					.setComponents(
@@ -39,40 +38,37 @@ export default class RemoveOldSystem extends ComponentCommand {
 						),
 					)
 					.setColor("#FF1717"),
-				new Container()
-					.setSpoiler(true)
-					.setComponents(
-						new ActionRow().setComponents(
-							new Button()
-								.setEmoji(emojis.settingsWhite)
-								.setStyle(ButtonStyle.Primary)
-								.setLabel((await ctx.userTranslations()).BACK_TO_SAFETY_BTN)
-								.setCustomId(
-									InteractionIdentifier.Systems.Configuration.GeneralTab.Index.create(),
-								),
-							new Button()
-								.setEmoji(emojis.circleQuestionWhite)
-								.setStyle(ButtonStyle.Danger)
-								.setLabel(
-									(await ctx.userTranslations()).CONFIRMATION_SYSTEM_DELETION_BTN,
-								)
-								.setCustomId(
-									InteractionIdentifier.Systems.DeleteSystem.create(),
-								),
-						),
-						new TextDisplay().setContent(
-							(await ctx.userTranslations())
-								.CONFIRMATION_SYSTEM_DELETION_PRIVACY.replace(
-									"%command%",
-									mentionCommand(
-										(await ctx.getDefaultPrefix()) ?? "pb;",
-										"system delete",
-										ctx.interaction.message.messageReference === undefined,
-										"-mi",
-									),
-								),
+				new Container().setSpoiler(true).setComponents(
+					new ActionRow().setComponents(
+						new Button()
+							.setEmoji(emojis.settingsWhite)
+							.setStyle(ButtonStyle.Primary)
+							.setLabel((await ctx.userTranslations()).BACK_TO_SAFETY_BTN)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.GeneralTab.Index.create(),
+							),
+						new Button()
+							.setEmoji(emojis.circleQuestionWhite)
+							.setStyle(ButtonStyle.Danger)
+							.setLabel(
+								(await ctx.userTranslations()).CONFIRMATION_SYSTEM_DELETION_BTN,
+							)
+							.setCustomId(InteractionIdentifier.Systems.DeleteSystem.create()),
+					),
+					new TextDisplay().setContent(
+						(
+							await ctx.userTranslations()
+						).CONFIRMATION_SYSTEM_DELETION_PRIVACY.replace(
+							"%command%",
+							mentionCommand(
+								(await ctx.getDefaultPrefix()) ?? "pb;",
+								"system delete",
+								ctx.interaction.message.messageReference === undefined,
+								"-mi",
+							),
 						),
 					),
+				),
 			],
 		});
 	}

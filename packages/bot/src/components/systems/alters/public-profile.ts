@@ -30,7 +30,7 @@ export default class PublicProfileButton extends ComponentCommand {
 
 		if (alter === null) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -39,16 +39,16 @@ export default class PublicProfileButton extends ComponentCommand {
 
 		return await ctx.update({
 			components: [
-				...new AlterView((await ctx.userTranslations())).alterTopView(
+				...new AlterView(await ctx.userTranslations()).alterTopView(
 					"public-settings",
 					alter.alterId.toString(),
 					alter.username,
 				),
-				...new AlterView((await ctx.userTranslations())).altersPublicView(
+				...new AlterView(await ctx.userTranslations()).altersPublicView(
 					alter,
 					(await ctx.guild()) ?? { name: "", id: "" },
 					(await ctx.getDefaultPrefix()) ?? "",
-					ctx.interaction.message.messageReference === undefined
+					ctx.interaction.message.messageReference === undefined,
 				),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

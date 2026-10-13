@@ -1,32 +1,8 @@
 "use client";
 
-import { PAlter, PExpressApplication } from "plurography";
-import { SettingsSidebar } from "../../../settings-sidebar";
-import { AlterView } from "../../alter-view";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardTitle,
-} from "../../../ui/card";
-import { Label } from "../../../ui/label";
-import { Field, FieldLabel } from "../../../ui/field";
-import { Select } from "../../../ui/select";
-import {
-	Empty,
-	EmptyContent,
-	EmptyDescription,
-	EmptyHeader,
-	EmptyMedia,
-	EmptyTitle,
-} from "../../../ui/empty";
-import { Input } from "../../../ui/input";
-import { Separator } from "../../../ui/separator";
-import React, { useState } from "react";
-import { Avatar, AvatarImage } from "../../../ui/avatar";
-import Image from "next/image";
+import { ParaglideMessage } from "@inlang/paraglide-js-react";
+import { useMutation } from "@tanstack/react-query";
 import { APIApplication, APIUser } from "discord-api-types/v10";
-import { Button } from "../../../ui/shadcn-button";
 import {
 	AppWindow,
 	Code,
@@ -38,23 +14,10 @@ import {
 	RefreshCcw,
 	Trash,
 } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../../../ui/tooltip";
-import { CreateExpressModal } from "../../create-express-modal";
-import { Link } from "react-router";
-import { useMutation } from "@tanstack/react-query";
-import { Spinner } from "../../../ui/spinner";
-import { useNavigate } from "react-router";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-} from "../../../ui/dropdown-menu";
-import { JSONModal } from "../../json-modal";
-import { useTranslations } from "next-intl";
-import { DeleteConfirmationModal } from "../../delete-confirmation-modal";
-import { haptic } from "@/lib/haptic/haptic";
+import Image from "next/image";
+import { PAlter, PExpressApplication } from "plurography";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router";
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -62,6 +25,42 @@ import {
 	BreadcrumbList,
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { haptic } from "@/lib/haptic/haptic";
+import { m } from "@/paraglide/messages";
+import { SettingsSidebar } from "../../../settings-sidebar";
+import { Avatar, AvatarImage } from "../../../ui/avatar";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardTitle,
+} from "../../../ui/card";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "../../../ui/dropdown-menu";
+import {
+	Empty,
+	EmptyContent,
+	EmptyDescription,
+	EmptyHeader,
+	EmptyMedia,
+	EmptyTitle,
+} from "../../../ui/empty";
+import { Field, FieldLabel } from "../../../ui/field";
+import { Input } from "../../../ui/input";
+import { Label } from "../../../ui/label";
+import { Select } from "../../../ui/select";
+import { Separator } from "../../../ui/separator";
+import { Button } from "../../../ui/shadcn-button";
+import { Spinner } from "../../../ui/spinner";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../../../ui/tooltip";
+import { AlterView } from "../../alter-view";
+import { DeleteConfirmationModal } from "../../delete-confirmation-modal";
+import { JSONModal } from "../../json-modal";
 import { PreferencesModal } from "../../preferences-modal";
 
 export function ExpressAlterPage({
@@ -88,7 +87,6 @@ export function ExpressAlterPage({
 		},
 	});
 
-	const t = useTranslations("ExpressPage");
 	const [authorizeLoading, setAuthorizeLoading] = useState(false);
 	const [jsonModalOpen, setJsonModalOpen] = useState(false);
 	const [preferencesOpen, setPreferencesOpen] = useState(false);
@@ -129,19 +127,30 @@ export function ExpressAlterPage({
 					rootName="alter"
 					setOpen={setJsonModalOpen}
 				/>
-				<PreferencesModal alter={alter} open={preferencesOpen} setOpen={setPreferencesOpen} />
+				<PreferencesModal
+					alter={alter}
+					open={preferencesOpen}
+					setOpen={setPreferencesOpen}
+				/>
 				<DeleteConfirmationModal
 					open={deleteModalOpen}
 					setOpen={setDeleteModalOpen}
 					requiredDeletionText={alter.username}
-					title={t("delete_title", {
+					title={m["ExpressPage.delete_title"]({
 						alter: alter.username,
 					})}
-					description={t.rich("delete_desc", {
-						alter: alter.username,
-						b: (children) => <b>{children}</b>,
-						br: () => <br></br>,
-					})}
+					description={
+						<ParaglideMessage
+							message={m["ExpressPage.delete_desc"]}
+							inputs={{
+								alter: alter.username,
+							}}
+							markup={{
+								b: ({ children }) => <b>{children}</b>,
+								br: () => <br></br>,
+							}}
+						/>
+					}
 					onDelete={async () => {
 						await deleteMutation.mutateAsync(alter.express?.application ?? "");
 
@@ -157,9 +166,12 @@ export function ExpressAlterPage({
 							</Button>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent className="w-[200px]">
-							<DropdownMenuItem disabled={alter.express === null} onClick={() => setPreferencesOpen(true)}>
+							<DropdownMenuItem
+								disabled={alter.express === null}
+								onClick={() => setPreferencesOpen(true)}
+							>
 								<Cog />
-								{t("nav_menu_pref")}
+								{m["ExpressPage.nav_menu_pref"]()}
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								disabled={authorizeLoading || alter.express === null}
@@ -172,7 +184,7 @@ export function ExpressAlterPage({
 								}}
 							>
 								{authorizeLoading ? <Spinner /> : <RefreshCcw size={9} />}
-								{t("nav_menu_sync_prof")}
+								{m["ExpressPage.nav_menu_sync_prof"]()}
 							</DropdownMenuItem>
 							<Link
 								to={`https://discord.com/oauth2/authorize?client_id=${alter.express?.application}`}
@@ -180,7 +192,7 @@ export function ExpressAlterPage({
 							>
 								<DropdownMenuItem disabled={alter.express === null}>
 									<ExternalLink size={9} />
-									{t("nav_menu_auth")}
+									{m["ExpressPage.nav_menu_auth"]()}
 								</DropdownMenuItem>
 							</Link>
 							<DropdownMenuSeparator />
@@ -190,7 +202,7 @@ export function ExpressAlterPage({
 								}
 							>
 								<Copy size={9} />
-								{t("nav_menu_copy_alter")}
+								{m["ExpressPage.nav_menu_copy_alter"]()}
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								disabled={alter.express === null}
@@ -199,11 +211,11 @@ export function ExpressAlterPage({
 								}
 							>
 								<Copy size={9} />
-								{t("nav_menu_copy_app")}
+								{m["ExpressPage.nav_menu_copy_app"]()}
 							</DropdownMenuItem>
 							<DropdownMenuItem onClick={() => setJsonModalOpen(true)}>
 								<Code size={9} />
-								{t("nav_menu_json")}
+								{m["ExpressPage.nav_menu_json"]()}
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
 
@@ -211,7 +223,7 @@ export function ExpressAlterPage({
 								className="text-red-400"
 								onClick={() => setDeleteModalOpen(true)}
 							>
-								<Trash size={9} /> {t("nav_menu_delete")}
+								<Trash size={9} /> {m["ExpressPage.nav_menu_delete"]()}
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
@@ -224,12 +236,10 @@ export function ExpressAlterPage({
 						<EmptyMedia variant="icon">
 							<AppWindow />
 						</EmptyMedia>
-						<EmptyTitle>{t("empty_title")}</EmptyTitle>
-						<EmptyDescription>{t("empty_desc")}</EmptyDescription>
+						<EmptyTitle>{m["ExpressPage.empty_title"]()}</EmptyTitle>
+						<EmptyDescription>{m["ExpressPage.empty_desc"]()}</EmptyDescription>
 						<EmptyContent className="flex-row justify-center gap-2">
-							<CreateExpressModal>
-								<Button>{t("empty_btn")}</Button>
-							</CreateExpressModal>
+								<Button disabled>{m["ExpressPage.empty_btn"]()}</Button>
 						</EmptyContent>
 					</EmptyHeader>
 				</Empty>
@@ -237,9 +247,9 @@ export function ExpressAlterPage({
 				<React.Fragment>
 					<Card className="w-full">
 						<CardContent>
-							<CardTitle>{t("add_app_title")}</CardTitle>
+							<CardTitle>{m["ExpressPage.add_app_title"]()}</CardTitle>
 							<CardDescription>
-								{t("add_app_description", {
+								{m["ExpressPage.add_app_description"]({
 									alterName: alter.username,
 								})}
 							</CardDescription>
@@ -261,18 +271,20 @@ export function ExpressAlterPage({
 								}}
 							>
 								{authorizeLoading && <Spinner />}
-								{t("auth_link")} <ExternalLink />
+								{m["ExpressPage.auth_link"]()} <ExternalLink />
 							</Button>
 						</CardContent>
 					</Card>
 					<Card className="w-full">
 						<CardContent>
-							<CardTitle>{t("app_info_title")}</CardTitle>
+							<CardTitle>{m["ExpressPage.app_info_title"]()}</CardTitle>
 
 							<Separator className="h-px my-3" />
 
 							<Field>
-								<FieldLabel htmlFor="public-id">{t("app_pk")}</FieldLabel>
+								<FieldLabel htmlFor="public-id">
+									{m["ExpressPage.app_pk"]()}
+								</FieldLabel>
 								<Input
 									id="public-id"
 									value={alter.express?.publicKey}
@@ -280,7 +292,9 @@ export function ExpressAlterPage({
 								/>
 							</Field>
 							<Field className="mt-3">
-								<FieldLabel htmlFor="public-id">{t("app_id")}</FieldLabel>
+								<FieldLabel htmlFor="public-id">
+									{m["ExpressPage.app_id"]()}
+								</FieldLabel>
 								<Input
 									id="public-id"
 									value={alter.express?.application}
@@ -291,7 +305,7 @@ export function ExpressAlterPage({
 					</Card>
 					<Card className="w-full">
 						<CardContent>
-							<CardTitle>{t("profile_title")}</CardTitle>
+							<CardTitle>{m["ExpressPage.profile_title"]()}</CardTitle>
 
 							<Separator className="h-px my-3" />
 
@@ -302,7 +316,7 @@ export function ExpressAlterPage({
 											<img
 												src={alter.banner}
 												className="w-[320px] h-[120px] rounded-xl z-0 object-cover"
-												alt={t("alt_banner")}
+												alt={m["ExpressPage.alt_banner"]()}
 											/>
 										) : (
 											<div className="bg-[#5865F2] w-full md:min-w-[320px] max-w-[320px] h-[120px] rounded-xl absolute" />
@@ -323,7 +337,9 @@ export function ExpressAlterPage({
 													<Copy />
 												</Button>
 											</TooltipTrigger>
-											<TooltipContent>{t("profile_user_id")}</TooltipContent>
+											<TooltipContent>
+												{m["ExpressPage.profile_user_id"]()}
+											</TooltipContent>
 										</Tooltip>
 										<Tooltip>
 											<TooltipTrigger asChild>
@@ -344,7 +360,7 @@ export function ExpressAlterPage({
 												</Button>
 											</TooltipTrigger>
 											<TooltipContent>
-												{t("profile_resync_prfs")}
+												{m["ExpressPage.profile_resync_prfs"]()}
 											</TooltipContent>
 										</Tooltip>
 
@@ -371,7 +387,9 @@ export function ExpressAlterPage({
 										</span>
 									</div>
 								</div>
-								<div className="px-4 max-md:py-4">{t("profile_desc")}</div>
+								<div className="px-4 max-md:py-4">
+									{m["ExpressPage.profile_desc"]()}
+								</div>
 							</div>
 						</CardContent>
 					</Card>

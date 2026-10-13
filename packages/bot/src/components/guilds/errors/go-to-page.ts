@@ -14,26 +14,28 @@ export default class ViewErrorsTab extends ComponentCommand {
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
-        const pluralGuild = await ctx.retrievePGuild();
-        const nativeGuild = await ctx.guild()
-        const page = InteractionIdentifier.Guilds.ErrorsTab.GoToPage.substring(ctx.customId)[0];
-        
-        if (!nativeGuild) throw new Error("What.")
+		const pluralGuild = await ctx.retrievePGuild();
+		const nativeGuild = await ctx.guild();
+		const page = InteractionIdentifier.Guilds.ErrorsTab.GoToPage.substring(
+			ctx.customId,
+		)[0];
+
+		if (!nativeGuild) throw new Error("What.");
 
 		return await ctx.update({
 			components: [
-				...new ServerConfigView((await ctx.userTranslations())).topView(
+				...new ServerConfigView(await ctx.userTranslations()).topView(
 					"errors",
 					pluralGuild.guildId,
 				),
-				...new ServerConfigView((await ctx.userTranslations())).errorSettings(
+				...new ServerConfigView(await ctx.userTranslations()).errorSettings(
 					pluralGuild,
 					nativeGuild,
-                    Number(page ?? "1")
+					Number(page ?? "1"),
 				),
 			],
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			allowed_mentions: { parse: [] },
 		});
-    }
+	}
 }

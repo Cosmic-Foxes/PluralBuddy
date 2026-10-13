@@ -32,7 +32,9 @@ export const latchOptions = {
 	}),
 };
 
-export async function runLatchCommand(ctx: CommandContext<typeof latchOptions>) {
+export async function runLatchCommand(
+	ctx: CommandContext<typeof latchOptions>,
+) {
 	await ctx.deferReply(true);
 	const { "first-alter": alterName } = ctx.options;
 
@@ -44,14 +46,14 @@ export async function runLatchCommand(ctx: CommandContext<typeof latchOptions>) 
 		const query = Number.isNaN(Number.parseInt(alterName))
 			? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
 			: alterCollection.findOne({
-				$or: [{ username: alterName }, { alterId: Number(alterName) }],
-				systemId,
-			});
+					$or: [{ username: alterName }, { alterId: Number(alterName) }],
+					systemId,
+				});
 		alter = await query;
 
 		if (alter === null || system === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -60,7 +62,7 @@ export async function runLatchCommand(ctx: CommandContext<typeof latchOptions>) 
 	}
 	if (system === undefined) {
 		return await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).errorView(
+			components: new AlertView(await ctx.userTranslations()).errorView(
 				"ERROR_SYSTEM_DOESNT_EXIST",
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -71,14 +73,14 @@ export async function runLatchCommand(ctx: CommandContext<typeof latchOptions>) 
 
 	if (guild === undefined) {
 		return await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).errorView(
+			components: new AlertView(await ctx.userTranslations()).errorView(
 				"DN_ERROR_SE",
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
 	}
 
-	const label = getCorrectLabel (
+	const label = getCorrectLabel(
 		(ctx.options.scope as "server" | "global" | "channels") ?? "server",
 		guild.id,
 		ctx.channelId,
@@ -95,12 +97,12 @@ export async function runLatchCommand(ctx: CommandContext<typeof latchOptions>) 
 					"system.systemAutoproxy.$[serverEntry].autoproxyMode": "latch",
 					...(alter !== null
 						? {
-							"system.systemAutoproxy.$[serverEntry].autoproxyAlter":
-								alter.alterId.toString(),
-						}
+								"system.systemAutoproxy.$[serverEntry].autoproxyAlter":
+									alter.alterId.toString(),
+							}
 						: {
-							"system.systemAutoproxy.$[serverEntry].autoproxyAlter": null,
-						}),
+								"system.systemAutoproxy.$[serverEntry].autoproxyAlter": null,
+							}),
 				},
 			},
 			{
@@ -117,8 +119,8 @@ export async function runLatchCommand(ctx: CommandContext<typeof latchOptions>) 
 						autoproxyMode: "latch",
 						...(alter !== null
 							? {
-								autoproxyAlter: alter.alterId.toString(),
-							}
+									autoproxyAlter: alter.alterId.toString(),
+								}
 							: {}),
 						serverId: label,
 					} satisfies Partial<PAutoProxy>,
@@ -130,19 +132,24 @@ export async function runLatchCommand(ctx: CommandContext<typeof latchOptions>) 
 	await sendAutoproxyOperationDM(
 		system,
 		guild,
-		(await ctx.userTranslations()),
+		await ctx.userTranslations(),
 		"discord",
 		"latch",
 	);
 
 	return await ctx.editResponse({
-		components: new AlertView((await ctx.userTranslations())).successViewCustom(
-			((await ctx.userTranslations()))[
+		components: new AlertView(await ctx.userTranslations()).successViewCustom(
+			(await ctx.userTranslations())[
 				ctx.options.scope !== "global"
 					? "SET_AUTO_PROXY_SRV"
 					: "SET_AUTO_PROXY_GLOBAL"
-			].replaceAll("%server_name%", 
-					(ctx.options.scope ?? "server") !== "server" ? `<#${ctx.channelId}>` : guild.name)
+			]
+				.replaceAll(
+					"%server_name%",
+					(ctx.options.scope ?? "server") !== "server"
+						? `<#${ctx.channelId}>`
+						: guild.name,
+				)
 				.replaceAll("%mode%", "latch"),
 		),
 		flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,

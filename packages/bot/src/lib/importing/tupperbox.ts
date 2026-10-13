@@ -1,18 +1,18 @@
+import { DiscordSnowflake } from "@sapphire/snowflake";
 import {
 	AlterProtectionFlags,
+	type PAlter,
 	PAlterObject,
+	type PTag,
 	PTagObject,
 	TagProtectionFlags,
 	TupperBoxSystem,
-	type PAlter,
-	type PTag,
 } from "plurography";
-import { ImportEntry, ImportOutput } from ".";
 import z from "zod";
-import { DiscordSnowflake } from "@sapphire/snowflake";
-import { combine } from "../privacy-bitmask";
 import { alterCollection, tagCollection, userCollection } from "@/mongodb";
+import { combine } from "../privacy-bitmask";
 import { createRandomId } from "../random-id";
+import { ImportEntry, ImportOutput } from ".";
 
 const TupperBoxImportEntry = z.object({
 	existing: ImportEntry,
@@ -90,7 +90,8 @@ export async function replace(
 						tagIds: pluralbuddy.tagIds,
 						public: pluralbuddy.public,
 						avatarUrlMap: {},
-						fields: {}
+						fields: {},
+						flags: 0
 					} satisfies PAlter),
 					originalPkId: member.id,
 				}
@@ -128,7 +129,7 @@ export async function replace(
 					associatedAlters: pluralbuddy.associatedAlters,
 
 					public: pluralbuddy.public,
-					fields: {}
+					fields: {},
 				} satisfies PTag),
 		)
 		.filter((res) => res !== false);
@@ -215,7 +216,8 @@ export async function add(
 						// TupperBox has no permission values... lol
 						public: 0,
 						avatarUrlMap: {},
-						fields: {}
+						fields: {},
+						flags: 0
 					} satisfies PAlter),
 					originalPkId: member.id,
 				}
@@ -246,12 +248,12 @@ export async function add(
 				associatedAlters: [],
 
 				public: 0,
-				fields: {}
+				fields: {},
 			} satisfies PTag),
 		)
 		.filter((v) => v.data !== undefined)
 		.map((v) => v.data);
-		
+
 	if (newAlters.length + input.existing.alters.length >= 2000)
 		throw new Error("Too many alters");
 	if (newTags.length + input.existing.tags.length >= 1000)
@@ -326,7 +328,9 @@ export async function deleteM(
 		},
 		{
 			$pull: {
-				"system.alterIds": { $each: pendingDeletedAlters.map((v) => v.alterId) },
+				"system.alterIds": {
+					$each: pendingDeletedAlters.map((v) => v.alterId),
+				},
 				"system.tagIds": { $each: pendingDeletedTags.map((v) => v.tagId) },
 			},
 		},

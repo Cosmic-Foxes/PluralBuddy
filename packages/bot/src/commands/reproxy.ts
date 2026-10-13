@@ -1,42 +1,44 @@
-import { autocompleteAlters } from "@/lib/autocomplete-alters";
-import { getSimilarWebhooks, setLastLatchAlter } from "@/lib/proxying/util";
-import { alterCollection, messagesCollection } from "@/mongodb";
-import { AlertView } from "@/views/alert";
+import { getColor } from "colorthief";
 import {
 	ApplicationEmoji,
+	AttachmentBuilder,
+	Command,
+	CommandContext,
+	Container,
+	createStringOption,
+	createBooleanOption,
+	Declare,
+	IgnoreCommand,
+	MediaGallery,
 	Message,
+	Options,
 	Section,
 	Separator,
+	TextDisplay,
 	Thumbnail,
 	type TopLevelBuilders,
 } from "seyfert";
 import {
-	AttachmentBuilder,
-	CommandContext,
-	Container,
-	createStringOption,
-	Declare,
-	MediaGallery,
-	Options,
-	TextDisplay,
-} from "seyfert";
-import { Command, IgnoreCommand } from "seyfert";
-import {
-	ComponentType,
-	MessageFlags,
-	Spacing,
 	type APIContainerComponent,
 	type APIMediaGalleryComponent,
 	type APITextDisplayComponent,
+	ComponentType,
+	MessageFlags,
+	Spacing,
 } from "seyfert/lib/types";
-import { client } from "..";
-import { getGuildFromId } from "@/types/guild";
-import { getColor } from "colorthief";
-import { emojis } from "@/lib/emojis";
-import { createError } from "@/lib/create-error";
 import { pendingIgnoreDeletion } from "@/events/on-message-delete";
-import { w } from "@/webhooks";
+import { autocompleteAlters } from "@/lib/autocomplete-alters";
+import { createError } from "@/lib/create-error";
+import { emojis } from "@/lib/emojis";
+import { getModernComponentsMappings } from "@/lib/proxying";
 import { processEmojis } from "@/lib/proxying/process-emojis";
+import { getSimilarWebhooks, setLastLatchAlter } from "@/lib/proxying/util";
+import { alterCollection, messagesCollection } from "@/mongodb";
+import { getSystemFeatures } from "@/lib/get-system-flags";
+import { getGuildFromId } from "@/types/guild";
+import { AlertView } from "@/views/alert";
+import { w } from "@/webhooks";
+import { client } from "..";
 
 const options = {
 	alter: createStringOption({
@@ -44,6 +46,10 @@ const options = {
 		autocomplete: autocompleteAlters,
 		required: true,
 	}),
+	changelatch: createBooleanOption({
+		description: "Change whether the latched alter changes",
+		required: false,
+	})
 };
 
 @Declare({
@@ -57,7 +63,7 @@ export default class ReproxyCommand extends Command {
 	override async run(ctx: CommandContext<typeof options>) {
 		await ctx.deferReply(true);
 		const { system } = await ctx.retrievePUser();
-		const { alter: alterName } = ctx.options;
+		const { alter: alterName, changelatch } = ctx.options;
 
 		const systemId = ctx.author.id;
 
@@ -66,9 +72,9 @@ export default class ReproxyCommand extends Command {
 			(await (Number.isNaN(Number.parseInt(alterName))
 				? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
 				: alterCollection.findOne({
-						$or: [{ username: alterName }, { alterId: Number(alterName) }],
-						systemId,
-					})));
+					$or: [{ username: alterName }, { alterId: Number(alterName) }],
+					systemId,
+				})));
 
 		if (system === undefined) {
 			return await ctx.ephemeral(
@@ -154,7 +160,11 @@ export default class ReproxyCommand extends Command {
 
 		const webhook = similarWebhooks[0];
 
-		const username = `${alter.nameMap.find((c) => c.server === ctx.guildId)?.name ?? alter?.displayName ?? ""} ${(system?.displayTagMap ?? {})[ctx.guildId ?? ""] ?? system?.systemDisplayTag ?? ""}`;
+		const displayName = alter.nameMap.find((c) => c.server === ctx.guildId)?.name ?? alter.displayName ?? "";
+		const pronouns = getSystemFeatures(system).includePronouns && alter.pronouns ? ` (${alter.pronouns})` : "";
+		const tag = (system.displayTagMap ?? {})[ctx.guildId] ?? system.systemDisplayTag ?? "";
+
+		const username = `${displayName}${pronouns} ${tag}`;
 
 		pendingIgnoreDeletion.push(message.messageId);
 
@@ -163,32 +173,28 @@ export default class ReproxyCommand extends Command {
 		webhook.messages
 			.write({
 				body: {
-					components: await Promise.all(originalMessage.components
-						.map((v) => v.toBuilder())
-						.filter((v) => v !== undefined)
-						.map(async (v) => {
-							if (v.data.type === ComponentType.TextDisplay && v.data.content) {
-								const processEmoji = await processEmojis(v.data.content);
-								processedEmojis.push(...processEmoji.emojis);
-								
-								(v as TextDisplay).setContent(processEmoji.newMessage)
-							}
-							return v;
-						})) as TopLevelBuilders[],
-					flags: MessageFlags.IsComponentsV2,
-					username: username.substring(0, 80),
+					...getModernComponentsMappings([
+						...(originalMessage.components.map((v) =>
+							v.toBuilder(),
+						) as TopLevelBuilders[]),
+						...(originalMessage.content !== ""
+							? [new TextDisplay().setContent(originalMessage.content)]
+							: []),
+					]),
 					allowed_mentions: { parse: [] },
+					attachments: originalMessage.attachments,
+					username: username.substring(0, 80),
 					avatar_url:
 						(alter.avatarUrlMap ?? {})[ctx.guildId ?? ""] ??
 						alter?.avatarUrl ??
 						undefined,
-					attachments: originalMessage.attachments,
 				},
 				query: {
 					wait: true,
 					...(parent === null ? {} : { thread_id: ctx.channelId }),
 				},
 			})
+			.catch((v) => console.error(v))
 			.then((sentMessage) => {
 				if (
 					(
@@ -197,7 +203,14 @@ export default class ReproxyCommand extends Command {
 						}
 					).autoproxyMode === "latch"
 				)
-					setLastLatchAlter(ctx.guildId ?? "", system, alter);
+					if (changelatch !== false) {
+						setLastLatchAlter(
+							ctx.guildId ?? "",
+							ctx.channelId ?? "",
+							system,
+							alter,
+						);
+					}
 
 				messagesCollection.replaceOne(
 					{ messageId: message.messageId },
@@ -212,7 +225,13 @@ export default class ReproxyCommand extends Command {
 				);
 
 				(async () => {
-					await Promise.all(processedEmojis.map(async c => await c.delete()))
+					await Promise.all(processedEmojis.map(async (c) => await c.delete()));
+
+					await webhook.messages.delete({
+						messageId,
+						query: parent !== null ? { thread_id: channel.id } : {},
+						reason: `Removed after user request of @${ctx.author.username} (${ctx.author.id})`,
+					});
 
 					const guild = await getGuildFromId(ctx.guildId ?? "");
 					const user = await client.users.fetch(ctx.author.id);
@@ -237,7 +256,7 @@ export default class ReproxyCommand extends Command {
 						).arrayBuffer();
 
 						color = (await getColor(image))?.hex() ?? "Green";
-					} catch (_) {}
+					} catch (_) { }
 
 					if (!guild.logChannel) return;
 
@@ -260,7 +279,7 @@ export default class ReproxyCommand extends Command {
 											.setAccessory(
 												new Thumbnail().setMedia(
 													alter?.avatarUrl ??
-														"https://cdn.discordapp.com/embed/avatars/0.png",
+													"https://cdn.discordapp.com/embed/avatars/0.png",
 												),
 											),
 										new Separator().setSpacing(Spacing.Large),
@@ -287,12 +306,6 @@ export default class ReproxyCommand extends Command {
 						);
 				})();
 			});
-
-		await webhook.messages.delete({
-			messageId,
-			query: parent !== null ? { thread_id: channel.id } : {},
-			reason: `Removed after user request of @${ctx.author.username} (${ctx.author.id})`,
-		});
 
 		return await ctx
 			.editResponse({

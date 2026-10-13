@@ -29,7 +29,10 @@ export const statusOptions = {
 	}),
 };
 
-export async function runStatusCommand(ctx: CommandContext<typeof statusOptions>, help: boolean) {
+export async function runStatusCommand(
+	ctx: CommandContext<typeof statusOptions>,
+	help: boolean,
+) {
 	await ctx.deferReply(true);
 
 	const { system } = await ctx.retrievePUser();
@@ -54,11 +57,11 @@ export async function runStatusCommand(ctx: CommandContext<typeof statusOptions>
 		});
 	}
 
-    const label = getCorrectLabel (
-        (ctx.options.scope as "server" | "global" | "channels") ?? "server",
-        guild.id,
-        ctx.channelId,
-    );
+	const label = getCorrectLabel(
+		(ctx.options.scope as "server" | "global" | "channels") ?? "server",
+		guild.id,
+		ctx.channelId,
+	);
 	const currentAp = system.systemAutoproxy.find((v) => v.serverId === label);
 
 	if (!currentAp) {

@@ -1,8 +1,8 @@
 import { ComponentCommand, type ComponentContext } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { tagCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
-import { MessageFlags } from "seyfert/lib/types";
 import { TagView } from "@/views/tags";
 
 export default class GeneralTagSettings extends ComponentCommand {
@@ -29,21 +29,21 @@ export default class GeneralTagSettings extends ComponentCommand {
 
 		if (tag === null) {
 			return await ctx.followup({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_TAG_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
 
-		return await ctx.editResponse({
+		return await ctx.editOrReply({
 			components: [
-				...new TagView((await ctx.userTranslations())).tagTopView(
+				...new TagView(await ctx.userTranslations()).tagTopView(
 					"general",
 					tag.tagId,
 					tag.tagFriendlyName,
 				),
-				...new TagView((await ctx.userTranslations())).tagGeneral(
+				...new TagView(await ctx.userTranslations()).tagGeneral(
 					tag,
 					(await ctx.getDefaultPrefix()) ?? "pb;",
 					ctx.interaction.message.messageReference === undefined,

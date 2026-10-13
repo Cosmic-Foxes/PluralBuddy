@@ -17,7 +17,7 @@ export default class BackProxyMode extends ComponentCommand {
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
 		const alterId =
-            InteractionIdentifier.Systems.Configuration.Alters.ProxyMode.GoBack.substring(
+			InteractionIdentifier.Systems.Configuration.Alters.ProxyMode.GoBack.substring(
 				ctx.customId,
 			)[0];
 
@@ -30,7 +30,7 @@ export default class BackProxyMode extends ComponentCommand {
 
 		if (alter === null) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -39,12 +39,15 @@ export default class BackProxyMode extends ComponentCommand {
 
 		return await ctx.update({
 			components: [
-				...new AlterView((await ctx.userTranslations())).alterTopView(
+				...new AlterView(await ctx.userTranslations()).alterTopView(
 					"general",
 					alter.alterId.toString(),
 					alter.username,
 				),
-				...await new AlterView((await ctx.userTranslations())).alterGeneralView(alter, ctx.guildId),
+				...(await new AlterView(await ctx.userTranslations()).alterGeneralView(
+					alter,
+					ctx.guildId,
+				)),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});

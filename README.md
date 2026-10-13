@@ -4,4 +4,4 @@
 
 The plurality bot finally built correctly.
 
-[Docs](https://pb.giftedly.dev) • [Invite](https://gftl.fyi/invite) • [Support Server](https://gftl.fyi/discord)
+[Docs](https://pluralbuddy.app) • [Invite](https://gftl.fyi/invite) • [Support Server](https://gftl.fyi/discord)

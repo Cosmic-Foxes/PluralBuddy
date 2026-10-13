@@ -1,9 +1,7 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { emojis } from "@/lib/emojis";
-import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { messagesCollection } from "@/mongodb";
 import {
+	ContextMenuCommand,
 	Declare,
 	Label,
 	MenuCommandContext,
@@ -11,14 +9,16 @@ import {
 	Modal,
 	TextInput,
 } from "seyfert";
-import { ContextMenuCommand } from "seyfert";
 import {
+	type APIContainerComponent,
+	type APITextDisplayComponent,
 	ApplicationCommandType,
 	ComponentType,
 	TextInputStyle,
-	type APIContainerComponent,
-	type APITextDisplayComponent,
 } from "seyfert/lib/types";
+import { emojis } from "@/lib/emojis";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { messagesCollection } from "@/mongodb";
 
 @Declare({
 	type: ApplicationCommandType.Message,
@@ -28,14 +28,18 @@ import {
 export default class EditMessageContextMenuCommand extends ContextMenuCommand {
 	override async run(ctx: MenuCommandContext<MessageCommandInteraction>) {
 		const isExpress = ctx.target.webhookId === undefined;
-		const contents = ctx.target.components.find((v) =>
-			isExpress
-				? (v.data.type === ComponentType.TextDisplay &&
-						!v.data.content.startsWith(`-# ${emojis.reply}`)) ||
-					v.data.type === ComponentType.Container
-				: v.data.type === ComponentType.TextDisplay &&
-					!v.data.content.startsWith(`-# ${emojis.reply}`),
-		);
+		const contents =
+			ctx.target.content !== ""
+				? // Make fake virtual component
+					{ data: { content: ctx.target.content } }
+				: ctx.target.components.find((v) =>
+						isExpress
+							? (v.data.type === ComponentType.TextDisplay &&
+									!v.data.content.startsWith(`-# ${emojis.reply}`)) ||
+								v.data.type === ComponentType.Container
+							: v.data.type === ComponentType.TextDisplay &&
+								!v.data.content.startsWith(`-# ${emojis.reply}`),
+					);
 		const innerComp = (contents ?? { data: { content: "" } }).data as
 			| APITextDisplayComponent
 			| APIContainerComponent;

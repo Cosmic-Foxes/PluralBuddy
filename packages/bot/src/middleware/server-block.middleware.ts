@@ -1,15 +1,13 @@
+import { PGuildObject } from "plurography";
+import { Command, ComponentContext, createMiddleware, Message, SubCommand } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
 import { emojis } from "@/lib/emojis";
 import { getApplicableCase } from "@/lib/libby";
 import { getGuildFromId } from "@/types/guild";
 import { AlertView } from "@/views/alert";
-import { PGuildObject } from "plurography";
-import { Command, createMiddleware, Message, SubCommand } from "seyfert";
-import { MessageFlags } from "seyfert/lib/types";
 
 export const serverBlock = createMiddleware<void>(async (middle) => {
-
-	if (!middle.context.guildId)
-		return middle.next()
+	if (!middle.context.guildId) return middle.next();
 	const { blockedChannels, blockedRoles, blockedCategories } =
 		PGuildObject.parse(
 			(
@@ -36,10 +34,7 @@ export const serverBlock = createMiddleware<void>(async (middle) => {
 			});
 		}
 
-	if (
-		blockedChannels.includes(middle.context.channelId) &&
-		!isServerConfig
-	) {
+	if (blockedChannels.includes(middle.context.channelId) && !isServerConfig) {
 		return await ctx.write({
 			components: new AlertView(await ctx.userTranslations()).errorView(
 				"FEATURE_DISABLED_CHANNEL",
@@ -54,8 +49,8 @@ export const serverBlock = createMiddleware<void>(async (middle) => {
 				blockedRoles.includes(c.id),
 			)
 		) {
-			if (ctx.isChat() && ctx.message) {
-				(ctx.message as Message).delete();
+			if (ctx instanceof ComponentContext && ctx.message) {
+				(ctx.message as Message).delete().catch((_) => null);
 
 				if (
 					process.env.LIBBY_DEBUG === "true" ||
@@ -86,7 +81,7 @@ export const serverBlock = createMiddleware<void>(async (middle) => {
 							});
 						} catch (_) {}
 
-						return await middle.pass();
+						return await middle.stop();
 					}
 				}
 
@@ -103,7 +98,7 @@ export const serverBlock = createMiddleware<void>(async (middle) => {
 						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 					});
 				} catch (_) {}
-				return await middle.pass();
+				return await middle.stop();
 			}
 		}
 

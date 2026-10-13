@@ -1,21 +1,31 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
-import { Checkbox, ComponentCommand, FileUpload, Label, Modal, type ComponentContext } from "seyfert";
+import {
+	Checkbox,
+	ComponentCommand,
+	FileUpload,
+	Label,
+	Modal,
+	type ComponentContext,
+} from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { alterCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import { MessageFlags } from "seyfert/lib/types";
 
 export default class SetPFPButton extends ComponentCommand {
-	componentType = 'Button' as const;
+	componentType = "Button" as const;
 
 	override filter(context: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Systems.Configuration.Alters.SetPFP.startsWith(context.customId)
+		return InteractionIdentifier.Systems.Configuration.Alters.SetPFP.startsWith(
+			context.customId,
+		);
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		const alterId = InteractionIdentifier.Systems.Configuration.Alters.SetPFP.substring(
-			ctx.customId,
-		)[0];
+		const alterId =
+			InteractionIdentifier.Systems.Configuration.Alters.SetPFP.substring(
+				ctx.customId,
+			)[0];
 
 		const systemId = ctx.author.id;
 		const query = alterCollection.findOne({
@@ -26,27 +36,33 @@ export default class SetPFPButton extends ComponentCommand {
 
 		if (alter === null) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView("ERROR_ALTER_DOESNT_EXIST"),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-			})
+				components: new AlertView(await ctx.userTranslations()).errorView(
+					"ERROR_ALTER_DOESNT_EXIST",
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
 		}
 
 		const form = new Modal()
-			.setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPFPForm.create(alter.alterId))
-			.setTitle((await ctx.userTranslations()).ALTER_FORM_TITLE)
-			.addComponents(
-				[
-					new Label()
-						.setLabel((await ctx.userTranslations()).ALTER_SET_PFP)
-						.setComponent(
-							new FileUpload()
-								.setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPFPType.create())
-								.setRequired(true)
-								.setMinValues(1)
-								.setMaxValues(1)
-						)
-				]
+			.setCustomId(
+				InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPFPForm.create(
+					alter.alterId,
+				),
 			)
+			.setTitle((await ctx.userTranslations()).ALTER_FORM_TITLE)
+			.addComponents([
+				new Label()
+					.setLabel((await ctx.userTranslations()).ALTER_SET_PFP)
+					.setComponent(
+						new FileUpload()
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPFPType.create(),
+							)
+							.setRequired(true)
+							.setMinValues(1)
+							.setMaxValues(1),
+					),
+			]);
 		return await ctx.modal(form);
 	}
 }

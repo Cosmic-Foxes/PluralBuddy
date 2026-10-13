@@ -1,7 +1,7 @@
-import { createMDX } from "fumadocs-mdx/next";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import createNextIntlPlugin from 'next-intl/plugin';
+import { paraglideWebpackPlugin } from "@inlang/paraglide-js";
+import { createMDX } from "fumadocs-mdx/next";
 
 const withMDX = createMDX();
 
@@ -9,6 +9,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('next').NextConfig} */
 const config = {
+	transpilePackages: ["plurography"],
 	reactStrictMode: true,
 	typescript: {
 		// TypeScript is strictly for IDE support for the frontend.
@@ -60,8 +61,18 @@ const config = {
 		]
 	},
 
+	webpack: (config) => {
+		config.plugins.push(
+			paraglideWebpackPlugin({
+				outdir: "./src/paraglide",
+				project: "./project.inlang",
+				emitTsDeclarations: true,
+				strategy: ["cookie", "baseLocale"],
+			})
+		);
+		return config;
+	},
+
 };
 
-const withNextIntl = createNextIntlPlugin();
-
-export default withMDX(withNextIntl(config));
+export default withMDX(config);

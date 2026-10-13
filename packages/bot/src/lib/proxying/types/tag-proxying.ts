@@ -1,8 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { client } from "@/index";
-import type { PAlter } from "@/types/alter";
-import type { PUser } from "@/types/user";
+import type { PGuild } from "plurography";
 import type {
 	GuildMember,
 	Message,
@@ -10,18 +8,21 @@ import type {
 	User,
 	Webhook,
 } from "seyfert";
-import { getReferencedMessageString } from "../referenced-message";
 import { CacheFrom, Container, TextDisplay } from "seyfert";
-import { processEmojis } from "../process-emojis";
-import { proxy } from "..";
-import { alterCollection, messagesCollection } from "@/mongodb";
-import { setLastLatchAlter } from "../util";
-import { createProxyError } from "../error";
-import type { PGuild } from "plurography";
 import type { PWebhook } from "@/events/on-message-create";
+import { client } from "@/index";
 import { createError } from "@/lib/create-error";
-import { w } from "@/webhooks";
+import { getAlterFeatures } from "@/lib/get-alter-flags";
 import { getSystemFeatures } from "@/lib/get-system-flags";
+import { alterCollection, messagesCollection } from "@/mongodb";
+import type { PAlter } from "@/types/alter";
+import type { PUser } from "@/types/user";
+import { w } from "@/webhooks";
+import { proxy } from "..";
+import { createProxyError } from "../error";
+import { processEmojis } from "../process-emojis";
+import { getReferencedMessageString } from "../referenced-message";
+import { getDisplayNameWebhook, setLastLatchAlter } from "../util";
 
 export const proxyTagValid = (
 	proxyTag: {
@@ -29,14 +30,25 @@ export const proxyTagValid = (
 		suffix: string;
 	},
 	message: Message,
+	caseInsensitive: boolean = false,
 ) => {
 	const hasPrefix = proxyTag.prefix !== "";
-	const hasSuffix = proxyTag.suffix !== ""; 
+	const hasSuffix = proxyTag.suffix !== "";
 	if (!hasPrefix && !hasSuffix) return false;
-	
+
+	const content = caseInsensitive
+		? message.content.toLocaleLowerCase()
+		: message.content;
+	const prefix = caseInsensitive
+		? proxyTag.prefix.toLocaleLowerCase()
+		: proxyTag.prefix;
+	const suffix = caseInsensitive
+		? proxyTag.suffix.toLocaleLowerCase()
+		: proxyTag.suffix;
+
 	return (
-		(!hasPrefix || message.content.startsWith(proxyTag.prefix)) &&
-		(!hasSuffix || message.content.endsWith(proxyTag.suffix))
+		(!hasPrefix || content.startsWith(prefix)) &&
+		(!hasSuffix || content.endsWith(suffix))
 	);
 };
 
@@ -55,7 +67,12 @@ export async function performTagProxy(
 	(async () => {
 		const channel = await message.channel();
 
-		if (channel.isTextable() && !guild.getFeatures().disabledProxyTyping)
+		if (
+			channel.isTextable() &&
+			!guild.getFeatures().disabledProxyTyping &&
+			user.system !== undefined &&
+			!getSystemFeatures(user.system).noTypingStatus
+		)
 			channel.typing().catch(() => null);
 	})();
 
@@ -219,19 +236,41 @@ export async function performTagProxy(
 		}
 
 		let contents = message.content;
+		const prefixMatches =
+			user.system !== undefined &&
+			getSystemFeatures(user.system)?.caseInsensitiveProxies
+				? contents
+						.toLocaleLowerCase()
+						.startsWith(proxyTag.prefix.toLocaleLowerCase())
+				: contents.startsWith(proxyTag.prefix);
+		const suffixMatches =
+			user.system !== undefined &&
+			getSystemFeatures(user.system)?.caseInsensitiveProxies
+				? contents
+						.toLocaleLowerCase()
+						.endsWith(proxyTag.prefix.toLocaleLowerCase())
+				: contents.endsWith(proxyTag.suffix);
+
 		if (
 			proxyTag.prefix &&
-			contents.startsWith(proxyTag.prefix) &&
+			prefixMatches &&
 			user.system &&
-			!getSystemFeatures(user.system).keepProxyTags
+			!(
+				getSystemFeatures(user.system).keepProxyTags ||
+				getAlterFeatures(checkAlter).keepProxyTags
+			)
 		) {
 			contents = contents.slice(proxyTag.prefix.length);
 		}
+
 		if (
 			proxyTag.suffix &&
-			contents.endsWith(proxyTag.suffix) &&
+			suffixMatches &&
 			user.system &&
-			!getSystemFeatures(user.system).keepProxyTags
+			!(
+				getSystemFeatures(user.system).keepProxyTags ||
+				getAlterFeatures(checkAlter).keepProxyTags
+			)
 		) {
 			contents = contents.slice(0, contents.length - proxyTag.suffix.length);
 		}
@@ -338,7 +377,7 @@ export async function performTagProxy(
 				client,
 				message,
 				processedContents,
-				`${checkAlter.nameMap.find((c) => c.server === message.guildId)?.name ?? checkAlter?.displayName ?? ""}${getSystemFeatures(user.system).includePronouns ? ` (${checkAlter?.pronouns})` : ""} ${(user.system?.displayTagMap ?? {})[message.guildId] ?? user.system?.systemDisplayTag ?? ""}`,
+				getDisplayNameWebhook(checkAlter, message, user),
 				checkAlter?.alterId as number,
 				checkAlter?.systemId as string,
 				[...referencedMessage],
@@ -351,6 +390,11 @@ export async function performTagProxy(
 			);
 
 		if (message.guildId && user.system)
-			setLastLatchAlter(message.guildId, user.system, checkAlter);
+			setLastLatchAlter(
+				message.guildId,
+				message.channelId,
+				user.system,
+				checkAlter,
+			);
 	}
 }

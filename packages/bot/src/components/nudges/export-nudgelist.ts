@@ -26,11 +26,23 @@ export default class ExportNudgelist extends ComponentCommand {
 		if (user.nudging === undefined) {
 			await userCollection.updateOne(
 				{ userId: user.userId },
-				{ $set: { nudging: { blockedUsers: [], currentlyEnabled: true, dmReply: false } } },
+				{
+					$set: {
+						nudging: {
+							blockedUsers: [],
+							currentlyEnabled: true,
+							dmReply: false,
+						},
+					},
+				},
 			);
 
 			// Set user in memory
-			user.nudging = { blockedUsers: [], currentlyEnabled: true, dmReply: false };
+			user.nudging = {
+				blockedUsers: [],
+				currentlyEnabled: true,
+				dmReply: false,
+			};
 		}
 		// End database migration
 

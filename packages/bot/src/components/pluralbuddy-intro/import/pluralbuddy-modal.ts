@@ -1,24 +1,24 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import { DiscordSnowflake } from "@sapphire/snowflake";
 import {
-	ComponentCommand,
-	ModalCommand,
-	type ModalContext,
-	type ComponentContext,
 	ActionRow,
 	Button,
+	ComponentCommand,
+	type ComponentContext,
+	ModalCommand,
+	type ModalContext,
 } from "seyfert";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
-import { LoadingView } from "../../../views/loading";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
-import { PSystemObject } from "../../../types/system";
-import { ImportNotation } from "../../../lib/export";
-import { AlertView } from "../../../views/alert";
 import { z } from "zod";
-import { DiscordSnowflake } from "@sapphire/snowflake";
-import { alterCollection, tagCollection } from "../../../mongodb";
-import { getUserById, writeUserById } from "../../../types/user";
 import { createRandomId } from "@/lib/random-id";
+import { ImportNotation } from "../../../lib/export";
+import { InteractionIdentifier } from "../../../lib/interaction-ids";
+import { alterCollection, tagCollection } from "../../../mongodb";
+import { PSystemObject } from "../../../types/system";
+import { getUserById, writeUserById } from "../../../types/user";
+import { AlertView } from "../../../views/alert";
+import { LoadingView } from "../../../views/loading";
 
 export default class PluralBuddyImportModal extends ModalCommand {
 	override filter(ctx: ModalContext) {
@@ -29,7 +29,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 
 	async run(ctx: ModalContext) {
 		await ctx.interaction.update({
-			components: new LoadingView((await ctx.userTranslations())).loadingView(),
+			components: new LoadingView(await ctx.userTranslations()).loadingView(),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
 
@@ -43,9 +43,9 @@ export default class PluralBuddyImportModal extends ModalCommand {
 
 		const MAX_FILE_SIZE = 2 * 1024 * 1024;
 		if (file.size > MAX_FILE_SIZE) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorView(
+					...new AlertView(await ctx.userTranslations()).errorView(
 						"PLURALBUDDY_IMPORT_ERROR_TOO_LARGE",
 					),
 					new ActionRow().addComponents(
@@ -65,14 +65,13 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		const parsed = ImportNotation.safeParse(JSON.parse(fileData));
 
 		if (parsed.error) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorViewCustom(
-						(await ctx.userTranslations())
-							.PLURALBUDDY_IMPORT_ERROR.replace(
-								"%zod_errors%",
-								z.prettifyError(parsed.error),
-							),
+					...new AlertView(await ctx.userTranslations()).errorViewCustom(
+						(await ctx.userTranslations()).PLURALBUDDY_IMPORT_ERROR.replace(
+							"%zod_errors%",
+							z.prettifyError(parsed.error),
+						),
 					),
 					new ActionRow().addComponents(
 						new Button()
@@ -87,8 +86,30 @@ export default class PluralBuddyImportModal extends ModalCommand {
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
-
 		const { data } = parsed;
+
+		if (data.system === null) {
+			return await ctx.editOrReply({
+				components: [
+					...new AlertView(await ctx.userTranslations()).errorViewCustom(
+						(await ctx.userTranslations()).PLURALBUDDY_IMPORT_ERROR.replace(
+							"%zod_errors%",
+							"The system is `null`.",
+						),
+					),
+					new ActionRow().addComponents(
+						new Button()
+							.setLabel((await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE)
+							.setCustomId(
+								InteractionIdentifier.Setup.Pagination.Page2.create(),
+							)
+							.setStyle(ButtonStyle.Secondary),
+					),
+				],
+
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
+		}
 
 		data.system.associatedUserId = ctx.author.id;
 		data.system.alterIds = [];
@@ -155,15 +176,13 @@ export default class PluralBuddyImportModal extends ModalCommand {
 			system: data.system,
 		});
 
-		await ctx.editResponse({
+		await ctx.editOrReply({
 			components: [
-				...new AlertView((await ctx.userTranslations())).successViewCustom(
-					(await ctx.userTranslations())
-						.SUCCESSFULLY_IMPORTED.replace(
-							"%alter_count%",
-							String(data.system.alterIds.length),
-						)
-						.replace("%system_name%", String(data.system.systemName)),
+				...new AlertView(await ctx.userTranslations()).successViewCustom(
+					(await ctx.userTranslations()).SUCCESSFULLY_IMPORTED.replace(
+						"%alter_count%",
+						String(data.system.alterIds.length),
+					).replace("%system_name%", String(data.system.systemName)),
 				),
 			],
 			flags: MessageFlags.IsComponentsV2,

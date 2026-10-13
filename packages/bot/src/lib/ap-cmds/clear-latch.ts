@@ -2,7 +2,12 @@
 
 import { userCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
-import { type CommandContext, Declare, IgnoreCommand, SubCommand } from "seyfert";
+import {
+	type CommandContext,
+	Declare,
+	IgnoreCommand,
+	SubCommand,
+} from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
 export async function runClearLatch(ctx: CommandContext) {
@@ -11,7 +16,7 @@ export async function runClearLatch(ctx: CommandContext) {
 
 	if (system === undefined) {
 		return await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).errorView(
+			components: new AlertView(await ctx.userTranslations()).errorView(
 				"ERROR_SYSTEM_DOESNT_EXIST",
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -22,7 +27,7 @@ export async function runClearLatch(ctx: CommandContext) {
 
 	if (guild === undefined) {
 		return await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).errorView(
+			components: new AlertView(await ctx.userTranslations()).errorView(
 				"DN_ERROR_SE",
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -38,7 +43,7 @@ export async function runClearLatch(ctx: CommandContext) {
 			{ userId: system.associatedUserId },
 			{
 				$set: {
-					"system.systemAutoproxy.$[serverEntry].autoproxyAlter": null
+					"system.systemAutoproxy.$[serverEntry].autoproxyAlter": null,
 				},
 			},
 			{
@@ -47,17 +52,20 @@ export async function runClearLatch(ctx: CommandContext) {
 		);
 	} else {
 		return await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).errorView(
+			components: new AlertView(await ctx.userTranslations()).errorView(
 				"NOT_IN_LATCH",
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-		})
+		});
 	}
 
 	return await ctx.editResponse({
-		components: new AlertView((await ctx.userTranslations())).successViewCustom(
-			(await ctx.userTranslations()).CLEARED_LATCH.replaceAll("%server_name%", guild.name)
+		components: new AlertView(await ctx.userTranslations()).successViewCustom(
+			(await ctx.userTranslations()).CLEARED_LATCH.replaceAll(
+				"%server_name%",
+				guild.name,
+			),
 		),
 		flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-	})
+	});
 }

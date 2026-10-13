@@ -35,7 +35,7 @@ export default class NextPagePagination extends ComponentCommand {
 		if (corresponding === undefined) {
 			return await ctx.write({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorView(
+					...new AlertView(await ctx.userTranslations()).errorView(
 						"ERROR_ASSIGN_PAGINATION_TOO_OLD",
 					),
 				],
@@ -54,7 +54,9 @@ export default class NextPagePagination extends ComponentCommand {
 				.setComponents([
 					new Label()
 						.setLabel((await ctx.userTranslations()).SEARCH_QUERY)
-						.setDescription((await ctx.userTranslations()).SEARCH_REG_EXPRESSIONS)
+						.setDescription(
+							(await ctx.userTranslations()).SEARCH_REG_EXPRESSIONS,
+						)
 						.setComponent(
 							new TextInput()
 								.setStyle(TextInputStyle.Short)
@@ -65,7 +67,9 @@ export default class NextPagePagination extends ComponentCommand {
 						),
 					new Label()
 						.setLabel((await ctx.userTranslations()).SEARCH_QUERY_VALUE)
-						.setDescription((await ctx.userTranslations()).SEARCH_QUERY_VALUE_DESC)
+						.setDescription(
+							(await ctx.userTranslations()).SEARCH_QUERY_VALUE_DESC,
+						)
 						.setComponent(
 							new StringSelectMenu()
 								.setRequired(true)
@@ -76,10 +80,14 @@ export default class NextPagePagination extends ComponentCommand {
 								.setOptions([
 									new StringSelectOption()
 										.setValue("display-name")
-										.setLabel((await ctx.userTranslations()).SEARCH_QUERY_DISPLAY_NAME),
+										.setLabel(
+											(await ctx.userTranslations()).SEARCH_QUERY_DISPLAY_NAME,
+										),
 									new StringSelectOption()
 										.setValue("username")
-										.setLabel((await ctx.userTranslations()).SEARCH_QUERY_USERNAME),
+										.setLabel(
+											(await ctx.userTranslations()).SEARCH_QUERY_USERNAME,
+										),
 								]),
 						),
 				]),

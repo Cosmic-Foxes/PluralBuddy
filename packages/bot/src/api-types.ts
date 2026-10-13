@@ -2,11 +2,12 @@ import z, { type ZodTypeAny } from "zod";
 import type { clientRoutes } from "./api";
 
 declare const require: (moduleName: string) => any;
-const { ImportNotation, PluralKitSystem, TupperBoxSystem } = require("plurography") as {
-  ImportNotation: ZodTypeAny;
-  PluralKitSystem: ZodTypeAny;
-  TupperBoxSystem: ZodTypeAny;
-};
+const { ImportNotation, PluralKitSystem, TupperBoxSystem } =
+	require("plurography") as {
+		ImportNotation: ZodTypeAny;
+		PluralKitSystem: ZodTypeAny;
+		TupperBoxSystem: ZodTypeAny;
+	};
 
 export type ClientType = typeof clientRoutes;
 

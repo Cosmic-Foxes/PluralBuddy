@@ -1,7 +1,14 @@
 {
+    "HomePage-v2": {
+        "headline": "The {#plural}plurality{/plural} bot",
+        "headline_2": "finally built correctly",
+        "desc": "Your system on Discord is finally yours. PluralBuddy runs on the bleeding edge of Discord, and delivers the benefits to your system.",
+        "blocks_headline": "Server staff accounted for",
+        "stickers_emojis_headline": "Stickers and emojis proxy without clearing proxy"
+    },
     "HomePage": {
         "title": "The <headline>faster</headline> age of plurality bots",
-        "desc": "PluralBuddy is the <highlight>next generation plurality bot</highlight> for Discord – built on<br></br>principals of <accent>speed</accent>, <accent>accessibility</accent> & <accent>data convenience.</accent>",
+        "desc": "PluralBuddy is the {#highlight}next generation plurality bot{/highlight} for Discord – built on{#br}{/br}principals of {#accent}speed{/accent}, {#accent}accessibility{/accent} & {#accent}data convenience.{/accent}",
         "proxy_time_headline": "<600ms proxy time",
         "blocks_headline": "Blocks, manager roles, proxy delays",
         "developer_headline": "Built with developers in mind",
@@ -59,15 +66,18 @@
             "profile": "Access to your profile data – required.",
             "openid": "Access to your Discord user ID",
             "offline_access": "Access to refresh access to this service",
-            "alter:read": "Access to read alter data",
-            "alter:write": "Access to change alter settings",
+            "alters:read": "Access to read alter data",
+            "alters:write": "Access to change alter settings",
             "tags:read": "Access to read tag data",
             "tags:write": "Access to change tag data",
             "tags:alters": "Access to assign tags to alters",
             "system:read": "Access to system data",
             "system:write": "Access to change system settings",
-            "system:admin": "Access to read and write to systems AND alters."
-        }
+            "system:admin": "Access to read and write to systems AND alters.",
+            "system:ai-ap": "Create custom auto proxy modes as if this integration was a front tracker."
+        },
+        "error_denying_code": "Error while denying consent code",
+        "done": "Okay, done!"
     },
     "DeleteComponent": {
         "placeholder": "Type \"{requiredDeletionText}\" to delete this object",
@@ -90,7 +100,8 @@
     },
     "ExpressList": {
         "desc": "Create user-proxies with PluralBuddy Express – assign your own alters to Discord applications and use native Discord slash commands to proxy as an alter. Works in direct messages, or any server with Use External Apps granted.",
-        "btn": "Create Express Application"
+        "btn": "Create Express Application",
+        "express_discontinued": "Sorry, PluralBuddy Express has been discontinued as of 08/11/26. Please use an alternative like {#plural-link}/plu/ral{/plural-link} instead! Express applications will still continue to send messages"
     },
     "ExpressPage": {
         "nav_menu_pref": "Preferences",

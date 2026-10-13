@@ -1,10 +1,14 @@
+import { Dithering, GodRays } from "@paper-design/shaders-react";
+import { Heart } from "lucide-react";
+import Link from "next/link";
+import { useTheme } from "next-themes";
 import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardTitle,
-} from "@/components/ui/card";
-import { DynamicPageTitle } from "../../dynamic-title";
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -12,9 +16,12 @@ import {
 	BreadcrumbList,
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Dithering, GodRays } from "@paper-design/shaders-react";
-import { Heart } from "lucide-react";
-import Link from "next/link";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardTitle,
+} from "@/components/ui/card";
 import {
 	Item,
 	ItemActions,
@@ -23,17 +30,10 @@ import {
 	ItemMedia,
 	ItemTitle,
 } from "@/components/ui/item";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/shadcn-button";
-import { GithubLight } from "@/components/ui/svgs/githubLight";
-import { useTheme } from "next-themes";
 import { GithubDark } from "@/components/ui/svgs/githubDark";
-import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-} from "@/components/ui/accordion";
+import { GithubLight } from "@/components/ui/svgs/githubLight";
+import { DynamicPageTitle } from "../../dynamic-title";
 
 export function AboutPage() {
 	const { resolvedTheme } = useTheme();
@@ -83,7 +83,7 @@ export function AboutPage() {
 								<CardContent className="text-center">
 									<CardTitle>PluralBuddy – the fast plurality bot</CardTitle>
 									<CardDescription className="flex items-center gap-1 text-center w-full justify-center">
-										v26.1.0
+										v26.1.1
 									</CardDescription>
 								</CardContent>
 							</Card>

@@ -6,5 +6,12 @@
                 "organizeImports": "on"
             }
         }
+    },
+    "linter": {
+        "rules": {
+            "correctness": {
+                "useExhaustiveDependencies": "warn"
+            }
+        }
     }
 }

@@ -1,6 +1,17 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useForm } from "@tanstack/react-form";
+import { useMediaQuery } from "fumadocs-core/utils/use-media-query";
+import { X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { type ReactNode, useState } from "react";
+import { toast } from "sonner";
+import z from "zod";
+import { authClient } from "@/lib/auth-client";
+import { cn } from "@/lib/utils";
+import { Badge } from "../ui/badge";
+import { buttonVariants } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
 import {
 	Dialog,
 	DialogContent,
@@ -9,7 +20,13 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "../ui/dialog";
-import { useForm } from "@tanstack/react-form";
+import {
+	Drawer,
+	DrawerContent,
+	DrawerHeader,
+	DrawerTitle,
+	DrawerTrigger,
+} from "../ui/drawer";
 import {
 	Field,
 	FieldDescription,
@@ -20,30 +37,13 @@ import {
 	FieldSet,
 } from "../ui/field";
 import { Input } from "../ui/input";
-import z from "zod";
 import {
 	InputGroup,
 	InputGroupAddon,
 	InputGroupButton,
 	InputGroupInput,
 } from "../ui/input-group";
-import { X } from "lucide-react";
-import { Badge } from "../ui/badge";
 import { Button } from "../ui/shadcn-button";
-import { Checkbox } from "../ui/checkbox";
-import { buttonVariants } from "../ui/button";
-import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { useMediaQuery } from "fumadocs-core/utils/use-media-query";
-import {
-	Drawer,
-	DrawerContent,
-	DrawerHeader,
-	DrawerTitle,
-	DrawerTrigger,
-} from "../ui/drawer";
-import { authClient } from "@/lib/auth-client";
 import { Spinner } from "../ui/spinner";
 
 export const scopeList = [
@@ -53,8 +53,8 @@ export const scopeList = [
 		title: "offline_access",
 		description: "Access to refresh access to this service",
 	},
-	{ title: "alter:read", description: "Access to read alter data" },
-	{ title: "alter:write", description: "Access to change alter settings" },
+	{ title: "alters:read", description: "Access to read alter data" },
+	{ title: "alters:write", description: "Access to change alter settings" },
 	{ title: "tags:read", description: "Access to read tag data" },
 	{ title: "tags:write", description: "Access to change tag data" },
 	{ title: "tags:alters", description: "Access to assign tags to alters" },

@@ -21,11 +21,9 @@ export class SimilarWebhookResource extends BaseResource<SimilarWebhookObject> {
 
 	// We override set to apply the typing and format we want
 	override set(from: CacheFrom, id: string, webhooks: Webhook[]) {
-
 		return super.set(from, id, {
 			webhooks: webhooks.map(
 				(c) =>
-					
 					({
 						id: c.id,
 						type: c.type,

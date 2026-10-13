@@ -10,13 +10,13 @@ import {
 	type ComponentContext,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
-import { PluralBuddyIntro } from "../../views/pluralbuddy-intro";
+import { buildExportPayload } from "../../lib/export";
 import { InteractionIdentifier } from "../../lib/interaction-ids";
-import { LoadingView } from "../../views/loading";
+import { alterCollection, tagCollection } from "../../mongodb";
 import { writeUserById } from "../../types/user";
 import { AlertView } from "../../views/alert";
-import { buildExportPayload } from "../../lib/export";
-import { alterCollection, tagCollection } from "../../mongodb";
+import { LoadingView } from "../../views/loading";
+import { PluralBuddyIntro } from "../../views/pluralbuddy-intro";
 
 export default class DeleteSystemButton extends ComponentCommand {
 	componentType = "Button" as const;
@@ -27,15 +27,15 @@ export default class DeleteSystemButton extends ComponentCommand {
 
 	async run(ctx: ComponentContext<typeof this.componentType>) {
 		await ctx.update({
-			components: new LoadingView((await ctx.userTranslations())).loadingView(),
+			components: new LoadingView(await ctx.userTranslations()).loadingView(),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
 
 		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
-			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+			return await ctx.editOrReply({
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -51,7 +51,7 @@ export default class DeleteSystemButton extends ComponentCommand {
 						Buffer.from(await buildExportPayload(user.system)),
 					),
 			],
-			flags: MessageFlags.Ephemeral
+			flags: MessageFlags.Ephemeral,
 		});
 
 		await writeUserById(ctx.author.id, {
@@ -65,8 +65,8 @@ export default class DeleteSystemButton extends ComponentCommand {
 		await alterCollection.deleteMany({ systemId: ctx.author.id });
 		await tagCollection.deleteMany({ systemId: ctx.author.id });
 
-		return await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).successView(
+		return await ctx.editOrReply({
+			components: new AlertView(await ctx.userTranslations()).successView(
 				"SYSTEM_DELETION_FINISHED",
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,

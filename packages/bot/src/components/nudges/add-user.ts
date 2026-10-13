@@ -1,4 +1,9 @@
-import { ComponentCommand, Label, UserSelectMenu, type ComponentContext } from "seyfert";
+import {
+	ComponentCommand,
+	Label,
+	UserSelectMenu,
+	type ComponentContext,
+} from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { Modal } from "seyfert";
 import { TextInput } from "seyfert";
@@ -13,18 +18,14 @@ export default class AddUserBlockListNudge extends ComponentCommand {
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
 		const modal = new Modal()
-			.setCustomId(
-				InteractionIdentifier.Nudge.AddNudgeForm.create(),
-			)
+			.setCustomId(InteractionIdentifier.Nudge.AddNudgeForm.create())
 			.setTitle((await ctx.userTranslations()).NUDGE_BLOCKLIST)
 			.setComponents([
 				new Label()
 					.setLabel((await ctx.userTranslations()).BLOCKLIST_USER)
 					.setComponent(
 						new UserSelectMenu()
-							.setCustomId(
-								InteractionIdentifier.Nudge.AddNudgeType.create(),
-							)
+							.setCustomId(InteractionIdentifier.Nudge.AddNudgeType.create())
 							.setValuesLength({ max: 1, min: 1 }),
 					),
 			]);

@@ -4,7 +4,13 @@ import { sendAutoproxyOperationDM } from "@/lib/autoproxy-operation";
 import { userCollection } from "@/mongodb";
 import type { PAutoProxy } from "@/types/auto-proxy";
 import { AlertView } from "@/views/alert";
-import { CommandContext, createStringOption, Declare, IgnoreCommand, SubCommand } from "seyfert";
+import {
+	CommandContext,
+	createStringOption,
+	Declare,
+	IgnoreCommand,
+	SubCommand,
+} from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { getCorrectLabel } from "../autoproxy-util";
 
@@ -15,10 +21,10 @@ export const offOptions = {
 			{ name: "Globally", value: "global" },
 			{ name: "Server-wide", value: "server" },
 			{ name: "Channel-wide", value: "channels" },
-			{ name: "Everything - disable ALL auto-proxy", value: "everything" }
-		]
-	})
-}
+			{ name: "Everything - disable ALL auto-proxy", value: "everything" },
+		],
+	}),
+};
 
 export async function runOffCommand(ctx: CommandContext<typeof offOptions>) {
 	await ctx.deferReply(true);
@@ -27,7 +33,7 @@ export async function runOffCommand(ctx: CommandContext<typeof offOptions>) {
 
 	if (system === undefined) {
 		return await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).errorView(
+			components: new AlertView(await ctx.userTranslations()).errorView(
 				"ERROR_SYSTEM_DOESNT_EXIST",
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -38,7 +44,7 @@ export async function runOffCommand(ctx: CommandContext<typeof offOptions>) {
 
 	if (guild === undefined) {
 		return await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).errorView(
+			components: new AlertView(await ctx.userTranslations()).errorView(
 				"DN_ERROR_SE",
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -51,13 +57,13 @@ export async function runOffCommand(ctx: CommandContext<typeof offOptions>) {
 			guild.id,
 			ctx.channelId,
 		);
-	
+
 		await userCollection.updateOne(
 			{ userId: system.associatedUserId },
 			{
 				$pull: {
 					"system.systemAutoproxy": {
-						serverId: label
+						serverId: label,
 					} satisfies Partial<PAutoProxy>,
 				},
 			},
@@ -67,7 +73,7 @@ export async function runOffCommand(ctx: CommandContext<typeof offOptions>) {
 			{ userId: system.associatedUserId },
 			{
 				$set: {
-					"system.systemAutoproxy": []
+					"system.systemAutoproxy": [],
 				},
 			},
 		);
@@ -76,19 +82,24 @@ export async function runOffCommand(ctx: CommandContext<typeof offOptions>) {
 	await sendAutoproxyOperationDM(
 		system,
 		guild,
-		(await ctx.userTranslations()),
+		await ctx.userTranslations(),
 		"discord",
 		"off",
 	);
 
 	return await ctx.editResponse({
-		components: new AlertView((await ctx.userTranslations())).successViewCustom(
-			((await ctx.userTranslations()))[
-				(ctx.options.scope !== "global" && ctx.options.scope !== "everywhere")
+		components: new AlertView(await ctx.userTranslations()).successViewCustom(
+			(await ctx.userTranslations())[
+				ctx.options.scope !== "global" && ctx.options.scope !== "everywhere"
 					? "SET_AUTO_PROXY_SRV"
 					: "SET_AUTO_PROXY_GLOBAL"
-			].replaceAll("%server_name%", 
-					(ctx.options.scope ?? "server") !== "server" ? `<#${ctx.channelId}>` : guild.name)
+			]
+				.replaceAll(
+					"%server_name%",
+					(ctx.options.scope ?? "server") !== "server"
+						? `<#${ctx.channelId}>`
+						: guild.name,
+				)
 				.replaceAll("%mode%", "off"),
 		),
 		flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,

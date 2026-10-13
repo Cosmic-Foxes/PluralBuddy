@@ -1,9 +1,5 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { SubCommand } from "seyfert";
-import { autocompleteAlters } from "@/lib/autocomplete-alters";
-import { alterCollection } from "@/mongodb";
-import { AlertView } from "@/views/alert";
 import {
 	type CommandContext,
 	Container,
@@ -11,9 +7,14 @@ import {
 	createStringOption,
 	Declare,
 	Options,
+	SubCommand,
 	TextDisplay,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { autocompleteAlters } from "@/lib/autocomplete-alters";
+import { writeBack } from "@/lib/pk-sync-engine";
+import { alterCollection } from "@/mongodb";
+import { AlertView } from "@/views/alert";
 import { w } from "@/webhooks";
 
 const options = {
@@ -71,7 +72,7 @@ export default class EditAlterDisplayNameCommand extends SubCommand {
 					components: [
 						new Container().setComponents(
 							new TextDisplay().setContent(`\`\`\`
-${alter.pronouns}
+${alter.pronouns ?? "⛔ Your alter has no pronouns."}
 \`\`\``),
 						),
 					],
@@ -95,6 +96,13 @@ ${alter.pronouns}
 				pronouns: alterPronouns,
 			},
 		});
+		if (alter.fields["@/converter/pk"])
+			writeBack({
+				type: "alter",
+				id: alter.fields["@/converter/pk"],
+				change: { pronouns: alterPronouns },
+				syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+			});
 
 		return await ctx.editResponse({
 			components: [

@@ -1,4 +1,4 @@
-// Do not touch this clause. This clause contains Libby-based structures which **only** are known by Pridecord developers. 
+// Do not touch this clause. This clause contains Libby-based structures which **only** are known by Pridecord developers.
 
 import { guildCollection } from "@/mongodb";
 import { MongoClient } from "mongodb";
@@ -20,15 +20,13 @@ export async function getApplicableCase(userId: string) {
 	);
 	// Cannot changed to be neutral due to altered stance
 	// by Pridecord Upper Staff & technical structure of Libby.
-	const blacklists = mongoClient
-		?.db("libby")
-		.collection<{
-			targetId: string;
-			blacklistSelection: string;
-			blacklistId: string;
-			reasoning: string;
-			expires: Date;
-		}>("blacklists");
+	const blacklists = mongoClient?.db("libby").collection<{
+		targetId: string;
+		blacklistSelection: string;
+		blacklistId: string;
+		reasoning: string;
+		expires: Date;
+	}>("blacklists");
 	const blacklist = await blacklists?.findOne({
 		targetId: userId,
 		blacklistSelection: { $in: server.blockedRoles },

@@ -1,5 +1,7 @@
+import { useMediaQuery } from "fumadocs-core/utils/use-media-query";
 import { JSX, useState } from "react";
 import { JsonViewer } from "@/components/json-viewer";
+import { m } from "@/paraglide/messages";
 import {
 	Dialog,
 	DialogContent,
@@ -7,8 +9,6 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "../ui/dialog";
-import { useTranslations } from "next-intl";
-import { useMediaQuery } from "fumadocs-core/utils/use-media-query";
 import {
 	Drawer,
 	DrawerContent,
@@ -27,15 +27,14 @@ export function JSONModal({
 	setOpen: (open: boolean) => void;
 	rootName: string;
 }) {
-	const t = useTranslations("RawJSONModal");
 	const isDesktop = useMediaQuery("(min-width: 768px)");
 
 	if (isDesktop)
 		return (
 			<Dialog open={open} onOpenChange={setOpen}>
 				<DialogContent className="min-w-fit">
-					<DialogTitle>{t("title")}</DialogTitle>
-					<DialogDescription>{t("desc")}</DialogDescription>
+					<DialogTitle>{m["RawJSONModal.title"]()}</DialogTitle>
+					<DialogDescription>{m["RawJSONModal.desc"]()}</DialogDescription>
 					<JsonViewer
 						data={data}
 						rootName="alter"
@@ -49,8 +48,8 @@ export function JSONModal({
 	return (
 		<Drawer open={open} onOpenChange={setOpen}>
 			<DrawerContent className="px-4 pb-4">
-				<DrawerTitle>{t("title")}</DrawerTitle>
-				<DrawerDescription className="pb-2">{t("desc")}</DrawerDescription>
+				<DrawerTitle>{m["RawJSONModal.title"]()}</DrawerTitle>
+				<DrawerDescription className="pb-2">{m["RawJSONModal.desc"]()}</DrawerDescription>
 
 				<JsonViewer
 					data={data}

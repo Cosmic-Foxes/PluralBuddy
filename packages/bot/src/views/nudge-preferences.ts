@@ -51,6 +51,23 @@ export class NudgePreferences extends TranslatedView {
 							),
 					),
 				new Separator().setSpacing(Spacing.Large),
+				new Section()
+					.setComponents(
+						new TextDisplay().setContent(this.translations.SERVER_REPLYING_DESC),
+					)
+					.setAccessory(
+						new Button()
+							.setCustomId(
+								InteractionIdentifier.Nudge.ToggleServerReplies.create("false"),
+							)
+							.setStyle(ButtonStyle.Primary)
+							.setLabel(
+								user.nudging.serverReplying
+									? this.translations.DISABLE_SERVER_REPLYING
+									: this.translations.ENABLE_SERVER_REPLYING,
+							),
+					),
+				new Separator().setSpacing(Spacing.Large),
 				new TextDisplay().setContent(
 					this.translations.BLOCK_USERS_DESC.replace(
 						"{{ userCount }}",
@@ -63,7 +80,10 @@ export class NudgePreferences extends TranslatedView {
 				new ActionRow().setComponents(
 					new Button()
 						.setLabel(
-							((user.nudging ?? { blockedUsers: [] }).blockedUsers ?? []).length >= 100 ? this.translations.EXPORT_NUDGE_BLOCKLIST : this.translations.VIEW_NUDGE_BLOCKLIST,
+							((user.nudging ?? { blockedUsers: [] }).blockedUsers ?? [])
+								.length >= 100
+								? this.translations.EXPORT_NUDGE_BLOCKLIST
+								: this.translations.VIEW_NUDGE_BLOCKLIST,
 						)
 						.setCustomId(InteractionIdentifier.Nudge.ExportBlockList.create())
 						.setStyle(ButtonStyle.Primary),

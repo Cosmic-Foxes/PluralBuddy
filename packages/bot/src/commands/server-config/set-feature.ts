@@ -65,17 +65,20 @@ export default class SetLogChannel extends SubCommand {
 			{ $set: { flags: guildObj.flags } },
 			{ upsert: true },
 		);
-		ctx.client.cache.pguild.remove(nativeGuild.id)
+		ctx.client.cache.pguild.remove(nativeGuild.id);
 
 		return await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).successViewCustom(
-				((await ctx.userTranslations()))
-					[newValue ? "ENABLED_FEATURE" : "DISABLED_FEATURE"].replace(
+			components: new AlertView(await ctx.userTranslations()).successViewCustom(
+				(await ctx.userTranslations())[
+					newValue ? "ENABLED_FEATURE" : "DISABLED_FEATURE"
+				]
+					.replace(
 						"%name%",
 						Object.entries(friendlyFeatureIndex).find(
 							(c) => c[0] === featureFlag,
 						)?.[1].title ?? "??",
-					).replace(
+					)
+					.replace(
 						"%description%",
 						Object.entries(friendlyFeatureIndex).find(
 							(c) => c[0] === featureFlag,
