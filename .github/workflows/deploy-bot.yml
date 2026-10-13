@@ -9,9 +9,7 @@ on:
     paths:
       - packages/bot/**
       - packages/plurography/**
-      - infra/**
-    paths-ignore:
-      - infra/curb/**
+      - infra/*
 
 permissions:
   packages: write
