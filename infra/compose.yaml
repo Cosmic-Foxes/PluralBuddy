@@ -3,6 +3,7 @@ version: "3"
 services:
   redis:
     image: redis:latest
+    env_file: ".env"
     container_name: my-redis
     ports:
       - '6379:6379'
@@ -14,6 +15,7 @@ services:
     restart: unless-stopped
   bot:
     image: ghcr.io/giftedl/pluralbuddy/bot:latest
+    env_file: ".env"
     container_name: pluralbuddy-bot
     labels:
       - "diun.enable=true"
