@@ -55,7 +55,7 @@ jobs:
   build-and-push-image:
     needs: 
       - commit-hash
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     permissions:
       packages: write
     steps:
@@ -114,7 +114,7 @@ jobs:
         with:
           authkey: ${{ secrets.TS_AUTHKEY }}
 
-          
+
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
