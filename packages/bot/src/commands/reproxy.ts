@@ -5,6 +5,7 @@ import {
 	Command,
 	CommandContext,
 	Container,
+	createBooleanOption,
 	createStringOption,
 	Declare,
 	IgnoreCommand,
@@ -29,13 +30,17 @@ import { pendingIgnoreDeletion } from "@/events/on-message-delete";
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
 import { createError } from "@/lib/create-error";
 import { emojis } from "@/lib/emojis";
+import { getSystemFeatures } from "@/lib/get-system-flags";
 import { getModernComponentsMappings } from "@/lib/proxying";
 import { processEmojis } from "@/lib/proxying/process-emojis";
-import { getSimilarWebhooks, setLastLatchAlter } from "@/lib/proxying/util";
+import {
+	getDisplayNameWebhook,
+	getSimilarWebhooks,
+	setLastLatchAlter,
+} from "@/lib/proxying/util";
 import { alterCollection, messagesCollection } from "@/mongodb";
 import { getGuildFromId } from "@/types/guild";
 import { AlertView } from "@/views/alert";
-import { w } from "@/webhooks";
 import { client } from "..";
 
 const options = {
@@ -43,6 +48,10 @@ const options = {
 		description: "Alter to reproxy as",
 		autocomplete: autocompleteAlters,
 		required: true,
+	}),
+	"change-latch": createBooleanOption({
+		description: "Update the alter latch to this alter",
+		required: false,
 	}),
 };
 
@@ -57,7 +66,7 @@ export default class ReproxyCommand extends Command {
 	override async run(ctx: CommandContext<typeof options>) {
 		await ctx.deferReply(true);
 		const { system } = await ctx.retrievePUser();
-		const { alter: alterName } = ctx.options;
+		const { alter: alterName, "change-latch": changeLatch } = ctx.options;
 
 		const systemId = ctx.author.id;
 
@@ -153,8 +162,21 @@ export default class ReproxyCommand extends Command {
 		}
 
 		const webhook = similarWebhooks[0];
+		const user = await ctx.retrievePUser();
+		if (!user)
+			throw new Error("No user.")
+		const displayName =
+			getDisplayNameWebhook(alter, originalMessage, user) ?? alter.username;
+		const pronouns =
+			getSystemFeatures(system).includePronouns && alter.pronouns
+				? ` (${alter.pronouns})`
+				: "";
+		const tag =
+			(system.displayTagMap ?? {})[ctx.guildId] ??
+			system.systemDisplayTag ??
+			"";
 
-		const username = `${alter.nameMap.find((c) => c.server === ctx.guildId)?.name ?? alter?.displayName ?? ""} ${(system?.displayTagMap ?? {})[ctx.guildId ?? ""] ?? system?.systemDisplayTag ?? ""}`;
+		const username = `${displayName}${pronouns} ${tag}`;
 
 		pendingIgnoreDeletion.push(message.messageId);
 
@@ -186,19 +208,12 @@ export default class ReproxyCommand extends Command {
 			})
 			.catch((v) => console.error(v))
 			.then((sentMessage) => {
-				if (
-					(
-						system.systemAutoproxy.find((v) => v.serverId === ctx.guildId) ?? {
-							autoproxyMode: "off",
-						}
-					).autoproxyMode === "latch"
-				)
-					setLastLatchAlter(
-						ctx.guildId ?? "",
-						ctx.channelId ?? "",
-						system,
-						alter,
-					);
+				setLastLatchAlter(
+					ctx.guildId ?? "",
+					ctx.channelId ?? "",
+					system,
+					alter,
+				);
 
 				messagesCollection.replaceOne(
 					{ messageId: message.messageId },
