@@ -167,16 +167,6 @@ export default class ReproxyCommand extends Command {
 			throw new Error("No user.")
 		const displayName =
 			getDisplayNameWebhook(alter, originalMessage, user) ?? alter.username;
-		const pronouns =
-			getSystemFeatures(system).includePronouns && alter.pronouns
-				? ` (${alter.pronouns})`
-				: "";
-		const tag =
-			(system.displayTagMap ?? {})[ctx.guildId] ??
-			system.systemDisplayTag ??
-			"";
-
-		const username = `${displayName}${pronouns} ${tag}`;
 
 		pendingIgnoreDeletion.push(message.messageId);
 
@@ -195,7 +185,7 @@ export default class ReproxyCommand extends Command {
 					]),
 					allowed_mentions: { parse: [] },
 					attachments: originalMessage.attachments,
-					username: username.substring(0, 80),
+					username: displayName.substring(0, 80),
 					avatar_url:
 						(alter.avatarUrlMap ?? {})[ctx.guildId ?? ""] ??
 						alter?.avatarUrl ??
