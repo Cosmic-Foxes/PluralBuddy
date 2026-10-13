@@ -135,11 +135,6 @@ export const client = new Client({
 	globalMiddlewares,
 });
 
-Error.captureStackTrace = (target) => {
-	if (target instanceof SeyfertError) {
-		Sentry.captureException(target)
-	}
-}
 
 if (import.meta.main) {
 const server = serve(api)
