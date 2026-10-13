@@ -83,8 +83,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/giftedl/pluralbuddy/bot:latest
-            ghcr.io/giftedl/pluralbuddy/bot:${{ needs.commit-hash.outputs.commit_hash }}
+            ghcr.io/${{ github.repository }}/bot:latest
+            ghcr.io/${{ github.repository }}/bot:${{ needs.commit-hash.outputs.commit_hash }}
           build-args: GIT_COMMIT=${{ github.sha }} 
 
       - name: Build and push Docker image (as PR/branch)
@@ -94,8 +94,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/giftedl/pluralbuddy/bot:latest-${{ github.head_ref }}
-            ghcr.io/giftedl/pluralbuddy/bot:${{ needs.commit-hash.outputs.commit_hash }}
+            ghcr.io/${{ github.repository }}/bot:latest-${{ github.head_ref }}
+            ghcr.io/${{ github.repository }}/bot:${{ needs.commit-hash.outputs.commit_hash }}
           build-args: GIT_COMMIT=${{ github.sha }} 
           
   deploy:
