@@ -5,8 +5,8 @@ import {
 	Command,
 	CommandContext,
 	Container,
-	createStringOption,
 	createBooleanOption,
+	createStringOption,
 	Declare,
 	IgnoreCommand,
 	MediaGallery,
@@ -30,16 +30,15 @@ import { pendingIgnoreDeletion } from "@/events/on-message-delete";
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
 import { createError } from "@/lib/create-error";
 import { emojis } from "@/lib/emojis";
+import { getSystemFeatures } from "@/lib/get-system-flags";
 import { getModernComponentsMappings } from "@/lib/proxying";
 import { processEmojis } from "@/lib/proxying/process-emojis";
-import { getSimilarWebhooks, setLastLatchAlter, getDisplayNameWebhook } from "@/lib/proxying/util";
+import { getSimilarWebhooks, setLastLatchAlter } from "@/lib/proxying/util";
 import { alterCollection, messagesCollection } from "@/mongodb";
-import { getSystemFeatures } from "@/lib/get-system-flags";
 import { getGuildFromId } from "@/types/guild";
 import { AlertView } from "@/views/alert";
 import { w } from "@/webhooks";
 import { client } from "..";
-import { PAlter } from "@/types/alter";
 
 const options = {
 	alter: createStringOption({
@@ -47,8 +46,8 @@ const options = {
 		autocomplete: autocompleteAlters,
 		required: true,
 	}),
-	changeLatch: createBooleanOption({
-		description: "Update the alter latch to this alter",
+	"change-latch": createBooleanOption({
+		description: "Change whether the latched alter changes",
 		required: false,
 	})
 };
@@ -64,7 +63,7 @@ export default class ReproxyCommand extends Command {
 	override async run(ctx: CommandContext<typeof options>) {
 		await ctx.deferReply(true);
 		const { system } = await ctx.retrievePUser();
-		const { alter: alterName, "change-latch":changeLatch } = ctx.options;
+		const { alter: alterName, "change-latch": changeLatch } = ctx.options;
 
 		const systemId = ctx.author.id;
 
@@ -161,7 +160,7 @@ export default class ReproxyCommand extends Command {
 
 		const webhook = similarWebhooks[0];
 
-		const displayName = getDisplayNameWebhook(system, alter, ctx.guildId ?? "") ?? alter.username;
+		const displayName = alter.nameMap.find((c) => c.server === ctx.guildId)?.name ?? alter.displayName ?? "";
 		const pronouns = getSystemFeatures(system).includePronouns && alter.pronouns ? ` (${alter.pronouns})` : "";
 		const tag = (system.displayTagMap ?? {})[ctx.guildId] ?? system.systemDisplayTag ?? "";
 
