@@ -118,8 +118,7 @@ export const ImportStagingRouter = router({
 
 			if (!session) throw new Error("Session error.");
 
-			const mongoClient = ctx.db;
-			const mongoDb = mongoClient.db(`${process.env.ENV}-pluralbuddy-app`);
+			const mongoDb = ctx.webDatabase
 
 			let result = (await mongoDb
 				.collection<ImportStage>("import-staging")
@@ -142,7 +141,7 @@ export const ImportStagingRouter = router({
 				} as ImportStage;
 			}
 
-			waitUntil(mongoClient.close());
+			waitUntil(ctx.mongoClient.close());
 
 			return result;
 		}),
