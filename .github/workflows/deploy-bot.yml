@@ -10,6 +10,8 @@ on:
       - packages/bot/**
       - packages/plurography/**
       - infra/**
+    paths-ignore:
+      - infra/curb/**
 
 permissions:
   packages: write
@@ -24,38 +26,6 @@ jobs:
       - name: Get commit hash
         id: get_commit
         run: echo "::set-output name=commit_hash::$(git rev-parse HEAD)"
-
-  deploy-curb:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    permissions:
-      id-token: write
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        
-      - name: Tailscale
-        uses: tailscale/github-action@v4
-        with:
-          authkey: ${{ secrets.TS_AUTHKEY }}
-
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.DOCKER_SSH_KEY }}
-
-      - name: Add remote server to known_hosts
-        run: |
-          ssh-keyscan -t rsa ${{ secrets.CURB_HOST }} >> ~/.ssh/known_hosts
-
-      - name: Replace infra files & build compose
-        id: vars
-        run: |
-          scp -r infra/* ${{ secrets.DOCKER_USER }}@${{ secrets.CURB_HOST }}:infra
-          ssh ${{ secrets.DOCKER_USER }}@${{ secrets.CURB_HOST }} << 'EOF'
-            cd infra/curb
-            docker compose up -d --remove-orphans
-          EOF
     
   build-and-push-image:
     needs: 
