@@ -2,18 +2,20 @@ name: pluralbuddy
 version: "3"
 services:
   redis:
-    image: redis:latest
-    container_name: my-redis
+    image: redis:7.2
+    env_file: ".env"
+    container_name: pluralbuddy-redis
     ports:
       - '6379:6379'
     volumes:
-      - redis-data-sfx87qgyqks6reh7nvjxe1ud:/data
+      - pluralbuddy_redis-data-sfx87qgyqks6reh7nvjxe1ud:/data
     environment:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - REDIS_USERNAME=${REDIS_USERNAME}
     restart: unless-stopped
   bot:
     image: ghcr.io/giftedl/pluralbuddy/bot:latest
+    env_file: ".env"
     container_name: pluralbuddy-bot
     labels:
       - "diun.enable=true"
@@ -22,7 +24,7 @@ services:
       - '3030:3030'
     environment:
       # Databases
-      - REDIS=redis://${REDIS_USERNAME}:${REDIS_PASSWORD}@127.0.0.1:6379/0
+      - REDIS=redis://${REDIS_USERNAME}:${REDIS_PASSWORD}@pluralbuddy-redis:6379/0
       - MONGO=${MONGO}
       - MONGO_DB=${MONGO_DB}
 
@@ -49,5 +51,5 @@ services:
       - CROWDIN_FILE_ID=${CROWDIN_FILE_ID}
 
 volumes:
-  redis-data-sfx87qgyqks6reh7nvjxe1ud:
+  pluralbuddy_redis-data-sfx87qgyqks6reh7nvjxe1ud:
     driver: local
