@@ -4,7 +4,7 @@ services:
   redis:
     image: redis:7.2
     env_file: ".env"
-    container_name: my-redis
+    container_name: pluralbuddy-redis
     ports:
       - '6379:6379'
     volumes:
@@ -24,7 +24,7 @@ services:
       - '3030:3030'
     environment:
       # Databases
-      - REDIS=redis://${REDIS_USERNAME}:${REDIS_PASSWORD}@127.0.0.1:6379/0
+      - REDIS=redis://${REDIS_USERNAME}:${REDIS_PASSWORD}@pluralbuddy-redis:6379/0
       - MONGO=${MONGO}
       - MONGO_DB=${MONGO_DB}
 
