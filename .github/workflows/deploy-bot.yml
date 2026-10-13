@@ -6,6 +6,10 @@ on:
     branches:
       - main
       - gh-deploying
+    paths:
+      - packages/bot/**
+      - packages/plurography/**
+      - infra/**
 
 permissions:
   packages: write
