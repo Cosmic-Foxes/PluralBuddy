@@ -203,7 +203,7 @@ export default class ReproxyCommand extends Command {
 						}
 					).autoproxyMode === "latch"
 				)
-					if (changelatch !== false) {
+					if (changeLatch !== false) {
 						setLastLatchAlter(
 							ctx.guildId ?? "",
 							ctx.channelId ?? "",
