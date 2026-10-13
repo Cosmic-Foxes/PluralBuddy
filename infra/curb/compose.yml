@@ -1,5 +1,14 @@
 # The 'curb' is the extra resources that PluralBuddy could need, for autodeploying, etc.
 
+configs:
+  prometheus_config:
+    content: |
+      scrape_configs:
+        - job_name: 'cadvisor'
+          scrape_interval: 5s
+          static_configs:
+            - targets: ['cadvisor:8080']
+
 name: pluralbuddy-curb
 version: "3"
 services:
@@ -13,6 +22,19 @@ services:
       - '3000:80'
     volumes:
       - grafana-storage:/var/lib/grafana
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    configs:
+      - source: prometheus_config
+        target: /etc/prometheus/prometheus.yml
+        uid: "65534"    # Required: numeric UID for 'nobody' user
+        gid: "65534"    # Required: numeric GID for 'nobody' group
+        mode: 0400      # Required: read-only permissions
 
 volumes:
   grafana-storage: {}
