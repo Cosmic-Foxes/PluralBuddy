@@ -63,7 +63,7 @@ export default class ReproxyCommand extends Command {
 	override async run(ctx: CommandContext<typeof options>) {
 		await ctx.deferReply(true);
 		const { system } = await ctx.retrievePUser();
-		const { alter: alterName, changelatch } = ctx.options;
+		const { alter: alterName, "change-latch": changeLatch } = ctx.options;
 
 		const systemId = ctx.author.id;
 
