@@ -315,6 +315,7 @@ export default class PluralPortConverter
 		handleAsset?: (url: string) => string,
 		systemId = crypto.randomUUID(),
 	) {
+		data.fields = data.fields ?? {}
 		return OpenPluralMember.parse({
 			id: crypto.randomUUID(),
 			name: data.username,
@@ -342,7 +343,7 @@ export default class PluralPortConverter
 					: handleAsset(data.banner)
 				: null,
 			proxy_tags: data.proxyTags,
-			is_custom_front: data.fields["@/openplural/is_custom_front"] === "true",
+			is_custom_front: (data.fields ?? {})["@/openplural/is_custom_front"] === "true",
 			archived: false,
 			sort_order: Number.isNaN(Number(data.fields["@/openplural/sort_order"]))
 				? null
