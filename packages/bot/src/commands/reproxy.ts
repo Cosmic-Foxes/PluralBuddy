@@ -171,18 +171,31 @@ export default class ReproxyCommand extends Command {
 		pendingIgnoreDeletion.push(message.messageId);
 
 		const processedEmojis: ApplicationEmoji[] = [];
+		const componentList = (await Promise.all(
+			[
+				...(originalMessage.components.map((v) =>
+					v.toBuilder(),
+				) as TopLevelBuilders[]),
+				...(originalMessage.content !== ""
+					? [new TextDisplay().setContent(originalMessage.content)]
+					: []),
+			]
+				.filter((v) => v !== undefined)
+				.map(async (v) => {
+					if (v.data.type === ComponentType.TextDisplay && v.data.content) {
+						const processEmoji = await processEmojis(v.data.content);
+						processedEmojis.push(...processEmoji.emojis);
+
+						(v as TextDisplay).setContent(processEmoji.newMessage);
+					}
+					return v;
+				}),
+		)) as TopLevelBuilders[];
 
 		webhook.messages
 			.write({
 				body: {
-					...getModernComponentsMappings([
-						...(originalMessage.components.map((v) =>
-							v.toBuilder(),
-						) as TopLevelBuilders[]),
-						...(originalMessage.content !== ""
-							? [new TextDisplay().setContent(originalMessage.content)]
-							: []),
-					]),
+					...getModernComponentsMappings(componentList),
 					allowed_mentions: { parse: [] },
 					attachments: originalMessage.attachments,
 					username: displayName.substring(0, 80),
