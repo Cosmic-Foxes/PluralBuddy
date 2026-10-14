@@ -599,6 +599,8 @@ export default class PluralKitConverter
 		} satisfies PluralKitSystemType);
 	}
 	fromAlter(data: PAlter): z.infer<typeof PluralKitMember> {
+        data.fields = data.fields ?? {}
+		
 		return PluralKitMember.parse({
 			id: makePkId(6),
 			uuid: crypto.randomUUID(),
