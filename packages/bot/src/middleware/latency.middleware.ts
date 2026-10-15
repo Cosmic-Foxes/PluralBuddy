@@ -1,13 +1,13 @@
 import { addBreadcrumb } from "@sentry/bun";
 import { createMiddleware } from "seyfert";
-import { discordApiLatency, latencyDataPoints } from "@/analytics";
+import { discordApiLatency } from "@/analytics";
 
 export const latency = createMiddleware<void>(async (middle) => {
 	if (!middle.context.guildId) return middle.next();
 	
 	discordApiLatency.observe(
 		Date.now() -
-			// @ts-ignore
+			// @ts-expect-error
 			(middle.context.message ?? middle.context.interaction).createdTimestamp,
 	);
 	addBreadcrumb({

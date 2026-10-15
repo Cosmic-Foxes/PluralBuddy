@@ -1,4 +1,4 @@
-import { createEvent, Guild } from "seyfert";
+import { createEvent, type Guild } from "seyfert";
 import type { APIUnavailableGuild } from "seyfert/lib/types";
 import { guildCollection } from "@/mongodb";
 

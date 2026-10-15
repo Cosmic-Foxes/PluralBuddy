@@ -55,7 +55,7 @@ export default class NameCNS extends ComponentCommand {
 			blocked: false,
 			storagePrefix: user.storagePrefix,
 			terminology: terminology,
-			// @ts-ignore
+			// @ts-expect-error
 			system: {
 				associatedUserId: ctx.author.id,
 				...temporarySystem,

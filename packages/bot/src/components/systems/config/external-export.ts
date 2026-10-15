@@ -1,4 +1,4 @@
-import { ImportNotation, possibleConverters } from "plurography";
+import { type ImportNotation, possibleConverters } from "plurography";
 import {
 	AttachmentBuilder,
 	ComponentCommand,

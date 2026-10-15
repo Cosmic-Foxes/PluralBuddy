@@ -4,7 +4,7 @@ import {
 	ComponentCommand,
 	type ComponentContext,
 	ModalCommand,
-	ModalContext,
+	type ModalContext,
 	TextDisplay,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";

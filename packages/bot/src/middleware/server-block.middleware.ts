@@ -1,5 +1,5 @@
 import { PGuildObject } from "plurography";
-import { Command, ComponentContext, createMiddleware, Message, SubCommand } from "seyfert";
+import { Command, ComponentContext, createMiddleware, type Message, SubCommand } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { emojis } from "@/lib/emojis";
 import { getApplicableCase } from "@/lib/libby";

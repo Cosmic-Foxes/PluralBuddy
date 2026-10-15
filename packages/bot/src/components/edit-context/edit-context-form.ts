@@ -3,7 +3,7 @@ import {
 	ComponentCommand,
 	type ComponentContext,
 	ModalCommand,
-	ModalContext,
+	type ModalContext,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { InteractionIdentifier } from "@/lib/interaction-ids";

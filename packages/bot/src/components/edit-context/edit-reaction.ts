@@ -2,7 +2,7 @@
 
 import {
     ComponentCommand,
-    ComponentContext,
+    type ComponentContext,
     ContextMenuCommand,
     Declare,
     Label,

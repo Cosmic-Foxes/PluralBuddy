@@ -260,7 +260,7 @@ PluralBuddy uses a **username/display name** system.
   OPERATION_WEB: "%clock% Expira em 30 minutos • %web% Web (via Exchange)",
   OPERATION_WEB_NEXT: "%clock% expira em 30 minutos • %web% Web (via Next)",
   SERVER_TOO_BIG: "Este servidor é muito grande para usar o comando /proxy, pois está desativado por razões de segurança para servidores com mais de 30 membros. Em vez disso, use o proxying automático.",
-  OPERATION_DISCORD_AP: "Switched in %server_name% (\`%server_id%\`) • %discord% Discord",
+  OPERATION_DISCORD_AP: "Switched in %server_name% (`%server_id%`) • %discord% Discord",
   CLEARED_LATCH: "Sucesso removendo **Integrante do modo trava** em %server_name%.",
   NO_PERMISSIONS_PROXY: "Eu não posso fazer proxy aqui, uma vez que eu não tenho as permissões `Gerenciar Webhooks` e `Gerenciar mensagens` neste canal.",
   NICKNAME_MANUAL_PROXY: "Você não pode fazer proxy ja que o integrante especificado está usando o modo proxy de apelido e você não pode enviar uma mensagem normal quando usar o comando proxy manual. Em vez disso, use o proxying automático.",
@@ -570,7 +570,7 @@ Please download the JSON file sent to you and use the button to upload the attac
 > essa função permitem que você controle certas funcionalidades menores usadas no PluralBuddy.`,
   FEATURE_D: "Desabilitar",
   FEATURE_E: "Habilitar",
-  ROLE_TOP: "-# <@&{{ roleId }}> • ID: \`{{ roleId }}\`",
+  ROLE_TOP: "-# <@&{{ roleId }}> • ID: `{{ roleId }}`",
   ROLE_CONFIG_TITLE: `## Role Configuration - <@&{{ roleId }}>
 > The role configuration allows you to add specific containers to proxied messages indicating they are from a user with a specific role.`,
   ROLE_CONTAINER_CONTENTS_BTN: "Edit Container Contents",

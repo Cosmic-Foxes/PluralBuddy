@@ -11,7 +11,7 @@ import {
 	ActionRow,
 	Button,
 	CacheFrom,
-	CommandContext,
+	type CommandContext,
 	Container,
 	type DefaultLocale,
 	extendContext,

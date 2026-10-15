@@ -9,7 +9,7 @@ import {
 	Button,
 	Container,
 	ModalCommand,
-	ModalContext,
+	type ModalContext,
 	Separator,
 	TextDisplay,
 } from "seyfert";
@@ -42,7 +42,7 @@ export default class SetPronounsButton extends ModalCommand {
 	}
 
 	override async run(ctx: ModalContext) {
-		let { system: systemPB, syncConfiguration } = await ctx.retrievePUser();
+		const { system: systemPB, syncConfiguration } = await ctx.retrievePUser();
 
 		if (systemPB === undefined) {
 			return await ctx.write({

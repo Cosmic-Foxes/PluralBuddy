@@ -1,4 +1,4 @@
-import { ComponentCommand, ComponentContext } from "seyfert";
+import { ComponentCommand, type ComponentContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { writeUserById } from "@/types/user";
@@ -15,7 +15,7 @@ export default class AddUserBlockListNudge extends ComponentCommand {
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		let user = await ctx.retrievePUser();
+		const user = await ctx.retrievePUser();
 		
 		// Update database property to serverReplying
 		await writeUserById(user.userId, {

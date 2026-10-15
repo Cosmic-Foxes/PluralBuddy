@@ -4,7 +4,7 @@ import {
 	PluralKitGroup,
 	PluralKitMember,
 } from "plurography";
-import { ComponentCommand, ComponentContext } from "seyfert";
+import { ComponentCommand, type ComponentContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import type { z } from "zod";
 import { build, client, logger } from "@/index";
@@ -28,7 +28,7 @@ export default class QuickSync extends ComponentCommand {
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		let { system: systemPB, syncConfiguration } = await ctx.retrievePUser();
+		const { system: systemPB, syncConfiguration } = await ctx.retrievePUser();
 
 		if (systemPB === undefined) {
 			return await ctx.write({

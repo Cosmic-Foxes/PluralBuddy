@@ -2,7 +2,7 @@ import {
 	ActionRow,
 	Button,
 	Container,
-	Guild,
+	type Guild,
 	Section,
 	Separator,
 	StringSelectMenu,
@@ -14,7 +14,7 @@ import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { ButtonStyle, Spacing } from "seyfert/lib/types";
 import { emojis } from "@/lib/emojis";
 import {
-	GuildErrorTypes,
+	type GuildErrorTypes,
 	GuildFlags,
 	PGuildObject,
 	type PGuild,
@@ -504,13 +504,13 @@ export class ServerConfigView extends TranslatedView {
 									),
 								)
 								.setStyle(
-									// @ts-ignore
+									// @ts-expect-error
 									guild.getFeatures().has(GuildFlags[c[0]])
 										? ButtonStyle.Danger
 										: ButtonStyle.Success,
 								)
 								.setLabel(
-									// @ts-ignore
+									// @ts-expect-error
 									guild.getFeatures().has(GuildFlags[c[0]])
 										? this.translations.FEATURE_D
 										: this.translations.FEATURE_E,

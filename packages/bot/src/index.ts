@@ -149,7 +149,7 @@ export const client = new Client({
 if (import.meta.main) {
 	const server = serve(api);
 	console.log(`http server listening on :${server.port}`);
-	// @ts-ignore
+	// @ts-expect-error
 	// if (logger) client.logger = {...client.logger, info: logger.info, warn: logger.warn, fatal: logger.error};
 
 	client.logger.info(

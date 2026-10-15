@@ -1,7 +1,7 @@
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { userCollection } from "@/mongodb";
 import { assetStringGeneration } from "plurography";
-import { ModalCommand, ModalContext, type ComponentContext } from "seyfert";
+import { ModalCommand, type ModalContext, type ComponentContext } from "seyfert";
 
 export default class AcceptPolicy extends ModalCommand {
 	override filter(context: ModalContext) {

@@ -64,7 +64,7 @@ export class PluralBuddyErrorCommand extends PluralBuddyErrorCommandImpl {
 
 		await context.editOrReply({
 			components: [
-				// @ts-ignore
+				// @ts-expect-error
 				...new AlertView(null).errorViewCustom(
 					`There was an error while doing that action.\n-# Interaction: \`${interactionId}\` • Error Type: \`RUN_ERROR\``,
 				),
@@ -98,7 +98,7 @@ export class PluralBuddyErrorCommand extends PluralBuddyErrorCommandImpl {
 
 			await context.editOrReply({
 				components: [
-					// @ts-ignore
+					// @ts-expect-error
 					...new AlertView(null).errorViewCustom(
 						`There was an error while doing that action.\n-# Interaction: \`${interactionId}\` • Error Type: \`AFTER_RUN\``,
 					),
@@ -118,7 +118,7 @@ export class PluralBuddyErrorCommand extends PluralBuddyErrorCommandImpl {
 
 		await context.editOrReply({
 			components: [
-				// @ts-ignore
+				// @ts-expect-error
 				...new AlertView(null).errorViewCustom(
 					`The bot cannot do that action because it is **missing permissions**. (permissions are ${permissions
 						.map((c) => `\`${c}\``)
@@ -137,7 +137,7 @@ export class PluralBuddyErrorCommand extends PluralBuddyErrorCommandImpl {
 	) {
 		await context.editOrReply({
 			components: [
-				// @ts-ignore
+				// @ts-expect-error
 				...new AlertView(null).errorViewCustom(
 					`You **do not** have permission to do that action. (permissions are ${permissions
 						.map((c) => `\`${c}\``)
@@ -164,7 +164,7 @@ export class PluralBuddyErrorCommand extends PluralBuddyErrorCommandImpl {
 
 		await context.editOrReply({
 			components: [
-				// @ts-ignore
+				// @ts-expect-error
 				...new AlertView(null).errorViewCustom(
 					`There was an error while doing that action.\n-# Interaction: \`${interactionId}\` • Error Type: \`MIDDLEWARE_FAIL\``,
 				),
@@ -187,7 +187,7 @@ export class PluralBuddyComponentErrorCommand extends PluralBuddyErrorComponentC
 
 			await context.editOrReply({
 				components: [
-					// @ts-ignore
+					// @ts-expect-error
 					...new AlertView(null).errorViewCustom(
 						`There was an error while doing that action.\n-# Interaction: \`${interactionId}\` • Error Type: \`COMPONENT/AFTER_RUN\``,
 					),
@@ -211,7 +211,7 @@ export class PluralBuddyComponentErrorCommand extends PluralBuddyErrorComponentC
 
 		await context.editOrReply({
 			components: [
-				// @ts-ignore
+				// @ts-expect-error
 				...new AlertView(null).errorViewCustom(
 					`There was an error while doing that action.\n-# Interaction: \`${interactionId}\` • Error Type: \`COMPONENT/RUN_ERROR\``,
 				),
@@ -230,7 +230,7 @@ export class PluralBuddyComponentErrorCommand extends PluralBuddyErrorComponentC
 
 		await context.editOrReply({
 			components: [
-				// @ts-ignore
+				// @ts-expect-error
 				...new AlertView(null).errorViewCustom(
 					`There was an error while doing that action.\n-# Interaction: \`${interactionId}\` • Error Type: \`COMPONENT/MIDDLEWARE_FAIL\``,
 				),
@@ -250,7 +250,7 @@ export class PluralBuddyModalErrorCommand extends PluralBuddyErrorModalCommandIm
 
 			await context.editOrReply({
 				components: [
-					// @ts-ignore
+					// @ts-expect-error
 					...new AlertView(null).errorViewCustom(
 						`There was an error while doing that action.\n-# Interaction: \`${interactionId}\` • Error Type: \`MODAL/AFTER_RUN\``,
 					),
@@ -276,7 +276,7 @@ export class PluralBuddyModalErrorCommand extends PluralBuddyErrorModalCommandIm
 
 		await context.editOrReply({
 			components: [
-				// @ts-ignore
+				// @ts-expect-error
 				...new AlertView(null).errorViewCustom(
 					`There was an error while doing that action.\n-# Interaction: \`${interactionId}\` • Error Type: \`MODAL/MIDDLEWARE_FAIL\``,
 				),
@@ -292,7 +292,7 @@ export class PluralBuddyModalErrorCommand extends PluralBuddyErrorModalCommandIm
 
 		await context.editOrReply({
 			components: [
-				// @ts-ignore
+				// @ts-expect-error
 				...new AlertView(null).errorViewCustom(
 					`There was an error while doing that action.\n-# Interaction: \`${interactionId}\` • Error Type: \`MODAL/RUN_ERROR\``,
 				),

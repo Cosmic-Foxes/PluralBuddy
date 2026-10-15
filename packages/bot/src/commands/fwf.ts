@@ -1,7 +1,7 @@
 import {
 	AttachmentBuilder,
 	Command,
-	CommandContext,
+	type CommandContext,
 	Container,
 	createBooleanOption,
 	Declare,

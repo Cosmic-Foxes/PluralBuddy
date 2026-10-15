@@ -1,10 +1,10 @@
 import { getColor } from "colorthief";
 import { set } from "lodash";
 import {
-	ApplicationEmoji,
+	type ApplicationEmoji,
 	AttachmentBuilder,
 	Command,
-	CommandContext,
+	type CommandContext,
 	Container,
 	createBooleanOption,
 	createStringOption,

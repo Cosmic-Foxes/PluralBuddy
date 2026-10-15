@@ -98,7 +98,7 @@ SimplyPlural has been discontinued.`,
 	ERROR_ALTER_DOESNT_EXIST:
 		"2n – This operation cannot be concluded because either, there is no alter to operate on, or there is no system associated to the user who created the request.",
 	ERROR_ALTER_DOESNT_EXIST_SUGGESTION:
-		"2n – That alter could not be found. Did you mean \`%suggestion%\`?",
+		"2n – That alter could not be found. Did you mean `%suggestion%`?",
 	ERROR_TAG_DOESNT_EXIST:
 		"2o – This operation cannot be concluded because either, there is no tag to operate on, or there is no system associated to the user who created the request.",
 
@@ -134,9 +134,9 @@ SimplyPlural has been discontinued.`,
 
 	PLURALBUDDY_IMPORT_DESC: "Copy and paste the exported JSON data below:",
 	PLURALBUDDY_IMPORT_ERROR:
-		"2q – There was some error(s) while parsing that:\n\n\`\`\`\n%zod_errors%\n\`\`\`",
+		"2q – There was some error(s) while parsing that:\n\n```\n%zod_errors%\n```",
 	PLURALBUDDY_OPTIONS_ERROR:
-		"2r – There was some error(s) while evaluating the arguments to that command:\n\n\`\`\`\n%options_errors%\n\`\`\`",
+		"2r – There was some error(s) while evaluating the arguments to that command:\n\n```\n%options_errors%\n```",
 
 	CREATE_NEW_ALTER_DONE:
 		"Successfully created a new alter in your system. Use `%prefix%alter %alter_id%` for more details.",
@@ -365,7 +365,7 @@ PluralBuddy uses a **username/display name** system.
 	SERVER_TOO_BIG:
 		"This server is too big to use the /proxy command, as it is disabled for security reasons for servers with over 30 members. Please use automatic proxying instead.",
 	OPERATION_DISCORD_AP:
-		"Switched in %server_name% (\`%server_id%\`) • %discord% Discord",
+		"Switched in %server_name% (`%server_id%`) • %discord% Discord",
 	CLEARED_LATCH: "Successfully cleared the **latch alter** in %server_name%.",
 	NO_PERMISSIONS_PROXY:
 		"I cannot proxy here since I do not have `Manage Webhooks` & `Manage Messages` permissions in this channel.",
@@ -444,7 +444,7 @@ PluralBuddy uses a **username/display name** system.
 	OPERATION_DESCRIPTION: "Set system description to:\n > %description%",
 	OPERATION_PRONOUNS: "Set system pronouns to %pronouns%.",
 	OPERATION_LATCH_DELAY: "Set latch delay to %delay%.",
-	OPERATION_FALLBACK: "Set \`%property%\` to \`%value%\`",
+	OPERATION_FALLBACK: "Set `%property%` to `%value%`",
 	OPERATION_SYSTEM_TOGGLE_PROXY_TAGS: "Toggled proxy tags on the system.",
 	OPERATION_SYSTEM_TOGGLE_PRONOUNS:
 		"Toggled displaying pronouns on the system.",
@@ -761,7 +761,7 @@ Please download the JSON file sent to you and use the button to upload the attac
 	FEATURE_D: "Disable",
 	FEATURE_E: "Enable",
 
-	ROLE_TOP: "-# <@&{{ roleId }}> • ID: \`{{ roleId }}\`",
+	ROLE_TOP: "-# <@&{{ roleId }}> • ID: `{{ roleId }}`",
 	ROLE_CONFIG_TITLE: `## Role Configuration - <@&{{ roleId }}>
 > The role configuration allows you to add specific containers to proxied messages indicating they are from a user with a specific role.`,
 	ROLE_CONTAINER_CONTENTS_BTN: "Edit Container Contents",
@@ -860,7 +860,7 @@ There is an example below of what an example proxy with this role would look lik
 
 	REPLY_IN_RESPONSE: "-# {{ reply }} In response to: {{ link }}",
 	AWAKE:
-		"Hi! I'm awake, running PluralBuddy \`{{ buildNumber }}/{{ branch }}\`.",
+		"Hi! I'm awake, running PluralBuddy `{{ buildNumber }}/{{ branch }}`.",
 
 	LINK_INVITE: "Invite",
 	LINK_SUPPORT: "Support",
@@ -1100,4 +1100,6 @@ You are attempting to edit a message with the 📝 emoji. Please enter the conte
 	PT_CREATE_NEW: "Create New Proxy Tag",
 	PT_DELETE: "Delete Proxy Tag",
 	PT_LIMIT: "-# You can create up to 6 proxy tags.",
+	SRV_CFG_PING_MODE:
+		"**Reply Ping Mode**\n> Choose whether proxy replies preserve, always include, omit, or reverse the original ping behavior.",
 } satisfies DefaultLocale;

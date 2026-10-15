@@ -1,7 +1,7 @@
 import { ObjectId } from "bson";
 import {
 	ComponentCommand,
-	ComponentContext,
+	type ComponentContext,
 	ModalCommand,
 	ModalContext,
 } from "seyfert";
@@ -30,7 +30,7 @@ export default class SetPronounsButton extends ComponentCommand {
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		let user = await ctx.retrievePUser();
+		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
 			return await ctx.write({

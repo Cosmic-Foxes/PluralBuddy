@@ -34,7 +34,7 @@ export default class SearchForm extends ComponentCommand {
 										InteractionIdentifier.Guilds.FormSelection.SearchingErrorsUserSelection.create(),
 									)
 									.setValuesLength({ min: 0, max: 1 }).data,
-								// @ts-ignore lol seyfert forgor to add the required boolean to select menus
+								// @ts-expect-error lol seyfert forgor to add the required boolean to select menus
 								required: false,
 							}),
 						)
@@ -47,7 +47,7 @@ export default class SearchForm extends ComponentCommand {
 										InteractionIdentifier.Guilds.FormSelection.SearchingErrorsChannelSelection.create(),
 									)
 									.setValuesLength({ min: 0, max: 1 }).data,
-								// @ts-ignore lol seyfert forgor to add the required boolean to select menus
+								// @ts-expect-error lol seyfert forgor to add the required boolean to select menus
 								required: false,
 							}),
 						)

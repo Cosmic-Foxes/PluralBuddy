@@ -34,7 +34,7 @@ export default class AddRoleButton extends ComponentCommand {
 									)
 									.setDefaultRoles(guild.blockedRoles)
 									.setValuesLength({ min: 0, max: 25 }).data,
-								// @ts-ignore lol seyfert forgor to add the required boolean to select menus
+								// @ts-expect-error lol seyfert forgor to add the required boolean to select menus
 								required: false,
 							}),
 						)
