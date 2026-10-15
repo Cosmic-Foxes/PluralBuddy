@@ -58,16 +58,6 @@ import { openTelemetry } from "./plugins/opentelemetry";
 import { yunaForSeyfert } from "./plugins/yunaforseyfert";
 import { defaultPrefixes, getGuildFromId } from "./types/guild";
 
-const sdk = new NodeSDK({
-	metricReader: new PeriodicExportingMetricReader({
-		exporter: new ConsoleMetricExporter(),
-	}),
-
-	spanProcessors: [new BatchSpanProcessor(new OTLPTraceExporter())]
-});
-
-sdk.start();
-
 export const logger = process.env.SEQ_HOST
 	? winston.createLogger({
 			level: "info",
