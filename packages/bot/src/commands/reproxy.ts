@@ -1,4 +1,5 @@
 import { getColor } from "colorthief";
+import { set } from "lodash";
 import {
 	ApplicationEmoji,
 	AttachmentBuilder,
@@ -163,8 +164,7 @@ export default class ReproxyCommand extends Command {
 
 		const webhook = similarWebhooks[0];
 		const user = await ctx.retrievePUser();
-		if (!user)
-			throw new Error("No user.")
+		if (!user) throw new Error("No user.");
 		const displayName =
 			getDisplayNameWebhook(alter, originalMessage, user) ?? alter.username;
 
@@ -192,12 +192,19 @@ export default class ReproxyCommand extends Command {
 				}),
 		)) as TopLevelBuilders[];
 
+		const attachments = await Promise.all(
+			originalMessage.attachments.map(async (v) =>
+				new AttachmentBuilder()
+					.setFile("buffer", await (await fetch(v.url)).arrayBuffer())
+					.setName(v.filename),
+			),
+		);
 		webhook.messages
 			.write({
 				body: {
 					...getModernComponentsMappings(componentList),
 					allowed_mentions: { parse: [] },
-					attachments: originalMessage.attachments,
+					files: attachments,
 					username: displayName.substring(0, 80),
 					avatar_url:
 						(alter.avatarUrlMap ?? {})[ctx.guildId ?? ""] ??
