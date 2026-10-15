@@ -3,8 +3,18 @@
  *  - is licensed under MIT License.
  */
 
-import "./instrument"
+import "./instrument";
 import { SeqTransport } from "@datalust/winston-seq";
+import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto";
+import { BatchLogRecordProcessor } from "@opentelemetry/sdk-logs";
+import {
+	ConsoleMetricExporter,
+	PeriodicExportingMetricReader,
+} from "@opentelemetry/sdk-metrics";
+import { NodeSDK } from "@opentelemetry/sdk-node";
+import {
+	BatchSpanProcessor,
+} from "@opentelemetry/sdk-trace-node";
 import * as Sentry from "@sentry/bun";
 import { RedisAdapter } from "@slipher/redis-adapter";
 import { serve } from "bun";
@@ -44,8 +54,19 @@ import { emojis } from "./lib/emojis";
 import { initializeApplicationCommands } from "./lib/mention-command";
 import { middlewares } from "./middleware";
 import { setupDatabases, setupMongoDB } from "./mongodb";
+import { openTelemetry } from "./plugins/opentelemetry";
 import { yunaForSeyfert } from "./plugins/yunaforseyfert";
 import { defaultPrefixes, getGuildFromId } from "./types/guild";
+
+const sdk = new NodeSDK({
+	metricReader: new PeriodicExportingMetricReader({
+		exporter: new ConsoleMetricExporter(),
+	}),
+
+	spanProcessors: [new BatchSpanProcessor(new OTLPTraceExporter())]
+});
+
+sdk.start();
 
 export const logger = process.env.SEQ_HOST
 	? winston.createLogger({
@@ -93,14 +114,13 @@ process.on("unhandledRejection", async (reason, promise) => {
 
 export type { ClientType } from "./api-types";
 
-
 export const posthogClient =
 	process.env.POSTHOG_API_KEY === undefined
 		? null
 		: new PostHog(process.env.POSTHOG_API_KEY ?? "", {
-			host: "https://us.i.posthog.com",
-			enableExceptionAutocapture: true,
-		});
+				host: "https://us.i.posthog.com",
+				enableExceptionAutocapture: true,
+			});
 
 export const client = new Client({
 	commands: {
@@ -129,17 +149,16 @@ export const client = new Client({
 		}),
 		defaults: new PluralBuddyErrorCommand(),
 	},
-	plugins: definePlugins(yunaForSeyfert()),
+	plugins: definePlugins(yunaForSeyfert(), openTelemetry()),
 	components: { defaults: new PluralBuddyComponentErrorCommand() },
 	modals: { defaults: new PluralBuddyModalErrorCommand() },
 	context: extendedContext,
 	globalMiddlewares,
 });
 
-
 if (import.meta.main) {
-const server = serve(api)
-console.log(`http server listening on :${server.port}`)
+	const server = serve(api);
+	console.log(`http server listening on :${server.port}`);
 	// @ts-ignore
 	// if (logger) client.logger = {...client.logger, info: logger.info, warn: logger.warn, fatal: logger.error};
 
@@ -149,7 +168,7 @@ console.log(`http server listening on :${server.port}`)
 			branch: process.env.BRANCH ?? "unknown",
 			prefix:
 				defaultPrefixes[
-				(process.env.BRANCH as "production" | "canary") ?? "production"
+					(process.env.BRANCH as "production" | "canary") ?? "production"
 				],
 		},
 	);
@@ -166,7 +185,9 @@ console.log(`http server listening on :${server.port}`)
 		langs: { default: "en" },
 	});
 
-	client.logger.warn("Reminder: Starting MongoDB. If process hangs, make sure MongoDB is started.")
+	client.logger.warn(
+		"Reminder: Starting MongoDB. If process hangs, make sure MongoDB is started.",
+	);
 	await setupMongoDB();
 	await setupDatabases();
 
@@ -246,4 +267,3 @@ export async function startTesting() {
 		afk: false,
 	});
 }
-

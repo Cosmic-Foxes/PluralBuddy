@@ -1,6 +1,21 @@
 name: pluralbuddy
 version: "3"
 services:
+  alloy:
+    image: grafana/alloy:latest
+    container_name: alloy
+    restart: unless-stopped
+    ports:
+      - 12345:12345
+    command: "run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy"
+    volumes:
+      - ${PWD}/config.alloy:/etc/alloy/config.alloy
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - loki
+    networks:
+      - loki
+
   redis:
     image: redis:7.2
     env_file: ".env"
@@ -13,6 +28,7 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - REDIS_USERNAME=${REDIS_USERNAME}
     restart: unless-stopped
+  
   bot:
     image: ghcr.io/giftedl/pluralbuddy/bot:latest
     env_file: ".env"
@@ -49,6 +65,7 @@ services:
       - CROWDIN_API_KEY=${CROWDIN_API_KEY}
       - CROWDIN_PROJ_ID=${CROWDIN_PROJ_ID}
       - CROWDIN_FILE_ID=${CROWDIN_FILE_ID}
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://${CURB}:4318
 
 volumes:
   pluralbuddy_redis-data-sfx87qgyqks6reh7nvjxe1ud:
