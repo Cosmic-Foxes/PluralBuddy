@@ -38,7 +38,7 @@ loki.process "pb_loki_discovery" {
 // This component is responsible for writing the logs to Loki
 loki.write "pb_loki_discovery" {
 	endpoint {
-		url  = "http://loki:3100/loki/api/v1/push"
+		url  = "http://100.78.239.54:3100/loki/api/v1/push"
 	}
 }
 
