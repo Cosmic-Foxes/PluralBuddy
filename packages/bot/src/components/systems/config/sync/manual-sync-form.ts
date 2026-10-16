@@ -168,7 +168,7 @@ export default class SetPronounsButton extends ModalCommand {
 								await ctx.userTranslations()
 							).PK_ERROR.replace(
 								"{{ error }}",
-								(v._zod.output as { message: string | undefined }).message ??
+								(v._zod.output as { message: string | undefined } | undefined)?.message ??
 									"??",
 							),
 						)),
