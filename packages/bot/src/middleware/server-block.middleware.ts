@@ -1,5 +1,11 @@
 import { PGuildObject } from "plurography";
-import { Command, ComponentContext, createMiddleware, type Message, SubCommand } from "seyfert";
+import {
+	Command,
+	ComponentContext,
+	createMiddleware,
+	type Message,
+	SubCommand,
+} from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { emojis } from "@/lib/emojis";
 import { getApplicableCase } from "@/lib/libby";
@@ -17,7 +23,12 @@ export const serverBlock = createMiddleware<void>(async (middle) => {
 			)?.g ?? (await getGuildFromId(middle.context.guildId ?? "")),
 		);
 	const { context: ctx } = middle;
-	const channel = await middle.context.channel();
+	const channel = await middle.context.channel().catch(() => null);
+
+	if (!channel) {
+		return middle.next();
+	}
+
 	const isServerConfig =
 		("customId" in middle.context &&
 			middle.context.customId.startsWith("guilds/")) ||
