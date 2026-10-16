@@ -6,10 +6,10 @@ import {
 	type ComponentContext,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import { buildExportPayload } from "../../../lib/export";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
-import { AlertView } from "../../../views/alert";
-import { LoadingView } from "../../../views/loading";
+import { buildExportPayload } from "@/lib/export";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { AlertView } from "@/views/alert";
+import { LoadingView } from "@/views/loading";
 
 export default class ExportSystemButton extends ComponentCommand {
 	componentType = "Button" as const;

@@ -9,7 +9,7 @@ import {
 	TextInput,
 } from "seyfert";
 import { TextInputStyle } from "seyfert/lib/types";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
 
 export default class TagCNS extends ComponentCommand {
 	componentType = "Button" as const;

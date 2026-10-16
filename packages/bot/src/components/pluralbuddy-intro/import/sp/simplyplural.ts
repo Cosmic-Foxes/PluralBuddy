@@ -5,8 +5,8 @@ import {
 	ComponentCommand,
 	type ComponentContext,
 } from "seyfert";
-import { InteractionIdentifier } from "../../../../lib/interaction-ids";
-import { PluralBuddyIntro } from "../../../../views/pluralbuddy-intro";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { PluralBuddyIntro } from "@/views/pluralbuddy-intro";
 
 export default class PluralBuddyIntroNextPage extends ComponentCommand {
 	componentType = "StringSelect" as const;

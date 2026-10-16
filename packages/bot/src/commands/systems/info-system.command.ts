@@ -7,8 +7,8 @@ import {
 	createBooleanOption,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import { SystemView } from "../../views/system";
-import { AlertView } from "../../views/alert";
+import { SystemView } from "@/views/system";
+import { AlertView } from "@/views/alert";
 
 const options = {
 	public: createBooleanOption({

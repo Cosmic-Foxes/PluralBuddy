@@ -12,13 +12,13 @@ import {
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { z } from "zod";
 import { createRandomId } from "@/lib/random-id";
-import { ImportNotation } from "../../../lib/export";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
-import { alterCollection, tagCollection } from "../../../mongodb";
-import { PSystemObject } from "../../../types/system";
-import { getUserById, writeUserById } from "../../../types/user";
-import { AlertView } from "../../../views/alert";
-import { LoadingView } from "../../../views/loading";
+import { ImportNotation } from "@/lib/export";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { alterCollection, tagCollection } from "@/mongodb";
+import { PSystemObject } from "@/types/system";
+import { getUserById, writeUserById } from "@/types/user";
+import { AlertView } from "@/views/alert";
+import { LoadingView } from "@/views/loading";
 
 export default class PluralBuddyImportModal extends ModalCommand {
 	override filter(ctx: ModalContext) {

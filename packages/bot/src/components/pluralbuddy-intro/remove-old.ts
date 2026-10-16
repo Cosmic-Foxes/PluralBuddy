@@ -9,9 +9,9 @@ import {
 } from "seyfert";
 import { ButtonStyle } from "seyfert/lib/types";
 import { mentionCommand } from "@/lib/mention-command";
-import { emojis } from "../../lib/emojis";
-import { InteractionIdentifier } from "../../lib/interaction-ids";
-import { AlertView } from "../../views/alert";
+import { emojis } from "@/lib/emojis";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { AlertView } from "@/views/alert";
 
 export default class RemoveOldSystem extends ComponentCommand {
 	componentType = "Button" as const;

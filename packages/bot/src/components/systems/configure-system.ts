@@ -8,9 +8,9 @@ import {
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { getSystemFeatures } from "@/lib/get-system-flags";
-import { InteractionIdentifier } from "../../lib/interaction-ids";
-import { AlertView } from "../../views/alert";
-import { SystemSettingsView } from "../../views/system-settings";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { AlertView } from "@/views/alert";
+import { SystemSettingsView } from "@/views/system-settings";
 
 export default class ConfigureSystem extends ComponentCommand {
 	componentType = "Button" as const;

@@ -13,11 +13,11 @@ import {
 	MessageFlags,
 } from "seyfert/lib/types";
 import { getUserById, writeUserById } from "@/types/user";
-import { emojis } from "../../lib/emojis";
-import { InteractionIdentifier } from "../../lib/interaction-ids";
-import { getOperationById } from "../../types/operation";
-import { AlertView } from "../../views/alert";
-import { LoadingView } from "../../views/loading";
+import { emojis } from "@/lib/emojis";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { getOperationById } from "@/types/operation";
+import { AlertView } from "@/views/alert";
+import { LoadingView } from "@/views/loading";
 
 export default class UndoOperationButton extends ComponentCommand {
 	componentType = "Button" as const;

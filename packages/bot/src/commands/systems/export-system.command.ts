@@ -2,9 +2,9 @@
 
 import { AttachmentBuilder, type CommandContext, Declare, SubCommand } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import { buildExportPayload } from "../../lib/export";
-import { AlertView } from "../../views/alert";
-import { LoadingView } from "../../views/loading";
+import { buildExportPayload } from "@/lib/export";
+import { AlertView } from "@/views/alert";
+import { LoadingView } from "@/views/loading";
 
 @Declare({
 	name: "export",

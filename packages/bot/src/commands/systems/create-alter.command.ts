@@ -29,10 +29,10 @@ import { getSystemFeatures } from "@/lib/get-system-flags";
 import { writeBack } from "@/lib/pk-sync-engine";
 import { getMaxAlterPublicValue } from "@/lib/privacy-bitmask";
 import { w } from "@/webhooks";
-import { alterCollection, tagCollection, userCollection } from "../../mongodb";
-import { PAlterObject } from "../../types/alter";
-import { getUserById, writeUserById } from "../../types/user";
-import { AlertView } from "../../views/alert";
+import { alterCollection, tagCollection, userCollection } from "@/mongodb";
+import { PAlterObject } from "@/types/alter";
+import { getUserById, writeUserById } from "@/types/user";
+import { AlertView } from "@/views/alert";
 
 const options = {
 	username: createStringOption({

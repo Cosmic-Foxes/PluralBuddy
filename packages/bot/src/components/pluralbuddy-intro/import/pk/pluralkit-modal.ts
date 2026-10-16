@@ -27,10 +27,10 @@ import {
 	terminologyMemoryCache,
 	writeUserById,
 } from "@/types/user";
-import { InteractionIdentifier } from "../../../../lib/interaction-ids";
-import { type PSystem, PSystemObject } from "../../../../types/system";
-import { AlertView } from "../../../../views/alert";
-import { LoadingView } from "../../../../views/loading";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { type PSystem, PSystemObject } from "@/types/system";
+import { AlertView } from "@/views/alert";
+import { LoadingView } from "@/views/loading";
 
 export default class PluralBuddyImportModal extends ModalCommand {
 	override filter(ctx: ModalContext) {

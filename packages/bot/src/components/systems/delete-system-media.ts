@@ -12,13 +12,13 @@ import {
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { deleteAssetPrefix } from "@/object-storage";
 import { assetStringGeneration } from "@/types/operation";
-import { buildExportPayload } from "../../lib/export";
-import { InteractionIdentifier } from "../../lib/interaction-ids";
-import { alterCollection, tagCollection, userCollection } from "../../mongodb";
-import { writeUserById } from "../../types/user";
-import { AlertView } from "../../views/alert";
-import { LoadingView } from "../../views/loading";
-import { PluralBuddyIntro } from "../../views/pluralbuddy-intro";
+import { buildExportPayload } from "@/lib/export";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { alterCollection, tagCollection, userCollection } from "@/mongodb";
+import { writeUserById } from "@/types/user";
+import { AlertView } from "@/views/alert";
+import { LoadingView } from "@/views/loading";
+import { PluralBuddyIntro } from "@/views/pluralbuddy-intro";
 
 export default class DeleteSystemButton extends ComponentCommand {
 	componentType = "Button" as const;

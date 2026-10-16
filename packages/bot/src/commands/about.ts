@@ -2,10 +2,10 @@
 
 import { Command, type CommandContext, Container, Declare, LocalesT, type Message, TextDisplay } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { emojis } from "@/lib/emojis";
 import { mentionCommand } from "@/lib/mention-command";
 import { AlertView } from "@/views/alert";
 import { build } from "..";
-import { emojis } from "../lib/emojis";
 
 @Declare({
 	name: "about",

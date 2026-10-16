@@ -15,8 +15,8 @@ import {
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { policyModal } from "@/policyModal";
-import { InteractionIdentifier } from "../../lib/interaction-ids";
-import { PluralBuddyIntro } from "../../views/pluralbuddy-intro";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { PluralBuddyIntro } from "@/views/pluralbuddy-intro";
 
 export default class PluralBuddyIntroNextPage extends ComponentCommand {
 	componentType = "Button" as const;

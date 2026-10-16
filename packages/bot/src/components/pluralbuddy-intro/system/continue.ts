@@ -15,11 +15,11 @@ import {
 import { ButtonStyle, MessageFlags, TextInputStyle } from "seyfert/lib/types";
 import { emojis } from "@/lib/emojis";
 import { mentionCommand } from "@/lib/mention-command";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
-import { writeUserById } from "../../../types/user";
-import { AlertView } from "../../../views/alert";
-import { LoadingView } from "../../../views/loading";
-import { PluralBuddyIntro } from "../../../views/pluralbuddy-intro";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { writeUserById } from "@/types/user";
+import { AlertView } from "@/views/alert";
+import { LoadingView } from "@/views/loading";
+import { PluralBuddyIntro } from "@/views/pluralbuddy-intro";
 import { createdSystems } from "../create-new-system";
 
 export default class NameCNS extends ComponentCommand {

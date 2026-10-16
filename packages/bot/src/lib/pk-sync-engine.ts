@@ -137,7 +137,9 @@ export function runSandboxActions({
 					pkUsernames.includes(c.username)
 				),
 		)
-		.forEach((v, i) => deletionAlters.push(v));
+		.forEach((v, i) => {
+			deletionAlters.push(v);
+		});
 
 	const tagFriendlyNames = pluralbuddy.tags.map((c) => c.tagFriendlyName);
 	const pkGroupNames = pluralkit.groups.map((c) => c.name);

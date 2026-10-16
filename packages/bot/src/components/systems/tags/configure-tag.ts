@@ -11,9 +11,9 @@ import { MessageFlags } from "seyfert/lib/types";
 import { alterCollection, tagCollection } from "@/mongodb";
 import { AlterView } from "@/views/alters";
 import { TagView } from "@/views/tags";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
-import { AlertView } from "../../../views/alert";
-import { SystemSettingsView } from "../../../views/system-settings";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { AlertView } from "@/views/alert";
+import { SystemSettingsView } from "@/views/system-settings";
 
 export default class ConfigureTag extends ComponentCommand {
 	componentType = "Button" as const;
