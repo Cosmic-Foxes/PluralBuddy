@@ -27,6 +27,7 @@ import {
 import { terminologyMemoryCache } from "./types/user";
 import { AlertView } from "./views/alert";
 import { LoadingView } from "./views/loading";
+import { exporter, getExporterAsPlainText } from "./plugins/opentelemetry";
 
 const SystemEditInput = PSystemObject.omit({
 	alterIds: true,
@@ -229,9 +230,12 @@ export const clientRoutes = app
 		}),
 	)
 	.get("/metrics", async (c) => {
+		const additionalMetrics = await getExporterAsPlainText();
+		
 		try {
 			c.header("Content-Type", register.contentType);
-			return c.text(await register.metrics());
+			
+			return c.text(`${await register.metrics()}\n${additionalMetrics}`);
 		} catch (err) {
 			c.status(500)
 			return c.json({ error: "error while getting metrics" })
