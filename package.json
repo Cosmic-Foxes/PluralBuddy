@@ -10,6 +10,7 @@
 	"scripts": {
 		"bot": "cd packages/bot && bun run bot",
 		"bot:watch": "cd packages/bot && bun run bot:watch",
+		"bot:inspect": "cd packages/bot && bun run bot:inspect",
 		"support:bot": "cd packages/support-bot-module && bun run bot",
 		"docs:dev": "cd apps/docs && bun run dev",
 		"docs:openapi": "cd packages/plurography && bun run src/openapi && cd ../../apps/docs && rm -rf content/docs/pluralbuddy/api && bun run scripts/generate-docs.ts",

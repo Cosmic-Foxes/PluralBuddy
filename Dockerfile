@@ -31,4 +31,4 @@ ENV SOURCE_COMMIT=$GIT_COMMIT
 # run the app
 USER bun
 EXPOSE 8080
-ENTRYPOINT [ "bun", "run", "bot" ]
+ENTRYPOINT [ "bun", "run", "bot:inspect" ]

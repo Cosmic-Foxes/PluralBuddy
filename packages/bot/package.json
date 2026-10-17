@@ -54,6 +54,7 @@
 	},
 	"scripts": {
 		"bot": "bun run src",
-		"bot:watch": "bun run --inspect --watch src/index.ts"
+		"bot:watch": "bun run --inspect --watch src/index.ts",
+		"bot:inspect": "bun run --inspect src/index.ts"
 	}
 }
