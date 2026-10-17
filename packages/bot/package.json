@@ -45,7 +45,7 @@
 		"plurography": "workspace:*",
 		"posthog-node": "^5.17.2",
 		"s3mini": "^1.0.0",
-		"seyfert": "5.0.0",
+		"seyfert": "5.1.0",
 		"sharp": "^0.35.3",
 		"svix": "^1.92.2",
 		"winston": "^3.19.0",

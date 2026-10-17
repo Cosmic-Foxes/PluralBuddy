@@ -1,6 +1,6 @@
 # use the official Bun image
 # see all versions at https://hub.docker.com/r/oven/bun/tags
-FROM oven/bun:1.3.5 AS base
+FROM oven/bun:1.4.3 AS base
 WORKDIR /bot
 
 COPY package.json bun.lock ./
