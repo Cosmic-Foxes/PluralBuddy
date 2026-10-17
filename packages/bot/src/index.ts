@@ -146,6 +146,7 @@ export const client = new Client({
 	globalMiddlewares,
 });
 
+
 if (import.meta.main) {
 	const server = serve(api);
 	console.log(`http server listening on :${server.port}`);
